@@ -1,6 +1,17 @@
-# brandsaar.dk — komplet indhold (Dansk Brandsårsforening, af Rami Mossad Ibrahim m.fl.)
+# Dansk Brandsårsforening — klinisk vejledning om brandsår (brandsaar.dk)
 
-> Scrapet 20/8 2026 til Corti Hack for Health. 34 sider + 2 lommekort-PDF'er (2022 + 2019, konverteret med MarkItDown).
+> Kildenavn: **Dansk Brandsårsforening — klinisk vejledning om brandsår
+> (brandsaar.dk, Rigshospitalets brandsårsafdeling)**
+>
+> Dansk Brandsårsforenings vejledningssite, udgivet af Rigshospitalets
+> brandsårsafdeling og skrevet af holdmedlem Rami Mossad Ibrahim m.fl. Sitet
+> henvender sig til kolleger i hele landet der møder brandskader i deres praksis.
+>
+> Kildetype: RETNINGSLINJE.
+>
+> Hentet 20/8 2026 til Corti Hack for Health: 34 sider plus begge lommekort
+> (2022 og 2019), konverteret med MarkItDown. Hvert afsnit bærer sin egen URL,
+> så et uddrag kan slås op på sitet.
 
 ---
 

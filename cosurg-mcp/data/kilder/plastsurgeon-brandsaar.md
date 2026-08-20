@@ -1,5 +1,7 @@
-# PlastSurgeon-haandbogen — kapitlet Burn Surgery (beta.plastsurgeon.com)
+# PlastSurgeon — Validated expert platform: kapitlet Burn Surgery
 
+> Kildenavn: **PlastSurgeon — Validated expert platform (beta.plastsurgeon.com)**
+>
 > Skrabet 20/8 2026 til Corti Hack for Health fra CoSurg-teamets egen haandbog
 > beta.plastsurgeon.com. Kapitlet Burn Surgery er skrevet af Rami Mossad Ibrahim, MD,
 > Elisabeth Lauritzen, MD, Frederik Gulmark Hansen, med.stud., Anne Mosebo, med.stud.,

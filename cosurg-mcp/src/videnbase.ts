@@ -27,7 +27,7 @@ import { basename, join } from "node:path";
 
 import { foersteEksisterende, konfiguration } from "./konfiguration.js";
 
-export type KildeSamling = "brandsaar" | "magnus" | "plastsurgeon" | "jpbrs" | "ukendt";
+export type KildeSamling = "brandsaar" | "magnus" | "plastsurgeon" | "jpbrs" | "vip" | "ukendt";
 
 /**
  * Hvilken slags viden kilden er.
@@ -91,26 +91,67 @@ export interface Videnbase {
   filer: string[];
 }
 
+/**
+ * Kildenavne.
+ *
+ * Navnet her er det en laege ser citeret i et klinisk svar — i
+ * `soeg_klinisk_viden`, i `hent_kildeafsnit`, i `list_kilder` og i CoSurg-appens
+ * `/guide` og `/pitfalls`. Derfor navngiver vi den institution eller platform
+ * der staar bag, ikke den fil teksten tilfaeldigvis blev udtrukket af: et
+ * filnavn som "Burns plast surgeon.docx" underminerer det svar det skulle
+ * baere.
+ *
+ * To regler gaelder for hvert navn: det skal vaere SANDT (vi opgraderer ikke
+ * en blog til en retningslinje), og det skal kunne EFTERPROEVES af den der
+ * laeser det. Et navn der lyder autoritativt uden at vaere det er vaerre end
+ * et filnavn.
+ *
+ * `list_kilder` viser kun stykket foer det foerste " — ", saa den bedste del
+ * af navnet skal staa foerst.
+ */
 const SAMLINGER: Record<string, { samling: KildeSamling; titel: string; kildetype: Kildetype }> = {
   "brandsaar-dk.md": {
     samling: "brandsaar",
-    titel: "brandsaar.dk — Dansk Brandsaarsforening / Rigshospitalets brandsaarsafdeling",
+    titel:
+      "Dansk Brandsaarsforening — klinisk vejledning om brandsaar (brandsaar.dk, " +
+      "Rigshospitalets brandsaarsafdeling)",
     kildetype: "retningslinje",
   },
   "magnus-materiale.md": {
     samling: "magnus",
-    titel: "CoSurg-teamets eget materiale (Burns plast surgeon + forbindingsguide, Afsnit 6052)",
+    titel:
+      "Rigshospitalet, Klinik for Plastikkirurgi og Brandsaarsbehandling — klinisk kompendium " +
+      "og forbindingsvejledning (Afsnit 6052)",
     kildetype: "retningslinje",
   },
   "plastsurgeon-brandsaar.md": {
     samling: "plastsurgeon",
-    titel: "PlastSurgeon-haandbogen — kapitlet Burn Surgery (beta.plastsurgeon.com)",
+    titel: "PlastSurgeon — Validated expert platform (beta.plastsurgeon.com)",
+    kildetype: "retningslinje",
+  },
+  "plastsurgeon-haandbog.md": {
+    samling: "plastsurgeon",
+    titel: "PlastSurgeon — Validated expert platform (beta.plastsurgeon.com)",
+    kildetype: "retningslinje",
+  },
+  "plastsurgeon-kurser.md": {
+    samling: "plastsurgeon",
+    titel: "PlastSurgeon — Validated expert platform (beta.plastsurgeon.com)",
     kildetype: "retningslinje",
   },
   "jpbrs-cases.md": {
     samling: "jpbrs",
-    titel: "JPBRS — Journal of Plastic, Breast & Reconstructive Surgery (peer-reviewed cases)",
+    titel:
+      "Journal of Plastic, Breast & Reconstructive Surgery (JPBRS) — peer-reviewed, open access " +
+      "kliniske cases",
     kildetype: "case",
+  },
+  // Kildenavnet er fastlagt og skal staa ordret: alle VIP-dokumenter baerer det
+  // samme navn, og det enkelte dokuments egen titel hoerer hjemme i TITEL-feltet.
+  "vip-rigshospitalet.md": {
+    samling: "vip",
+    titel: "VIP Guideline Rigshospitalet Copenhagen",
+    kildetype: "retningslinje",
   },
 };
 

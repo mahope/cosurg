@@ -146,12 +146,17 @@ const sprogSkema = z
   .describe("Sprog for node- og dispositionstekster. da = dansk (standard), en = engelsk.");
 
 const samlingSkema = z
-  .enum(["alle", "brandsaar", "magnus", "plastsurgeon", "jpbrs"])
+  .enum(["alle", "brandsaar", "magnus", "plastsurgeon", "jpbrs", "vip"])
   .default("alle")
   .describe(
-    "Begraens til én kilde. 'brandsaar' = brandsaar.dk, 'magnus' = teamets eget materiale fra " +
-      "Afsnit 6052, 'plastsurgeon' = PlastSurgeon-haandbogens Burn Surgery-kapitel, " +
-      "'jpbrs' = peer-reviewede kliniske cases fra JPBRS, 'alle' = alle fire (standard).",
+    "Begraens til én kilde. " +
+      "'vip' = VIP Guideline Rigshospitalet Copenhagen (Region Hovedstadens gaeldende, " +
+      "versionerede instrukser og vejledninger), " +
+      "'brandsaar' = Dansk Brandsaarsforenings vejledning paa brandsaar.dk, " +
+      "'magnus' = Rigshospitalets kompendium og forbindingsvejledning fra Afsnit 6052, " +
+      "'plastsurgeon' = PlastSurgeon — Validated expert platform (haandbog og kursusmoduler), " +
+      "'jpbrs' = peer-reviewede kliniske cases fra Journal of Plastic, Breast & Reconstructive " +
+      "Surgery, 'alle' = alle fem (standard).",
   );
 
 const kildetypeSkema = z
@@ -197,14 +202,17 @@ export function opretServer(): McpServer {
     {
       title: "Soeg i CoSurgs kliniske vidensbase",
       description:
-        "Fritekstsoegning i CoSurgs kliniske kilder om brandsaar: brandsaar.dk (Dansk " +
-        "Brandsaarsforening / Rigshospitalets brandsaarsafdeling), teamets eget materiale " +
-        "(Burns plast surgeon-dokumentet + forbindingsguiden fra Afsnit 6052), " +
-        "PlastSurgeon-haandbogens Burn Surgery-kapitel og peer-reviewede kliniske cases fra " +
-        "JPBRS. Daekker dybdevurdering, TBSA/arealberegning, Parkland-vaeskebehandling, " +
-        "inhalationsskader, aetsninger, forfrysninger, cirkulaere forbraendinger og " +
-        "escharotomi, overflytningskriterier til Rigshospitalet, ambulant behandling, " +
-        "smertebehandling, forbindinger, debridement og hudtransplantation. " +
+        "Fritekstsoegning i CoSurgs kliniske kilder: VIP Guideline Rigshospitalet Copenhagen " +
+        "(Region Hovedstadens gaeldende instrukser og vejledninger), Dansk Brandsaarsforenings " +
+        "vejledning paa brandsaar.dk, Rigshospitalets kompendium og forbindingsvejledning fra " +
+        "Afsnit 6052, PlastSurgeon — Validated expert platform (haandbog og kursusmoduler) og " +
+        "peer-reviewede kliniske cases fra Journal of Plastic, Breast & Reconstructive Surgery. " +
+        "Daekker brandsaar i dybden — dybdevurdering, TBSA/arealberegning, " +
+        "Parkland-vaeskebehandling, inhalationsskader, aetsninger, forfrysninger, cirkulaere " +
+        "forbraendinger og escharotomi, overflytningskriterier til Rigshospitalet, ambulant " +
+        "behandling, smertebehandling, forbindinger, debridement og hudtransplantation — samt " +
+        "den bredere plastikkirurgi: hudtumorer og melanom, sarkomer, brystrekonstruktion og " +
+        "-reduktion, frie lapper, laebe-ganespalte, vaskulaere anomalier, tryksaar og bidsaar. " +
         "Returnerer ordrette uddrag MED kildehenvisning (URL eller dokumentnavn) og med " +
         "kildetypen angivet: en retningslinje siger hvad der anbefales, en case siger hvad der " +
         "blev gjort for én patient — de to maa ikke citeres som det samme. " +

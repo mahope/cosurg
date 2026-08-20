@@ -1,10 +1,28 @@
-# Magnus' brandsårsmateriale (Google Drive-mappen, hentet 20/8 2026)
+# Rigshospitalet, Klinik for Plastikkirurgi og Brandsårsbehandling — kompendium og forbindingsvejledning
 
-> Kilde: Drive-mappe 1iW2lGBgA84xKIyAdRpq37YWltn-GBYkV. Billedfiler (Anatomy.png, Patophysiology.jpg, Patophysiology 2.jpg, Zone of burns.jpg) ligger i kilder/magnus-materiale/ og er IKKE tekstkonverteret. OBS: 'Brandsårsforbinding tips og tricks -Final.docx' er 0 bytes på Drive (fejlupload) — Magnus skal gen-uploade den.
+> To dokumenter fra Rigshospitalets brandsårsafsnit, stillet til rådighed af
+> holdmedlem Magnus Balslev Avnstorp (Drive-mappe 1iW2lGBgA84xKIyAdRpq37YWltn-GBYkV,
+> hentet 20/8 2026):
+>
+> 1. **"Burns" — klinisk kompendium.** Det samme materiale som PlastSurgeon-platformens
+>    brandsårskapitel bygger på; det citeres derfor under platformens navn,
+>    *PlastSurgeon — Validated expert platform*.
+> 2. **"Brandsårsforbindinger step by step"** — step-by-step-forbindingsvejledning
+>    udarbejdet af spl. Pia Høy og Alice Rimmen i samarbejde med ovl. Rikke Holmgaard
+>    og reservelæge Carla Kruse, Afsnit for plastikkirurgi og brandsårsbehandling 6052.
+>
+> Kildetype: RETNINGSLINJE.
+>
+> Billedfiler (Anatomy.png, Patophysiology.jpg, Patophysiology 2.jpg, Zone of burns.jpg)
+> ligger i `data/originaler/` og er IKKE tekstkonverteret. OBS:
+> 'Brandsårsforbinding tips og tricks -Final.docx' er 0 bytes på Drive (fejlupload)
+> — Magnus skal gen-uploade den.
 
 ---
 
-## KILDE: Burns plast surgeon.docx
+## KILDE: PlastSurgeon — Validated expert platform: "Burns" (klinisk kompendium)
+TITEL: Burns — klinisk kompendium
+INSTITUTION: Rigshospitalet, Klinik for Plastikkirurgi og Brandsaarsbehandling
 
 Burns:
 
@@ -737,7 +755,10 @@ Severity and risk of amputation may also be assessed using imaging modalities su
 * Early amputation may be indicated in case of sepsis or progressive liquefactive necrosis
 ---
 
-## KILDE: Brandsårsforbindinger step by step - final edition.pptx (tekst fra slides)
+## KILDE: Rigshospitalet, Afsnit for plastikkirurgi og brandsårsbehandling 6052 — "Brandsårsforbindinger step by step"
+TITEL: Brandsårsforbindinger step by step
+FORFATTERE: spl. Pia Høy og Alice Rimmen, i samarbejde med ovl. Rikke Holmgaard og reservelæge Carla Kruse
+INSTITUTION: Rigshospitalet, Afsnit for plastikkirurgi og brandsårsbehandling 6052
 
 <!-- Slide number: 1 -->
 # Brandsårsforbindinger
