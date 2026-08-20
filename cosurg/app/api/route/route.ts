@@ -4,6 +4,7 @@ import { askAgent, ensureAgent } from "@/lib/corti/agent";
 import { treeSource } from "@/lib/tree/loader";
 import { getNode } from "@/lib/tree/engine";
 import type { Lang } from "@/lib/tree/types";
+import { routerIntent } from "@/lib/corti/triage";
 import { ROUTER_SPEC, type RoutedIntent } from "./agent";
 
 export const dynamic = "force-dynamic";
@@ -15,6 +16,12 @@ export const dynamic = "force-dynamic";
  * det, og — inde i et forløb — først efter at svarfortolkeren selv har meldt
  * tvivl. Den er altså et sikkerhedsnet, ikke en hovedvej, og kvoten er sat
  * derefter.
+ *
+ * Klassifikationen kører nu på Corti Models (`corti-s1-instant`, målt 0,7-2,0 s)
+ * frem for det agentiske framework. Opgaven er ét kald uden opslag, så
+ * agent-rundturen var ren ventetid — og ventetiden faldt her, hvor lægen står
+ * og kigger på en skærm der ikke har reageret endnu. Svarer Models ikke,
+ * bruges agenten som før: kontrakten udadtil er uændret.
  */
 
 /** Ét kald pr. ytring vi ikke kunne afgøre lokalt. Rundhåndet, men ikke gratis. */
@@ -102,10 +109,17 @@ export async function POST(req: Request) {
       );
     }
 
-    lines.push("", "Classify it with submit_intent.");
+    const prompt = lines.join("\n");
+
+    // Hurtigsporet først. `routedBy: "lokal"` betyder at kaldet ikke lykkedes —
+    // ikke at svaret var tvivlsomt — og kun DA er agent-rundturen pengene værd.
+    const hurtig = await routerIntent(prompt, ALLOWED[context], req.signal);
+    if (hurtig.routedBy === "corti-models") {
+      return NextResponse.json({ intent: hurtig.intent, reason: hurtig.reason, routedBy: hurtig.routedBy });
+    }
 
     const agentId = await ensureAgent(ROUTER_SPEC);
-    const { result } = await askAgent<Routed>(agentId, lines.join("\n"));
+    const { result } = await askAgent<Routed>(agentId, `${prompt}\n\nClassify it with submit_intent.`);
 
     const claimed = result.intent;
     const intent: RoutedIntent =
@@ -116,6 +130,7 @@ export async function POST(req: Request) {
     return NextResponse.json({
       intent,
       reason: typeof result.reason === "string" ? result.reason.slice(0, 300) : undefined,
+      routedBy: "corti-agent",
     });
   } catch (err) {
     return NextResponse.json(
