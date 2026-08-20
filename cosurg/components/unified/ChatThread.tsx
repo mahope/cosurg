@@ -387,7 +387,18 @@ function WorkupBlock({
   const muligheder = spørgsmål.options ?? [];
 
   return (
-    <section className="mt-3 rounded-2xl border border-[var(--teal)] bg-[var(--teal-tint)] p-5 sm:p-6">
+    /*
+      Udredningskortet var en fyldt teal flade — og dermed den største tonede
+      kasse i hele arbejdsvisningen, netop dér hvor lægen kigger mest. Det er
+      papir nu, som alle andre kort: hårfin kant plus --shadow-raised. At det
+      er agentens udredningstur og ikke et almindeligt svar, siges af en teal
+      venstrekant — samme greb som et citat i en publikation.
+
+      Kanten er en INDVENDIG skygge og ikke en tykkere `border-l`: en skygge
+      fylder ingenting i layoutet, så kortets mål og indrykning er præcis som
+      før og intet flytter sig.
+    */
+    <section className="mt-3 rounded-2xl border bg-[var(--paper-raised)] p-5 [box-shadow:inset_3px_0_0_0_var(--teal),var(--shadow-raised)] sm:p-6">
       <p className="flex flex-wrap items-baseline gap-x-2 font-[family-name:var(--font-mono)] text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--ink-faint)]">
         <span className="text-[var(--teal-deep)]">{tr("workupLabel", lang)}</span>
         <span className="normal-case tracking-normal">{step.treeName}</span>
@@ -442,7 +453,11 @@ function WorkupBlock({
                    maskinværdien. Transskriptet og notatet skal læse som en
                    journal, ikke som en formular. */
                 onClick={() => onQuickReply(mulighed.label)}
-                className="rounded-lg border border-[var(--line-strong)] bg-[var(--paper-raised)] px-3.5 py-2 text-sm font-medium text-[var(--ink)] transition-colors hover:border-[var(--teal)] hover:bg-[var(--paper)]"
+                /* Knapperne stod hvide på en tonet flade. Nu er kortet selv
+                   hvidt, så de skifter til papir — ellers ville de forsvinde
+                   ind i fladen under sig. `min-h-11`: de rammes med en
+                   tommelfinger. */
+                className="flex min-h-11 items-center rounded-lg border border-[var(--line-strong)] bg-[var(--paper)] px-3.5 py-2 text-sm font-medium text-[var(--ink)] transition-colors hover:border-[var(--teal)] hover:bg-[var(--teal-tint)]"
               >
                 {mulighed.label}
               </button>
