@@ -605,6 +605,13 @@ export default function Home() {
     askCurrent(resetSession(tree, lang));
   };
 
+  /** Logo/titel i headeren: tilbage til intake-skærmen, som var siden lige åbnet. */
+  const goHome = () => {
+    restart();
+    setStarted(false);
+    setIntakeMiss(null);
+  };
+
   /**
    * Journalnotatet er appens langsomste kald (målt 14–16 s) og derfor det der
    * ligner en frossen app hvis det fejler i stilhed. Det har sin egen, meget
@@ -832,6 +839,7 @@ export default function Home() {
           trees={trees}
           treeBusy={treeBusy}
           onSelectTree={(id) => void beginTree(id)}
+          onGoHome={goHome}
           fullVoice={fullVoice}
           orMode={orMode}
           onToggleLang={() => {
