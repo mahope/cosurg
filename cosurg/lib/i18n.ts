@@ -18,6 +18,11 @@ export const t = {
     da: "CoSurgs kliniske grundlag er valideret af Nordic Surgery Labs internationale ekspertpanel.",
     en: "",
   },
+  aboutOurTeamTitle: { da: "Vores team", en: "Our Team" },
+  aboutOurTeamIntro: {
+    da: "Redaktører, bidragydere og skabere bag Nordic Surgery Labs platforme.",
+    en: "The editors, contributors and creators who build and maintain Nordic Surgery Lab's platforms.",
+  },
   listening: { da: "Lytter", en: "Listening" },
   micOff: { da: "Mikrofon slukket", en: "Microphone off" },
   orMode: { da: "Håndfri tilstand", en: "Handsfree mode" },
