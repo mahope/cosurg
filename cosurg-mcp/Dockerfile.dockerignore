@@ -1,0 +1,19 @@
+# Byggekonteksten er repo-roden — hold den lille.
+.git
+node_modules
+**/node_modules
+**/dist
+**/.next
+**/.env
+**/.env.*
+cosurg-mcp/dist
+cosurg-mcp/node_modules
+kilder/magnus-materiale
+kilder/*.pdf
+brainstorm
+burntree
+datasets
+docs
+worktrees
+*.mp4
+*.mov

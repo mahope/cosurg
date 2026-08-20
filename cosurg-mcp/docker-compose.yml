@@ -1,0 +1,41 @@
+# Koeres fra REPO-RODEN, ikke fra cosurg-mcp/:
+#
+#   MCP_AUTH_TOKEN=$(openssl rand -hex 32) \
+#     docker compose -f cosurg-mcp/docker-compose.yml up -d --build
+#
+# Traefik-labels matcher Openship-stackens opsaetning paa NSL-serveren.
+
+services:
+  cosurg-mcp:
+    build:
+      context: ..
+      dockerfile: cosurg-mcp/Dockerfile
+    image: cosurg-mcp:1.0.0
+    restart: unless-stopped
+    environment:
+      MCP_AUTH_TOKEN: ${MCP_AUTH_TOKEN:?MCP_AUTH_TOKEN skal saettes}
+      PORT: "8787"
+      HOST: 0.0.0.0
+      PUBMED_EMAIL: ${PUBMED_EMAIL:-mads@mahope.dk}
+    # Ingen skrivbar tilstand — filsystemet kan vaere read-only.
+    read_only: true
+    mem_limit: 256m
+    healthcheck:
+      # Distroless har ingen shell og ingen curl; node er den eneste binaer.
+      test:
+        [
+          "CMD",
+          "/nodejs/bin/node",
+          "-e",
+          "fetch('http://127.0.0.1:8787/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))",
+        ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.cosurg-mcp.rule: Host(`mcp.cosurg.com`)
+      traefik.http.routers.cosurg-mcp.entrypoints: websecure
+      traefik.http.routers.cosurg-mcp.tls.certresolver: letsencrypt
+      traefik.http.services.cosurg-mcp.loadbalancer.server.port: "8787"
