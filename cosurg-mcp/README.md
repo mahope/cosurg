@@ -1,4 +1,4 @@
-# cosurg-mcp
+﻿# cosurg-mcp
 
 An MCP server holding CoSurg's clinical knowledge — burns at its core, and plastic
 surgery around them. It attaches to Corti's agentic framework as an **MCP
@@ -36,18 +36,18 @@ guidelines and the case journal do.
 | `data/kilder/jpbrs-cases.md` | **case** | **Journal of Plastic, Breast & Reconstructive Surgery** — every published case from the team's own journal, each with case id, title, authors, institution, step-by-step operative description and follow-up. | URL + case id + author list |
 | `cosurg/content/trees/*.json` | — | The decision trees `burns-dk` (8 nodes, 3 dispositions) and `dressing-hand-arm` (12 steps). | Tree id, version, filename and author list |
 
-At startup the server loads **592 source sections into 5,420 searchable excerpts**
+At startup the server loads **592 source sections into 4,849 searchable excerpts**
 (2.8 MB of text, 1,837 illustrations), plus both trees:
 
-| Collection | Sections | Excerpts |
-|---|---|---|
-| PlastSurgeon handbook | 394 | 3,300 |
-| JPBRS cases | 73 | 1,188 |
-| VIP Guideline Rigshospitalet Copenhagen | 71 | 583 |
-| brandsaar.dk | 36 | 128 |
-| PlastSurgeon burn chapter | 14 | 96 |
-| Rigshospitalet Section 6052 | 2 | 81 |
-| PlastSurgeon case competition | 2 | 44 |
+| Collection | Sections | Excerpts | Illustrations |
+|---|---|---|---|
+| PlastSurgeon handbook | 394 | 2,906 | 1,283 |
+| JPBRS cases | 73 | 1,116 | 500 |
+| VIP Guideline Rigshospitalet Copenhagen | 71 | 495 | — |
+| brandsaar.dk | 36 | 128 | 15 |
+| PlastSurgeon burn chapter | 14 | 82 | 11 |
+| Rigshospitalet Section 6052 | 2 | 80 | — |
+| PlastSurgeon case competition | 2 | 42 | 28 |
 
 Everything sits in memory; there is no database and no writable state. Indexing
 takes ~250 ms at startup and a search answers in 7–40 ms.
@@ -327,7 +327,7 @@ token:
 
 ```json
 {"status":"ok","navn":"cosurg-mcp","version":"1.0.0","mcpSti":"/mcp",
- "transport":"streamable_http","uddrag":5420,"afsnit":592,"cases":75,
+ "transport":"streamable_http","uddrag":4849,"afsnit":592,"cases":75,
  "traeer":["burns-dk","dressing-hand-arm"]}
 ```
 
@@ -347,12 +347,12 @@ token:
 
 ## How the search is built
 
-In-memory BM25 over 5,420 excerpts. No embeddings, no vector database — 2.8 MB of
+In-memory BM25 over 4,849 excerpts. No embeddings, no vector database — 2.8 MB of
 text indexes in ~250 ms at startup and answers a query in 7–40 ms, and BM25 has the
 property that matters here: it cannot hallucinate. A result is always a verbatim
 excerpt with its source, or else there is no result.
 
-Growing the base from 323 to 5,420 excerpts did not blunt it. IDF sharpens as the
+Growing the base from 323 to 4,849 excerpts did not blunt it. IDF sharpens as the
 corpus grows and diversifies, and the minimum-coverage rule below does the filtering
 that size alone would otherwise undo: burn questions still return brandsaar.dk and
 the VIP instructions at the top, and "kolorektal anastomoselækage stapler" still

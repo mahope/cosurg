@@ -44,7 +44,12 @@ const STOPORD = new Set(
  */
 function stam(ord: string): string {
   if (ord.length <= 4) return ord;
-  for (const suffiks of ["ernes", "erne", "ende", "erns", "ers", "ene", "ens", "er", "en", "et", "es", "s"]) {
+  // "e" er med fordi dansk ental og flertal ellers falder fra hinanden:
+  // "ventralhernier" stammes til "ventralherni", mens "ventralhernie" stod
+  // uroert — og en soegning paa entalsformen fandt saa ikke instruksen.
+  // Stemningen sker ens ved indeksering og soegning, saa den kan ikke skabe
+  // et misforhold; den kan kun slaa beslaegtede former sammen.
+  for (const suffiks of ["ernes", "erne", "ende", "erns", "ers", "ene", "ens", "er", "en", "et", "es", "e", "s"]) {
     if (ord.length - suffiks.length >= 4 && ord.endsWith(suffiks)) {
       return ord.slice(0, ord.length - suffiks.length);
     }

@@ -303,6 +303,29 @@ function delLangTekst(tekst: string): string[] {
   return ud;
 }
 
+/**
+ * Er blokken udelukkende kildens metadatahoved?
+ *
+ * Metadatalinjer (`TITEL:`, `FORFATTERE:`, `CASE-ID:`, `INSTITUTION:`) og en
+ * kursiv notelinje (`*Dokumenttype: ... *`) er sporbarhed, ikke klinik. Bliver
+ * de et uddrag for sig, scorer de hoejt paa netop dokumentets emne — de
+ * indeholder jo titlen og er korte — og svaret bliver et dokumenthoved.
+ */
+function kunMetadata(tekst: string): boolean {
+  const rest = tekst
+    .split(/\r?\n/)
+    .filter((l) => {
+      const t = l.trim();
+      if (t === "") return false;
+      if (/^[A-Z][A-Z-]+:\s/.test(t)) return false; // TITEL:, FORFATTERE: ...
+      if (/^\*[^*].*\*$/.test(t)) return false; // *Dokumenttype: ... *
+      return true;
+    })
+    .join(" ")
+    .trim();
+  return rest.length < 40;
+}
+
 /** Deler et afsnit i soegbare uddrag, ét pr. overskrift (og videre ved laengde). */
 function delIUddrag(a: Afsnit): Uddrag[] {
   const linjer = a.tekst.split(/\r?\n/);
@@ -343,6 +366,13 @@ function delIUddrag(a: Afsnit): Uddrag[] {
       // de uddrag der ogsaa har broedtekst.
       const proza = rent.replace(/!\[[^\]]*\]\([^)]*\)/g, " ").replace(/\s+/g, " ").trim();
       if (proza.length < 40) continue;
+      // Blokken foer den foerste overskrift er kildens metadatahoved
+      // (TITEL/FORFATTERE/INSTITUTION og en kursiv notelinje). Den staar med
+      // vilje i teksten, saa en soegning paa et forfatternavn eller en casetitel
+      // ogsaa rammer — men den maa ikke vaere et uddrag i sig selv. Ellers
+      // besvares "toksisk epidermal nekrolyse behandling" med dokumentets hoved
+      // i stedet for dets klinik, fordi hovedet er kort og indeholder titlen.
+      if (blok.overskrifter.length === 0 && kunMetadata(rent)) continue;
       uddrag.push({
         id: `${a.id}#${uddrag.length}`,
         afsnitId: a.id,

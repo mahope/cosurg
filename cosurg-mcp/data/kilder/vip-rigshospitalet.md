@@ -690,24 +690,6 @@ temperatur)
 
 Konsistens
 
-ja
-
-ja
-
-nej
-
-nej
-
-nej
-
-ja
-
-ja
-
-nej
-
-nej
-
 elastisk eller blød, ikke
 kompressibel
 
@@ -1280,8 +1262,6 @@ bakterier. Opdeles i:
 Periareolære (centrale) abscesser, som ofte recidiverer med fisteldannelse, og som overvejende
 rammer yngre cigaretrygere. Kan også skyldes fremmedlegemer (piercing i papillen m.m.)
 
-Mastitis, version 7.
-
 Perifere, som ses hos reumatikere, diabetikere, immunsvækkede eller steroidbehandlede
 patienter etc. Kan klinisk være svære at skelne fra infektioner i hudens elementer: hårsække,
 svedkirtler, talgkirtler etc.
@@ -1333,8 +1313,6 @@ kirurgisk incision af abscesser. Ved mistanke om absces foretages samtidig aspir
 abscesindholdet ved punktur med lyserød venepunkturkanyle. Aspiratet sendes til D+R. Man kan evt.
 via kanylen skylle gentagne gange med isotonisk NaCl, indtil skyllevandet er rent.
 
-Mastitis, version 7.
-
 Punkturbehandlingen gentages med 1-2 dages mellemrum afhængig af absceskavitetens volumen og
 den samlede klinik. Der gives antibiotika jf. ovenstående.
 
@@ -1377,15 +1355,11 @@ SFR Plastik- og Mammakirurgi i Region Hovedstaden og Region Sjælland har ansvar
 denne vejledning ajourføres.
 Den enkelte medarbejder er ansvarlig for at kende og anvende retningslinjen.
 
-Mastitis, version 7.
-
 
 Ingen.
 
 
 Ingen.
-
-Mastitis, version 7.
 
 ---
 ## KILDE: VIP instruks: PB - Sygepleje - Aflastende incisioner ved cirkulære forbrændinger — version 6, gaeldende fra 28-10-2023
@@ -1569,8 +1543,6 @@ Udelukkende intuberede patienter (pga. smertefuld procedure).
 
 Behandling af dybe 2. eller 3. gradsforbrænding på hænder, fødder og/eller i ansigt.
 
-PB Nexobrid, version 1.
-
 ## Fremgangsmåde
 
 Formål med
@@ -1648,8 +1620,6 @@ barriere. Dette gøres ved applicere jelonet rundt om brandsåret tæt på
 sårkanten, evt. fikseret med stapler
 Nexobrid appliceres i et lag på mellem 1,5-3mm.
 
-PB Nexobrid, version 1.
-
 Efterfølgende dækkes det applicerede område med en okkluderende
 bandage af film (tegaderm, plastikhandske, husholdningsfilm).
 Det er vigtigt der ikke er luft under den okkluderende bandage og at gelen
@@ -1718,8 +1688,6 @@ tryklabile i forbindelse med behandlingen. Det er usikkert om der er tale
 om et inflammatorisk respons eller øget fordelingsvolumen af ødemet når
 echaret fjerens.
 
-PB Nexobrid, version 1.
-
 ## Ansvar og organisering
 
 Afdelingsledelsen er ansvarlig for:
@@ -1737,8 +1705,6 @@ Ingen referencer
 ## Bilag
 
 ingen bilag
-
-PB Nexobrid, version 1.
 
 ---
 ## KILDE: VIP instruks: PB Væsketerapi — version 1, gaeldende fra 20-06-2025
@@ -1764,8 +1730,6 @@ Ved dehydrerede patienter eller patienter, hvor TBSA er på væsketerapigrænsen
 opmærksom på, at der kan være behov for væsketilskud og kateteranlæggelse.
 
 ALLE patienter i væsketerapi skal have PVK, sonde og KAD
-
-PB Væsketerapi, version 1.
 
 Husk blodprøver og podninger.
 
@@ -1808,8 +1772,6 @@ I udregning anvendes TBSA og vægt, hvorfor det er vigtigt at patienten vejes ve
 traumecenteret.
 
 NB! Ved børn Modificeret Parkland formel + basalbehov
-
-PB Væsketerapi, version 1.
 
 Basalbehov: børn(0-15år) 4-2-1
 
@@ -1859,8 +1821,6 @@ Eksempel på væsketerapi - voksne
 
 Eks:
 
-PB Væsketerapi, version 1.
-
 En voksen mand der vejer 80 kg og har et brandsår på 25%
 
 Modificeret parklandformel: 3ml x 80kg x 25% = 6000ml
@@ -1907,8 +1867,6 @@ Væsketerapi-perioden strækker sig over 24 timer, men det betyder ikke at pt. i
 væske, hvis diureserne aftager, ligesom en pt. skal bibeholde KAD, for at observere disse. Kateteret
 kan fjernes når pt. igen er nede på sin normale vægt (er afvandet), medmindre der er andre
 indikationer for at lade det ligge.
-
-PB Væsketerapi, version 1.
 
 Ændring i væskeindgift:
 
@@ -1958,8 +1916,6 @@ at personalet er orienteret om denne vip
 
 Personalet er ansvarlig for:
 
-PB Væsketerapi, version 1.
-
 at have læst og arbejde efter vippen
 
 ## Referencer, lovgivning og faglig evidens samt links hertil
@@ -1969,8 +1925,6 @@ Ingen
 ## Bilag
 
 Ingen
-
-PB Væsketerapi, version 1.
 
 ---
 ## KILDE: VIP instruks: PBB - 2-stadie brystrekonstruktion med ekspander og implantat — version 7, gaeldende fra 28-01-2026
@@ -2248,8 +2202,6 @@ isterninger
 Skader der kan behandles ambulant kan evt. sutureres i skadestuen. De fleste vil dog, hvis det er
 indiceret at afdeling PBB involveres, behandle skaden på PBB-operationsgang.
 
-PBB - Akutte traumer, version 8.
-
 ## Ansvar og organisering
 
 Kontakt fra skadestue eller andet sygehus/afdeling til vagthavende, som foretager fornøden visitation
@@ -2272,8 +2224,6 @@ Ortopædkir. afd., Odense Universitetshospital)
 ## Akkrediteringsstandarder
 
 ## Bilag
-
-PBB - Akutte traumer, version 8.
 
 ---
 ## KILDE: VIP instruks: PBB - Ambulant behandling af brandsår — version 6, gaeldende fra 06-07-2022
@@ -2310,8 +2260,6 @@ konsultationen
 Sårene kan efter vask med vand og sæbe samt afklipning af al løs hud og bullae, forbindes med
 2 lag jelonet, et tykt lag sugende forbinding og yderst brandsårsbind til at holde på det hele.
 
-PBB - Ambulant behandling af brandsår, version 6.
-
 Eller man kan bruge sølv produkt som fx aquacell alt efter erfaring og præference.
 
 Forbindingen forblive urørt og må ikke blive våd. Pt. skal sætte sig i forbindelse med egen læge
@@ -2335,8 +2283,6 @@ http://brandsaar.dk/
 ## Akkrediteringsstandarder
 
 ## Bilag
-
-PBB - Ambulant behandling af brandsår, version 6.
 
 ---
 ## KILDE: VIP vejledning: PBB - Anvendelse af topisk tranexamsyre — version 1, gaeldende fra 09-11-2023
@@ -2385,8 +2331,6 @@ operationskrævende hæmatomer7.
 Til topisk anvendelse anbefales derfor 3% opløsning, der skal få lov at virke i 5 min.
 
 ## Fremgangsmåde
-
-PBB - Anvendelse af topisk tranexamsyre, version 1.
 
 Tranexamsyre findes i koncentration på 100mg/ml. Der ønskes koncentration på 3%, dvs 3 gram per 100ml. Der ønskes til brystrekonstruktioner et
 volumen på ca. 100ml.
@@ -2461,8 +2405,6 @@ Reconstruction: A Double-Blind, Randomized Controlled Trial. Plastic and Reconst
 
 8.  Ausen, K., Hagen, A. I., Østbyhaug, H. S., Olafsson, S., Kvalsund, B. J., Spigset, O., & Pleym, H. (2020). Topical moistening of mastectomy
 
-PBB - Anvendelse af topisk tranexamsyre, version 1.
-
 wounds with diluted tranexamic acid to reduce bleeding: randomized clinical trial. BJS open, 4(2), 216-224.
 
 9.  Tammachote, N., Raphiphan, R., & Kanitnate, S. (2019). High-dose (3 g) topical tranexamic acid has higher potency in reducing blood loss
@@ -2508,8 +2450,6 @@ mammaplasties." Journal of Plastic, Reconstructive & Aesthetic Surgery 83 (2023)
 massive weight loss skin-reducing surgery. Plast Reconstr Surg. 2019; 143:1169e–1178e
 
 ## Bilag
-
-PBB - Anvendelse af topisk tranexamsyre, version 1.
 
 ---
 ## KILDE: VIP instruks: PBB - Anvendelsen af indocyaningrønt til "SPY Elite® System" — version 7, gaeldende fra 29-03-2025
@@ -2914,8 +2854,6 @@ Klargøring:
 Patienterne møder dagen før operation til klargøring. Der laves AOP ved forvagt, som ordinerer
 vanlig medicin, tromboseprofylakse og smertestillende i henhold til afdelingens instruks. Der tages
 
-PBB - Axileksairese (lokal udgave), version 1.
-
 EKG i henhold til gældende retningslinjer herfor.
 Der skal tages relevante blodprøver (exairesepakke): Væske og nyretal, Hgb, type og BAC-test.
 Forud for operationen forberedes patienten ved samtale med anæstesilæge, sygeplejerske i
@@ -2966,8 +2904,6 @@ hvis der findes indikation for genoptræning i kommunalt regi.
 
 •    KAD: Evt. KAD fjernes hurtigst muligt, som regel 1. postoperative dag.
 
-PBB - Axileksairese (lokal udgave), version 1.
-
 •    Eventuelle blodprøver i det postoperative forløb kontrolleres ved stuegang.
 
 •    Antibiotika: Indikation for antibiotika postoperativt afgøres af operatør. Hvis dræn bibeholdes
@@ -3012,10 +2948,6 @@ Cutaneous Melanoma, edited by Charles Balch et al. 4. Edition, ISBN 1-57626-159-
 Axillary and epitrochlear lymph node dissection by K.M. McMasters et al.
 
 ## Bilag
-
-PBB - Axileksairese (lokal udgave), version 1.
-
-PBB - Axileksairese (lokal udgave), version 1.
 
 ---
 ## KILDE: VIP vejledning: PBB - Behandling af hypergranulationsvæv og ikke-helende brandsår — version 2, gaeldende fra 12-03-2026
@@ -3093,8 +3025,6 @@ Blodtransfusion – kontrol, opsætning og registrering
 
 Blodkomponenter – ordination og dokumentation heraf
 
-PBB - Behandling med blodprodukter, version 5.
-
 Blodkomponenter – rekvirering, udlevering og returnering
 
 Blodtransfusion - overvågning af patienten
@@ -3122,8 +3052,6 @@ http://www.sst.dk/publ/vejledninger/98/beh_blod/vejled.html#1
 ## Akkrediteringsstandarder
 
 ## Bilag
-
-PBB - Behandling med blodprodukter, version 5.
 
 ---
 ## KILDE: VIP instruks: PBB - Benigne tumorer i huden, oversigt — version 8, gaeldende fra 24-12-2025
@@ -3158,8 +3086,6 @@ skal altid sendes til mikroskopi.
 
 Patienter med mange nævi, og med dysplastiske nævi, særlig med familiær optræden, har øget risiko
 for udvikling af melanom og bør kontrolleres 1 gang årligt hos dermatolog.
-
-PBB - Benigne tumorer i huden, oversigt, version 8.
 
 Medfødte(congenitte) naevi:
 Nævi er til stede ved fødslen eller manifesterer sig i neonatalperioden. De kan variere i størrelse fra
@@ -3212,8 +3138,6 @@ vanskelig og bør altid sammenholdes med det korte kliniske forløb.
 
 Behandling: Keratoakantomer kan betragtes som en selvlimiterende variant af planocellulært
 
-PBB - Benigne tumorer i huden, oversigt, version 8.
-
 carcinom, som regredierer uden behandling og efterlader ubetydelige ar. De fleste tumorer bliver dog
 behandlet med excision i 2 mm's afstand.
 Onkologisk kontrol: Tumorer der regredierer skal ikke kontrolleres. Kirurgisk behandlede tumorer
@@ -3238,8 +3162,6 @@ Revideres årligt
 Revideres årligt
 
 ## Bilag
-
-PBB - Benigne tumorer i huden, oversigt, version 8.
 
 ---
 ## KILDE: VIP instruks: PBB - Bidsår — version 7, gaeldende fra 28-01-2026
@@ -3269,8 +3191,6 @@ før behandling. Pt. skal derfor behandles snarest muligt. Børn, som ofte kræv
 også behandles akut og forbliver indlagt til næste dag eller længere afhængigt af afdelingen.
 
 Tetanus- og Rabiesprofylakse
-
-PBB - Bidsår, version 7.
 
 Intakt Tetanus-status skal sikres eller post-expositions profylakse gives. Ved anamnestisk mistanke om
 Rabies kontaktes SSI (bl.a. ved bid fra ræv og flagermus).
@@ -3317,8 +3237,6 @@ Standard behandling: amoxicillin/clavulansyre 500/125 mg x 3 i 6 dage.
 Børn doseres efter vægt og maximal dosis af clavulansyre se promedicin.dk.
 Ved penicillin allergi gives moxifloxacin til voksne og ciprofloxacin til børn.
 
-PBB - Bidsår, version 7.
-
 Vask
 Grundig vask er essentielt for at hindre infektion. Der vaskes f.eks med sæbe og skumvaskeklud og
 suppleres gerne med højtryksirrigation (f.eks engangssprøjte med isotonisk NaCl).
@@ -3357,8 +3275,6 @@ Afdelingsledelsen, Sektion for Traume-og rekonstruktionskirurgi.
 
 ## Referencer, lovgivning og faglig evidens samt links hertil
 
-PBB - Bidsår, version 7.
-
 ## Akkrediteringsstandarder
 
 ## Bilag
@@ -3368,8 +3284,6 @@ and neck, Facial plastic surgery 2010.
 http://www.ssi.dk/Aktuelt/Nyhedsbreve/EPI-NYT/~/media/Indhold/
 DK%20-%20dansk/Aktuelt/Nyhedsbreve/EPI-NYT/2009/2009%20PDF/EPI-
 NYT%20-%202009%20-%20uge%2012.ashx
-
-PBB - Bidsår, version 7.
 
 ---
 ## KILDE: VIP instruks: PBB - Brandsår uforenelige med overlevelse — version 7, gaeldende fra 08-12-2022
@@ -3939,8 +3853,6 @@ behandlede tumorer næsten 3 x så højt, over 35000 patienter på et år.
 
 Symptomer
 
-PBB - Carcinoma basocellulare, version 8.
-
 Ikke helende sår eller en voksende, infiltreret, flad rødlig skællende eller voldformet perlemorsskinnende
 tumor, med ofte langvarig anamnese.
 
@@ -3989,8 +3901,6 @@ radikalitet
 
 Ved store fastsiddende tumorer, specielt i hoved-hals området, bør relevante undersøgelser såsom
 CT/MR-scanning overvejes forud for evt. kirurgi.
-
-PBB - Carcinoma basocellulare, version 8.
 
 Risikovurdering af tumorer
 
@@ -4048,8 +3958,6 @@ Strålebehandling:
 Hvis kirurgi ikke skønnes optimalt på grund af co-morbiditet, lokalisation af tumor eller forventet
 kosmetisk resultat, kan strålebehandling overvejes. Strålebehandling er endvidere indiceret efter kirurgi,
 
-PBB - Carcinoma basocellulare, version 8.
-
 hvis radikalitet ikke kan opnås. Patienten skal altid informeres om, at stråleterapi kan være et reelt
 alternativ til kirurgi i forbindelse med udfærdigelse af behandlingsplan. Stråleterapi vil som regel
 indebære 17 x stråleterapi over 3 ½ sammenhængende uger. Stråleterapi er ikke førstevalg hos patienter
@@ -4068,8 +3976,6 @@ Andre behandlinger, f.eks. elektrokemoterapi, kan overvejes, hvor ovenstående b
 skønnes velegnede.
 
 Ved behov for tværfaglig vurdering kan pt. tilmeldes MDT-konference via sekretær.
-
-PBB - Carcinoma basocellulare, version 8.
 
 H-zone i ansigtet
 
@@ -4101,8 +4007,6 @@ Læsionens lokalisation, diameter og skønnede tykkelse bør fremgå af henvisni
 
 Såfremt det er muligt, medsendes klinisk foto.
 
-PBB - Carcinoma basocellulare, version 8.
-
 ## Ansvar og organisering
 
 Sektion for onkologisk plastikkirurgi
@@ -4129,8 +4033,6 @@ Revideres årligt
 ## Bilag
 
 Ingen
-
-PBB - Carcinoma basocellulare, version 8.
 
 ---
 ## KILDE: VIP instruks: PBB - Carcinoma spinocellulare (planocellulært carcinom) — version 12, gaeldende fra 24-12-2025
@@ -4452,8 +4354,6 @@ celler (melanocytter eller nævusceller) eller en kombination af disse forhold.
 
 Disponerende faktorer:
 
-PBB - Congenitte Nævi og gigant Nævi, version 1.
-
 Østrogenterapi og hormonforandringer i svangerskabet, cytostatikabehandling og immunosuppression
 kan føre til nævus udvikling, som afviger fra den normale aldersudvikling, og til øget pigmentering af
 eksisterende nævi
@@ -4486,8 +4386,6 @@ Nævus ikke tilstede ved fødslen
 Kan være en af flere undertyper: atypiske nævi, dermalt nævus, Blue nævus, Halo nævus,
 
 Spitz nævus
-
-PBB - Congenitte Nævi og gigant Nævi, version 1.
 
 Behandling
 
@@ -4533,8 +4431,6 @@ Sektion for onkologisk plastikkirurgi
 
 Revideret per 01.01.26
 
-PBB - Congenitte Nævi og gigant Nævi, version 1.
-
 Den enkelte medarbejder er ansvarlig for at kende og anvende vejledningen.
 
 ## Referencer, lovgivning og faglig evidens samt links hertil
@@ -4543,8 +4439,6 @@ Congenital Melanocytic Nevi: Nathan S, Smetona J,Naran S, Bauer BS, Clin Plastic
 259–269
 
 ## Bilag
-
-PBB - Congenitte Nævi og gigant Nævi, version 1.
 
 ---
 ## KILDE: VIP vejledning: PBB - Delhudstransplantation - donorsted — version 5, gaeldende fra 28-01-2026
@@ -4579,8 +4473,6 @@ Præoperativt
 
 Hos indlagte patienter indtegnes området for donorstedet med vandfast tusch af operatøren dagen før
 operationen eller om morgenen på operationsdagen.
-
-PBB - Delhudstransplantation - donorsted, version 5.
 
 Donorstedet på låret skal tages inden for et område, som er 10 cm under inguen til 5 cm over knæniveau, for
 at opnå en hensigtsmæssig bandagering.
@@ -4670,8 +4562,6 @@ Brandsårsbind klippes
 af. Gazekompresser
 fjernes (dem man kan
 uden de hænger i). Der
-
-PBB - Delhudstransplantation - donorsted, version 5.
 
 pålægges nye
 gazekompresser og
@@ -4783,8 +4673,6 @@ hurtigere at ”normalisere” hudfarven og forebygge bullae.
 
 Udskrivelse
 
-PBB - Delhudstransplantation - donorsted, version 5.
-
 Patienten kan afhængig af diagnose udskrives før udpakning af donorstedet. Udpakning kan foregå i
 Ambulatorium for Afdeling for Plastikkirurgi og Brandsårsbehandling afsnit 7036, hos egen læge eller ved
 hjemmesygeplejerske. Patienten kan også instrueres i selv at fjerne donorstedforbinding.
@@ -4815,8 +4703,6 @@ Individuelt afhængig af diagnose.
 
 Voineskos S.H., Ayeni A.A., McKnight L., og Thoma A. Systematic Review of Skin Graft Donor-Site
 Dressing Plastic and Reconstructive Surgery 2009 . Vol 124 no.1
-
-PBB - Delhudstransplantation - donorsted, version 5.
 
 ---
 ## KILDE: VIP instruks: PBB - Dermatofibrosarkoma protuberans — version 10, gaeldende fra 24-12-2025
@@ -4849,8 +4735,6 @@ Fibrosarkom, hypertrofisk ar, keloid, neurofibrom, neurofibrosarkom.
 Behandlingsresultater
 Tumor er lokalt invasivvoksende og metastaserer stort set aldrig. Lokal recidivfrekvens er beregnet til
 ca. 10%.
-
-PBB - Dermatofibrosarkoma protuberans, version 10.
 
 ## Fremgangsmåde
 
@@ -4897,8 +4781,6 @@ Se også instruks om  PBB - Oversigt over beh. og kontrol af hudtumorer.
 
 BEDNAR Tumor
 
-PBB - Dermatofibrosarkoma protuberans, version 10.
-
 Bednar tumor er en sjælden variant af dermatofibrosarkoma protuberans. Ses ofte hos lidt yngre
 patienter og børn. Tumor er ofte lokaliseret i skulder/ryg regionen. Udredning og behandling som
 ovenfor. Tumor KAN i sjældne tilfælde transformere til malign tumor i form af fibrosarkom.
@@ -4921,8 +4803,6 @@ nationwide cohort study of 40 years.
 ## Akkrediteringsstandarder
 
 ## Bilag
-
-PBB - Dermatofibrosarkoma protuberans, version 10.
 
 ---
 ## KILDE: VIP instruks: PBB - Elektriske forbrændinger — version 4, gaeldende fra 24-05-2023
@@ -4957,8 +4837,6 @@ størst i områder med mindst tværsnitsareal. De sværeste el-skader ses da ogs
 håndled. Alle organer kan dog i princippet blive beskadiget af den afsatte energi. Umiddelbart kan det
 være svært ud fra de ydre skader at afgøre, hvorvidt og hvor der har været strøm gennem kroppen.
 Kontaktpunkter (skader hvor strømmen er gået gennem huden) kan være små og næsten usynlige.
-
-PBB - Elektriske forbrændinger, version 4.
 
 ## Fremgangsmåde
 
@@ -5002,13 +4880,9 @@ Alle patienter med egentlige el-skader, som kræver indlæggelse, bør overflytt
 
 ## Referencer, lovgivning og faglig evidens samt links hertil
 
-PBB - Elektriske forbrændinger, version 4.
-
 ## Akkrediteringsstandarder
 
 ## Bilag
-
-PBB - Elektriske forbrændinger, version 4.
 
 ---
 ## KILDE: VIP instruks: PBB - Forbrændinger, skoldninger og ætsninger — version 1, gaeldende fra 22-02-2025
@@ -5286,8 +5160,6 @@ Gradinddelingen:
 Men  kan  også  inddeles  i  risikoen  for  amputation  ud  fra  billeddiagnostik  (angiografi, MR-scanning
 eller 99Tc-knoglescanning).
 
-PBB - Forfrysninger, version 3.
-
 Skadesmekanisme
 
 Forfrysningsskader opstår både ved nedkøling men også ved re-perfusion af vævet. Afhængig af om
@@ -5336,8 +5208,6 @@ Smertelindrende behandling med ibuprofen og opioider administreres efter behov
 Ved manglende flow (minus kapillærrespons eller doppler signal)
 Prostaglandinanalogen Iloprost er førstevalg (hvis det kan skaffes) efterfulgt af trombolyse som
 kun kan gives indenfor 24 timer (Algoritme i ref. 10).
-
-PBB - Forfrysninger, version 3.
 
 Angiografi kan udføres for diagnostik af berørte væv og mhp. trombolyse.
 Hvis/når  vævet  har  demarkeret  sig  (efter  måneder),  vurderes  indikation  for  amputation af det
@@ -5401,8 +5271,6 @@ incidence of amputation in frostbite injury with thrombolytic therapy. Arch Surg
 Med Off J Eur Soc Emerg Med. 2008 Jun;15(3):173–5.
 
 ## Bilag
-
-PBB - Forfrysninger, version 3.
 
 ---
 ## KILDE: VIP instruks: PBB - Halsglandelexairese og superficiel parotidectomi — version 9, gaeldende fra 14-04-2026
@@ -5875,8 +5743,6 @@ Klargøring:
 Patienterne møder dagen før operation til klargøring. Der laves AOP ved forvagt, som ordinerer
 vanlig medicin, tromboseprofylakse og smertestillende i henhold til afdelingens instruks. Der tages
 
-PBB - Ingvinal exairese, version 9.
-
 EKG i henhold til gældende retningslinjer herfor.
 
 Der skal tages relevante blodprøver (exairesepakke): Væske og nyretal, Hgb, type og BAC-test.
@@ -5926,8 +5792,6 @@ af sidste dræn anlægges komprimerende og sugende forbinding ”fluffy-duffy”
 fjernes hjemme efter 2 dage. Der skal observeres for sivning fra dræn indstikssted.
 Cikatrice: Tilses dagligt; gaze fjernes dagen efter operationen og plastre skiftes ved behov. Pt.
 tillades brusebad 1 døgn efter operationen, med vandskyende plaster over drænsted.
-
-PBB - Ingvinal exairese, version 9.
 
 Mobilisering: Patient er T.L. i operationsdøgnet. Herefter roligt regime, obs må kun sidde
 kortvarigt (for at undgå lymfestase ved fuld fleksion i hoften). Ved sengeleje lejres patient med
@@ -5979,8 +5843,6 @@ som udgangspunkt ses patienterne til første kontrol efter 3 måneder.
 
 Sektion for onkologisk plastikkirurgi
 
-PBB - Ingvinal exairese, version 9.
-
 Revideret per 01.02.2026
 
 ## Referencer, lovgivning og faglig evidens samt links hertil
@@ -5989,8 +5851,6 @@ For melanom og planocellulært karcinom henvises i øvrigt til nationale retning
 https://www.dmcg.dk/
 
 ## Bilag
-
-PBB - Ingvinal exairese, version 9.
 
 ---
 ## KILDE: VIP instruks: PBB - Inhalationsskader — version 5, gaeldende fra 24-05-2023
@@ -6026,8 +5886,6 @@ Afbrændte næsehår og sod i opspyt eller i mund og næse.
 Vanskelig vejrtrækning med øget respirationsfrekvens, indtrækninger, brug af accessoriske
 muskler eller bevægelse af næsefløje.
 Hoste, hæshed, ændret stemme eller inspiratorisk stridor.
-
-PBB - Inhalationsskader, version 5.
 
 Inhalationsskader skal mistænkes ud fra sygehistorien og kliniske observationer og behandling skal
 iværksættes med det samme. Tegn på en inhalationsskade kan være tilstede fra start eller kan udvikle
@@ -6071,8 +5929,6 @@ COHb (%)         Symptomer
 40-60   Hallucineret, ataxi, synkoper, coma
 
 >60      Død
-
-PBB - Inhalationsskader, version 5.
 
 Cyanid-forgiftninger ses ved indånding af brændende plastik eller lim fra møbler. Det resulterer i en
 anaerob metabolisme og giver manglende bevidsthed, neurotoxicitet og kramper. Cyanid udskilles i
@@ -6118,8 +5974,6 @@ forbedring af pt neurologiske status. Vær opmærksom på at pt har et øget væ
 væsketerapi er vigtigere end HBO, hvorfor evt. væsketerapi skal være etableret og ikke må afbrydes
 under HBO-behandling.
 
-PBB - Inhalationsskader, version 5.
-
 Cyanid forgiftning er ofte fatal. Udvaskning af HCN via blodet efter metabolisering i leveren er
 langsommelig. Hvis pt har en metabolisk acidose og laktat > 8 mmol/l trods adækvat behandling med
 væske og ilt, og skadesmekanismen indikerer, at pt kan være cyanid forgiftet, skal pt behandlinges
@@ -6150,10 +6004,6 @@ Inhalationskade_Fællesvejledning_210608.pdf
 ## Referencer, lovgivning og faglig evidens samt links hertil
 
 ## Bilag
-
-PBB - Inhalationsskader, version 5.
-
-PBB - Inhalationsskader, version 5.
 
 ---
 ## KILDE: VIP instruks: PBB - Kutant Angiosarkom — version 3, gaeldende fra 24-12-2025
@@ -6190,8 +6040,6 @@ angiosarkom
 Genetik: Visse genetiske sygdomme kan øge risikoen for udvikling af angiosarkom. Det gælder f.eks.
 neurofibromatose, Maffucci syndrom, eller Klippel-Trènaunay syndrom, samt mutationer på
 BRCA1 og BRCA2 generne.
-
-PBB - Kutant Angiosarkom, version 3.
 
 Symptomer
 
@@ -6243,8 +6091,6 @@ til opfølgning sammenfattes
 
 Behandling.
 
-PBB - Kutant Angiosarkom, version 3.
-
 Behandling afhænger af den enkelt situation:
 
 Kirurgi. Kirurgi er førstevalg hvis tumor er tilgængelig for kirurgi, og hvis der ikke er spredning.
@@ -6291,13 +6137,9 @@ Revideret per 01.01.26
 
 Cutaneous sarcoma: a review and practical approach to management: Clin Exp Dermatol 2023;
 
-PBB - Kutant Angiosarkom, version 3.
-
 48:866–872 https://doi.org/10.1093/ced/llad166 Advance access publication date: 2 May 2023
 
 ## Bilag
-
-PBB - Kutant Angiosarkom, version 3.
 
 ---
 ## KILDE: VIP instruks: PBB - Kæberekonstruktion med fri fibula-lap — version 8, gaeldende fra 28-01-2026
@@ -6587,8 +6429,6 @@ Betegnelsen lipødem er ifølge eksperter misvisende, årsagen er, at der ikke e
 
 ## Fremgangsmåde
 
-PBB - Lipødem, version 1.
-
 Diagnosticering:
 
 Lipødem diagnosticeres ved en klinisk undersøgelse, dvs. en grundig gennemgang af sygehistorien,
@@ -6634,8 +6474,6 @@ betændelsesændringer, der bliver fastere og mere nodulært, og områderne bliv
 Med tiden bliver fedtet fibrøst og nodulært, og det begynder at føles som bønner i en bønnepose. I
 mere avancerede stadier skaber de fibrøse bånd knuder.
 
-PBB - Lipødem, version 1.
-
 Fotos er lånt fra:
 
 Dtsch Arztebl Int. 2020 Jun; 117(22-23): 396–403.Published online 2020 Jun 1. doi:
@@ -6661,8 +6499,6 @@ Fedtsugningen skal udføres systematisk: under knæniveau suges tørt i smalle b
 max 15 grader. Der suges under blodtomhed. Der påsættes kompresionsbandage før blodtomheden
 fjernes.
 
-PBB - Lipødem, version 1.
-
 Lår og hofter suges herefter med vanlig våd fedtsugningsteknik. Der påsættes kompresionsbandage.
 
 En lipødem patient skal fortsætte den præoperative kompresionsbandage, resten af livet, for at
@@ -6675,8 +6511,6 @@ Forventet operations tidsforbrug 6 timer for bilateral behandling.
 ## Referencer, lovgivning og faglig evidens samt links hertil
 
 ## Bilag
-
-PBB - Lipødem, version 1.
 
 ---
 ## KILDE: VIP vejledning: PBB - Malignt Melanom — version 14, gaeldende fra 06-11-2025
@@ -6713,8 +6547,6 @@ udgangspunkt excideres i 5 mm. Patienten sættes til svar i Kræftpakke ambulato
 kalenderdage) efter (aktuelt onsdag og fredag).
 
 Behandling og opfølgning
-
-PBB - Malignt Melanom, version 14.
 
 Behandling:
 
@@ -6758,8 +6590,6 @@ I henhold til beslutning truffet af Sundhedsstyrelsen skal alle kræftpatienter 
 samtale 3 måneder efter sygdomsdebut. Samtalen inkluderer behovsvurdering, evaluering samt instruktion i
 egenomsorg. I forhold til modermærkekræft instrueres patienterne i selv at undersøge huden.
 
-PBB - Malignt Melanom, version 14.
-
 I klinik for plastikkirurgi og brandsårsbehandling tilbydes aktuelt individuel samtale og hudgennemgang. Et
 på landsplan er der flere andre måder at håndtere 3 måneders samtalen på, for eksempel via patientskoler,
 eller andre løsninger.
@@ -6796,8 +6626,6 @@ MIA (Melanoma Institute Australia) risk prediction Tool.
 
 Nedenfor ses to skemaer, som kan anvendes til at give overblik over opfølgningsprogrammerne.
 
-PBB - Malignt Melanom, version 14.
-
 Regionære lymfeknudemetastaser:
 
 Ved palpabel lymfeknudehævelse med mistanke om recidiv henvises patienten til UL med biopsi. Optimalt
@@ -6808,8 +6636,6 @@ Ved yderligere disseminering diskuteres patienten på MDT mhp. videre plan med e
 medicinsk behandling i onkologisk regi.
 
 Patienten drøftes på Melanom MDT med henblik på eventuel neoadjuverende behandling.
-
-PBB - Malignt Melanom, version 14.
 
 Der kan tilbydes terapeutisk exairese ved påvist metastasering til lymfeknuderegion såfremt der ikke er tegn
 på yderligere disseminering, og når patienten har fået neoadjuverende terapi hvis en sådan er indiceret.
@@ -6860,8 +6686,6 @@ måneders behovsvurdering og de forskellige kontrolforløb.
 
 Kræftpakkesvar
 
-PBB - Malignt Melanom, version 14.
-
 .PBONKMELANOMKPAFKRÆFTET (Kræftpakkesvar ikke melanom)
 
           .PBONKMELANOMKPUDENSN (Kræftpakkesvar melanom uden SN)
@@ -6906,15 +6730,11 @@ Der henvises til DMCG´s guidelines for Melanom
 
 DMCG nationale retningslinjer
 
-PBB - Malignt Melanom, version 14.
-
 ## Akkrediteringsstandarder
 
 Revideres årligt
 
 ## Bilag
-
-PBB - Malignt Melanom, version 14.
 
 ---
 ## KILDE: VIP instruks: PBB - Manual til LDI-skanner — version 5, gaeldende fra 04-12-2025
@@ -6948,8 +6768,6 @@ operationsdato kan fastsættes.
 ## Definitioner
 
 ## Fremgangsmåde
-
-PBB - Manual til LDI-skanner, version 5.
 
 Manual til moorLDLS-BI scanner: (skal stå i omklædning på 6041)
 
@@ -7007,8 +6825,6 @@ Helingspotentiale/HP)
 sættes i journalvognen under patientens stuenummer. Når patienten udskrives lægges billederne
 i LDI mappen, af sekretæren. Denne mappe står i forkontoret hos sekretæren på 6051)
 
-PBB - Manual til LDI-skanner, version 5.
-
 ## Ansvar og organisering
 
 Jennifer Drejøe
@@ -7016,8 +6832,6 @@ Jennifer Drejøe
 ## Referencer, lovgivning og faglig evidens samt links hertil
 
 ## Bilag
-
-PBB - Manual til LDI-skanner, version 5.
 
 ---
 ## KILDE: VIP vejledning: PBB - Matriderm, brugen af — version 6
@@ -7056,8 +6870,6 @@ størrelser:
 
 297 mm x 210 mm x 1 mm  (aktuelt ikke indkøbt)
 
-PBB - Matriderm, brugen af, version 6.
-
 148 mm x 105 mm x 1 mm (pris: 5784,00,-)
 
 74 mm x 52 mm x 1 mm (1898,00,-)
@@ -7093,10 +6905,6 @@ applikationsguide_med_fotos_matriderm_engelsk.pdf
 ## Referencer, lovgivning og faglig evidens samt links hertil
 
 ## Bilag
-
-PBB - Matriderm, brugen af, version 6.
-
-PBB - Matriderm, brugen af, version 6.
 
 ---
 ## KILDE: VIP instruks: PBB - Merkelcellecarcinom — version 3, gaeldende fra 24-12-2025
@@ -7137,8 +6945,6 @@ Kliniske fund
 
 Hurtigt voksende, asymptomatisk, fast, solitær uøm hudfarvet/rødlig tumor. Fremtræder
 Plaquelignende eller nodulær. Ses oftest i hoved-halsregion(53%) eller på ekstremiteter.
-
-PBB - Merkelcellecarcinom, version 3.
 
 Disponerende faktorer for MCC
 
@@ -7184,8 +6990,6 @@ Hvis kirurgi eller stråleterapi ikke er mulig, da kan Cemiplimab overvejes (PDL
 onkologisk afdeling
 
 Planlægning af Kirurgi:
-
-PBB - Merkelcellecarcinom, version 3.
 
 Mistanken om MCC verificeres ved histologisk undersøgelse (stansebiopsi eller
 excisionsbiopsi).
@@ -7239,8 +7043,6 @@ Research and Treatment of Cancer (EORTC)
 -Diagnosis and treatment of Merkel Cell Carcinoma. European consensus-based
 interdisciplinary guideline
 
-PBB - Merkelcellecarcinom, version 3.
-
 2: -Marie-Lea Gauci, Cynthia Aristei, Jurgen C. Becker, Astrid Blom,Veronique Bataille, Brigitte
 Dreno, Veronique Del Marmol,Ana M. Forsea, Maria C. Fargnoli, Jean-Jacques Grob,
 
@@ -7272,8 +7074,6 @@ Merkelcell carcinoma: ESMO-EURECAN clinical Practice Guideline for diagnosis, tr
 and follow-up.
 
 ## Bilag
-
-PBB - Merkelcellecarcinom, version 3.
 
 ---
 ## KILDE: VIP vejledning: PBB - Microneedling (Dermaroller ®) — version 4, gaeldende fra 04-12-2025
@@ -7307,8 +7107,6 @@ var blevet mere elastiske. Ca 40% fandt at det havde hjulpet på ømhed og kløe
 ## Fremgangsmåde
 
 Behandlingen foregår stort set altid i Generel anæstesi. Det gør ondt når nålen penetrerer arret og vi
-
-PBB - Microneedling (Dermaroller Â®), version 4.
 
 behandler ofte større områder.
 
@@ -7359,8 +7157,6 @@ Reimers K2, Vogt PM2, Aust MC2. Burns. 2014 Aug;40(5):966-73
 2. Microneedling: A Comprehensive Review. Hou A1, Cohen B, Haimovic A, Elbuluk N.  Dermatol
 Surg. 2017 Mar;43(3):321-339.
 
-PBB - Microneedling (Dermaroller Â®), version 4.
-
 3. Microneedling: Where do we stand now? A systematic review of the literature. Ramaut L1,
 Hoeksema H2, Pirayesh A3, Stillaert F2, Monstrey S2. J Plast Reconstr Aesthet Surg. 2018
 Jan;71(1):1-14
@@ -7401,8 +7197,6 @@ Oversat POSAS patient dansk.pdf
 Arvurderingsskema vss.docx
 
 Afsluttende skema til dermarollerpatient.docx
-
-PBB - Microneedling (Dermaroller Â®), version 4.
 
 ---
 ## KILDE: VIP vejledning: PBB - Nævus sebaceus — version 2, gaeldende fra 24-12-2025
@@ -7446,8 +7240,6 @@ ofte ses skællende.
 Nævus sebaceus kan i sjældne tilfælde forekomme som led i Schimmelpenning syndrom/naevus sebaceus
 syndrome, hvor der kan ses symptomer fra øjne, CNS og samt skeletdeformiteter (2).
 
-PBB - Nævus sebaceus, version 2.
-
 Nævus sebaceus er oftest lokaliseret på skalpen, i ansigtet eller på halsen.
 
 Nævus sebaceus KAN udvikle sig malignt, typisk til basalcelle carcinom (BCC). Malignitesudvikling er
@@ -7485,8 +7277,6 @@ udvikling tilbydes opfølgning som for BCC.
 
 Visitation
 
-PBB - Nævus sebaceus, version 2.
-
 ## Ansvar og organisering
 
 Sektion for onkologisk plastikkirurgi
@@ -7496,8 +7286,6 @@ Revideret per 01.01.26
 ## Referencer, lovgivning og faglig evidens samt links hertil
 
 ## Bilag
-
-PBB - Nævus sebaceus, version 2.
 
 ---
 ## KILDE: VIP : PBB - Overordnet om læbe-ganespalte operationer — version 10
@@ -8405,8 +8193,6 @@ Kliniske fund
 
 Læsionen ses som en fast, hudfarvet eller let rød til rødbrun knude, og er oftest lokaliseret på
 
-PBB - Primært kutant leiomyosarkom, version 3.
-
 ekstremiteter. Læsionen kan dog også være mere plaque formet
 
 Differentialdiagnoser
@@ -8457,11 +8243,7 @@ intradermal smooth muscle neoplasms and dermal leiomyosarcoma: Local recurrence,
 overall survival in a nationwide cohort of 423 patients. J AM ACAD DERMATOL Volume 92,
 Number3 3Tilbage til top
 
-PBB - Primært kutant leiomyosarkom, version 3.
-
 ## Bilag
-
-PBB - Primært kutant leiomyosarkom, version 3.
 
 ---
 ## KILDE: VIP instruks: PBB - Rekonstruktion i mundhulen med fri lap — version 10, gaeldende fra 28-01-2026
@@ -9156,8 +8938,6 @@ pt aktuelle behov:
 
 ## Fremgangsmåde
 
-PBB - Smertebehandling af brandsår, version 6.
-
 Link til dokument:  Smertebehandling af brandsår 2024.docx
 
 ## Ansvar og organisering
@@ -9167,8 +8947,6 @@ PBB - Smertebehandling af brandsår, version 6.
 ## Akkrediteringsstandarder
 
 ## Bilag
-
-PBB - Smertebehandling af brandsår, version 6.
 
 ---
 ## KILDE: VIP instruks: PBB - Subungualt melanom — version 3, gaeldende fra 06-11-2025
@@ -9208,8 +8986,6 @@ rolle i udviklingen af subungualt melanom.
 Kliniske fund.
 
 Subungualt melanom ses sædvanligvis som Akralt Lentigøst Melanom (ALM) med flere farver, typisk
-
-PBB - Subungualt melanom, version 3.
 
 variationer af brun, sort og blågrå. Oftest har den en bredde på> 5 mm og består af flere smallere bånd
 med uregelmæssige bredder og afstande og med uskarpe afgrænsninger.
@@ -9263,8 +9039,6 @@ biopsitagning, især hvis der ikke er oplagte tegn til malignitet.
 Biopsi kan enten tages fra neglelejet efter fjernelse af hele eller en del af neglen over det
 pigmenterede område, eller den kan tages igennem ”et vindue” i neglen. Dette gøres f.eks. ved hjælp
 
-PBB - Subungualt melanom, version 3.
-
 af en stansebiopsikniv af en vis diameter (8mm). Når neglen er fjernet med stansekniven, vil der være
 adgang til negleleje og neglematrix, hvorfra selve biopsien tages enten med skalpel eller en stansekniv
 af mindre diameter end ”vinduet”.
@@ -9296,8 +9070,6 @@ ovenfor.
 
 Prognose
 
-PBB - Subungualt melanom, version 3.
-
 Forsinket diagnostik grundet mange differentialdiagnoser fører til en generelt dårligere overlevelse
 hos patienter med subungualt melanom.
 
@@ -9326,8 +9098,6 @@ Melanonychia, Ufl, Askander G, Bredgaard R, Venzo A, Glud M,
 https://content.ugeskriftet.dk/sites/default/files/scientific_article_files/2018-12/v01180003_1.pdf
 
 ## Bilag
-
-PBB - Subungualt melanom, version 3.
 
 ---
 ## KILDE: VIP instruks: PBB - Toksisk Epidermal Nekrolyse (TEN) — version 1, gaeldende fra 14-03-2024
@@ -9368,8 +9138,6 @@ hyppigst ses hos voksne, eller et toksin pga. stafylokokker, hvilket hyppigst se
 De hyppigst involverede farmaka er allopurinol, antiepileptika, sulfonamider, nevirapin, NSAID og
 kortikosteroider 2,3. Der går ofte 2-4 uger fra opstart af medicin før symptomdebut, men kortere
 
-PBB - Toksisk Epidermal Nekrolyse (TEN), version 1.
-
 tidsperioder er set.
 
  Forekomst:
@@ -9405,8 +9173,6 @@ dyspnø og bronkial hypersekresion 6
 
 The "Severity of Illness Score for Toxic Epidermal Necrolysis" (SCORTEN) is a scoring system
 developed to assess the severity of TEN and predict mortality in patients with acute TEN.7
-
-PBB - Toksisk Epidermal Nekrolyse (TEN), version 1.
 
 One point is given for each of the following factors
 
@@ -9458,8 +9224,6 @@ Sequelae efter alvorlig TEN er cornea skader og urethra strikturer.
 
 ## Ansvar og organisering
 
-PBB - Toksisk Epidermal Nekrolyse (TEN), version 1.
-
 ## Referencer, lovgivning og faglig evidens samt links hertil
 
 ## Bilag
@@ -9503,8 +9267,6 @@ mortality or progression. Arch Dermatol. 2003;139:33-36.
 10.   Trent JT, Kirsner RS, Romanelli P, Kerdel FA. Analysis of intravenous immunoglobulin for
 the treatment of toxic epidermal necrolysis using SCORTEN: the University of Miami experience.
 Arch Dermatol. 139:39-43.
-
-PBB - Toksisk Epidermal Nekrolyse (TEN), version 1.
 
 ---
 ## KILDE: VIP instruks: PBB - Trombolysebehandling ved re-operation for venøs trombose i fri lap — version 11, gaeldende fra 28-05-2024
@@ -10077,8 +9839,6 @@ Kirurgisk Kompendium, Nyt Nordisk Forlag Arnold Busk
 "Sår", udkommer 4 gange årligt, udgivet af Dansk Selskab for Sårheling
 Der henvises i øvrigt til Sårmappen.
 
-PBB - Ulcus cruris, version 6.
-
 ## Fremgangsmåde
 
 1. Ambulante forundersøgelser
@@ -10124,8 +9884,6 @@ nødvendigvis ved arterielle sår. Den opfølgende behandling med kompressionsba
 altafgørende for at forebygge opståen af recidiv-bensår, og det kan være nødvendigt at patienten
 følges hos egen læge eller prakt. speciallæge for at opretholde sufficient, profylaktisk behandling.
 
-PBB - Ulcus cruris, version 6.
-
 ## Ansvar og organisering
 
 Såret skal på indlæggelsesdagen ses af operatøren, R1 eller afd. læge mhp. behov for særlig
@@ -10138,8 +9896,6 @@ ind mod det sunde væv!
 ## Akkrediteringsstandarder
 
 ## Bilag
-
-PBB - Ulcus cruris, version 6.
 
 ---
 ## KILDE: VIP instruks: PBB - Vaskulære anomalier — version 4, gaeldende fra 06-11-2025
@@ -10179,8 +9935,6 @@ Behandling af patienter med vaskulær anomali er tværfaglig og efter grundig ud
 Rigshospitalet er vært for en tværfaglig MDT (Region H Team for Vaskulære Læsioner) ca. 9 x
 årligt. Der er tilknyttet specialister fra blandt andet ØNH, Center for Sjældne Sygdomme (CSS),
 
-PBB - Vaskulære anomalier, version 4.
-
 klinisk genetisk afdeling, røntgenafdelingen, dermatologisk afdeling BBH, Børneafdelingen,
 Øjenafdelingen, karkirurgisk afdeling, Gynækologisk afdeling, reumatologisk afdeling og Afdeling
 for Plastikkirurgi og Brandsårsbehandling.
@@ -10203,8 +9957,6 @@ Infantilt hæmangiom
 Infantilt hæmangiom er almindeligvis ikke medfødt, men udvikles gennem de første uger til måneder
 efter fødslen. Det infantile hæmangiom er karakteriseret ved en proliferationsfase med hastig vækst
 det 1. leveår. Herefter en stationær fase, som følges af en involutionsfase med regression af
-
-PBB - Vaskulære anomalier, version 4.
 
 hæmangiomet til 7-års alderen. Læsionen er ikke kompressibel. Læsionen er GLUT-1 positiv.
 Histopatologisk karakteriseret ved endothelproliferation og mitoser. Ca. 60% er lokaliseret i hoved-
@@ -10249,8 +10001,6 @@ Injektion af histoakryl foregår på røntgenafdelingen.
 
 Lymfatisk malformation
 
-PBB - Vaskulære anomalier, version 4.
-
 Den lymfatiske malformation er lymfatisk aktiv og karakteriseret af exacerbationer og remissioner,
 idet enhver faktor som forøger akkumulation, fx. forkølelse, fører til forøget hævelse og evt.
 inflammation. Malformationen kan være makrocystisk lymfangiom,cystisk hygrom eller mikrocystisk.
@@ -10284,11 +10034,7 @@ Den enkelte medarbejder er ansvarlig for at kende og anvende vejledningen.
 De fleste tumorer er mere udførligt beskrevet i Kirurgisk Kompendium i kapitlet med samme navn,
 hvortil henvises.
 
-PBB - Vaskulære anomalier, version 4.
-
 ## Bilag
-
-PBB - Vaskulære anomalier, version 4.
 
 ---
 ## KILDE: VIP instruks: PBB - Vejledning til behandling med propranolol af børn med større brandsår på — version 3, gaeldende fra 28-05-2024
@@ -10461,20 +10207,6 @@ Afdeling for Plastikkirurgi og Brandsårsbehandling. Klinisk personale.
 
 Ventralhernier behandles ikke på PBB. Herlev plastikkir. afd. behandler disse patienter.
 
-Vent venligst...
-
-Henter data ...
-
-PBB - Ventralhernie, version 7.
-
-  OK
-
-Ja
-
-  Nej
-
-  Fortryd
-
 ## Ansvar og organisering
 
 ## Referencer, lovgivning og faglig evidens samt links hertil
@@ -10482,8 +10214,6 @@ Ja
 ## Akkrediteringsstandarder
 
 ## Bilag
-
-PBB - Ventralhernie, version 7.
 
 ---
 ## KILDE: VIP instruks: PBB - behandling af patienter med komplikationer efter indgreb foretaget på — version 3, gaeldende fra 04-12-2025
@@ -10609,8 +10339,6 @@ Gælder for alle personalegrupper på de kliniske afdelinger.
 
 ## Definitioner
 
-PBB - desmoid fibromatose, version 1.
-
 TADEE: Trans-arterial Doxorubicin Eluting Embolotherapy
 
 Indikation:
@@ -10664,8 +10392,6 @@ blodfortyndende behandling og/eller metformin, se nedenfor.
 
 Patienter henvises derefter til Plastikkirurgisk Afdeling RH att. onkologisk sektion.
 
-PBB - desmoid fibromatose, version 1.
-
 Patient visiteres af onkologisk sektion til indlæggelse på Plastikkirurgisk Afdeling.  Onkologisk
 sektion og afdelingsradiograf Brigitte Andresen koordinerer datoer for TADEE.
 
@@ -10715,8 +10441,6 @@ på Afdeling for Plastikkirurgi og Brandsårsbehandling. For at mindske risikoen
 embolisering til huden infiltreres underhuden i relation til desmoidet med adrenalinsaltvand (1 mg
 fortyndet i 100 ml saltvand) umiddelbart inden angiografien. Desuden afkøles huden med ispose.
 
-PBB - desmoid fibromatose, version 1.
-
 Ved indledningen af angiografien bedøves huden i lysken med injektion af lokalbedøvelse. Der
 udføres angiografi i den relevante kropsdel. De små arteriegrene til desmoidet opsøges og
 kateteriseres med mikrokateter. De emboliseres med partikler (DC Beads 75-150 eller 100-300 µm
@@ -10762,8 +10486,6 @@ med emboliseringen er at få knuden til at skrumpe og smerterne til at aftage.
 Emboliseringen foregår under en røntgenundersøgelse af pulsårerne (angiografi), som kan vise
 blodforsyningen til det relevante område i kroppen. Vi bruger kontraststof for at gøre blodårerne
 synlige på røntgenbillederne.
-
-PBB - desmoid fibromatose, version 1.
 
 Behandlingen varer 1-4 timer og foregår på Afdeling for Røntgen og Skanning på Rigshospitalet
 Blegdamsvej. Indlæggelsen i forbindelse med indgrebet vil foregå på Afdeling for Plastikkirurgi og
@@ -10815,8 +10537,6 @@ efter fødslen eller dit barn er vænnet af.
 
 Sådan foregår behandlingen
 
-PBB - desmoid fibromatose, version 1.
-
 Du bliver lokalbedøvet
 
 Du er vågen, mens vi behandler dig, men huden omkring din pulsåre i lysken er bedøvet. Området,
@@ -10865,8 +10585,6 @@ behandlingen oftest forbigående nervepåvirkning i området med nervesmerter, p
 eller eventuelt lammelser og følelsesløshed. Der ses normalt ikke systemiske kemoterapibivirkninger
 såsom nedsat immunforsvar eller kvalme.
 
-PBB - desmoid fibromatose, version 1.
-
 Opfølgning
 
 Kontrollen af behandlingen foregår på Afdeling for Kræftbehandling på Herlev Hospital.
@@ -10909,11 +10627,7 @@ Revideret per 01.01.26
 
 ## Referencer, lovgivning og faglig evidens samt links hertil
 
-PBB - desmoid fibromatose, version 1.
-
 ## Bilag
-
-PBB - desmoid fibromatose, version 1.
 
 ---
 ## KILDE: VIP instruks: PBB - iliacaeksairese — version 5, gaeldende fra 16-04-2026
@@ -10952,8 +10666,6 @@ Man skal være opmærksom på, at en del patienter kan være bedre egnede til ro
 ved urologisk afdeling.
 
 Klargøring:
-
-PBB - iliacaeksairese, version 5.
 
 Patienterne møder dagen før operation til klargøring. Der laves AOP ved forvagt, som ordinerer
 vanlig medicin, tromboseprofylakse og smertestillende i henhold til afdelingens instruks. Der tages
@@ -11010,8 +10722,6 @@ smertegrænsen), tegn på infektion og bugvægsruptur og behov for serompunktur.
 sygemeldingsperiode aftales afhængig af patientens tilstand og erhverv - ofte 3-4 uger, mere ved hårdt
 fysisk arbejde. Fysioterapeutisk genoptræning aftales ved behov, og det drøftes, hvornår patienten kan
 
-PBB - iliacaeksairese, version 5.
-
 gå i gang med motion (4-6 uger).
 
 Rehabilitering:
@@ -11041,8 +10751,6 @@ For melanom og planocellulært karcinom henvises i øvrigt til nationale retning
 https://www.dmcg.dk/
 
 ## Bilag
-
-PBB - iliacaeksairese, version 5.
 
 ---
 ## KILDE: VIP instruks: PBB - maligne hudtumorer, oversigt over behandling og kontrol
@@ -11250,8 +10958,6 @@ Lægen: Journalskrivning og klargøring ved forvagten på 3101:
 
 Anæstesi-tilsyn, operatørsamtale, blodprøver: Hgb,Ka, Na, Kreatinin, Type (evt. onkologiske
 
-PBB - vulva-og/eller perineumoperationer, version 3.
-
 blodprøver ved cancer), tromboseprofylakse iht. afdelingens Instruks, smertepakke, Peropr.
 profylaktisk I.V. Zinacef 1.5 g + Metronidazol 500 mg, sikring af at patienten mundtligt og skriftligt
 informeres om præopr. tarmudrensningsregimen ved sygplejersken.
@@ -11300,8 +11006,6 @@ udleveres og gennemgås. Pt’en oplæres i soignering af operationsområde (hå
 
 Ambulant kontrol
 
-PBB - vulva-og/eller perineumoperationer, version 3.
-
 Ved evt. suturfjernelse, skal patienten have en tid i amb. ca. 12-14 dage efter opr. hos operatøren.
 
 Klinisk kontrol 3 mdr. postoperativt hos operatøren.
@@ -11311,8 +11015,6 @@ Klinisk kontrol 3 mdr. postoperativt hos operatøren.
 ## Referencer, lovgivning og faglig evidens samt links hertil
 
 ## Bilag
-
-PBB - vulva-og/eller perineumoperationer, version 3.
 
 ---
 ## KILDE: VIP instruks: PBB - væskeansamling associeret til brystimplantater — version 3, gaeldende fra 04-12-2025
@@ -11487,8 +11189,6 @@ Kontakt eventuelt Giftlinien Bispebjerg Hospital: 35 31 35 31.
 
 Primære behandling ved kontakt med kemiske stoffer er fjernelse af disse. Evt. tørstof børstes af krop
 
-PBB - Ætsninger, version 5.
-
 og tøj. Og gennemvædet tøjet fjernes. Derefter er behandlingen af ætsninger med syre/base/ukendt
 stof - hurtig skylning med vand for at fortynde kemikaliet eller endnu bedre skylning med Diphoterine
 for at neutralisere. Vandet skal løbe væk fra patienten så denne ikke påvirkes af stoffet andre steder
@@ -11538,8 +11238,6 @@ NB! Fare for hypotermi ved langvarig skylning.
 Vær opmærksom på at patienten har behov for smertestillende medicin.
 
 Bandagering efter endt skylning følger samme standard som
-
-PBB - Ætsninger, version 5.
 
 forbrændingerne.
 
@@ -11617,8 +11315,6 @@ hypochlorite
 Blegemiddel, vandrens
 og svømmebade
 
-PBB - Ætsninger, version 5.
-
 Calciumhydroxid
 
 Læsket kalk
@@ -11680,8 +11376,6 @@ Hypocalcæmi og hypomagnesæmi kan medføre arytmier.
 
 Behandling (ref.5)
 
-PBB - Ætsninger, version 5.
-
 Skylles med Hexafluorine
 
 udviklet til flussyre og andre syrer med eller uden fluorid
@@ -11732,8 +11426,6 @@ efterfølgende har patienter længere sygehusophold.
 resultere i fuldhudskader og der kan være systemiske- og inhalationsskader. Behandles: med
 koldt rindende vand i mindst 30 minutter.
 
-PBB - Ætsninger, version 5.
-
 Fosfor:
 
 Fosfor er mere almindelig i et militært miljø.
@@ -11771,11 +11463,7 @@ Journal, 2006. 332: p. 649-652.
 
 Akkrediteringsstandarder, henholdsvis DDKM og JCI
 
-PBB - Ætsninger, version 5.
-
 ## Bilag
-
-PBB - Ætsninger, version 5.
 
 ---
 ## KILDE: VIP vejledning: Version — gaeldende fra 15-02-2025

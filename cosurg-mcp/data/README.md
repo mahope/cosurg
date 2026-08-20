@@ -1,4 +1,4 @@
-# Knowledge base — what counts as clinical knowledge, and what does not
+﻿# Knowledge base — what counts as clinical knowledge, and what does not
 
 *(Dansk udgave nedenfor — [spring til den danske udgave](#vidensbasen--hvad-der-er-klinisk-viden-og-hvad-der-ikke-er))*
 
@@ -14,15 +14,15 @@ it to `/app/data/kilder`). Only material from named clinicians belongs here.
 
 | File | Source type | Origin | Sections / excerpts |
 |---|---|---|---|
-| `vip-rigshospitalet.md` | guideline | **VIP Guideline Rigshospitalet Copenhagen** — the Capital Region's current, versioned Guidelines, Instructions and Policies (VIP), chiefly from Rigshospitalet's Department of Plastic Surgery and Burns Treatment. Each document carries its own version, effective date and named author. | 71 / 583 |
+| `vip-rigshospitalet.md` | guideline | **VIP Guideline Rigshospitalet Copenhagen** — the Capital Region's current, versioned Guidelines, Instructions and Policies (VIP), chiefly from Rigshospitalet's Department of Plastic Surgery and Burns Treatment. Each document carries its own version, effective date and named author. | 71 / 495 |
 | `brandsaar-dk.md` | guideline | **Dansk Brandsårsforening** (the Danish Burn Association) — clinical burn guidance at brandsaar.dk, published with Rigshospitalet's burn unit. Written by team member Rami Mossad Ibrahim. 34 pages plus both pocket cards as text. | 36 / 128 |
-| `magnus-materiale.md` | guideline | **Rigshospitalet, Department of Plastic Surgery and Burns Treatment (Section 6052)** — the "Burns" clinical compendium (cited under the platform name *PlastSurgeon — Validated expert platform*) and the step-by-step dressing guide by Pia Høy, Alice Rimmen, Rikke Holmgaard and Carla Kruse. | 2 / 81 |
-| `plastsurgeon-brandsaar.md` | guideline | **PlastSurgeon — Validated expert platform** — the Burn Surgery chapter of the team's own handbook. Written by Rami Mossad Ibrahim, Elisabeth Lauritzen, Magnus Balslev Avnstorp, Rikke Holmgaard and others. | 14 / 96 |
-| `plastsurgeon-haandbog.md` | guideline | **PlastSurgeon — Validated expert platform** — the rest of the handbook: microsurgery, facial flaps, wound management, breast surgery, massive weight loss, melanoma, skin transplantation, the plastic surgery dictionary and more. | 394 / 3300 |
-| `plastsurgeon-cases.md` | **case** | **PlastSurgeon — Validated expert platform** — case competition entries not also published in JPBRS. | 2 / 44 |
-| `jpbrs-cases.md` | **case** | **Journal of Plastic, Breast & Reconstructive Surgery (JPBRS)** — the team's own journal. Every published case, peer-reviewed and open access, with case id, named authors and institution. | 73 / 1188 |
+| `magnus-materiale.md` | guideline | **Rigshospitalet, Department of Plastic Surgery and Burns Treatment (Section 6052)** — the "Burns" clinical compendium (cited under the platform name *PlastSurgeon — Validated expert platform*) and the step-by-step dressing guide by Pia Høy, Alice Rimmen, Rikke Holmgaard and Carla Kruse. | 2 / 80 |
+| `plastsurgeon-brandsaar.md` | guideline | **PlastSurgeon — Validated expert platform** — the Burn Surgery chapter of the team's own handbook. Written by Rami Mossad Ibrahim, Elisabeth Lauritzen, Magnus Balslev Avnstorp, Rikke Holmgaard and others. | 14 / 82 |
+| `plastsurgeon-haandbog.md` | guideline | **PlastSurgeon — Validated expert platform** — the rest of the handbook: microsurgery, facial flaps, wound management, breast surgery, massive weight loss, melanoma, skin transplantation, the plastic surgery dictionary and more. | 394 / 2906 |
+| `plastsurgeon-cases.md` | **case** | **PlastSurgeon — Validated expert platform** — case competition entries not also published in JPBRS. | 2 / 42 |
+| `jpbrs-cases.md` | **case** | **Journal of Plastic, Breast & Reconstructive Surgery (JPBRS)** — the team's own journal. Every published case, peer-reviewed and open access, with case id, named authors and institution. | 73 / 1116 |
 
-**592 sections → 5,420 searchable excerpts, 2.8 MB of text, 1,837 illustrations.**
+**592 sections → 4,849 searchable excerpts, 2.8 MB of text, 1,837 illustrations.**
 
 Placing a file here asserts that it is clinical evidence. Do not do that with
 anything else.
@@ -129,15 +129,15 @@ klinisk svar (`videnbase.ts` læser hele mappen; `Dockerfile` kopierer den til
 
 | Fil | Kildetype | Ophav | Afsnit / uddrag |
 |---|---|---|---|
-| `vip-rigshospitalet.md` | retningslinje | **VIP Guideline Rigshospitalet Copenhagen** — Region Hovedstadens gældende, versionerede vejledninger, instrukser og politikker, overvejende fra Rigshospitalets Klinik for Plastikkirurgi og Brandsårsbehandling. Hvert dokument bærer sin version, ikrafttrædelsesdato og navngivne forfatter. | 71 / 583 |
+| `vip-rigshospitalet.md` | retningslinje | **VIP Guideline Rigshospitalet Copenhagen** — Region Hovedstadens gældende, versionerede vejledninger, instrukser og politikker, overvejende fra Rigshospitalets Klinik for Plastikkirurgi og Brandsårsbehandling. Hvert dokument bærer sin version, ikrafttrædelsesdato og navngivne forfatter. | 71 / 495 |
 | `brandsaar-dk.md` | retningslinje | **Dansk Brandsårsforening** — klinisk brandsårsvejledning på brandsaar.dk, udgivet med Rigshospitalets brandsårsafdeling. Skrevet af holdmedlem Rami Mossad Ibrahim. 34 sider plus begge lommekort som tekst. | 36 / 128 |
-| `magnus-materiale.md` | retningslinje | **Rigshospitalet, Klinik for Plastikkirurgi og Brandsårsbehandling (Afsnit 6052)** — kompendiet "Burns" (citeret under platformnavnet *PlastSurgeon — Validated expert platform*) og step-by-step-forbindingsvejledningen af Pia Høy, Alice Rimmen, Rikke Holmgaard og Carla Kruse. | 2 / 81 |
-| `plastsurgeon-brandsaar.md` | retningslinje | **PlastSurgeon — Validated expert platform** — håndbogens kapitel Burn Surgery. Skrevet af Rami Mossad Ibrahim, Elisabeth Lauritzen, Magnus Balslev Avnstorp, Rikke Holmgaard m.fl. | 14 / 96 |
-| `plastsurgeon-haandbog.md` | retningslinje | **PlastSurgeon — Validated expert platform** — resten af håndbogen: mikrokirurgi, ansigtslapper, sårbehandling, brystkirurgi, massive weight loss, melanom, hudtransplantation og den plastikkirurgiske ordbog. | 394 / 3300 |
-| `plastsurgeon-cases.md` | **case** | **PlastSurgeon — Validated expert platform** — case competition-bidrag der ikke også står i JPBRS. | 2 / 44 |
-| `jpbrs-cases.md` | **case** | **Journal of Plastic, Breast & Reconstructive Surgery (JPBRS)** — holdets eget tidsskrift. Alle publicerede, peer-reviewede, open access cases med case-id, navngivne forfattere og institution. | 73 / 1188 |
+| `magnus-materiale.md` | retningslinje | **Rigshospitalet, Klinik for Plastikkirurgi og Brandsårsbehandling (Afsnit 6052)** — kompendiet "Burns" (citeret under platformnavnet *PlastSurgeon — Validated expert platform*) og step-by-step-forbindingsvejledningen af Pia Høy, Alice Rimmen, Rikke Holmgaard og Carla Kruse. | 2 / 80 |
+| `plastsurgeon-brandsaar.md` | retningslinje | **PlastSurgeon — Validated expert platform** — håndbogens kapitel Burn Surgery. Skrevet af Rami Mossad Ibrahim, Elisabeth Lauritzen, Magnus Balslev Avnstorp, Rikke Holmgaard m.fl. | 14 / 82 |
+| `plastsurgeon-haandbog.md` | retningslinje | **PlastSurgeon — Validated expert platform** — resten af håndbogen: mikrokirurgi, ansigtslapper, sårbehandling, brystkirurgi, massive weight loss, melanom, hudtransplantation og den plastikkirurgiske ordbog. | 394 / 2906 |
+| `plastsurgeon-cases.md` | **case** | **PlastSurgeon — Validated expert platform** — case competition-bidrag der ikke også står i JPBRS. | 2 / 42 |
+| `jpbrs-cases.md` | **case** | **Journal of Plastic, Breast & Reconstructive Surgery (JPBRS)** — holdets eget tidsskrift. Alle publicerede, peer-reviewede, open access cases med case-id, navngivne forfattere og institution. | 73 / 1116 |
 
-**592 kildeafsnit → 5.420 søgbare uddrag, 2,8 MB tekst, 1.837 illustrationer.**
+**592 kildeafsnit → 4.849 søgbare uddrag, 2,8 MB tekst, 1.837 illustrationer.**
 
 Lægger man en fil her, påstår man samtidig at den er klinisk evidens. Gør det ikke
 med noget andet.
