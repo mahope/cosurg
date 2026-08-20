@@ -32,9 +32,27 @@ export function RichText({ text }: { text: string }) {
   const lines = text.split("\n");
   const blocks: ReactNode[] = [];
   let bullets: string[] = [];
+  let nummereret: Array<{ nr: string; tekst: string }> = [];
+  /*
+   * Fortløbende prosalinjer flyder som ÉT afsnit; kun en tom linje deler.
+   * Standard markdown-ombrydning — et enkelt linjeskift i modellens output er
+   * et layoutvalg, ikke et afsnit, og hver linje som sit eget <p> gav svar
+   * fulde af huller.
+   */
+  let prosa: string[] = [];
   let key = 0;
 
-  const flush = () => {
+  const flushProsa = () => {
+    if (prosa.length === 0) return;
+    blocks.push(
+      <p key={`p-${key++}`} className="my-2 first:mt-0 last:mb-0">
+        {inline(prosa.join(" "), `p-${key}`)}
+      </p>,
+    );
+    prosa = [];
+  };
+
+  const flushBullets = () => {
     if (bullets.length === 0) return;
     blocks.push(
       <ul key={`ul-${key++}`} className="my-2 space-y-1.5 pl-1">
@@ -49,23 +67,71 @@ export function RichText({ text }: { text: string }) {
     bullets = [];
   };
 
+  // Nummererede trin er rækkefølge — de må aldrig smelte sammen til prosa.
+  const flushNummereret = () => {
+    if (nummereret.length === 0) return;
+    blocks.push(
+      <ol key={`ol-${key++}`} className="my-2 space-y-1.5 pl-1">
+        {nummereret.map((punkt, i) => (
+          <li key={i} className="flex gap-2.5">
+            <span className="min-w-[1.4em] shrink-0 text-right font-[family-name:var(--font-mono)] text-[13px] font-semibold leading-relaxed text-[var(--teal-deep)]">
+              {punkt.nr}.
+            </span>
+            <span>{inline(punkt.tekst, `oli-${key}-${i}`)}</span>
+          </li>
+        ))}
+      </ol>,
+    );
+    nummereret = [];
+  };
+
+  const flushAlt = () => {
+    flushProsa();
+    flushBullets();
+    flushNummereret();
+  };
+
   for (const raw of lines) {
     const line = raw.trimEnd();
+
+    if (!line.trim()) {
+      flushAlt();
+      continue;
+    }
+
     const bullet = /^\s*[-*•]\s+(.*)$/.exec(line);
     if (bullet) {
+      flushProsa();
+      flushNummereret();
       bullets.push(bullet[1]);
       continue;
     }
-    flush();
-    const stripped = line.replace(/^#{1,6}\s*/, "").trim();
-    if (!stripped) continue;
-    blocks.push(
-      <p key={`p-${key++}`} className="my-2 first:mt-0 last:mb-0">
-        {inline(stripped, `p-${key}`)}
-      </p>,
-    );
+
+    const punkt = /^\s*(\d+)[.)]\s+(.*)$/.exec(line);
+    if (punkt) {
+      flushProsa();
+      flushBullets();
+      nummereret.push({ nr: punkt[1], tekst: punkt[2] });
+      continue;
+    }
+
+    flushBullets();
+    flushNummereret();
+
+    const overskrift = /^#{1,6}\s+(.*)$/.exec(line);
+    if (overskrift) {
+      flushAlt();
+      blocks.push(
+        <p key={`h-${key++}`} className="mt-3 mb-1 font-semibold first:mt-0">
+          {inline(overskrift[1], `h-${key}`)}
+        </p>,
+      );
+      continue;
+    }
+
+    prosa.push(line.trim());
   }
-  flush();
+  flushAlt();
 
   return <div className="text-[15px] leading-relaxed text-[var(--ink)]">{blocks}</div>;
 }
