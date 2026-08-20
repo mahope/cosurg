@@ -13,22 +13,55 @@ CoSurg og en chatbot.
 
 ## Hvad den indeholder
 
-| Kilde | Omfang | Kildeangivelse |
-|---|---|---|
-| `kilder/brandsaar-dk.md` | Hele brandsaar.dk — Dansk Brandsårsforening / Rigshospitalets brandsårsafdeling. Dybdevurdering, TBSA/arealberegning, Parkland-væskebehandling, inhalationsskader, ætsninger, forfrysninger, cirkulære forbrændinger, overflytningskriterier, ambulant behandling, smertebehandling. | URL pr. afsnit |
-| `kilder/magnus-materiale.md` | Teamets eget materiale: "Burns plast surgeon"-dokumentet og forbindingsguiden fra Rigshospitalets Afsnit 6052. | Dokumentnavn + kapitelsti |
-| `cosurg/content/trees/*.json` | Beslutningstræerne `burns-dk` (8 noder, 3 dispositioner) og `dressing-hand-arm` (12 trin). | Træ-id, version, filnavn og forfatterliste |
+| Kilde | Kildetype | Omfang | Kildeangivelse |
+|---|---|---|---|
+| `data/kilder/brandsaar-dk.md` | retningslinje | Hele brandsaar.dk — Dansk Brandsårsforening / Rigshospitalets brandsårsafdeling. Dybdevurdering, TBSA/arealberegning, Parkland-væskebehandling, inhalationsskader, ætsninger, forfrysninger, cirkulære forbrændinger, overflytningskriterier, ambulant behandling, smertebehandling. | URL pr. afsnit |
+| `data/kilder/magnus-materiale.md` | retningslinje | Teamets eget materiale: "Burns plast surgeon"-dokumentet og forbindingsguiden fra Rigshospitalets Afsnit 6052. | Dokumentnavn + kapitelsti |
+| `data/kilder/plastsurgeon-brandsaar.md` | retningslinje | Kapitlet Burn Surgery fra teamets egen håndbog beta.plastsurgeon.com: anatomi, patofysiologi, gradsvurdering, arealberegning, henvisning til brandsårsafsnit, Parkland og 4:2:1-princippet, antibiotika, opfølgning samt de fem procedurer (rensning, forbinding, forbindingsskift, kirurgisk debridement, hudtransplantation). | URL pr. kapitelside + forfatterliste |
+| `data/kilder/jpbrs-cases.md` | **case** | Peer-reviewede brandsårscases fra teamets eget tidsskrift beta.jpbrs.com — hvert forløb med case-id, titel, forfattere, institution, trin-for-trin-operationsbeskrivelse og efterforløb. | URL + case-id + forfatterliste |
+| `cosurg/content/trees/*.json` | — | Beslutningstræerne `burns-dk` (8 noder, 3 dispositioner) og `dressing-hand-arm` (12 trin). | Træ-id, version, filnavn og forfatterliste |
 
-Ved opstart indlæses **38 kildeafsnit → 211 søgbare uddrag** samt begge træer.
-Alt ligger i hukommelsen; der er ingen database og ingen skrivbar tilstand.
+Ved opstart indlæses **54 kildeafsnit → 323 søgbare uddrag** samt begge træer:
+brandsaar.dk 36 afsnit / 128 uddrag, teamets eget materiale 2 / 80,
+PlastSurgeon-håndbogen 14 / 96 og JPBRS-caserne 2 / 19. Alt ligger i hukommelsen;
+der er ingen database og ingen skrivbar tilstand.
+
+### Retningslinje eller case — forskellen står i svaret
+
+De to første kilder siger *hvad der anbefales*. JPBRS-caserne siger *hvad der blev
+gjort for én patient*. Det er ikke det samme, og en læge skal kunne se hvilken slags
+kilde et udsagn kommer fra. Derfor bærer hvert kildeafsnit en **kildetype**:
+
+- Hver søgetræffer skriver den ud (`Kildetype: KLINISK CASE …` / `RETNINGSLINJE/HAANDBOG …`),
+  og et svar med mindst én case får en eksplicit advarsel om ikke at læse den som en anbefaling.
+- `soeg_klinisk_viden` og `list_kilder` tager `kildetype: "retningslinje" | "case" | "alle"`,
+  så man kan spørge "hvad siger retningslinjen" og "har nogen gjort det her før" hver for sig.
+- Cases bærer deres case-id, titel og forfatterliste hele vejen ud i kildehenvisningen.
+- Serverens `instructions` kræver at agenten siger *case* højt når den gengiver en case.
+
+### Hvad der bevidst ikke er med
+
+- **Kursusmodulerne** `beta.plastsurgeon.com/courses/burns-*` (kemiske og elektriske
+  forbrændinger, inhalationsskade, pædiatriske brandsår, væskebehandling, kirurgisk
+  behandling m.fl.) kræver betalt medlemskab. Uden adgang er de ikke hentet — der
+  gættes ikke på indhold. Har teamet et login, er de næste kilde ind.
+- **Ikke-brandsårscases på JPBRS.** Alle 73 cases på sitet blev hentet og
+  gennemsøgt; kun to handler om brandsår, og kun de to er med. Tre andre matchede
+  udelukkende på afdelingsnavnet "Department of Burns and Plastic Surgery" og er
+  udeladt. Begrundelsen står i toppen af `data/kilder/jpbrs-cases.md`.
+- **Quizzer og MCQ-sider** fra håndbogen. Et spørgsmål med svarmuligheder er ikke en
+  klinisk anvisning, og et uddrag derfra ville kunne citeres som om det var.
+- **Kapitlet Skin Transplantation** ligger uden for brandsårskapitlet. Selve
+  hudtransplantationen ved brandsår er dækket af
+  `burns-treatment/procedures/procedure-skin-grafting`, som er med.
 
 ## Værktøjer
 
 | Værktøj | Formål |
 |---|---|
-| `soeg_klinisk_viden` | Fritekstsøgning i de kliniske kilder. Returnerer ordrette uddrag med URL/dokumentnavn, overskriftssti, uddrag-id og relevansscore. Kan begrænses til én samling. |
-| `hent_kildeafsnit` | Hele siden bag et søgetræf — via afsnit-id eller URL. Til når tre linjer ikke er kontekst nok. |
-| `list_kilder` | Alle kildeafsnit med id og URL. Til at afgøre om et emne overhovedet er dækket. |
+| `soeg_klinisk_viden` | Fritekstsøgning i de kliniske kilder. Returnerer ordrette uddrag med URL/dokumentnavn, kildetype, forfattere, overskriftssti, uddrag-id og relevansscore. Kan begrænses til én samling (`brandsaar`, `magnus`, `plastsurgeon`, `jpbrs`) og til én kildetype (`retningslinje`, `case`). |
+| `hent_kildeafsnit` | Hele siden bag et søgetræf — via afsnit-id eller URL. Til når tre linjer ikke er kontekst nok. Viser kildetype, case-id og forfattere. |
+| `list_kilder` | Alle kildeafsnit med id, kildetype (`[CASE]` / `[retningslinje]`), titel og URL. Til at afgøre om et emne overhovedet er dækket. Kan filtreres på samling og kildetype. |
 | `list_beslutningstraeer` | Træerne med id, navn, version, forfattere, rodnode og nodeantal. |
 | `hent_beslutningstrae` | Et helt træ som læsbar oversigt eller som ordret JSON. |
 | `hent_trae_node` | Én node (spørgsmål, tilladte svarværdier med synonymer, røde flag, kanter ud, hvilke noder man kommer fra) eller én disposition. |
@@ -38,7 +71,8 @@ Alt ligger i hukommelsen; der er ingen database og ingen skrivbar tilstand.
 
 Serveren sender desuden `instructions` med i `initialize`, så agenten får reglen
 med fra start: slå op før du svarer, citér kilden, anbefalinger kommer fra træet,
-og meld ærligt når der ikke er dækning.
+sig højt når et uddrag er en klinisk case og ikke en retningslinje, og meld ærligt
+når der ikke er dækning.
 
 ## Kobling på en Corti-agent
 
@@ -204,7 +238,7 @@ filsystemet kan være read-only. Der er ingen skrivbar tilstand at miste.
 
 ```json
 {"status":"ok","navn":"cosurg-mcp","version":"1.0.0","mcpSti":"/mcp",
- "transport":"streamable_http","uddrag":211,"afsnit":38,
+ "transport":"streamable_http","uddrag":323,"afsnit":54,"cases":2,
  "traeer":["burns-dk","dressing-hand-arm"]}
 ```
 
@@ -224,7 +258,7 @@ filsystemet kan være read-only. Der er ingen skrivbar tilstand at miste.
 
 ## Sådan er søgningen bygget
 
-BM25 i hukommelsen over 211 uddrag. Ingen embeddings, ingen vektordatabase — 166 KB
+BM25 i hukommelsen over 323 uddrag. Ingen embeddings, ingen vektordatabase — 221 KB
 tekst svarer på under et millisekund, og BM25 har den egenskab der betyder noget
 her: den kan ikke hallucinere. Et resultat er altid et ordret uddrag med sin
 kilde, eller også er der intet resultat.
@@ -236,6 +270,19 @@ Tre ting er tilpasset dansk klinisk tekst:
 - **Præfiksmatch.** Danske sammensætninger betyder at en søgning på "inhalation"
   skal ramme "inhalationsskade". Delvise match scorer lavere end fulde.
 - **Overskriftsvægt.** Overskrifter tæller tre gange — de navngiver emnet.
+
+To ting holder "ingen dækning" ærligt, nu hvor basen også indeholder engelsk tekst:
+
+- **Mindste dækning.** Et uddrag skal ramme mindst halvdelen af søgningens
+  forskellige ord. Ellers slog ét tilfældigt ordsammenfald igennem — en søgning på
+  "kolorektal anastomoselækage stapler" ramte overskriften "Staples" i
+  hudtransplantationsafsnittet og fik høj score, fordi overskrifter vejer tungt og
+  uddraget var kort. Svaret var ikke opdigtet, men det var irrelevant, og det er
+  lige så skadeligt når det leveres i stedet for "vi har ingen dækning".
+- **Ingen billed-uddrag.** Et uddrag der kun består af et billede-link indekseres
+  ikke. Alt-teksten er ofte casens eller kapitlets titel, så et sådant uddrag scorer
+  højest på præcis den søgning man stiller — og svarer med et billede i stedet for
+  et klinisk udsagn. Billederne bliver stående i de uddrag der også har brødtekst.
 
 Uddrag afgrænses af markdown-overskrifter, så en træffer altid bærer sin
 kapitelsti. Over 1400 tegn deles ved afsnitsgrænser, aldrig midt i en sætning.

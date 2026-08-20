@@ -120,6 +120,14 @@ export class Soegeindeks {
    * BM25-soegning. `filter` bruges til at begraense til én samling.
    * Resultater under `mindsteScore` frasorteres — det er dér "vi ved det ikke"
    * bliver et aerligt svar i stedet for et daarligt.
+   *
+   * Ud over scoren kraeves en mindste *daekning*: et uddrag skal ramme mindst
+   * halvdelen af soegningens forskellige ord. Uden den regel kan ét tilfaeldigt
+   * ordsammenfald slaa igennem — en soegning paa "kolorektal anastomoselaekage
+   * stapler" ramte overskriften "Staples" i hudtransplantationsafsnittet og fik
+   * en hoej score, fordi overskrifter vejer tungt og uddraget var kort. Svaret
+   * var ikke opdigtet, men det var irrelevant, og det er lige saa skadeligt naar
+   * det leveres i stedet for "vi har ingen daekning".
    */
   soeg(
     forespoergsel: string,
@@ -129,6 +137,8 @@ export class Soegeindeks {
     const mindsteScore = valg.mindsteScore ?? 1.0;
     const soegeord = tokeniser(forespoergsel);
     if (soegeord.length === 0) return [];
+    const forskellige = new Set(soegeord).size;
+    const mindsteDaekning = Math.max(1, Math.ceil(forskellige / 2));
 
     const frase = normaliser(forespoergsel).trim();
     const brugFrase = frase.length >= 6 && frase.includes(" ");
@@ -165,8 +175,9 @@ export class Soegeindeks {
       }
 
       if (score <= 0) continue;
+      if (matchede.length < mindsteDaekning) continue;
       // Daekningsbonus: et uddrag der rammer alle soegeordene slaar ét der rammer ét.
-      score *= 0.5 + 0.5 * (matchede.length / new Set(soegeord).size);
+      score *= 0.5 + 0.5 * (matchede.length / forskellige);
       // Fraseboost: staar hele soegestrengen ordret, er det naesten altid det rigtige svar.
       if (brugFrase && dok.normaliseret.includes(frase)) score *= 1.6;
 

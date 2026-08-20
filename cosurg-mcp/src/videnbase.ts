@@ -253,6 +253,12 @@ function delIUddrag(a: Afsnit): Uddrag[] {
     for (const stykke of delLangTekst(raa)) {
       const rent = stykke.trim();
       if (rent.length < 40) continue; // for kort til at vaere et selvstaendigt svar
+      // Et uddrag der kun er et billede-link er ubrugeligt som svar — og farligt,
+      // fordi alt-teksten ofte er casens eller kapitlets titel og derfor scorer
+      // hoejt paa praecis den soegning man stiller. Billederne bliver staaende i
+      // de uddrag der ogsaa har broedtekst.
+      const proza = rent.replace(/!\[[^\]]*\]\([^)]*\)/g, " ").replace(/\s+/g, " ").trim();
+      if (proza.length < 40) continue;
       uddrag.push({
         id: `${a.id}#${uddrag.length}`,
         afsnitId: a.id,
