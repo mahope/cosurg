@@ -1,0 +1,379 @@
+{
+  "id": "dressing-hand-arm",
+  "version": "0.1.0-draft",
+  "name": {
+    "da": "Forbinding: fingre, hænder og arme",
+    "en": "Dressing: fingers, hands and arms"
+  },
+  "description": {
+    "da": "Procedureguide til Mepilex Transfer. Billederne er fra Rigshospitalets step-by-step-guide; trinteksterne er UDKAST og skal godkendes.",
+    "en": "Procedure guide for Mepilex Transfer. Images from the Rigshospitalet step-by-step guide; the step texts are DRAFTS pending approval."
+  },
+  "authors": [
+    "Billeder: spl. Pia Høy og Alice Rimmen, i samarbejde med ovl. Rikke Holmgaard og reservelæge Carla Kruse, Afsnit for plastikkirurgi og brandsårsbehandling 6052, Rigshospitalet",
+    "Trintekster: UDKAST — afventer godkendelse"
+  ],
+  "rootNodeId": "step-1",
+  "nodes": [
+    {
+      "id": "step-1",
+      "question": {
+        "da": "Trin 1 af 12. Klargør: fjern løs hud og bullae.",
+        "en": "Step 1 of 12. Prepare: remove loose skin and blisters."
+      },
+      "orQuestion": {
+        "da": "Klargør: fjern løs hud og bullae.",
+        "en": "Prepare: remove loose skin and blisters."
+      },
+      "answerType": "step",
+      "images": [
+        {
+          "src": "/step-images/image1.jpg"
+        },
+        {
+          "src": "/step-images/image2.jpg"
+        },
+        {
+          "src": "/step-images/image3.jpg"
+        }
+      ],
+      "edges": [
+        {
+          "when": "*",
+          "goto": "step-2"
+        }
+      ]
+    },
+    {
+      "id": "step-2",
+      "question": {
+        "da": "Trin 2 af 12. Sæbevask sårene i cirka ti minutter.",
+        "en": "Step 2 of 12. Wash the wounds with soap for about ten minutes."
+      },
+      "orQuestion": {
+        "da": "Sæbevask sårene i cirka ti minutter.",
+        "en": "Wash the wounds with soap for about ten minutes."
+      },
+      "answerType": "step",
+      "images": [
+        {
+          "src": "/step-images/image4.jpg"
+        },
+        {
+          "src": "/step-images/image5.jpg"
+        },
+        {
+          "src": "/step-images/image6.jpg"
+        }
+      ],
+      "edges": [
+        {
+          "when": "*",
+          "goto": "step-3"
+        }
+      ]
+    },
+    {
+      "id": "step-3",
+      "question": {
+        "da": "Trin 3 af 12. Skyl sæben af med postevand.",
+        "en": "Step 3 of 12. Rinse off the soap with tap water."
+      },
+      "orQuestion": {
+        "da": "Skyl sæben af med postevand.",
+        "en": "Rinse off the soap with tap water."
+      },
+      "answerType": "step",
+      "images": [
+        {
+          "src": "/step-images/image7.jpg"
+        },
+        {
+          "src": "/step-images/image8.jpg"
+        },
+        {
+          "src": "/step-images/image9.jpg"
+        }
+      ],
+      "edges": [
+        {
+          "when": "*",
+          "goto": "step-4"
+        }
+      ]
+    },
+    {
+      "id": "step-4",
+      "question": {
+        "da": "Trin 4 af 12. Dup tørt omkring såret — ikke på selve såret.",
+        "en": "Step 4 of 12. Pat dry around the wound — not on the wound itself."
+      },
+      "orQuestion": {
+        "da": "Dup tørt omkring såret — ikke på selve såret.",
+        "en": "Pat dry around the wound — not on the wound itself."
+      },
+      "answerType": "step",
+      "images": [
+        {
+          "src": "/step-images/image10.jpg"
+        },
+        {
+          "src": "/step-images/image11.jpg"
+        },
+        {
+          "src": "/step-images/image12.jpg"
+        }
+      ],
+      "edges": [
+        {
+          "when": "*",
+          "goto": "step-5"
+        }
+      ]
+    },
+    {
+      "id": "step-5",
+      "question": {
+        "da": "Trin 5 af 12. Tilklip Mepilex Transfer så den dækker såret med god margin.",
+        "en": "Step 5 of 12. Cut the Mepilex Transfer to cover the wound with a good margin."
+      },
+      "orQuestion": {
+        "da": "Tilklip Mepilex Transfer så den dækker såret med god margin.",
+        "en": "Cut the Mepilex Transfer to cover the wound with a good margin."
+      },
+      "answerType": "step",
+      "images": [
+        {
+          "src": "/step-images/image13.jpg"
+        },
+        {
+          "src": "/step-images/image14.jpg"
+        },
+        {
+          "src": "/step-images/image15.jpg"
+        }
+      ],
+      "edges": [
+        {
+          "when": "*",
+          "goto": "step-6"
+        }
+      ]
+    },
+    {
+      "id": "step-6",
+      "question": {
+        "da": "Trin 6 af 12. Læg Mepilex Transfer på med klæbesiden mod såret.",
+        "en": "Step 6 of 12. Apply the Mepilex Transfer with the adhesive side to the wound."
+      },
+      "orQuestion": {
+        "da": "Læg Mepilex Transfer på med klæbesiden mod såret.",
+        "en": "Apply the Mepilex Transfer with the adhesive side to the wound."
+      },
+      "answerType": "step",
+      "images": [
+        {
+          "src": "/step-images/image16.jpg"
+        },
+        {
+          "src": "/step-images/image17.jpg"
+        },
+        {
+          "src": "/step-images/image18.jpg"
+        }
+      ],
+      "edges": [
+        {
+          "when": "*",
+          "goto": "step-7"
+        }
+      ]
+    },
+    {
+      "id": "step-7",
+      "question": {
+        "da": "Trin 7 af 12. Pak hver finger enkeltvis, så de ikke ligger hud mod hud.",
+        "en": "Step 7 of 12. Wrap each finger individually so no skin touches skin."
+      },
+      "orQuestion": {
+        "da": "Pak hver finger enkeltvis, så de ikke ligger hud mod hud.",
+        "en": "Wrap each finger individually so no skin touches skin."
+      },
+      "answerType": "step",
+      "images": [
+        {
+          "src": "/step-images/image19.jpg"
+        },
+        {
+          "src": "/step-images/image20.jpg"
+        },
+        {
+          "src": "/step-images/image21.jpg"
+        }
+      ],
+      "edges": [
+        {
+          "when": "*",
+          "goto": "step-8"
+        }
+      ]
+    },
+    {
+      "id": "step-8",
+      "question": {
+        "da": "Trin 8 af 12. Læg sugende gaze over.",
+        "en": "Step 8 of 12. Apply absorbent gauze over the top."
+      },
+      "orQuestion": {
+        "da": "Læg sugende gaze over.",
+        "en": "Apply absorbent gauze over the top."
+      },
+      "answerType": "step",
+      "images": [
+        {
+          "src": "/step-images/image22.jpg"
+        },
+        {
+          "src": "/step-images/image23.jpg"
+        },
+        {
+          "src": "/step-images/image24.jpg"
+        }
+      ],
+      "edges": [
+        {
+          "when": "*",
+          "goto": "step-9"
+        }
+      ]
+    },
+    {
+      "id": "step-9",
+      "question": {
+        "da": "Trin 9 af 12. Hold fingrene i funktionsstilling under indpakningen.",
+        "en": "Step 9 of 12. Keep the fingers in a functional position while wrapping."
+      },
+      "orQuestion": {
+        "da": "Hold fingrene i funktionsstilling under indpakningen.",
+        "en": "Keep the fingers in a functional position while wrapping."
+      },
+      "answerType": "step",
+      "images": [
+        {
+          "src": "/step-images/image25.jpg"
+        },
+        {
+          "src": "/step-images/image26.jpg"
+        },
+        {
+          "src": "/step-images/image27.jpg"
+        }
+      ],
+      "edges": [
+        {
+          "when": "*",
+          "goto": "step-10"
+        }
+      ]
+    },
+    {
+      "id": "step-10",
+      "question": {
+        "da": "Trin 10 af 12. Fikser med elastikbind — fast, men ikke stramt.",
+        "en": "Step 10 of 12. Secure with an elastic bandage — firm, but not tight."
+      },
+      "orQuestion": {
+        "da": "Fikser med elastikbind — fast, men ikke stramt.",
+        "en": "Secure with an elastic bandage — firm, but not tight."
+      },
+      "answerType": "step",
+      "images": [
+        {
+          "src": "/step-images/image28.jpg"
+        },
+        {
+          "src": "/step-images/image29.jpg"
+        },
+        {
+          "src": "/step-images/image30.jpg"
+        }
+      ],
+      "edges": [
+        {
+          "when": "*",
+          "goto": "step-11"
+        }
+      ]
+    },
+    {
+      "id": "step-11",
+      "question": {
+        "da": "Trin 11 af 12. Efterlad fingerspidserne synlige til observation for tourniquet-effekt.",
+        "en": "Step 11 of 12. Leave the fingertips visible to observe for tourniquet effect."
+      },
+      "orQuestion": {
+        "da": "Efterlad fingerspidserne synlige til observation for tourniquet-effekt.",
+        "en": "Leave the fingertips visible to observe for tourniquet effect."
+      },
+      "answerType": "step",
+      "images": [
+        {
+          "src": "/step-images/image31.jpg"
+        },
+        {
+          "src": "/step-images/image32.jpg"
+        },
+        {
+          "src": "/step-images/image33.jpg"
+        }
+      ],
+      "edges": [
+        {
+          "when": "*",
+          "goto": "step-12"
+        }
+      ]
+    },
+    {
+      "id": "step-12",
+      "question": {
+        "da": "Trin 12 af 12. Forbindingen skal sidde urørt i ti dage, medmindre der er gennemsivning eller infektionstegn.",
+        "en": "Step 12 of 12. Leave the dressing untouched for ten days unless there is strike-through or signs of infection."
+      },
+      "orQuestion": {
+        "da": "Forbindingen skal sidde urørt i ti dage, medmindre der er gennemsivning eller infektionstegn.",
+        "en": "Leave the dressing untouched for ten days unless there is strike-through or signs of infection."
+      },
+      "answerType": "step",
+      "images": [
+        {
+          "src": "/step-images/image34.jpg"
+        }
+      ],
+      "edges": [
+        {
+          "when": "*",
+          "goto": "disp-done"
+        }
+      ]
+    }
+  ],
+  "dispositions": [
+    {
+      "id": "disp-done",
+      "severity": "treat",
+      "title": {
+        "da": "Forbinding anlagt",
+        "en": "Dressing applied"
+      },
+      "guidance": {
+        "da": "Patienten møder til udpakning efter ti til fjorten dage hos egen læge, på lokalt sygehus eller i brandsårsambulatoriet. Rådgiv patienten om at tage paracetamol ét gram og ibuprofen fire hundrede milligram før udpakning. Vær opmærksom på infektionstegn: rødme og pus.",
+        "en": "The patient returns for dressing removal after ten to fourteen days. Advise paracetamol one gram and ibuprofen four hundred milligrams beforehand. Watch for signs of infection: redness and pus."
+      },
+      "sources": [
+        "brandsaar.dk/ambulant-behandling",
+        "Rigshospitalet, Afsnit 6052 — step-by-step-guide"
+      ]
+    }
+  ]
+}

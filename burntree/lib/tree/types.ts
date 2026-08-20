@@ -6,7 +6,12 @@
 export type Lang = "da" | "en";
 export type LocalizedText = Record<Lang, string>;
 
-export type AnswerType = "boolean" | "choice" | "number";
+/**
+ * "step" er en instruktion frem for et spørgsmål: den har intet svar, vises med
+ * billeder og kvitteres blot med "næste". Det er den samme motor der driver både
+ * beslutningstræer og procedureguider.
+ */
+export type AnswerType = "boolean" | "choice" | "number" | "step";
 
 export interface AnswerOption {
   /** Maskin-værdi der matches i kanter. */
