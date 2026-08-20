@@ -50,6 +50,15 @@ export interface Faldgrube {
   /** Søgningen der henter belægget fra vidensbasen. Danske ord — kilderne er danske. */
   query: string;
   triggers: Traekker[];
+  /**
+   * Ord der peger på faldgruben når man slår et EMNE op i behandlingsguiden.
+   *
+   * Guiden har ingen node at hænge en trækker på — der er kun det lægen skrev,
+   * og de danske søgeord agenten lavede af det. Så en tilstand der nævner
+   * "cirkulær" skal have perfusions-faldgruben frem, uanset hvor i et forløb
+   * man ellers ville være. Foldes og matches som præfiks (se `fold`).
+   */
+  hints: string[];
 }
 
 export const FALDGRUBER: Faldgrube[] = [
@@ -66,6 +75,7 @@ export const FALDGRUBER: Faldgrube[] = [
     alvor: "critical",
     fase: "assessment",
     query: "cirkulaer forbraending aflastende incisioner nedsat perfusion",
+    hints: ["cirkulaer", "aflastende", "escharotomi", "fuldhud", "dyb dermal", "underarm", "ekstremitet"],
     triggers: [
       { treeId: "burns-dk", nodeId: "circumferential" },
       { treeId: "burns-dk", nodeId: "depth", values: ["deep-dermal", "full-thickness"] },
@@ -84,6 +94,7 @@ export const FALDGRUBER: Faldgrube[] = [
     alvor: "critical",
     fase: "assessment",
     query: "inhalationsskade tegn re-vurdere udvikle sig over tid stridor",
+    hints: ["inhalation", "roeg", "flamme", "ildebrand", "ansigt", "lukket rum", "sod", "luftvej"],
     triggers: [
       { treeId: "burns-dk", nodeId: "inhalation" },
       { treeId: "burns-dk", nodeId: "mechanism", values: ["flame"] },
@@ -103,6 +114,7 @@ export const FALDGRUBER: Faldgrube[] = [
     alvor: "important",
     fase: "resuscitation",
     query: "afkoeling skylning vandtemperatur under 8 grader hypotermi 20-30 minutter",
+    hints: ["afkoel", "koeling", "skyl", "skoldning", "kogende", "hypotermi", "foerstehjaelp", "vand"],
     triggers: [
       { treeId: "burns-dk", nodeId: "cooled" },
       { field: "cooled" },
@@ -121,6 +133,7 @@ export const FALDGRUBER: Faldgrube[] = [
     alvor: "important",
     fase: "assessment",
     query: "1. grads epidermal erytem medregnes ikke i brandsaarsarealet",
+    hints: ["tbsa", "areal", "udbredelse", "procent", "epidermal", "erytem", "1. grads", "roedme"],
     triggers: [
       { treeId: "burns-dk", nodeId: "tbsa" },
       { treeId: "burns-dk", nodeId: "depth", values: ["epidermal"] },
@@ -140,6 +153,7 @@ export const FALDGRUBER: Faldgrube[] = [
     alvor: "important",
     fase: "resuscitation",
     query: "timediurese vaeskeskema justering af vaeskeindgift Parkland",
+    hints: ["vaeske", "parkland", "resuscit", "diurese", "shock", "stor forbraending", "svaer"],
     triggers: [
       { treeId: "burns-dk", nodeId: "fluid" },
       { treeId: "burns-dk", nodeId: "tbsa" },
@@ -159,6 +173,7 @@ export const FALDGRUBER: Faldgrube[] = [
     alvor: "critical",
     fase: "resuscitation",
     query: "moerk urin myoglobinuri elektriske forbraendinger diurese",
+    hints: ["elektrisk", "stroem", "hoejspaending", "lynned", "el-skade"],
     triggers: [
       { treeId: "burns-dk", nodeId: "mechanism", values: ["electrical"] },
       { field: "mechanism" },
@@ -177,6 +192,7 @@ export const FALDGRUBER: Faldgrube[] = [
     alvor: "critical",
     fase: "resuscitation",
     query: "aetsning skylning saa hurtigt som muligt varighed kontroversiel diphoterine",
+    hints: ["aetsning", "kemisk", "syre", "base", "flussyre", "diphoterine", "kalk", "cement"],
     triggers: [
       { treeId: "burns-dk", nodeId: "mechanism", values: ["chemical"] },
       { field: "mechanism" },
@@ -195,6 +211,7 @@ export const FALDGRUBER: Faldgrube[] = [
     alvor: "important",
     fase: "wound",
     query: "forbinding urørt 10 dage gennemsivning begraense bevaegelighed stive fingre",
+    hints: ["forbind", "bandage", "mepilex", "haand", "finger", "indpakning", "jelonet"],
     triggers: [
       { treeId: "dressing-hand-arm" },
       { treeId: "burns-dk", dispositionId: "disp-treat" },
@@ -213,6 +230,7 @@ export const FALDGRUBER: Faldgrube[] = [
     alvor: "important",
     fase: "handover",
     query: "ambulant kontrol 10 dage dybe dermale henvises brandsaarsafdeling operation infektionstegn",
+    hints: ["dyb dermal", "kontrol", "ambulant", "haand", "ansigt", "led", "genital", "fod", "heling"],
     triggers: [
       { treeId: "burns-dk", nodeId: "location" },
       { treeId: "burns-dk", dispositionId: "disp-treat" },
@@ -232,6 +250,7 @@ export const FALDGRUBER: Faldgrube[] = [
     alvor: "important",
     fase: "history",
     query: "antikoagulationsbehandling trombosedisponerende posttraume inkl. brandsaar profylakse",
+    hints: ["antikoagul", "blodfortynd", "trombose", "immobil", "indlaeg", "ak-behandling"],
     triggers: [
       { field: "anticoagulants" },
       { treeId: "burns-dk", dispositionId: "disp-refer" },
@@ -251,6 +270,7 @@ export const FALDGRUBER: Faldgrube[] = [
     alvor: "important",
     fase: "handover",
     query: "overflytning kontakt vagthavende skadesmekanisme skadestidspunkt vitale parametre areal",
+    hints: ["overflyt", "henvis", "brandsaarscenter", "rigshospitalet", "svaer", "transport"],
     triggers: [
       { treeId: "burns-dk", dispositionId: "disp-refer" },
       { treeId: "burns-dk", dispositionId: "disp-emergency" },
@@ -294,6 +314,26 @@ export function matchFaldgruber(k: FaldgrubeKontekst): Faldgrube[] {
 
 export function findFaldgrube(id: string): Faldgrube | undefined {
   return FALDGRUBER.find((f) => f.id === id);
+}
+
+/** Folder danske tegn, så et match ikke afhænger af stavemåde eller sprogtaster. */
+function fold(s: string): string {
+  return s.toLowerCase().replace(/æ/g, "ae").replace(/ø/g, "oe").replace(/å/g, "aa");
+}
+
+/**
+ * Faldgruber der hører til et EMNE — behandlingsguidens indgang.
+ *
+ * Guiden har ingen node at hænge en trækker på; der er kun det lægen skrev og
+ * de danske søgeord der kom ud af det. Vi matcher derfor på ord, ikke på
+ * tilstand — og bevidst konservativt: rammer intet, vises intet. En guide uden
+ * faldgruber er bedre end en guide med de forkerte.
+ */
+export function matchEmne(tekst: string, maks = 3): Faldgrube[] {
+  const felt = fold(tekst);
+  return FALDGRUBER.filter((f) => f.hints.some((h) => felt.includes(fold(h))))
+    .sort((a, b) => (a.alvor === b.alvor ? 0 : a.alvor === "critical" ? -1 : 1))
+    .slice(0, maks);
 }
 
 export const FASE_LABEL: Record<Fase, Record<Lang, string>> = {

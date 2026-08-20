@@ -8,7 +8,7 @@ import {
   type KildeUddrag,
 } from "@/lib/corti/mcp";
 import type { Lang } from "@/lib/tree/types";
-import { AFSNIT } from "./sections";
+import { AFSNIT, erIndenforOmraadet, hoererTil, type AfsnitDef } from "./sections";
 
 export const dynamic = "force-dynamic";
 
@@ -122,14 +122,22 @@ function normaliser(uddrag: KildeUddrag[]): Kandidat[] {
  * — det er dér risikoen for at vise noget malplaceret er mindre end risikoen
  * for at vise ingenting.
  */
-async function kandidater(emneTermer: string, afsnitTermer: string): Promise<Kandidat[]> {
+async function kandidater(emneTermer: string, afsnit: AfsnitDef): Promise<Kandidat[]> {
+  const soeg = (q: string, antal: number) =>
+    soegKliniskViden(q, { antal, fuldt: true })
+      // Nogle af brandsaar.dk's sider er rene stubbe — en overskrift og en
+      // linje. De rammer fint i en søgning og siger ingenting i et opslagsværk.
+      .then((s) => filtrerRelevante(s.uddrag).filter((u) => u.tekst.length >= 200))
+      .catch(() => [] as KildeUddrag[]);
+
+  // Det emne-åbne afsnit har ingen egne ord: dér er emnet hele spørgsmålet.
+  if (afsnit.emneKun) {
+    return normaliser(await soeg(emneTermer, 4));
+  }
+
   const [emne, generel] = await Promise.all([
-    soegKliniskViden(`${emneTermer} ${afsnitTermer}`, { antal: 5, fuldt: true })
-      .then((s) => filtrerRelevante(s.uddrag))
-      .catch(() => [] as KildeUddrag[]),
-    soegKliniskViden(afsnitTermer, { antal: 5, fuldt: true })
-      .then((s) => filtrerRelevante(s.uddrag))
-      .catch(() => [] as KildeUddrag[]),
+    soeg(`${emneTermer} ${afsnit.terms}`, 5),
+    soeg(afsnit.terms, 5),
   ]);
 
   const emneNorm = new Map(normaliser(emne).map((k) => [k.uddrag.id, k.norm]));
@@ -138,18 +146,15 @@ async function kandidater(emneTermer: string, afsnitTermer: string): Promise<Kan
   const alle = new Map<string, KildeUddrag>();
   [...emne, ...generel].forEach((u) => alle.set(u.id, u));
 
-  const vurder = (u: KildeUddrag): Kandidat => {
-    const e = emneNorm.get(u.id) ?? 0;
-    const g = generelNorm.get(u.id) ?? 0;
-    // Snittet lægges oveni, så det altid slår et enkeltstående træf.
-    return { uddrag: u, norm: e && g ? 1 + (e + g) / 2 : Math.max(e, g) };
-  };
-
-  const kandidater = [...alle.values()].map(vurder).sort((a, b) => b.norm - a.norm);
-  const baerende = kandidater.filter((k) => k.norm > 1 || generelNorm.has(k.uddrag.id));
-  // Emne-kun-træffere fylder først op når afsnittet ellers stod med under to.
-  const kunEmne = kandidater.filter((k) => !baerende.includes(k));
-  return [...baerende, ...kunEmne.slice(0, Math.max(0, 2 - baerende.length))];
+  return [...alle.values()]
+    .filter((u) => hoererTil(afsnit, u.tekst, u.overskrifter))
+    .map((u) => {
+      const e = emneNorm.get(u.id) ?? 0;
+      const g = generelNorm.get(u.id) ?? 0;
+      // Snittet — emne OG afsnit — lægges oveni, så det altid slår et enkelt træf.
+      return { uddrag: u, norm: e && g ? 1 + (e + g) / 2 : Math.max(e, g) };
+    })
+    .sort((a, b) => b.norm - a.norm);
 }
 
 export interface GuideSvar {
@@ -231,8 +236,40 @@ export async function POST(req: Request) {
     const topic = cap(raw.topic, MAX_EMNE);
     if (!topic) return NextResponse.json({ error: "Tomt emne" }, { status: 400 });
 
+    /*
+     * Emnet handler ikke om brandsår. Så slår vi det ikke op — og bruger ikke
+     * et agent-kald på det.
+     *
+     * Agenten svarer nemlig på et fremmed emne med generiske brandsårsord
+     * ("forbrænding, skoldning, ætsning"), og de finder rigeligt i vores
+     * kilder: en komplet brandsårsguide til en brækket ankel. Den slags svar er
+     * værre end intet svar, fordi det ser rigtigt ud.
+     */
+    const tomGuide = (titel: Record<Lang, string>): GuideSvar => ({
+      topic: titel,
+      routedBy: "lokal",
+      terms: [],
+      sections: AFSNIT.map((a) => ({ key: a.key, label: a.label, intent: a.intent, excerpts: [] })),
+      covered: 0,
+      offTopic: true,
+    });
+
+    if (!erIndenforOmraadet(topic)) {
+      return NextResponse.json(tomGuide({ da: topic, en: topic }));
+    }
+
     const { result, routedBy } = await findTermer(topic, lang);
     const terms = result.danishTerms.map((t) => String(t).slice(0, 60)).slice(0, 8);
+
+    // Agentens egen vurdering er den anden port. Den er ikke stabil nok til at
+    // stå alene, men et flag herfra på et emne der slap gennem ordprøven, er
+    // værd at lytte til.
+    if (result.offTopic) {
+      return NextResponse.json({
+        ...tomGuide({ da: result.titleDa || topic, en: result.titleEn || topic }),
+        routedBy,
+      });
+    }
     // De mest specifikke ord først — de bærer emnet. Resten fortynder kun
     // afsnittets egne søgeord.
     const emneTermer = terms.slice(0, 4).join(" ");
@@ -240,7 +277,7 @@ export async function POST(req: Request) {
     // Ét fejlet afsnit må ikke tage hele guiden med sig; kandidater() sluger
     // sine egne fejl, så afsnittet blot står uden dækning.
     const felter = await Promise.all(
-      AFSNIT.map(async (a) => ({ key: a.key, kandidater: await kandidater(emneTermer, a.terms) })),
+      AFSNIT.map(async (a) => ({ key: a.key, kandidater: await kandidater(emneTermer, a) })),
     );
 
     /*

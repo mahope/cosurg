@@ -1,12 +1,14 @@
 import { NextResponse } from "next/server";
-import { guard } from "@/lib/guard";
-import { filtrerRelevante, mcpKonfigureret, soegKliniskViden, type KildeUddrag } from "@/lib/corti/mcp";
+import { cap, guard } from "@/lib/guard";
+import { filtrerRelevante, mcpKonfigureret, soegKliniskViden } from "@/lib/corti/mcp";
 import {
   FALDGRUBER,
+  matchEmne,
   matchFaldgruber,
   type Faldgrube,
   type FaldgrubeKontekst,
 } from "@/components/pitfalls/catalog";
+import type { LoestFaldgrube } from "@/components/pitfalls/types";
 
 export const dynamic = "force-dynamic";
 
@@ -19,19 +21,6 @@ export const dynamic = "force-dynamic";
  * vidensbasen er statisk — så faldgruberne kan følge med gennem et forløb i
  * stedet for at være en side man skal huske at åbne.
  */
-
-export type Daekning = "ok" | "none" | "error";
-
-export interface LoestFaldgrube {
-  id: string;
-  title: Faldgrube["title"];
-  consequence: Faldgrube["consequence"];
-  alvor: Faldgrube["alvor"];
-  fase: Faldgrube["fase"];
-  /** Det ordrette belæg. Null når vidensbasen ikke dækker faldgruben. */
-  evidence: KildeUddrag | null;
-  coverage: Daekning;
-}
 
 /** Så mange faldgruber ad gangen. Fem advarsler på én skærm er ingen advarsel. */
 const MAX_KONTEKST = 4;
@@ -53,8 +42,16 @@ async function loes(f: Faldgrube): Promise<LoestFaldgrube> {
 interface Body extends FaldgrubeKontekst {
   /** Hent bestemte faldgruber frem for at matche på kontekst. */
   ids?: string[];
+  /**
+   * Emne fra behandlingsguiden. Guiden har ingen node at matche på — kun det
+   * lægen skrev og de danske søgeord agenten lavede af det.
+   */
+  topic?: string;
   limit?: number;
 }
+
+/** Emnetekst er det eneste fritekst-felt på ruten, og den skal være kort. */
+const MAX_EMNE = 300;
 
 /** Kun kendte id'er og korte strenge slipper videre — intet fritekst-input her. */
 function rens(liste: unknown, max: number): string[] {
@@ -76,10 +73,14 @@ export async function POST(req: Request) {
   try {
     const raw = (await req.json()) as Body;
 
+    const emne = cap(raw.topic, MAX_EMNE);
+
     const valgte: Faldgrube[] = raw.ids
       ? rens(raw.ids, 12)
           .map((id) => FALDGRUBER.find((f) => f.id === id))
           .filter((f): f is Faldgrube => !!f)
+      : emne
+      ? matchEmne(emne)
       : matchFaldgruber({
           treeId: typeof raw.treeId === "string" ? raw.treeId.slice(0, 64) : null,
           nodeId: typeof raw.nodeId === "string" ? raw.nodeId.slice(0, 64) : null,

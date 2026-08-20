@@ -315,6 +315,133 @@ export const t = {
     da: "Svaret kunne ikke hentes. Prøv igen.",
     en: "Could not retrieve the answer. Try again.",
   },
+
+  /*
+   * De tre opslagsværktøjer: behandlingsguide, faldgruber og struktureret
+   * anamnese. De hører til samme app som beslutningstræet, men svarer på et
+   * andet spørgsmål: træet siger "hvad gør jeg med DENNE patient", værktøjerne
+   * siger "hvad ved vi om det her". Sproget skal holde de to fra hinanden.
+   */
+  toolTree: { da: "Beslutningsforløb", en: "Decision pathway" },
+  toolGuide: { da: "Behandlingsguide", en: "Treatment guide" },
+  toolPitfalls: { da: "Faldgruber", en: "Pitfalls" },
+  toolInterview: { da: "Anamnese", en: "History taking" },
+  toolChat: { da: "Klinisk chat", en: "Clinical chat" },
+  toolsLabel: { da: "Opslag", en: "Look up" },
+
+  // Fælles om kilder
+  sourceVerbatim: { da: "Ordret fra kilden", en: "Verbatim from the source" },
+  sourceOpen: { da: "Åbn kilden", en: "Open the source" },
+  sourceDocument: { da: "Dokument", en: "Document" },
+  sourceNoCoverage: {
+    da: "Ingen dækning i vidensbasen — vi har ikke en kilde til det her.",
+    en: "No coverage in the knowledge base — we have no source for this.",
+  },
+  sourceLookupFailed: {
+    da: "Vidensbasen svarede ikke. Det er ikke det samme som at der ingen dækning er.",
+    en: "The knowledge base did not answer. That is not the same as there being no coverage.",
+  },
+  sourceFrom: {
+    da: "Alt indhold hentes fra CoSurgs egen vidensbase — brandsaar.dk og teamets materiale.",
+    en: "All content comes from CoSurg's own knowledge base — brandsaar.dk and the team's material.",
+  },
+  sourcesDanish: {
+    da: "Kilderne er danske og vises ordret. Overskrifter og forklaringer er oversat.",
+    en: "The sources are Danish and shown verbatim. Headings and explanations are translated.",
+  },
+
+  // Behandlingsguide
+  guideTitle: { da: "Behandlingsguide", en: "Treatment guide" },
+  guideTagline: {
+    da: "Slå en tilstand op — og få behandlingen i rækkefølge, med kilder",
+    en: "Look up a condition — get the treatment in order, with sources",
+  },
+  guideQuestion: { da: "Hvilken tilstand skal du slå op?", en: "Which condition are you looking up?" },
+  guideHelp: {
+    da: "Beskriv skaden med stemme eller tekst — fx «dyb dermal forbrænding på hånden».",
+    en: "Describe the injury by voice or text — e.g. “deep dermal burn of the hand”.",
+  },
+  guidePlaceholder: { da: "Fx «cirkulær forbrænding på underarm»…", en: "e.g. “circumferential forearm burn”…" },
+  guideWorking: { da: "Slår op i vidensbasen…", en: "Looking it up in the knowledge base…" },
+  guideExamples: { da: "Prøv fx", en: "Try for example" },
+  guideRoutedCorti: {
+    da: "Søgeordene blev oversat til dansk af Cortis agent",
+    en: "The search terms were translated to Danish by Corti's agent",
+  },
+  guideRoutedLocal: {
+    da: "Søgeordene kom fra din egen formulering — agenten svarede ikke",
+    en: "The search terms came from your own wording — the agent did not answer",
+  },
+  guideNothing: {
+    da: "Ingen af vores kilder dækker det emne. Vi svarer ikke ud fra almen viden.",
+    en: "None of our sources cover that topic. We do not answer from general knowledge.",
+  },
+  guideOffTopic: {
+    da: "Vidensbasen dækker brandsår, skoldninger, ætsninger og forfrysninger — ikke dette.",
+    en: "The knowledge base covers burns, scalds, chemical burns and frostbite — not this.",
+  },
+  guideSectionEmpty: { da: "Ingen dækning i vores kilder", en: "No coverage in our sources" },
+  guideStartTree: { da: "Før mig gennem forløbet", en: "Take me through the pathway" },
+  guideFailed: {
+    da: "Opslaget kunne ikke gennemføres. Prøv igen.",
+    en: "The lookup could not be completed. Try again.",
+  },
+
+  // Faldgruber
+  pitfallsTitle: { da: "Faldgruber", en: "Pitfalls" },
+  pitfallsTagline: {
+    da: "Det erfarne ved — og som overses når det går stærkt",
+    en: "What the experienced know — and what gets missed under pressure",
+  },
+  pitfallsHere: { da: "Relevant lige her", en: "Relevant right here" },
+  pitfallsWhyItMatters: { da: "Hvad der går galt", en: "What goes wrong" },
+  pitfallsCritical: { da: "Kritisk", en: "Critical" },
+  pitfallsImportant: { da: "Vigtig", en: "Important" },
+  pitfallsOurWording: {
+    da: "Overskriften er vores. Udsagnet nedenunder er kildens.",
+    en: "The headline is ours. The statement below is the source's.",
+  },
+  pitfallsNoneHere: {
+    da: "Ingen faldgruber knyttet til dette trin.",
+    en: "No pitfalls attached to this step.",
+  },
+  pitfallsLoading: { da: "Henter faldgruber…", en: "Loading pitfalls…" },
+  pitfallsAll: { da: "Alle faldgruber", en: "All pitfalls" },
+
+  // Struktureret anamnese
+  interviewTitle: { da: "Struktureret anamnese", en: "Structured history" },
+  interviewTagline: {
+    da: "Fortæl om patienten — jeg holder styr på hvad der mangler",
+    en: "Tell me about the patient — I keep track of what is missing",
+  },
+  interviewPlaceholder: {
+    da: "Fx «34-årig mand, kogende vand over højre hånd for 40 minutter siden, ingen allergier, tager Eliquis»…",
+    en: "e.g. “34-year-old man, boiling water over the right hand 40 minutes ago, no allergies, on apixaban”…",
+  },
+  interviewMissing: { da: "Mangler stadig", en: "Still missing" },
+  interviewCaptured: { da: "Optaget", en: "Recorded" },
+  interviewComplete: { da: "Anamnesen er komplet", en: "The history is complete" },
+  interviewAskNext: { da: "Spørg om det næste", en: "Ask the next one" },
+  interviewAskAloud: { da: "Læs spørgsmålet op", en: "Read the question aloud" },
+  interviewOptional: { da: "Valgfrit", en: "Optional" },
+  interviewRequired: { da: "Skal med", en: "Required" },
+  interviewClear: { da: "Ryd", en: "Clear" },
+  interviewReset: { da: "Ny anamnese", en: "New history" },
+  interviewSummary: { da: "Anamnese til journalen", en: "History for the record" },
+  interviewCopy: { da: "Kopiér", en: "Copy" },
+  interviewCopied: { da: "Kopieret", en: "Copied" },
+  interviewHeard: { da: "Hørt og henført", en: "Heard and assigned" },
+  interviewNothingHeard: {
+    da: "Det kunne jeg ikke henføre til et felt — svar direkte på feltet i stedet.",
+    en: "I could not assign that to a field — answer the field directly instead.",
+  },
+  interviewHowItWorks: {
+    da: "Genkendelsen sker her i browseren og er forudsigelig: appen viser hvad den hørte, og hvor den lagde det. Den gætter ikke.",
+    en: "Recognition happens here in the browser and is predictable: the app shows what it heard and where it put it. It does not guess.",
+  },
+  interviewProgress: { da: "udfyldt", en: "recorded" },
+  interviewSectionInjury: { da: "Skaden", en: "The injury" },
+  interviewSectionPatient: { da: "Patienten", en: "The patient" },
 } satisfies Record<string, Record<Lang, string>>;
 
 export function tr(key: keyof typeof t, lang: Lang): string {
