@@ -27,6 +27,69 @@ export interface StepImage {
   caption?: LocalizedText;
 }
 
+/**
+ * Ét forud-formuleret opslag i vidensbasen.
+ *
+ * Lægen skal kunne bede om mere uden at opfinde et spørgsmål. Emnet kender vi
+ * allerede — det er noden, det røde flag eller dispositionen han står i — så
+ * ordlyden skrives HER, sammen med det kliniske indhold, og ikke i koden.
+ */
+export interface SourceLookup {
+  /** Grebets ordlyd, fx "Hvad siger kilderne om cirkulær forbrænding?" */
+  label: LocalizedText;
+  /** Spørgsmålet der faktisk sendes afsted. */
+  question: LocalizedText;
+}
+
+/**
+ * Hvornår et handlingstrin gælder. Matches mod den sti motoren faktisk gik —
+ * aldrig mod fritekst, så et trin ikke kan komme frem på en formodning.
+ */
+export interface EscalationWhen {
+  nodeId: string;
+  /** Svarværdier der udløser trinnet. Udeladt = enhver værdi på noden. */
+  values?: string[];
+  /** Tal-node: trinnet gælder fra og med denne værdi. */
+  atLeast?: number;
+}
+
+/**
+ * Ét konkret handlingstrin ved en eskalation.
+ *
+ * `detail` er en TRO omskrivning af kilden, aldrig et selvstændigt klinisk
+ * udsagn — præcis som faldgrubernes overskrifter. Selve belægget hentes ordret
+ * fra vidensbasen med `query` og vises ved siden af. Kan vidensbasen ikke
+ * belægge trinnet, siger kortet det; `source` står der under alle omstændigheder,
+ * så et trin aldrig kan stå uden afsender.
+ */
+export interface EscalationAction {
+  id: string;
+  /** Udeladt = trinnet gælder uanset hvordan gennemløbet faldt ud. */
+  when?: EscalationWhen[];
+  title: LocalizedText;
+  detail: LocalizedText;
+  /** Instruksen trinnet er skrevet efter. */
+  source: string;
+  /** Søgningen der henter det ordrette belæg. Danske ord — kilderne er danske. */
+  query: string;
+}
+
+/**
+ * Eskalationen set fra BEGGE sider.
+ *
+ * "Ring til vagthavende brandsårslæge" er rigtigt for den yngre læge og
+ * cirkulært for specialisten, der ER den vagthavende. Et råd der antager den
+ * ene rolle, svigter den anden præcis når det gælder mest — så teksten rummer
+ * dem begge, og handlingstrinnene er de samme for dem begge.
+ */
+export interface Escalation {
+  /** Rollen der ringer op. Telefonnummeret bliver stående her. */
+  calling: LocalizedText;
+  /** Rollen der bliver ringet TIL: der er ingen at ringe til, beslutningen er hendes. */
+  receiving: LocalizedText;
+  actions: EscalationAction[];
+}
+
 export interface TreeNode {
   id: string;
   question: LocalizedText;
@@ -44,6 +107,8 @@ export interface TreeNode {
   images?: StepImage[];
   /** Kritisk node: rammes en af disse værdier, afbrydes flowet med rødt flag. */
   redFlags?: RedFlag[];
+  /** Forud-formuleret opslag: "hvad siger kilderne om det her spørgsmål?" */
+  lookup?: SourceLookup;
   /** Hvor går vi hen bagefter. Første match vinder; "*" matcher alt. */
   edges: TreeEdge[];
 }
@@ -54,6 +119,8 @@ export interface RedFlag {
   message: LocalizedText;
   /** Hop direkte til denne node/disposition når flaget rammes. */
   goto?: string;
+  /** Forud-formuleret opslag om netop dette flag. Overtrumfer nodens egen. */
+  lookup?: SourceLookup;
 }
 
 export interface TreeEdge {
@@ -71,6 +138,13 @@ export interface Disposition {
   images?: StepImage[];
   /** Kildehenvisninger, fx "brandsaar.dk/vaeskebehandling". */
   sources?: string[];
+  /**
+   * Hvad man gør imens — og hvad man gør hvis man selv er den der bliver
+   * ringet til. Sat på de dispositioner der eskalerer.
+   */
+  escalation?: Escalation;
+  /** Forud-formuleret opslag om anbefalingen. */
+  lookup?: SourceLookup;
 }
 
 export interface DecisionTree {

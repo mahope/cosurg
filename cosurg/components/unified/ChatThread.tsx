@@ -12,6 +12,7 @@ import type {
 } from "@/components/chat/useClinicalChat";
 import { AnswerCard } from "@/components/chat/AnswerCard";
 import { ProgressTrail } from "@/components/chat/ProgressTrail";
+import { EscalationPanel } from "@/components/escalation/EscalationPanel";
 import { PitfallCard } from "@/components/pitfalls/PitfallCard";
 import { followUpTreeId } from "@/components/treeRouting";
 import { tr } from "@/lib/i18n";
@@ -201,6 +202,19 @@ function TurnEntry({
   noteBusy: boolean;
   onShowProcedure: () => void;
 }) {
+  /*
+   * Den sti gennemløbet FAKTISK gik. Den afgør hvilke handlingstrin der gælder
+   * denne patient — og hvilken værdi et rødt flag sprang på, så flagets eget
+   * opslag kan findes. Anbefalingens sti vinder: er den kommet, er den den
+   * fuldstændige.
+   */
+  const sti = turn.disposition?.path ?? turn.workup?.path ?? [];
+
+  /* Uddybningen sendes som lægens næste besked — samme vej ind som hvis han
+     havde skrevet den selv. Kun på den seneste tur: en ældre eskalation er
+     læst og afgjort. */
+  const uddyb = interactive ? onQuickReply : undefined;
+
   return (
     <section>
       <QuestionBubble text={turn.question} />
@@ -218,7 +232,15 @@ function TurnEntry({
           tage skade, gul når behandlingen bliver forkert.
         */}
         {turn.redflags?.map((flag, i) => (
-          <RedflagBlock key={i} flag={flag} lang={lang} />
+          <RedflagBlock
+            key={i}
+            flag={flag}
+            lang={lang}
+            /* Værdien flaget sprang på — så det er FLAGETS eget opslag der
+               tilbydes, ikke nodens første. */
+            value={sti.find((s) => s.nodeId === flag.nodeId)?.value}
+            onElaborate={uddyb}
+          />
         ))}
 
         {turn.answer ? (
@@ -237,7 +259,27 @@ function TurnEntry({
                 </p>
                 <div className="mt-2 space-y-2.5">
                   {turn.pitfalls.map((f) => (
-                    <PitfallCard key={f.id} faldgrube={f} lang={lang} kompakt />
+                    <div key={f.id}>
+                      <PitfallCard faldgrube={f} lang={lang} kompakt />
+                      {/*
+                        Uddybningen står under den faldgrube den handler om, og
+                        spørgsmålet formuleres FOR lægen ud af faldgrubens egen
+                        overskrift. Han skal ikke først finde på et spørgsmål
+                        om noget systemet lige har sagt til ham.
+                      */}
+                      {uddyb && (
+                        <button
+                          type="button"
+                          onClick={() => uddyb(`${tr("elaboratePitfall", lang)}: ${f.title[lang]}?`)}
+                          className="mt-1.5 flex min-h-11 w-full items-center justify-between gap-3 rounded-lg border border-[var(--line-strong)] bg-[var(--paper-raised)] px-3.5 py-2 text-left text-sm font-medium text-[var(--ink-soft)] transition-colors hover:border-[var(--teal)] hover:text-[var(--ink)]"
+                        >
+                          <span>{tr("elaborateFromSources", lang)}</span>
+                          <span aria-hidden="true" className="shrink-0 text-[var(--teal-deep)]">
+                            →
+                          </span>
+                        </button>
+                      )}
+                    </div>
                   ))}
                 </div>
               </div>
@@ -304,6 +346,7 @@ function TurnEntry({
                 ? onShowProcedure
                 : undefined
             }
+            onElaborate={uddyb}
           />
         )}
 
@@ -480,7 +523,17 @@ function WorkupBlock({
  * Derfor bærer blokken ingen anden pynt — den skal kunne aflæses på et halvt
  * sekund fra den anden side af et leje.
  */
-function RedflagBlock({ flag, lang }: { flag: RedflagEvent; lang: Lang }) {
+function RedflagBlock({
+  flag,
+  lang,
+  value,
+  onElaborate,
+}: {
+  flag: RedflagEvent;
+  lang: Lang;
+  value?: string;
+  onElaborate?: (question: string) => void;
+}) {
   if (!flag.message) return null;
 
   return (
@@ -495,6 +548,20 @@ function RedflagBlock({ flag, lang }: { flag: RedflagEvent; lang: Lang }) {
       <p className="mt-2 font-[family-name:var(--font-mono)] text-[11px] leading-relaxed text-[var(--ink-faint)]">
         {flag.source}
       </p>
+      {/*
+        Grebet ud i kilderne, med træets egen ordlyd om netop dette flag.
+        Kun grebet — handlingstrinnene hører til ved anbefalingen, og et flag
+        der eskalerer får den i samme åndedrag lige nedenunder.
+      */}
+      {onElaborate && (
+        <EscalationPanel
+          treeId={flag.treeId}
+          nodeId={flag.nodeId}
+          value={value}
+          lang={lang}
+          onElaborate={onElaborate}
+        />
+      )}
     </section>
   );
 }
@@ -504,10 +571,12 @@ function DispositionBlock({
   disposition,
   lang,
   onShowProcedure,
+  onElaborate,
 }: {
   disposition: DispositionEvent;
   lang: Lang;
   onShowProcedure?: () => void;
+  onElaborate?: (question: string) => void;
 }) {
   const d = disposition.disposition;
   /*
@@ -517,6 +586,13 @@ function DispositionBlock({
    * gode nyheder og må aldrig låne alarmens farve.
    */
   const kritisk = d.severity === "emergency";
+  /*
+   * Eskalerer anbefalingen — akut overflytning eller henvisning — er der
+   * nogen at ringe til, og dermed også en rolle man kan HAVE. "Behandl her"
+   * og "send hjem" eskalerer ikke, og et rolleopdelt panel under dem ville
+   * kun være støj.
+   */
+  const eskalerer = d.severity === "emergency" || d.severity === "refer";
 
   return (
     <section
@@ -546,6 +622,27 @@ function DispositionBlock({
             </li>
           ))}
         </ul>
+      )}
+
+      {/*
+        HVAD MAN GØR IMENS — OG HVIS MAN SELV ER MODTAGEREN.
+
+        Anbefalingen ovenover kan lyde "ring til vagthavende brandsårslæge".
+        Det er rigtigt for den yngre læge og cirkulært for specialisten, der
+        selv er den vagthavende — og hun står med præcis de patienter der
+        udløser eskalationen. Panelet holder derfor begge roller åbne og
+        henter de konkrete trin frem, hver med sin instruks. Det står MED
+        anbefalingen og ikke bagved en knap: et handlingstrin man skal åbne,
+        er et handlingstrin man ikke får.
+      */}
+      {eskalerer && (
+        <EscalationPanel
+          treeId={disposition.treeId}
+          dispositionId={d.dispositionId}
+          path={disposition.path}
+          lang={lang}
+          onElaborate={onElaborate}
+        />
       )}
 
       {onShowProcedure && (

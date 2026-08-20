@@ -131,13 +131,33 @@
             "da": "Elektrisk skade: risiko for dybe vævsskader og arytmi. Hudlæsionen undervurderer altid skadens omfang. Konferér med vagthavende brandsårslæge, Rigshospitalet, 35 45 12 45.",
             "en": "Electrical injury: risk of deep tissue damage and arrhythmia. The skin lesion always understates the true extent. Consult the burn unit."
           },
-          "goto": "disp-emergency"
+          "goto": "disp-emergency",
+          "lookup": {
+            "label": {
+              "da": "Hvad siger kilderne om elektriske forbrændinger?",
+              "en": "What do the sources say about electrical burns?"
+            },
+            "question": {
+              "da": "Hvad siger kilderne om undersøgelse og behandling af elektriske forbrændinger?",
+              "en": "What do the sources say about investigation and treatment of electrical burns?"
+            }
+          }
         },
         {
           "when": "chemical",
           "message": {
             "da": "Kemisk ætsning: skyl straks og længe med rindende vand. Ætsninger fortsætter med at skade indtil stoffet er fjernet.",
             "en": "Chemical burn: irrigate immediately and for a prolonged period. Chemical injury continues until the agent is removed."
+          },
+          "lookup": {
+            "label": {
+              "da": "Hvad siger kilderne om ætsninger?",
+              "en": "What do the sources say about chemical burns?"
+            },
+            "question": {
+              "da": "Hvad siger kilderne om behandling af ætsninger — skylning, varighed og fjernelse af stoffet?",
+              "en": "What do the sources say about treating chemical burns — irrigation, duration and removing the agent?"
+            }
           }
         }
       ],
@@ -210,7 +230,17 @@
             "da": "Mistanke om inhalationsskade. Sikr luftvej — tidlig intubation overvejes, da øvre luftvejsobstruktion kan udvikle sig under transport. Giv 100 % ilt. Kontakt vagthavende brandsårslæge, 35 45 12 45.",
             "en": "Suspected inhalation injury. Secure the airway — consider early intubation, as upper airway obstruction can develop during transport. Give 100% oxygen. Contact the burn unit."
           },
-          "goto": "disp-emergency"
+          "goto": "disp-emergency",
+          "lookup": {
+            "label": {
+              "da": "Hvad siger kilderne om inhalationsskade?",
+              "en": "What do the sources say about inhalation injury?"
+            },
+            "question": {
+              "da": "Hvad siger kilderne om inhalationsskade — indikationer for intubation, iltbehandling og systemisk forgiftning?",
+              "en": "What do the sources say about inhalation injury — indications for intubation, oxygen therapy and systemic poisoning?"
+            }
+          }
         }
       ],
       "edges": [
@@ -287,7 +317,17 @@
             "da": "Stor brandskade på 20 procent eller mere. Kræver væskebehandling, opvarmning og kontakt til vagthavende brandsårslæge, Rigshospitalet, 35 45 12 45.",
             "en": "Major burn of 20 percent or more. Requires fluid resuscitation, warming and contact with the burn unit."
           },
-          "goto": "disp-emergency"
+          "goto": "disp-emergency",
+          "lookup": {
+            "label": {
+              "da": "Hvad siger kilderne om væskebehandling?",
+              "en": "What do the sources say about fluid resuscitation?"
+            },
+            "question": {
+              "da": "Hvad siger kilderne om væskebehandling af store brandsår — modificeret Parkland-formel, perioder og timediurese?",
+              "en": "What do the sources say about fluid resuscitation in major burns — modified Parkland formula, periods and hourly urine output?"
+            }
+          }
         }
       ],
       "edges": [
@@ -439,7 +479,17 @@
             "da": "Dyb cirkulær skade. Risiko for kompromitteret perifer cirkulation når ødemet tiltager — aflastende incision kan blive nødvendig. Ring til vagthavende brandsårslæge, 35 45 12 45, før du incidere.",
             "en": "Deep circumferential burn. Risk of compromised distal circulation as oedema develops — escharotomy may be required. Call the burn unit before incising."
           },
-          "goto": "disp-emergency"
+          "goto": "disp-emergency",
+          "lookup": {
+            "label": {
+              "da": "Hvad siger kilderne om aflastende incisioner?",
+              "en": "What do the sources say about escharotomy?"
+            },
+            "question": {
+              "da": "Hvad siger kilderne om aflastende incisioner ved cirkulære forbrændinger — indikation, teknik og dybde?",
+              "en": "What do the sources say about escharotomy in circumferential burns — indication, technique and depth?"
+            }
+          }
         }
       ],
       "edges": [
@@ -643,7 +693,118 @@
       "sources": [
         "brandsaar.dk/overflytning-af-brandsårspatienter",
         "brandsaar.dk/vaeskebehandling"
-      ]
+      ],
+      "lookup": {
+        "label": {
+          "da": "Hvad siger kilderne om overflytning?",
+          "en": "What do the sources say about transfer?"
+        },
+        "question": {
+          "da": "Hvad siger kilderne om overflytning af brandsårspatienter — hvad der skal være på plads før og under transporten?",
+          "en": "What do the sources say about transferring burn patients — what must be in place before and during transport?"
+        }
+      },
+      "escalation": {
+        "calling": {
+          "da": "Ringer du op, er nummeret 35 45 12 45 — vagthavende brandsårslæge på Rigshospitalet. Hav skadesmekanisme, skadestidspunkt, vitale parametre, vurderet brandsårsareal og iværksat behandling klar, og aftal fremsendelse af fotos. Trinnene herunder er dem der skal i gang imens.",
+          "en": "If you are the one calling, the number is +45 35 45 12 45 — the on-call burn surgeon at Rigshospitalet. Have mechanism, time of injury, vital signs, estimated burn area and treatment already given ready, and agree on sending photos. The steps below are what should be under way in the meantime."
+        },
+        "receiving": {
+          "da": "Er du selv vagthavende brandsårslæge, er der ingen at ringe til — beslutningen er din. Trinnene herunder er dem vores kilder angiver for netop denne patient, hver med sin instruks. Er du i tvivl om skadens omfang, kan Rigshospitalets vagthavende plastikkirurg nås via omstillingen på 35 45 35 45.",
+          "en": "If you are the on-call burn surgeon yourself, there is nobody to call — the decision is yours. The steps below are the ones our sources specify for this exact patient, each with its instruction. If you are in doubt about the extent of the injury, the on-call plastic surgeon at Rigshospitalet can be reached through the switchboard on +45 35 45 35 45."
+        },
+        "actions": [
+          {
+            "id": "airway",
+            "when": [
+              { "nodeId": "inhalation", "values": ["yes"] },
+              { "nodeId": "mechanism", "values": ["flame"] }
+            ],
+            "title": {
+              "da": "Luftvej: stridor og åndedrætsbesvær er absolutte indikationer for intubation",
+              "en": "Airway: stridor and respiratory distress are absolute indications for intubation"
+            },
+            "detail": {
+              "da": "Mistanke om inhalationsskade be- eller afkræftes ved laryngo-, fiber- eller bronkoskopi. Patienten observeres tæt og revurderes ofte; ved tiltagende luftvejsobstruktion intuberes med størst mulig tube, da luftvejsødem gør intubationen sværere med tiden. Store brandskader gives 100 % ilt, 15 l/min.",
+              "en": "Suspected inhalation injury is confirmed or ruled out by laryngo-, fibre- or bronchoscopy. The patient is observed closely and reassessed often; with increasing airway obstruction, intubate with the largest possible tube, as airway oedema makes intubation harder over time. Large burns receive 100% oxygen, 15 L/min."
+            },
+            "source": "brandsaar.dk/inhalationsskader-2 · VIP-instruks: PBB — Inhalationsskader",
+            "query": "inhalationsskade oevre luftvejsobstruktion intubation stridor oxygen 15 l/min"
+          },
+          {
+            "id": "fluids",
+            "when": [
+              { "nodeId": "tbsa", "atLeast": 20 },
+              { "nodeId": "fluid" }
+            ],
+            "title": {
+              "da": "Væsketerapi beregnes efter modificeret Parkland-formel",
+              "en": "Fluid therapy is calculated from the modified Parkland formula"
+            },
+            "detail": {
+              "da": "Patienten vejes ved ankomst — vægt og TBSA indgår begge i beregningen. Væskeperioden regnes fra ulykkestidspunktet, ikke fra ankomsten, og væske givet inden ankomst modregnes. Indgiften justeres efter timediuresen. Formlens tal står ordret i uddraget herunder; gæt dem ikke.",
+              "en": "The patient is weighed on arrival — both weight and TBSA enter the calculation. The fluid period runs from the time of injury, not from arrival, and fluid given before arrival is deducted. Intake is adjusted to hourly urine output. The formula's figures are in the verbatim excerpt below; do not guess them."
+            },
+            "source": "VIP-instruks: PB Væsketerapi · brandsaar.dk/vaeskebehandling-af-brandsår",
+            "query": "modificeret Parkland formel vaesketerapi vaegt TBSA timediurese perioder"
+          },
+          {
+            "id": "escharotomy",
+            "when": [{ "nodeId": "circumferential", "values": ["yes"] }],
+            "title": {
+              "da": "Aflastende incision (eskarotomi) — kun ved nedsat perfusion",
+              "en": "Escharotomy — only where perfusion is reduced"
+            },
+            "detail": {
+              "da": "Aflastende incisioner anlægges kun ved cirkulære dybe forbrændinger der medfører nedsat perfusion i vævet. Den strammende, forbrændte hud gennemskæres på langs indtil stramningen løsner sig — kun i huden, ikke i subcutis eller fascie, og kun hvor brandskaden er dyb. Kilderne angiver at Rigshospitalets brandsårsafdeling kontaktes for råd vedrørende anlæggelsen.",
+              "en": "Escharotomy is performed only in deep circumferential burns that reduce tissue perfusion. The constricting burnt skin is incised lengthwise until the constriction releases — skin only, not subcutis or fascia, and only where the burn is deep. The sources state that the burn unit at Rigshospitalet is contacted for advice on performing it."
+            },
+            "source": "VIP-instruks: PB — Sygepleje — Aflastende incisioner ved cirkulære forbrændinger · brandsaar.dk/overflytning-af-brandsårspatienter",
+            "query": "aflastende incisioner cirkulaer forbraending eskarotomi nedsat perfusion"
+          },
+          {
+            "id": "electrical",
+            "when": [{ "nodeId": "mechanism", "values": ["electrical"] }],
+            "title": {
+              "da": "Elektrisk skade: EKG ved ankomst, timediurese og S-CK",
+              "en": "Electrical injury: ECG on arrival, hourly urine output and S-CK"
+            },
+            "detail": {
+              "da": "Skader på myokardiet manifesterer sig umiddelbart; ud over initialt EKG er monitorering ikke indiceret ved normal rytme. Mørkfarvet urin taler for myoglobinuri med fare for nyreskade — den tilstræbte timediurese står i uddraget. Ødem i muskellogerne kan afklemme kar og nerver, så fasciotomi kan blive nødvendig i alle implicerede kompartments.",
+              "en": "Myocardial injury manifests immediately; beyond the initial ECG, monitoring is not indicated with a normal rhythm. Dark urine suggests myoglobinuria with risk of renal injury — the target hourly output is in the excerpt. Oedema in the muscle compartments can compress vessels and nerves, so fasciotomy may become necessary in all involved compartments."
+            },
+            "source": "VIP-instruks: PBB — Elektriske forbrændinger",
+            "query": "elektriske forbraendinger EKG myoglobin timediurese fasciotomi kompartment"
+          },
+          {
+            "id": "chemical",
+            "when": [{ "nodeId": "mechanism", "values": ["chemical"] }],
+            "title": {
+              "da": "Ætsning: fjern stoffet først, skyl derefter — og længe",
+              "en": "Chemical burn: remove the agent first, then irrigate — at length"
+            },
+            "detail": {
+              "da": "Den primære behandling er fjernelse af stoffet: tørstof børstes af krop og tøj, gennemvædet tøj fjernes. Derefter hurtig skylning med vand, og vandet skal løbe VÆK fra patienten så stoffet ikke rammer andre steder. Ætsningen fortsætter indtil stoffet er fjernet, inaktiveret eller tilstrækkeligt fortyndet. Ved langvarig skylning er der fare for hypotermi. Varigheder står i uddraget.",
+              "en": "The primary treatment is removal of the agent: dry substance is brushed off body and clothes, soaked clothing is removed. Then rapid irrigation with water, and the water must run AWAY from the patient so the agent does not reach other sites. The chemical injury continues until the agent is removed, inactivated or sufficiently diluted. Prolonged irrigation risks hypothermia. Durations are in the excerpt."
+            },
+            "source": "brandsaar.dk/aetsninger",
+            "query": "aetsning fjernelse af stoffet skylning varighed hypotermi lakmus"
+          },
+          {
+            "id": "transfer",
+            "title": {
+              "da": "Inden transporten: to PVK, blærekateter, varme og smertestillende",
+              "en": "Before transport: two IV lines, urinary catheter, warmth and analgesia"
+            },
+            "detail": {
+              "da": "Brandsårspatienter bør have anlagt to PVK på grund af hæmodynamisk instabilitet, og blærekateter anlægges hurtigst muligt med henblik på timediurese. Patienten SKAL pakkes varmt ind under transporten. Er der skyllet 20-30 minutter, pauseres eller seponeres skylningen — derefter er den kun smertestillende og kompromitterer temperaturen. Smertestillende gives i stedet.",
+              "en": "Burn patients should have two IV lines because of haemodynamic instability, and a urinary catheter is placed as soon as possible for hourly urine output. The patient MUST be wrapped warmly during transport. Once 20-30 minutes of irrigation is done, it is paused or stopped — beyond that it is only analgesic and compromises temperature. Analgesia is given instead."
+            },
+            "source": "brandsaar.dk/overflytning-af-brandsårspatienter",
+            "query": "overflytning brandsaarspatienter to PVK blaerekateter hypotermi smertestillende"
+          }
+        ]
+      }
     },
     {
       "id": "disp-refer",
@@ -659,7 +820,56 @@
       "sources": [
         "brandsaar.dk/ambulant-behandling",
         "brandsaar.dk/håndforbrændinger-eller-skoldninger-2"
-      ]
+      ],
+      "lookup": {
+        "label": {
+          "da": "Hvad siger kilderne om skader i specialområder?",
+          "en": "What do the sources say about burns in special areas?"
+        },
+        "question": {
+          "da": "Hvad siger kilderne om behandling og henvisning af brandsår i ansigt, på hænder, fødder, genitalier eller over led?",
+          "en": "What do the sources say about treating and referring burns to the face, hands, feet, genitals or across joints?"
+        }
+      },
+      "escalation": {
+        "calling": {
+          "da": "Er du i tvivl om behandling eller overflytning, kan vagthavende brandsårslæge altid konfereres på 35 45 12 45 — det er selv en anbefaling fra kilderne, ikke en nødløsning.",
+          "en": "If you are in doubt about treatment or transfer, the on-call burn surgeon can always be consulted on +45 35 45 12 45 — that is itself a recommendation from the sources, not a last resort."
+        },
+        "receiving": {
+          "da": "Er du selv brandsårslægen, er henvisningen din beslutning. Det kilderne angiver om behandlingen indtil vurderingen står herunder.",
+          "en": "If you are the burn surgeon yourself, the referral is your decision. What the sources specify about treatment until assessment is below."
+        },
+        "actions": [
+          {
+            "id": "hand-dressing",
+            "when": [{ "nodeId": "location", "values": ["hand"] }],
+            "title": {
+              "da": "Håndskade: forbindingen må begrænse bevægeligheden mindst muligt",
+              "en": "Hand burn: the dressing must restrict mobility as little as possible"
+            },
+            "detail": {
+              "da": "Stive fingre er den væsentligste følgeskade. Forbindingen placeres så bevægeligheden begrænses mindst muligt, og håndskader kan ombandageres efter få dage hvor mængden af gaze reduceres for bedre bevægelighed. Kilderne angiver at større håndskader skal indlægges.",
+              "en": "Stiff fingers are the main sequela. The dressing is placed so mobility is restricted as little as possible, and hand burns can be re-dressed after a few days with less gauze for better movement. The sources state that larger hand burns require admission."
+            },
+            "source": "brandsaar.dk/ambulant-behandling · brandsaar.dk/håndforbrændinger-eller-skoldninger-2",
+            "query": "haandskade forbinding begraense bevaegeligheden stive fingre ombandagering indlaegges"
+          },
+          {
+            "id": "interim-dressing",
+            "title": {
+              "da": "Indtil vurderingen: rens og forbind forsvarligt",
+              "en": "Until assessment: clean and dress properly"
+            },
+            "detail": {
+              "da": "Løs hud og bullae fjernes, sårene sæbevaskes og skylles, og der forbindes med Mepilex Transfer — alternativt to lag Jelonet — plus sugende gaze og elastikbind. Forbindingen lades urørt medmindre der er gennemsivning eller infektionstegn.",
+              "en": "Loose skin and blisters are removed, the wounds are washed with soap and rinsed, and dressed with Mepilex Transfer — alternatively two layers of Jelonet — plus absorbent gauze and an elastic bandage. The dressing is left untouched unless there is strike-through or signs of infection."
+            },
+            "source": "brandsaar.dk/ambulant-behandling",
+            "query": "ambulant behandling loes hud bullae saebevask mepilex transfer sugende gaze"
+          }
+        ]
+      }
     },
     {
       "id": "disp-treat",

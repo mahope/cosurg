@@ -361,6 +361,34 @@ export const t = {
     en: "The sources are Danish and shown verbatim. Headings and explanations are translated.",
   },
 
+  /* ------------------------------------------------------------------ *
+   * Eskalationen — set fra begge sider
+   *
+   * "Ring til vagthavende brandsårslæge" er rigtigt for den yngre læge og
+   * cirkulært for specialisten, der selv ER den vagthavende. Mærkaterne her
+   * er det der gør de to roller entydige på et halvt sekund; teksterne selv
+   * står i træet, sammen med det øvrige kliniske indhold.
+   * ------------------------------------------------------------------ */
+  escalationTitle: { da: "Eskalation — og hvad der gøres imens", en: "Escalation — and what is done meanwhile" },
+  escalationCalling: { da: "Ringer du op", en: "If you are calling" },
+  escalationReceiving: { da: "Er du selv vagthavende", en: "If you are the on-call surgeon" },
+  escalationActions: { da: "Konkrete trin for denne patient", en: "Concrete steps for this patient" },
+  escalationActionsNote: {
+    da: "Trinnene kommer fra beslutningstræet og gælder begge roller — det er hvem der beslutter, der er forskellen. Hvert trin bærer sin instruks og kan foldes ud ordret.",
+    en: "The steps come from the decision tree and apply to both roles — who decides is the difference. Each step carries its instruction and can be expanded verbatim.",
+  },
+  escalationSource: { da: "Instruks", en: "Instruction" },
+  escalationLoading: {
+    da: "Henter handlingstrinnene og deres belæg fra vidensbasen …",
+    en: "Fetching the action steps and their backing from the knowledge base …",
+  },
+  escalationFailed: {
+    da: "Handlingstrinnene kunne ikke hentes. Anbefalingen og dens kilder ovenfor står ved magt.",
+    en: "The action steps could not be fetched. The recommendation and its sources above still stand.",
+  },
+  elaborateFromSources: { da: "Uddyb fra kilderne", en: "Elaborate from the sources" },
+  elaboratePitfall: { da: "Hvad siger kilderne om", en: "What do the sources say about" },
+
   // Behandlingsguide
   guideTitle: { da: "Behandlingsguide", en: "Treatment guide" },
   guideTagline: {
