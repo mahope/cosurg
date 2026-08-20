@@ -1,4 +1,4 @@
-# BurnTree — måldrevet plan (torsdag 20/8)
+# CoSurg — måldrevet plan (torsdag 20/8)
 
 Vi arbejder mod **mål**, ikke opgavelister. Hvert mål har et observerbart færdig-kriterium:
 noget man kan se ske. Et mål er ikke nået fordi der er skrevet kode — det er nået når
@@ -66,7 +66,7 @@ mere eller mindre. Kliniske træer bærer forfatternavne eller er tydeligt mærk
 | D — Deploy | serveren, compose-stacken |
 
 ## Deploy
-`burntree.plastsurgeon.com` → 138.199.206.15 (DNS verificeret 20/8).
+`cosurg.plastsurgeon.com` → 138.199.206.15 (DNS verificeret 20/8).
 Serveren kører **Openship**, ikke Dokploy. Deployet ligger i sit eget spor.
 
 ## Klinisk indhold — venter på Magnus og Rami
