@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useRef, useState, type ChangeEvent, type DragEvent, type KeyboardEvent } from "react";
+import { useCallback, useEffect, useRef, useState, type ChangeEvent, type DragEvent, type KeyboardEvent } from "react";
 import type { Lang } from "@/lib/tree/types";
 import { tr } from "@/lib/i18n";
 import type { TreeSummary } from "./TreePicker";
@@ -138,15 +138,24 @@ export function IntakeCard({
    */
   const canSend = draft.trim().length > 0 || attachments.length > 0;
 
-  const submit = () => {
-    if (!canSend) return;
-    const text = draft.trim() || tr("intakeImageOnly", lang);
+  /**
+   * Send en bestemt tekst. `submit` (Enter/send-knappen) sender kladden som
+   * den står; dikteringens veje sender kladden PLUS et eventuelt uafsluttet
+   * interim-segment — stopper lægen selv midt i en sætning, er de sidste ord
+   * hans egne, og de må ikke tabes fordi transskriptionen ikke nåede at
+   * stemple dem færdige.
+   */
+  const submitText = (raw: string) => {
+    if (!raw.trim() && attachments.length === 0) return;
+    const text = raw.trim() || tr("intakeImageOnly", lang);
     const images = attachments.length > 0 ? toChatImages(attachments) : undefined;
     onSubmit(text, images);
     onDraftChange("");
     setAttachments([]);
     setAttachError(null);
   };
+
+  const submit = () => submitText(draft);
 
   const onKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
     // Enter sender, skift+enter giver en ny linje. En hel case skrives i
@@ -156,6 +165,123 @@ export function IntakeCard({
       e.preventDefault();
       submit();
     }
+  };
+
+  /* ------------------------------------------------------------------ *
+   * Dikteringens afslutning — uden ekstra klik
+   *
+   * Lægen taler sin case ind og skal ikke bagefter lede efter en
+   * send-knap. To veje afslutter:
+   *
+   * 1. STOP SENDER. Trykker han på mikrofonen mens den lytter og der står
+   *    tekst, stoppes optagelsen OG teksten sendes — ét tryk. Er feltet
+   *    tomt, stopper trykket bare (fejlstart uden ord er en fortrydelse).
+   *
+   * 2. STILHED SENDER, MED VARSEL. Har hverken talen (interim) eller
+   *    feltet rørt sig i et stykke tid, tæller knappen synligt ned og
+   *    sender. Taler han videre under varslet, annulleres det — interim
+   *    tæller som tale, så et ord der stadig ruller ind aldrig klippes.
+   *
+   * Fortryd: Escape (eller annullér-knappen under varslet) stopper uden at
+   * sende. Teksten bliver stående i feltet — den forsvinder aldrig.
+   *
+   * Tastaturet er urørt: Enter sender som altid. Og håndfri tilstand (OR)
+   * bruger slet ikke dette felt — dens egen auto-oplæsning kolliderer
+   * derfor ikke med dikteringen her.
+   */
+  const SILENCE_BEFORE_WARN_MS = 3500;
+  const COUNTDOWN_MS = 3000;
+
+  /**
+   * Sekunder tilbage af varslet. Null = intet varsel. Vises kun mens der
+   * faktisk lyttes — stopper mikrofonen udefra (sprogskift, fejl), falder
+   * varslet bort af sig selv uden at nogen skal huske at rydde op.
+   */
+  const [countdown, setCountdown] = useState<number | null>(null);
+  const showCountdown = listening && countdown !== null ? countdown : null;
+
+  const lastActivityRef = useRef(0);
+  const stateRef = useRef({ draft, interim, hasAttachments: false });
+  const submitRef = useRef<(raw: string) => void>(() => {});
+  const toggleMicRef = useRef(onToggleMic);
+
+  // Refs synkroniseres i en effekt (aldrig under render). De findes fordi
+  // stilhedsuret tikker i et interval, som ikke skal genstartes af hvert
+  // tastetryk — det læser altid den nyeste tilstand gennem dem.
+  useEffect(() => {
+    stateRef.current = { draft, interim, hasAttachments: attachments.length > 0 };
+    submitRef.current = submitText;
+    toggleMicRef.current = onToggleMic;
+  });
+
+  // Al aktivitet nulstiller stilhedsuret: nye talte ord OG tastetryk.
+  useEffect(() => {
+    lastActivityRef.current = Date.now();
+  }, [interim, draft]);
+
+  /** Stop og send — dikteringens normale afslutning. */
+  const stopAndSend = useCallback(() => {
+    const { draft: kladde, interim: rest } = stateRef.current;
+    const gap = kladde && !kladde.endsWith(" ") && rest ? " " : "";
+    setCountdown(null);
+    toggleMicRef.current();
+    submitRef.current(kladde + gap + rest);
+  }, []);
+
+  /** Stop UDEN at sende. Teksten bliver stående i feltet. */
+  const cancelDictation = useCallback(() => {
+    setCountdown(null);
+    toggleMicRef.current();
+  }, []);
+
+  useEffect(() => {
+    if (!listening) return;
+    lastActivityRef.current = Date.now();
+    const timer = window.setInterval(() => {
+      const { interim: nu, draft: kladde, hasAttachments } = stateRef.current;
+      // Interim der stadig ruller ind ER tale — også når teksten er uændret.
+      if (nu) lastActivityRef.current = Date.now();
+      if (!kladde.trim() && !hasAttachments) {
+        setCountdown(null);
+        return;
+      }
+      const silent = Date.now() - lastActivityRef.current;
+      if (silent < SILENCE_BEFORE_WARN_MS) {
+        setCountdown(null);
+        return;
+      }
+      const remaining = SILENCE_BEFORE_WARN_MS + COUNTDOWN_MS - silent;
+      if (remaining <= 0) {
+        window.clearInterval(timer);
+        stopAndSend();
+      } else {
+        setCountdown(Math.ceil(remaining / 1000));
+      }
+    }, 200);
+    return () => window.clearInterval(timer);
+  }, [listening, stopAndSend]);
+
+  // Escape fortryder dikteringen, uanset hvor fokus er.
+  useEffect(() => {
+    if (!listening) return;
+    const onEsc = (e: globalThis.KeyboardEvent) => {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        cancelDictation();
+      }
+    };
+    window.addEventListener("keydown", onEsc);
+    return () => window.removeEventListener("keydown", onEsc);
+  }, [listening, cancelDictation]);
+
+  /** Mikrofon-klikket: start, eller stop-og-send når der er noget at sende. */
+  const onMicClick = () => {
+    if (listening && (draft.trim() || interim.trim() || attachments.length > 0)) {
+      stopAndSend();
+      return;
+    }
+    setCountdown(null);
+    onToggleMic();
   };
 
   /*
@@ -307,7 +433,7 @@ export function IntakeCard({
           {compact && (
             <button
               type="button"
-              onClick={onToggleMic}
+              onClick={onMicClick}
               aria-pressed={listening}
               aria-busy={starting}
               aria-label={tr(listening ? "micStop" : "micStart", lang)}
@@ -319,7 +445,11 @@ export function IntakeCard({
                     : "bg-[var(--teal-deep)] text-white hover:bg-[var(--teal)]"
               }`}
             >
-              <MicGlyph size={19} />
+              {showCountdown !== null ? (
+                <span className="font-[family-name:var(--font-mono)] text-base font-bold">{showCountdown}</span>
+              ) : (
+                <MicGlyph size={19} />
+              )}
             </button>
           )}
 
@@ -427,16 +557,15 @@ export function IntakeCard({
         <div className="mt-6 flex flex-col items-center">
           <button
             type="button"
-            onClick={onToggleMic}
+            onClick={onMicClick}
             aria-pressed={listening}
             aria-busy={starting}
             aria-label={tr(listening ? "micStop" : "micStart", lang)}
             /*
-              Tre tilstande, samme størrelse i alle tre, så knappen aldrig
-              springer. Knappen er ALTID fyldt — den er skærmens omdrejningspunkt
-              og må ikke ligne en sekundær kontur-knap. "Åbner" lyser op med det
-              samme klikket lander; ringene og åndedrættet kommer først når
-              lyden faktisk løber.
+              Fire tilstande, samme størrelse i alle fire, så knappen aldrig
+              springer: klar, åbner, lytter — og varsler, hvor ikonet viger for
+              nedtællingstallet. Knappen er ALTID fyldt — den er skærmens
+              omdrejningspunkt og må ikke ligne en sekundær kontur-knap.
             */
             className={`relative flex h-[116px] w-[116px] items-center justify-center rounded-full shadow-[0_4px_18px_rgba(0,83,85,0.18)] transition-colors ${
               listening
@@ -458,16 +587,35 @@ export function IntakeCard({
                 />
               </>
             )}
-            <MicGlyph size={50} />
+            {showCountdown !== null ? (
+              <span className="font-[family-name:var(--font-mono)] text-5xl font-bold">{showCountdown}</span>
+            ) : (
+              <MicGlyph size={50} />
+            )}
           </button>
 
           {/* Én linje, fast højde. Den skifter indhold — aldrig plads. */}
-          <p aria-live="polite" className="mt-3 flex h-5 items-center text-[13px] font-medium text-[var(--ink-soft)]">
-            {listening
-              ? tr("intakeMicListening", lang)
-              : starting
-                ? tr("intakeMicStarting", lang)
-                : tr("intakeMicHint", lang)}
+          <p aria-live="polite" className="mt-3 flex h-5 items-center gap-2 text-[13px] font-medium text-[var(--ink-soft)]">
+            {showCountdown !== null ? (
+              <>
+                <span>
+                  {tr("intakeMicCountdown", lang)} {showCountdown}…
+                </span>
+                <button
+                  type="button"
+                  onClick={cancelDictation}
+                  className="rounded border border-[var(--line-strong)] px-1.5 py-px text-[11px] font-medium text-[var(--ink-soft)] transition-colors hover:border-[var(--teal)] hover:text-[var(--ink)]"
+                >
+                  {tr("intakeMicCancel", lang)}
+                </button>
+              </>
+            ) : listening ? (
+              tr("intakeMicListening", lang)
+            ) : starting ? (
+              tr("intakeMicStarting", lang)
+            ) : (
+              tr("intakeMicHint", lang)
+            )}
           </p>
         </div>
       </div>

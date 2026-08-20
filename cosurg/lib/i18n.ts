@@ -662,8 +662,11 @@ export const t = {
    * kan, og ingen eksempler der demonstrerer det.
    * ------------------------------------------------------------------ */
   intakeMicHint: { da: "Tryk og tal — ordene kommer med det samme", en: "Tap and talk — the words appear straight away" },
-  intakeMicListening: { da: "Jeg lytter", en: "Listening" },
+  intakeMicListening: { da: "Jeg lytter — tryk igen for at sende", en: "Listening — tap again to send" },
   intakeMicStarting: { da: "Åbner mikrofonen…", en: "Opening the microphone…" },
+  /* Dikteringens stilheds-varsel. Nedtællingen står i selve knappen. */
+  intakeMicCountdown: { da: "Sender om", en: "Sending in" },
+  intakeMicCancel: { da: "Annullér (Esc)", en: "Cancel (Esc)" },
   intakeSend: { da: "Send", en: "Send" },
   intakeAddImage: { da: "Vedhæft billede", en: "Attach image" },
   intakeRemoveImage: { da: "Fjern billede", en: "Remove image" },
