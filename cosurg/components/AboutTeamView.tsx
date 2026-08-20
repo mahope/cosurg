@@ -7,29 +7,83 @@ import type { Lang } from "@/lib/tree/types";
 import { tr } from "@/lib/i18n";
 import { BrandMark, BrandWatermark } from "@/components/BrandMark";
 
+interface Member {
+  name: string;
+  role: string;
+  img: string;
+}
+
 /**
  * Redaktionen/ekspertpanelet bag CoSurgs kliniske grundlag. Navne, roller og
  * portrætter er hentet fra Nordic Surgery Labs egen about-side (jpbrs-repoet)
  * — samme mennesker, samme billeder, lokalt hostet så de overholder appens CSP.
  */
-const TEAM = [
-  { name: "Nicco Krezdorn", role: "Chief Surgeon, Zealand, Denmark", img: "nicco-krezdorn.jpg" },
-  { name: "Volker Schmidt", role: "Chief Surgeon, St. Gallen, Switzerland", img: "volker-schmidt.jpg" },
-  { name: "Lisbet Hölmich", role: "Professor, Herlev, Denmark", img: "lisbet-holmich.jpg" },
-  { name: "Tine Damsgaard", role: "Professor, Odense/Vejle, Denmark", img: "tine-damsgaard.jpg" },
-  { name: "Amir Bigdeli", role: "Chief Surgeon, Kassel, Germany", img: "amir-bigdeli.jpg" },
-  { name: "Åsa Edsander", role: "Consultant, Karolinska Institute, Stockholm, Sweden", img: "asa-edsander.png" },
-  { name: "Michael Rose", role: "Consultant, Zealand, Denmark", img: "michael-rose.jpg" },
-  { name: "Taiba Al-Rasheed", role: "Consultant, Zealand, Denmark", img: "taiba-alrasheed.png" },
-  { name: "Lisa Toft", role: "Consultant, Rigshospitalet, Copenhagen, Denmark", img: "lisa-toft.jpg" },
-  { name: "Emir Hasanbegovic", role: "Consultant, Amalieklinikken, Aarhus, Denmark", img: "emir-hasanbegovic.jpg" },
-  { name: "Rami Ibrahim", role: "Consultant, MURU Clinic, Copenhagen", img: "rami-ibrahim.png" },
-  { name: "Jais Oliver Berg", role: "Consultant, Herlev, Denmark", img: "jais-oliver-berg.jpg" },
-  { name: "Matilda Svenning", role: "Consultant, Zealand, Denmark", img: "matilda-svenning.png" },
-  { name: "Hans Henrik Rohden Nielsen", role: "Consultant, Aarhus, Denmark", img: "hans-henrik-rohden-nielsen.jpg" },
-  { name: "Hannah Trøstrup", role: "Consultant, Aleris, Denmark", img: "hannah-trostrup.jpg" },
-  { name: "Magnus Balslev Avnstorp", role: "Consultant, Zealand & Printzlau, Denmark", img: "magnus-balslev-avnstorp.jpg" },
+const EXPERT_PANEL: Member[] = [
+  { name: "Nicco Krezdorn", role: "Chief Surgeon, Zealand, Denmark", img: "/team/nicco-krezdorn.jpg" },
+  { name: "Volker Schmidt", role: "Chief Surgeon, St. Gallen, Switzerland", img: "/team/volker-schmidt.jpg" },
+  { name: "Lisbet Hölmich", role: "Professor, Herlev, Denmark", img: "/team/lisbet-holmich.jpg" },
+  { name: "Tine Damsgaard", role: "Professor, Odense/Vejle, Denmark", img: "/team/tine-damsgaard.jpg" },
+  { name: "Amir Bigdeli", role: "Chief Surgeon, Kassel, Germany", img: "/team/amir-bigdeli.jpg" },
+  { name: "Åsa Edsander", role: "Consultant, Karolinska Institute, Stockholm, Sweden", img: "/team/asa-edsander.png" },
+  { name: "Michael Rose", role: "Consultant, Zealand, Denmark", img: "/team/michael-rose.jpg" },
+  { name: "Taiba Al-Rasheed", role: "Consultant, Zealand, Denmark", img: "/team/taiba-alrasheed.png" },
+  { name: "Lisa Toft", role: "Consultant, Rigshospitalet, Copenhagen, Denmark", img: "/team/lisa-toft.jpg" },
+  { name: "Emir Hasanbegovic", role: "Consultant, Amalieklinikken, Aarhus, Denmark", img: "/team/emir-hasanbegovic.jpg" },
+  { name: "Rami Ibrahim", role: "Consultant, MURU Clinic, Copenhagen", img: "/team/rami-ibrahim.png" },
+  { name: "Jais Oliver Berg", role: "Consultant, Herlev, Denmark", img: "/team/jais-oliver-berg.jpg" },
+  { name: "Matilda Svenning", role: "Consultant, Zealand, Denmark", img: "/team/matilda-svenning.png" },
+  { name: "Hans Henrik Rohden Nielsen", role: "Consultant, Aarhus, Denmark", img: "/team/hans-henrik-rohden-nielsen.jpg" },
+  { name: "Hannah Trøstrup", role: "Consultant, Aleris, Denmark", img: "/team/hannah-trostrup.jpg" },
+  { name: "Magnus Balslev Avnstorp", role: "Consultant, Zealand & Printzlau, Denmark", img: "/team/magnus-balslev-avnstorp.jpg" },
 ];
+
+/**
+ * "Our Team": redaktørerne, bidragyderne og skaberne der bygger og
+ * vedligeholder Nordic Surgery Labs platforme. Hentet fra plastsurgeon-
+ * repoets about-side (src/lib/team.ts, TEAM-arrayet).
+ */
+const OUR_TEAM: Member[] = [
+  { name: "Magnus Balslev Avnstorp", role: "Founder, Project Manager, Editor", img: "/our-team/magnus-balslev-avnstorp.jpg" },
+  { name: "Mia Demant, MD", role: "Certification training, MCQs", img: "/our-team/mia-demant.png" },
+  { name: "Rami Ibrahim, MD, Specialist", role: "Surgical Videos", img: "/our-team/rami-ibrahim.png" },
+  { name: "Christian Paaskesen, MD", role: "Illustrator, Case content, Journal", img: "/our-team/christian-paaskesen.jpeg" },
+  { name: "Hannah Trøstrup, MD, PhD", role: "Journal Editor", img: "/our-team/hannah-trostrup.jpg" },
+  { name: "Frederik Mamsen, MD, PhD", role: "Case Competition, Funding, Journal", img: "/our-team/frederik-mamsen.jpg" },
+  { name: "Cammila Christiansen, MD", role: "Certification training, MCQs", img: "/our-team/cammila-christiansen.png" },
+  { name: "Emma Tubæk Nielsen, MD", role: "Illustrator, Content Developer", img: "/our-team/emma-tubaek-nielsen.jpg" },
+  { name: "Harald Welling, MD", role: "Promotion, Content Developer", img: "/our-team/harald-welling.jpg" },
+  { name: "Caroline Kümmel Skaarup", role: "SoMe, Instagram", img: "/our-team/caroline-kummel-skaarup.png" },
+  { name: "David Salim, MD", role: "Certification Training, MCQs", img: "/our-team/david-salim.jpg" },
+  { name: "Nizar Hamrouni, MD", role: "Surgical Videos", img: "/our-team/nizar-hamrouni.jpg" },
+  { name: "Annika Gottholt Hansen, MD", role: "Database handling", img: "/our-team/annika-gottholt-hansen.jpg" },
+  { name: "Christina Krogerus, MD", role: "Design, Flyers", img: "/our-team/christina-krogerus.png" },
+  { name: "Tine Lorentzen", role: "Certification training, Videos", img: "/our-team/tine-lorentzen.jpeg" },
+  { name: "Kattia Nguyen", role: "SoMe, Instagram, Illustrations", img: "/our-team/kattia-nguyen.jpg" },
+  { name: "Julie Riemann", role: "SoMe, Instagram, Illustrations", img: "/our-team/julie-riemann.png" },
+  { name: "Mads Holst Jensen", role: "Webudvikler", img: "/our-team/mads-holst-jensen.jpg" },
+];
+
+function TeamGrid({ members }: { members: Member[] }) {
+  return (
+    <ul className="mt-6 grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-4">
+      {members.map((m) => (
+        <li key={m.name} className="text-center">
+          <div className="relative mx-auto aspect-square w-full overflow-hidden rounded-xl border border-[var(--line)] bg-[var(--paper-raised)] shadow-[0_1px_2px_rgba(16,32,30,0.04)]">
+            <Image
+              src={m.img}
+              alt={m.name}
+              fill
+              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+              className="object-cover"
+            />
+          </div>
+          <p className="mt-3 text-sm font-medium leading-snug text-[var(--ink)]">{m.name}</p>
+          <p className="text-xs text-[var(--ink-faint)]">{m.role}</p>
+        </li>
+      ))}
+    </ul>
+  );
+}
 
 /**
  * Om & Team. Rammen er den samme som resten af appen — mærke, skrift, vej
@@ -75,29 +129,22 @@ export function AboutTeamView() {
 
         <section className="mt-12">
           <h2 className="font-[family-name:var(--font-display)] text-xl font-semibold tracking-tight text-[var(--ink)]">
+            {tr("aboutOurTeamTitle", lang)}
+          </h2>
+          <p className="mt-2 max-w-2xl text-sm text-[var(--ink-soft)]">{tr("aboutOurTeamIntro", lang)}</p>
+
+          <TeamGrid members={OUR_TEAM} />
+        </section>
+
+        <section className="mt-14">
+          <h2 className="font-[family-name:var(--font-display)] text-xl font-semibold tracking-tight text-[var(--ink)]">
             {tr("aboutTeamSectionTitle", lang)}
           </h2>
           {tr("aboutTeamSectionIntro", lang) && (
             <p className="mt-2 max-w-2xl text-sm text-[var(--ink-soft)]">{tr("aboutTeamSectionIntro", lang)}</p>
           )}
 
-          <ul className="mt-6 grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-4">
-            {TEAM.map((m) => (
-              <li key={m.name} className="text-center">
-                <div className="relative mx-auto aspect-square w-full overflow-hidden rounded-xl border border-[var(--line)] bg-[var(--paper-raised)] shadow-[0_1px_2px_rgba(16,32,30,0.04)]">
-                  <Image
-                    src={`/team/${m.img}`}
-                    alt={m.name}
-                    fill
-                    sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                    className="object-cover"
-                  />
-                </div>
-                <p className="mt-3 text-sm font-medium leading-snug text-[var(--ink)]">{m.name}</p>
-                <p className="text-xs text-[var(--ink-faint)]">{m.role}</p>
-              </li>
-            ))}
-          </ul>
+          <TeamGrid members={EXPERT_PANEL} />
         </section>
       </div>
     </main>
