@@ -21,3 +21,11 @@ cosurg-mcp/data/originaler/pptx-billeder/
 
 # Arrangoerens lydfiler (77 MB) — hentes fra Drive, se cosurg-mcp/test-data/README.md
 cosurg-mcp/test-data/audio-samples/
+
+# Cortis egen dokumentation, brugt som lokalt opslagsvaerk. Deres materiale,
+# ikke vores — hentes fra docs.corti.ai. Se docs/README.md.
+docs/corti-llms-full.txt
+docs/corti-llms-index.txt
+
+# Internt idekatalog fra torsdag morgen — arbejdsmateriale, ikke en del af produktet
+brainstorm/
