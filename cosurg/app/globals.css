@@ -122,8 +122,8 @@
      beholder deres flade --paper. */
   --app-gradient: linear-gradient(
     135deg,
-    color-mix(in srgb, #00bacd 20%, white) 0%,
-    color-mix(in srgb, #00bacd 55%, white) 45%,
+    color-mix(in srgb, #00bacd 10%, white) 0%,
+    color-mix(in srgb, #00bacd 35%, white) 45%,
     #e6f5f8 100%
   );
 }

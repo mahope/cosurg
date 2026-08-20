@@ -119,7 +119,7 @@ export function AboutTeamView() {
               href="/"
               className="rounded-lg border bg-[var(--paper-raised)] px-3 py-2 text-sm font-medium text-[var(--ink)] transition-colors hover:border-[var(--teal)] hover:bg-[var(--teal-tint)]"
             >
-              ← {tr("toolTree", lang)}
+              ← {tr("aboutTeamBackLink", lang)}
             </Link>
             <LangSwitch lang={lang} onToggleLang={() => setLang((l) => (l === "da" ? "en" : "da"))} />
           </div>
