@@ -135,7 +135,7 @@ export function ChatThread({
                 <GuidePanel guide={guide.guide} lang={lang} topic={guide.question} onAskInstead={onSwitch} />
               </div>
             ) : guide.error ? (
-              <p className="rounded-2xl border border-dashed border-[var(--nude-deep)] bg-[var(--nude-tint)] px-4 py-3 text-sm leading-relaxed text-[var(--nude-deep)]">
+              <p className="rounded-2xl border border-dashed border-[var(--nude-deep)] bg-[var(--nude-tint)] px-4 py-3 text-sm leading-relaxed text-[var(--nude-ink)]">
                 {guide.error}
               </p>
             ) : (
@@ -277,7 +277,7 @@ function TurnEntry({
             )}
           </>
         ) : turn.error ? (
-          <p className="rounded-2xl border border-dashed border-[var(--nude-deep)] bg-[var(--nude-tint)] px-4 py-3 text-sm leading-relaxed text-[var(--nude-deep)]">
+          <p className="rounded-2xl border border-dashed border-[var(--nude-deep)] bg-[var(--nude-tint)] px-4 py-3 text-sm leading-relaxed text-[var(--nude-ink)]">
             {turn.error}
           </p>
         ) : turn.workup || turn.disposition ? null : (
@@ -367,6 +367,21 @@ function WorkupBlock({
   onQuickReply: (text: string) => void;
 }) {
   const spørgsmål = step.question;
+
+  /*
+   * Lægens EGNE ord, ikke maskinværdierne. "hele hånden" siger noget; "hand"
+   * er vores interne etiket, og at vise den ville få kvitteringen til at
+   * ligne en fejl ("sagde jeg hand?"). Dubletter fjernes: det samme fund kan
+   * stå både som brugt og som ventende hen over to ture.
+   */
+  const fangedeOrd = [
+    ...(step.prefilled ?? []).map((s) => s.rawAnswer || s.value),
+    ...(step.pending ?? []).map((s) => s.quote || s.value),
+  ]
+    .map((s) => s.trim())
+    .filter(Boolean)
+    .filter((s, i, alle) => alle.indexOf(s) === i);
+
   if (!spørgsmål) return null;
 
   const muligheder = spørgsmål.options ?? [];
@@ -382,14 +397,20 @@ function WorkupBlock({
       </p>
 
       {/*
-        Hvad agenten selv nåede at udfylde fra lægens beskrivelse. Kvitteringen
-        er halvdelen af pointen: lægen skal kunne se AT hans ord blev brugt —
-        ellers ligner en udredning der springer fem spørgsmål over, at appen
-        har glemt dem.
+        Hvad agenten fangede i lægens egne ord. Kvitteringen er halvdelen af
+        pointen: han skal kunne se AT der blev lyttet — ellers ligner en
+        udredning der springer fem spørgsmål over, at appen har glemt dem.
+
+        `prefilled` og `pending` vises SAMLET med vilje. Internt er de vidt
+        forskellige — det ene er brugt nu, det andet venter på at gennemløbet
+        når frem — men for lægen er de det samme: "det fangede jeg". Skelnede
+        vi, ville vi bede ham forstå vores motor. Sagde vi kun det første,
+        ville "hele hånden, ca 5 %" forsvinde i tavshed, fordi træet spørger
+        om skadesmekanismen først.
       */}
-      {step.prefilled && step.prefilled.length > 0 && (
+      {fangedeOrd.length > 0 && (
         <p className="mt-2 text-[13px] leading-relaxed text-[var(--teal-deep)]">
-          {tr("workupPrefilled", lang)}: {step.prefilled.map((s) => s.rawAnswer || s.value).join(" · ")}
+          {tr("workupPrefilled", lang)}: {fangedeOrd.join(" · ")}
         </p>
       )}
 
