@@ -105,11 +105,11 @@ export function AboutTeamView() {
             <div>
               <Link href="/" className="transition-opacity hover:opacity-80">
                 <h1 className="font-[family-name:var(--font-display)] text-[22px] font-semibold leading-tight tracking-tight text-[var(--ink)]">
-                  {tr("aboutTeam", lang)}
+                  {tr("title", lang)}
                 </h1>
               </Link>
               <p className="font-[family-name:var(--font-mono)] text-xs text-[var(--ink-faint)]">
-                {tr("aboutTeamTagline", lang)}
+                {tr("tagline", lang)}
               </p>
             </div>
           </div>

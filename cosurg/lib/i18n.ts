@@ -8,7 +8,6 @@ export const t = {
   },
   start: { da: "Start vurdering", en: "Start assessment" },
   aboutTeam: { da: "Om & Team", en: "About & Team" },
-  aboutTeamTagline: { da: "Om CoSurg og holdet bag", en: "About CoSurg and the team behind it" },
   aboutTeamIntro: {
     da: "CoSurg er et stemmestyret klinisk beslutningsstøtteværktøj til vurdering og behandling af brandsår, bygget under Corti Hack for Health 2026. Anbefalingen kommer altid fra et klinisk valideret beslutningstræ — AI bruges kun til at fortolke det der bliver sagt, aldrig til at generere selve anbefalingen.",
     en: "CoSurg is a voice-driven clinical decision-support tool for assessment and treatment of surgical and burns patients.",
