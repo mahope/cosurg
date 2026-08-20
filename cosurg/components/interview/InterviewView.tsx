@@ -172,7 +172,7 @@ export function InterviewView() {
         {naesteFelt ? (
           <button
             onClick={() => laesOp(naesteFelt.id)}
-            className="rounded-lg bg-[var(--teal-deep)] px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-[var(--teal)]"
+            className="flex min-h-11 items-center rounded-lg bg-[var(--teal-deep)] px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-[var(--teal)]"
           >
             {tr("interviewAskNext", lang)}: {naesteFelt.label[lang]}
           </button>
@@ -187,7 +187,7 @@ export function InterviewView() {
             setSidsteYtring(null);
             setIngenTraef(false);
           }}
-          className="rounded-lg border px-3 py-2 text-sm font-medium text-[var(--ink-soft)] transition-colors hover:border-[var(--teal)] hover:text-[var(--ink)]"
+          className="flex min-h-11 items-center rounded-lg border px-3 py-2 text-sm font-medium text-[var(--ink-soft)] transition-colors hover:border-[var(--teal)] hover:text-[var(--ink)]"
         >
           {tr("interviewReset", lang)}
         </button>
@@ -225,7 +225,7 @@ export function InterviewView() {
                 </h2>
                 <button
                   onClick={() => void kopier()}
-                  className="rounded-lg border px-3 py-1.5 text-sm font-medium text-[var(--ink)] transition-colors hover:border-[var(--teal)] hover:bg-[var(--teal-tint)]"
+                  className="flex min-h-11 items-center rounded-lg border px-3 py-1.5 text-sm font-medium text-[var(--ink)] transition-colors hover:border-[var(--teal)] hover:bg-[var(--teal-tint)]"
                 >
                   {tr(kopieret ? "interviewCopied" : "interviewCopy", lang)}
                 </button>

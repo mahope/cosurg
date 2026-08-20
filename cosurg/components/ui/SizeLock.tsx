@@ -22,26 +22,40 @@ export function SizeLock({
   children,
   className = "",
   align = "center",
+  wrap = false,
 }: {
   /** Alle tekster feltet kan komme til at vise — begge sprog, alle tilstande. */
   variants: string[];
   children: ReactNode;
   className?: string;
   align?: "center" | "left" | "right";
+  /**
+   * Lad teksten bryde når den ikke kan være der.
+   *
+   * `whitespace-nowrap` er rigtigt for appens EGNE knaptekster: de er korte,
+   * kendte, og en knap der ombrød ville skifte højde. Men indhold fra JSON —
+   * forløbsnavne, svarmuligheder i et beslutningstræ — kan være vilkårligt
+   * langt, og på 360 px ville en ubrydelig knap skubbe hele siden ud over
+   * kanten. Med `wrap` bliver låsen en HØJDE-lås i stedet: begge sprog
+   * ombrydes i samme celle, cellen får den højeste af dem, og rækken står
+   * stadig stille ved sprogskift — den bliver bare aldrig bredere end skærmen.
+   */
+  wrap?: boolean;
 }) {
   const justify = align === "left" ? "justify-start" : align === "right" ? "justify-end" : "justify-center";
+  const flow = wrap ? "whitespace-normal text-balance" : "whitespace-nowrap";
   return (
-    <span className={`grid ${className}`}>
+    <span className={`grid ${wrap ? "max-w-full" : ""} ${className}`}>
       {variants.map((v, i) => (
         <span
           key={i}
           aria-hidden="true"
-          className={`invisible col-start-1 row-start-1 flex ${justify} whitespace-nowrap`}
+          className={`invisible col-start-1 row-start-1 flex ${justify} ${flow}`}
         >
           {v}
         </span>
       ))}
-      <span className={`col-start-1 row-start-1 flex ${justify} whitespace-nowrap`}>{children}</span>
+      <span className={`col-start-1 row-start-1 flex ${justify} ${flow}`}>{children}</span>
     </span>
   );
 }

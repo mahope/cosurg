@@ -52,13 +52,20 @@ export function ControlRail({
   onToggleOrMode,
 }: ControlRailProps) {
   return (
-    <header className="mb-5">
-      <div className="flex flex-wrap items-start justify-between gap-4">
-        <div className="flex items-center gap-3">
+    /*
+      På en telefon er der ikke plads til mærke og kontroller på samme linje.
+      Rækken bryder derfor — men den bryder RENT: mærket får hele den første
+      linje, kontrollerne hele den anden. `justify-between` ville ellers lade
+      kontrollerne klumpe sig i højre side af en halv linje, forskelligt fra
+      sprog til sprog, og lægen genkender knapper på deres plads.
+    */
+    <header className="mb-4 sm:mb-5">
+      <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-start sm:justify-between sm:gap-4">
+        <div className="flex min-w-0 items-center gap-3">
           <Link href="/" onClick={onGoHome} className="shrink-0 transition-opacity hover:opacity-80">
             <BrandMark size={50} />
           </Link>
-          <div>
+          <div className="min-w-0">
             <Link href="/" onClick={onGoHome} className="transition-opacity hover:opacity-80">
               <h1 className="font-[family-name:var(--font-display)] text-[22px] font-semibold tracking-tight text-[var(--ink)]">
                 {tr("title", lang)}
@@ -102,7 +109,7 @@ export function ControlRail({
                 onClick={onToggleVoiceMode}
                 disabled={orMode}
                 aria-pressed={fullVoice}
-                className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors disabled:opacity-40 ${
+                className={`flex min-h-10 items-center rounded-md px-3 py-1.5 text-sm font-medium transition-colors disabled:opacity-40 ${
                   fullVoice ? "bg-[var(--teal-tint)] text-[var(--teal-deep)]" : "text-[var(--ink-soft)]"
                 }`}
               >
@@ -127,7 +134,7 @@ export function ControlRail({
           <button
             onClick={onToggleOrMode}
             aria-pressed={orMode}
-            className={`rounded-lg border px-4 py-2 text-sm font-semibold transition-colors disabled:opacity-40 ${
+            className={`flex min-h-11 items-center rounded-lg border px-4 py-2 text-sm font-semibold transition-colors disabled:opacity-40 ${
               orMode
                 ? "border-[var(--teal)] bg-[var(--teal)] text-white"
                 : "border-[var(--line-strong)] bg-[var(--paper-raised)] text-[var(--ink)] enabled:hover:border-[var(--teal)] enabled:hover:bg-[var(--teal-tint)]"

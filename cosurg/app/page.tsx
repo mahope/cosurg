@@ -1519,7 +1519,9 @@ export default function Home() {
   }
 
   return (
-    <main className="app-gradient-bg relative min-h-screen px-4 pb-6 pt-4 text-[var(--ink)] sm:px-6 sm:pb-8 sm:pt-5">
+    /* `dvh` og ikke `vh`: på iOS regner `100vh` med at browserlinjen er væk,
+       og siden bliver derfor højere end skærmen. */
+    <main className="app-gradient-bg relative min-h-[100dvh] px-4 pb-6 pt-4 text-[var(--ink)] sm:px-6 sm:pb-8 sm:pt-5">
       <BrandWatermark />
       <div className="relative z-10 mx-auto max-w-5xl">
         <ControlRail
@@ -1636,7 +1638,18 @@ export default function Home() {
                   onShowProcedure={() => void showProcedure()}
                 />
               </div>
-              <div className="sticky bottom-4 z-20">
+              {/*
+                Komposeren klæber til bunden — og skal blive dér OVEN PÅ
+                telefonens tastatur. `--kb-inset` er den højde tastaturet
+                dækker (se KeyboardInset); uden den lander komposeren bag
+                tastaturet i præcis det sekund feltet får fokus.
+                `env(safe-area-inset-bottom)` holder den fri af iPhones
+                hjemmeindikator når intet tastatur er fremme.
+              */}
+              <div
+                className="sticky z-20"
+                style={{ bottom: "calc(var(--kb-inset) + max(1rem, env(safe-area-inset-bottom)))" }}
+              >
                 <IntakeCard
                   lang={lang}
                   trees={trees}

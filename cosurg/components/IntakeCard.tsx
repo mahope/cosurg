@@ -289,9 +289,14 @@ export function IntakeCard({
    * textarea'en skal bryde linjerne på nøjagtig samme sted — ellers ville den
    * foreløbige tale stå forskudt i forhold til de ord den fortsætter.
    */
+  /*
+   * På en telefon er `text-lg` for stort til indgangsfeltet: pladsholderen
+   * fylder tre linjer på 360 px, og feltet bliver et afsnit i stedet for en
+   * linje. Skalaen falder derfor ét trin under sm og er uændret derover.
+   */
   const fieldType = compact
-    ? "whitespace-pre-wrap break-words px-4 py-3 text-[15px] leading-relaxed font-normal tracking-normal"
-    : "whitespace-pre-wrap break-words px-5 py-4 text-lg leading-relaxed font-normal tracking-normal";
+    ? "whitespace-pre-wrap break-words px-3.5 py-3 text-base leading-relaxed font-normal tracking-normal sm:px-4 sm:text-[15px]"
+    : "whitespace-pre-wrap break-words px-4 py-3.5 text-base leading-relaxed font-normal tracking-normal sm:px-5 sm:py-4 sm:text-lg";
 
   // Mellemrummet mellem det skrevne og det talte. Uden det ville spøgelset
   // klistre sig til sidste bogstav.
@@ -335,8 +340,24 @@ export function IntakeCard({
           Feltet starter som ÉN linje — det tomme lag indeholder præcis ét
           linjeskift — og vokser linje for linje med indholdet.
         */}
-        <div aria-hidden="true" className={`invisible ${fieldType}`}>
-          {draft + ghostGap + interim + "\n"}
+        {/*
+          To målinger i samme celle; den højeste vinder.
+
+          Pladsholderen står på ÉN linje på en bærbar og på to på en telefon.
+          Målte vi kun på indholdet, ville feltet være én linje højt mens
+          pladsholderen fyldte to — og på 390 px stod anden halvdel af
+          "…eller send et billede" bag værktøjslinjen. Måler vi omvendt kun på
+          pladsholderen, ville feltet KRYMPE i det øjeblik lægen skrev sit
+          første bogstav. Cellen tager derfor begge og bruger den største, så
+          feltet aldrig bliver lavere end det er nu — kun højere.
+        */}
+        <div aria-hidden="true" className="invisible grid">
+          <div className={`col-start-1 row-start-1 ${fieldType}`}>
+            {tr("intakePlaceholder", lang) + "\n"}
+          </div>
+          <div className={`col-start-1 row-start-1 ${fieldType}`}>
+            {draft + ghostGap + interim + "\n"}
+          </div>
         </div>
 
         {/*
@@ -382,7 +403,7 @@ export function IntakeCard({
                 type="button"
                 onClick={() => setAttachments((prev) => prev.filter((a) => a.id !== image.id))}
                 aria-label={tr("intakeRemoveImage", lang)}
-                className="absolute -right-1.5 -top-1.5 flex h-6 w-6 items-center justify-center rounded-full border border-[var(--line-strong)] bg-[var(--paper-raised)] text-[var(--ink-soft)] transition-colors hover:border-[var(--teal)] hover:text-[var(--ink)]"
+                className="absolute -right-2 -top-2 flex h-7 w-7 items-center justify-center rounded-full border border-[var(--line-strong)] bg-[var(--paper-raised)] text-[var(--ink-soft)] shadow-sm transition-colors hover:border-[var(--teal)] hover:text-[var(--ink)]"
               >
                 <svg viewBox="0 0 20 20" width={12} height={12} fill="none" aria-hidden="true">
                   <path d="M5 5l10 10M15 5 5 15" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
@@ -393,11 +414,14 @@ export function IntakeCard({
         </ul>
       )}
 
-      <div className="flex items-center justify-between gap-3 border-t border-[var(--line)] px-3 py-2.5 sm:px-4">
+      {/* Værktøjslinjen er den række der rammes med en tommelfinger. Hver knap
+          er derfor mindst 44 px høj — tommelfingerreglen — og linjen har lidt
+          mindre luft udenom for at bære det uden at blive et bånd. */}
+      <div className="flex items-center justify-between gap-3 border-t border-[var(--line)] px-2 py-2 sm:px-3">
         <button
           type="button"
           onClick={() => fileRef.current?.click()}
-          className="flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-[13px] font-medium text-[var(--ink-soft)] transition-colors hover:bg-[var(--teal-tint)] hover:text-[var(--teal-deep)]"
+          className="flex min-h-11 items-center gap-2 rounded-lg px-2.5 py-1.5 text-[13px] font-medium text-[var(--ink-soft)] transition-colors hover:bg-[var(--teal-tint)] hover:text-[var(--teal-deep)]"
         >
           <svg
             viewBox="0 0 24 24"
@@ -444,7 +468,7 @@ export function IntakeCard({
               aria-pressed={listening}
               aria-busy={starting}
               aria-label={tr(listening ? "micStop" : "micStart", lang)}
-              className={`relative flex h-10 w-10 shrink-0 items-center justify-center rounded-full transition-colors ${
+              className={`relative flex h-11 w-11 shrink-0 items-center justify-center rounded-full transition-colors ${
                 listening
                   ? "mic-breathe bg-[var(--teal)] text-white"
                   : starting
@@ -464,7 +488,7 @@ export function IntakeCard({
             type="button"
             onClick={submit}
             disabled={!canSend}
-            className="flex shrink-0 items-center gap-2 rounded-lg bg-[var(--teal)] px-4 py-2 text-[14px] font-semibold text-white transition-opacity disabled:opacity-25"
+            className="flex min-h-11 shrink-0 items-center gap-2 rounded-lg bg-[var(--teal)] px-4 py-2 text-[14px] font-semibold text-white transition-opacity disabled:opacity-25"
           >
             <SizeLock variants={[tr("intakeSend", "da"), tr("intakeSend", "en")]}>{tr("intakeSend", lang)}</SizeLock>
             <svg viewBox="0 0 20 20" width={15} height={15} fill="none" aria-hidden="true">
@@ -512,9 +536,13 @@ export function IntakeCard({
           <button
             key={tree.id}
             onClick={() => onSelectTree(tree.id)}
-            className="rounded-lg border border-[var(--line-strong)] bg-[var(--paper-raised)] px-3 py-1.5 text-[13px] font-medium text-[var(--ink-soft)] transition-colors hover:border-[var(--teal)] hover:bg-[var(--teal-tint)] hover:text-[var(--ink)]"
+            className="flex min-h-11 items-center rounded-lg border border-[var(--line-strong)] bg-[var(--paper-raised)] px-3 py-1.5 text-[13px] font-medium text-[var(--ink-soft)] transition-colors hover:border-[var(--teal)] hover:bg-[var(--teal-tint)] hover:text-[var(--ink)]"
           >
-            <SizeLock variants={[tree.name.da, tree.name.en]}>{tree.name[lang]}</SizeLock>
+            {/* `wrap`: forløbsnavnene kommer fra JSON og kan være lange. På
+                360 px skal de bryde frem for at skubbe knappen ud af skærmen. */}
+            <SizeLock wrap variants={[tree.name.da, tree.name.en]}>
+              {tree.name[lang]}
+            </SizeLock>
           </button>
         ))}
       </div>
@@ -547,7 +575,7 @@ export function IntakeCard({
         mikrofonen bor i samme kort — det er ÉN samlet handling, og en ramme
         om halvdelen af den ville dele den i to.
       */}
-      <div className="rounded-2xl border bg-[var(--paper-raised)] p-6 shadow-[0_1px_2px_rgba(16,32,30,0.04)] sm:p-8">
+      <div className="rounded-2xl border bg-[var(--paper-raised)] p-6 shadow-[var(--shadow-raised)] sm:p-8">
         <h2 className="font-[family-name:var(--font-display)] text-[28px] font-semibold leading-tight tracking-tight text-[var(--ink)] sm:text-[36px]">
           {tr("intakeQuestion", lang)}
         </h2>
@@ -574,7 +602,7 @@ export function IntakeCard({
               nedtællingstallet. Knappen er ALTID fyldt — den er skærmens
               omdrejningspunkt og må ikke ligne en sekundær kontur-knap.
             */
-            className={`relative flex h-[116px] w-[116px] items-center justify-center rounded-full shadow-[0_4px_18px_rgba(0,83,85,0.18)] transition-colors ${
+            className={`relative flex h-[116px] w-[116px] items-center justify-center rounded-full shadow-[0_3px_12px_rgba(0,83,85,0.10)] transition-colors ${
               listening
                 ? "mic-breathe bg-[var(--teal)] text-white"
                 : starting

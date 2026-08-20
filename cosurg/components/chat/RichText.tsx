@@ -133,5 +133,8 @@ export function RichText({ text }: { text: string }) {
   }
   flushAlt();
 
-  return <div className="text-[15px] leading-relaxed text-[var(--ink)]">{blocks}</div>;
+  /* `prose-source`: svaret indeholder doser, koder og af og til en URL —
+     ord uden brydepunkter der ellers skubber kortet ud over skærmkanten på
+     en telefon. Se globals.css. */
+  return <div className="prose-source min-w-0 text-[15px] leading-relaxed text-[var(--ink)]">{blocks}</div>;
 }

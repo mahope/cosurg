@@ -169,7 +169,7 @@ export function GuideView() {
                 key={e}
                 onClick={() => void slaaOp(e)}
                 disabled={henter}
-                className="rounded-lg border px-3.5 py-2 text-sm font-medium text-[var(--ink)] transition-colors hover:border-[var(--teal)] hover:bg-[var(--teal-tint)] disabled:opacity-40"
+                className="flex min-h-11 items-center rounded-lg border px-3.5 py-2 text-sm font-medium text-[var(--ink)] transition-colors hover:border-[var(--teal)] hover:bg-[var(--teal-tint)] disabled:opacity-40"
               >
                 {e}
               </button>
@@ -201,7 +201,7 @@ export function GuideView() {
             </h2>
             <Link
               href="/"
-              className="rounded-lg bg-[var(--teal-deep)] px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-[var(--teal)]"
+              className="flex min-h-11 items-center rounded-lg bg-[var(--teal-deep)] px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-[var(--teal)]"
             >
               {tr("guideStartTree", lang)} →
             </Link>

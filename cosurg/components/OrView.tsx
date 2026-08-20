@@ -95,16 +95,41 @@ export function OrView({
       gangen. `motion-world` gør skiftet til netop det: en verden der lukker
       sig om kirurgen, ikke et tema der bytter farver.
     */
-    <main className="or-scope motion-world flex h-screen flex-col overflow-hidden bg-[var(--or-bg)] px-6 py-5 sm:px-10 text-[var(--or-ink)]">
+    /*
+      `dvh` og ikke `vh`: på iOS er `100vh` det høje viewport UDEN
+      browserlinjen, så en `h-screen`-skærm er højere end det man ser, og
+      betjeningsbåndet i bunden ender under adresselinjen. `100dvh` følger det
+      viewport der faktisk er. Bunden får desuden plads til
+      hjemmeindikatoren — båndet er fastgjort dernede og ville ellers ligge
+      under den streg man swiper på.
+    */
+    <main
+      className="or-scope motion-world flex h-[100dvh] flex-col overflow-hidden bg-[var(--or-bg)] px-4 py-4 text-[var(--or-ink)] sm:px-10 sm:py-5"
+      style={{ paddingBottom: "max(1rem, env(safe-area-inset-bottom))" }}
+    >
       <header className="shrink-0">
-        <div className="flex items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
+        {/*
+          Instrumentbåndet. Mærket og afslut-knappen bliver på samme linje —
+          knappen er kirurgens vej UD, og den skal stå i hjørnet uanset skærm.
+          Statuslinjen viger derfor ned på sin egen linje på en telefon
+          (`basis-full order-last`) i stedet for at klemme knappen ud over
+          kanten, som den gjorde på 390 px. Fra sm er båndet som før.
+        */}
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
+          <div className="flex min-w-0 flex-1 items-center gap-3">
             <ZoneMark variant="listening" active={listening} tone="or" size={30} />
             <div className="min-w-0">
-              <p className="font-[family-name:var(--font-mono)] text-sm font-semibold uppercase tracking-[0.2em] text-[var(--or-accent)]">
+              {/* Mærkatet står på ÉN linje. "HÅNDFRI TILSTAND AKTIV" brød til
+                  tre linjer på 360 px og skubbede hele instruktionen ned; at
+                  den er klippet gør ingen skade — den mørke skærm siger
+                  allerede hvilken tilstand man er i. */}
+              <p className="truncate font-[family-name:var(--font-mono)] text-xs font-semibold uppercase tracking-[0.14em] text-[var(--or-accent)] sm:text-sm sm:tracking-[0.2em]">
                 {tr("orModeOn", lang)}
               </p>
-              <p className="truncate font-[family-name:var(--font-mono)] text-xs text-[var(--or-ink-soft)]">
+              {/* Linjen her må derimod IKKE klippes på en telefon: den slutter
+                  med om mikrofonen er åben, og netop det må ikke forsvinde ud
+                  over kanten i en håndfri tilstand. */}
+              <p className="font-[family-name:var(--font-mono)] text-xs leading-snug text-[var(--or-ink-soft)] sm:truncate">
                 {treeName}
                 {node && ` · ${tr("step", lang)} ${stepNumber}/${totalNodes}`}
                 {" · "}
@@ -129,11 +154,11 @@ export function OrView({
             status={status}
             lang={lang}
             tone="or"
-            className="min-w-0 flex-1 justify-end text-right font-[family-name:var(--font-mono)] text-sm leading-snug"
+            className="order-last min-w-0 basis-full font-[family-name:var(--font-mono)] text-sm leading-snug sm:order-none sm:basis-auto sm:flex-1 sm:justify-end sm:text-right"
           />
           <button
             onClick={onExit}
-            className="shrink-0 rounded-lg border border-[var(--or-line)] px-3 py-1.5 text-xs font-medium text-[var(--or-ink-soft)] transition-colors hover:border-[var(--or-accent)] hover:text-[var(--or-accent)]"
+            className="flex min-h-11 shrink-0 items-center rounded-lg border border-[var(--or-line)] px-3 py-1.5 text-xs font-medium text-[var(--or-ink-soft)] transition-colors hover:border-[var(--or-accent)] hover:text-[var(--or-accent)]"
           >
             <SizeLock variants={widestOf("orExit")}>{tr("orExit", lang)}</SizeLock>
           </button>
@@ -167,7 +192,7 @@ export function OrView({
           <RedFlagBanner message={flash} lang={lang} orMode onAcknowledge={onAcknowledgeFlash} />
         ) : disposition ? (
           <div
-            className="motion-settle overflow-y-auto rounded-2xl border-2 p-8 sm:p-10"
+            className="motion-settle overflow-y-auto rounded-2xl border-2 p-5 sm:p-8 md:p-10"
             style={{ borderColor: orSeverity[disposition.severity], background: "var(--or-surface)" }}
           >
             <p
@@ -206,7 +231,7 @@ export function OrView({
                 min={node.min}
                 max={node.max}
                 placeholder={node.unit}
-                className="mt-8 w-64 shrink-0 rounded-xl border border-[var(--or-line)] bg-[var(--or-surface)] px-5 py-4 text-3xl text-[var(--or-ink)] focus:border-[var(--or-accent)] focus:outline-none"
+                className="mt-6 w-full max-w-64 shrink-0 rounded-xl border border-[var(--or-line)] bg-[var(--or-surface)] px-5 py-4 text-2xl text-[var(--or-ink)] focus:border-[var(--or-accent)] focus:outline-none sm:mt-8 sm:text-3xl"
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
                     const v = (e.target as HTMLInputElement).value;
@@ -215,14 +240,16 @@ export function OrView({
                 }}
               />
             ) : node.options && node.options.length > 0 ? (
-              <div className="mt-8 flex shrink-0 flex-wrap gap-3">
+              <div className="mt-6 flex shrink-0 flex-wrap gap-2.5 sm:mt-8 sm:gap-3">
                 {node.options.map((o) => (
                   <button
                     key={o.value}
                     onClick={() => onSelectOption(o.value, o.label[lang])}
-                    className="rounded-xl border border-[var(--or-line)] bg-[var(--or-surface)] px-7 py-5 text-2xl font-medium transition-colors hover:border-[var(--or-accent)] hover:bg-[var(--or-surface-raised)]"
+                    className="max-w-full rounded-xl border border-[var(--or-line)] bg-[var(--or-surface)] px-5 py-4 text-xl font-medium transition-colors hover:border-[var(--or-accent)] hover:bg-[var(--or-surface-raised)] sm:px-7 sm:py-5 sm:text-2xl"
                   >
-                    <SizeLock variants={[o.label.da, o.label.en]}>{o.label[lang]}</SizeLock>
+                    <SizeLock wrap variants={[o.label.da, o.label.en]}>
+                      {o.label[lang]}
+                    </SizeLock>
                   </button>
                 ))}
               </div>
@@ -249,7 +276,7 @@ export function OrView({
             onClick={onNext}
             tabIndex={canAdvance ? 0 : -1}
             aria-hidden={!canAdvance}
-            className={`shrink-0 rounded-lg border border-[var(--or-accent)] bg-[var(--or-accent-soft)] px-4 py-2 text-base font-semibold text-[var(--or-accent)] transition-colors hover:bg-[var(--or-surface-raised)] ${
+            className={`flex min-h-11 shrink-0 items-center rounded-lg border border-[var(--or-accent)] bg-[var(--or-accent-soft)] px-4 py-2 text-base font-semibold text-[var(--or-accent)] transition-colors hover:bg-[var(--or-surface-raised)] ${
               canAdvance ? "" : "invisible pointer-events-none"
             }`}
           >

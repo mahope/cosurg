@@ -170,7 +170,16 @@ export function SourceText({ text }: { text: string }) {
     // Kilderne har af og til en tom første række; så er der ingen hovedrække.
     const harHoved = hoved.some((c) => c.length > 0) && krop.length > 0;
     blocks.push(
-      <div key={`t-${key++}`} className="my-3 overflow-x-auto">
+      /*
+        Tabellen scroller i SIN EGEN beholder — aldrig siden.
+        `overscroll-x-contain` er ikke pynt: uden den fortsætter et swipe forbi
+        tabellens kant som browserens "gå tilbage", og lægen mister kortet
+        midt i en overflytningstabel. Beholderen er en grid-celle med
+        `minWidth: 0`, så en bred tabel ikke kan presse kortet ud over
+        skærmkanten i stedet for at rulle.
+      */
+      <div key={`t-${key++}`} className="my-3 grid">
+        <div className="min-w-0 overflow-x-auto overscroll-x-contain">
         <table className="w-full min-w-[420px] border-collapse text-[13px]">
           {harHoved && (
             <thead>
@@ -198,6 +207,7 @@ export function SourceText({ text }: { text: string }) {
             ))}
           </tbody>
         </table>
+        </div>
       </div>,
     );
     tabel = [];
@@ -285,5 +295,5 @@ export function SourceText({ text }: { text: string }) {
   }
   flushAlt();
 
-  return <div className="text-[15px] leading-relaxed text-[var(--ink)]">{blocks}</div>;
+  return <div className="prose-source min-w-0 text-[15px] leading-relaxed text-[var(--ink)]">{blocks}</div>;
 }

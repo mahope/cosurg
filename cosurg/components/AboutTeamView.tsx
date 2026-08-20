@@ -69,7 +69,7 @@ function TeamGrid({ members }: { members: Member[] }) {
     <ul className="mt-6 grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-4">
       {members.map((m) => (
         <li key={m.name} className="text-center">
-          <div className="relative mx-auto aspect-square w-full overflow-hidden rounded-xl border border-[var(--line)] bg-[var(--paper-raised)] shadow-[0_1px_2px_rgba(16,32,30,0.04)]">
+          <div className="relative mx-auto aspect-square w-full overflow-hidden rounded-xl border border-[var(--line)] bg-[var(--paper-raised)] shadow-[var(--shadow-raised)]">
             <Image
               src={m.img}
               alt={m.name}
@@ -94,7 +94,7 @@ export function AboutTeamView() {
   const [lang, setLang] = useState<Lang>("da");
 
   return (
-    <main className="app-gradient-bg relative min-h-screen px-4 py-6 text-[var(--ink)] sm:px-6 sm:py-8">
+    <main className="app-gradient-bg relative min-h-[100dvh] px-4 py-6 text-[var(--ink)] sm:px-6 sm:py-8">
       <BrandWatermark />
       <div className="relative z-10 mx-auto max-w-5xl">
         <header className="mb-7 flex flex-wrap items-start justify-between gap-4">

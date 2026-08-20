@@ -87,7 +87,7 @@ export function FieldRow({ felt, svar, lang, naeste, onSvar, onRyd, onLaesOp }: 
           <button
             onClick={onLaesOp}
             title={tr("interviewAskAloud", lang)}
-            className="ml-auto inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-[11px] font-medium text-[var(--teal)] hover:bg-[var(--paper-raised)]"
+            className="-my-2 ml-auto inline-flex min-h-11 items-center gap-1.5 rounded-md px-2 py-1 text-[11px] font-medium text-[var(--teal)] hover:bg-[var(--paper-raised)]"
           >
             <svg viewBox="0 0 16 16" width="12" height="12" fill="none" aria-hidden="true">
               <path
@@ -116,7 +116,7 @@ export function FieldRow({ felt, svar, lang, naeste, onSvar, onRyd, onLaesOp }: 
                 <button
                   key={o.value}
                   onClick={() => onSvar(o.value, o.label[lang])}
-                  className="rounded-lg border bg-[var(--paper-raised)] px-3 py-1.5 text-sm font-medium text-[var(--ink)] transition-colors hover:border-[var(--teal)] hover:bg-[var(--teal-tint)]"
+                  className="flex min-h-11 items-center rounded-lg border bg-[var(--paper-raised)] px-3 py-1.5 text-sm font-medium text-[var(--ink)] transition-colors hover:border-[var(--teal)] hover:bg-[var(--teal-tint)]"
                 >
                   {o.label[lang]}
                 </button>
@@ -132,12 +132,17 @@ export function FieldRow({ felt, svar, lang, naeste, onSvar, onRyd, onLaesOp }: 
                     if (e.key === "Enter") send();
                   }}
                   placeholder={felt.unit ? felt.unit[lang] : felt.label[lang]}
-                  className="w-40 rounded-lg border bg-[var(--paper-raised)] px-3 py-1.5 text-sm text-[var(--ink)] placeholder:text-[var(--ink-faint)] focus:border-[var(--teal)] focus:outline-none"
+                  /* `min-h-11`: feltet udfyldes med en finger på en telefon,
+                     og 34 px er for lavt at ramme. `text-base` og ikke `sm`
+                     under sm-breakpointet: Safari zoomer ind på et felt med
+                     skrift under 16 px i det øjeblik det får fokus, og så
+                     står hele siden pludselig forstørret og forskubbet. */
+                  className="min-h-11 w-40 rounded-lg border bg-[var(--paper-raised)] px-3 py-1.5 text-base text-[var(--ink)] placeholder:text-[var(--ink-faint)] focus:border-[var(--teal)] focus:outline-none sm:text-sm"
                 />
                 <button
                   onClick={send}
                   disabled={!indtastning.trim()}
-                  className="rounded-lg bg-[var(--teal-deep)] px-3 py-1.5 text-sm font-semibold text-white transition-colors enabled:hover:bg-[var(--teal)] disabled:opacity-30"
+                  className="flex min-h-11 items-center rounded-lg bg-[var(--teal-deep)] px-3 py-1.5 text-sm font-semibold text-white transition-colors enabled:hover:bg-[var(--teal)] disabled:opacity-30"
                 >
                   OK
                 </button>

@@ -60,9 +60,13 @@ export function PitfallCard({ faldgrube, lang, kompakt = false }: PitfallCardPro
 
       <div className="mt-3 border-t border-[rgba(16,41,43,0.14)] pt-3">
         {!aabent ? (
+          /* Mærkatet er 11 px højt og var dermed en 17 px høj knap — umulig at
+             ramme med en finger. Teksten står uændret; feltet omkring den er
+             trukket ud til 44 px og trukket tilbage igen med negative
+             margener, så kortet ser præcis ud som før. */
           <button
             onClick={() => setAabent(true)}
-            className="font-[family-name:var(--font-mono)] text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--teal)] hover:underline"
+            className="-mx-2 -my-2.5 flex min-h-11 items-center rounded-lg px-2 font-[family-name:var(--font-mono)] text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--teal)] hover:underline"
           >
             {tr("sourceVerbatim", lang)} →
           </button>

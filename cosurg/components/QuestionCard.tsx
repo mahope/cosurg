@@ -54,7 +54,7 @@ export function QuestionCard({
   return (
     <div
       ref={cardRef}
-      className="rounded-2xl border bg-[var(--paper-raised)] p-6 sm:p-7 shadow-[0_1px_2px_rgba(16,32,30,0.04)]"
+      className="rounded-2xl border bg-[var(--paper-raised)] p-6 sm:p-7 shadow-[var(--shadow-raised)]"
     >
       <p className="font-[family-name:var(--font-mono)] text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--ink-faint)]">
         {tr("step", lang)} {stepNumber} / {totalNodes}
@@ -102,7 +102,7 @@ export function QuestionCard({
             aria-label={node.unit ? `${questionText} (${node.unit})` : questionText}
             /* Samme højde som svarknapperne (38 px): et talfelt der er tre
                pixel højere ville rykke svarfeltet nedenunder på hver tal-node. */
-            className="h-[2.375rem] w-40 rounded-lg border bg-[var(--paper)] px-3 text-[15px] leading-none text-[var(--ink)] transition-colors focus:border-[var(--teal)] focus:outline-none"
+            className="h-11 w-40 rounded-lg border bg-[var(--paper)] px-3 text-base leading-none sm:h-[2.375rem] sm:text-[15px] text-[var(--ink)] transition-colors focus:border-[var(--teal)] focus:outline-none"
             onKeyDown={(e) => {
               if (e.key === "Enter") {
                 const v = (e.target as HTMLInputElement).value;
@@ -115,12 +115,16 @@ export function QuestionCard({
             <button
               key={o.value}
               onClick={() => onSelectOption(o.value, o.label[lang])}
-              className="rounded-lg border px-4 py-2 text-sm font-medium text-[var(--ink)] transition-[color,background-color,border-color] duration-150 hover:border-[var(--teal)] hover:bg-[var(--teal-tint)]"
+              className="flex min-h-11 items-center rounded-lg border px-4 py-2 text-sm font-medium text-[var(--ink)] transition-[color,background-color,border-color] duration-150 hover:border-[var(--teal)] hover:bg-[var(--teal-tint)]"
             >
               {/* Svarmulighederne er oversat indhold — "Kemisk ætsning" mod
                   "Chemical". Hver knap får plads til den længste af de to, så
-                  rækken står stille når lægen skifter sprog midt i en sag. */}
-              <SizeLock variants={[o.label.da, o.label.en]}>{o.label[lang]}</SizeLock>
+                  rækken står stille når lægen skifter sprog midt i en sag.
+                  `wrap`, fordi teksten kommer fra træets JSON: på en telefon
+                  skal en lang svarmulighed bryde, ikke skubbe siden skæv. */}
+              <SizeLock wrap variants={[o.label.da, o.label.en]}>
+                {o.label[lang]}
+              </SizeLock>
             </button>
           ))
         ) : canAdvance ? (

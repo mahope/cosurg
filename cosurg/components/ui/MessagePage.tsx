@@ -34,10 +34,10 @@ export function MessagePage({ badge, titleKey, bodyKey, detail, children }: Mess
   const body = both(bodyKey);
 
   return (
-    <main className="app-gradient-bg relative flex min-h-screen items-center justify-center px-4 py-12 text-[var(--ink)]">
+    <main className="app-gradient-bg relative flex min-h-[100dvh] items-center justify-center px-4 py-12 text-[var(--ink)]">
       <BrandWatermark />
 
-      <div className="motion-settle relative z-10 w-full max-w-xl rounded-2xl border bg-[var(--paper-raised)] p-7 shadow-[0_1px_2px_rgba(16,32,30,0.04)] sm:p-9">
+      <div className="motion-settle relative z-10 w-full max-w-xl rounded-2xl border bg-[var(--paper-raised)] p-7 shadow-[var(--shadow-raised)] sm:p-9">
         <div className="flex items-center gap-3">
           <BrandMark size={34} />
           <p className="font-[family-name:var(--font-mono)] text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--ink-faint)]">

@@ -61,16 +61,18 @@ interface ToolShellProps {
 
 export function ToolShell({ active, lang, onToggleLang, title, tagline, children }: ToolShellProps) {
   return (
-    <main className="app-gradient-bg relative min-h-screen px-4 py-6 text-[var(--ink)] sm:px-6 sm:py-8">
+    <main className="app-gradient-bg relative min-h-[100dvh] px-4 py-6 text-[var(--ink)] sm:px-6 sm:py-8">
       <BrandWatermark />
       <div className="relative z-10 mx-auto max-w-5xl">
-        <header className="mb-7">
-          <div className="flex flex-wrap items-start justify-between gap-4">
-            <div className="flex items-center gap-3">
+        <header className="mb-6 sm:mb-7">
+          {/* Samme brud som instrumentpanelet på forsiden: mærket får sin egen
+              linje på en telefon, kontrollerne deres. */}
+          <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-start sm:justify-between sm:gap-4">
+            <div className="flex min-w-0 items-center gap-3">
               <Link href="/" className="shrink-0 transition-opacity hover:opacity-80">
                 <BrandMark size={50} />
               </Link>
-              <div>
+              <div className="min-w-0">
                 <Link href="/" className="transition-opacity hover:opacity-80">
                   <h1 className="font-[family-name:var(--font-display)] text-[22px] font-semibold leading-tight tracking-tight text-[var(--ink)]">
                     {title}
@@ -83,7 +85,7 @@ export function ToolShell({ active, lang, onToggleLang, title, tagline, children
             <div className="flex flex-wrap items-center gap-2">
               <Link
                 href="/"
-                className="rounded-lg border bg-[var(--paper-raised)] px-3 py-2 text-sm font-medium text-[var(--ink)] transition-colors hover:border-[var(--teal)] hover:bg-[var(--teal-tint)]"
+                className="flex min-h-11 items-center rounded-lg border bg-[var(--paper-raised)] px-3 py-2 text-sm font-medium text-[var(--ink)] transition-colors hover:border-[var(--teal)] hover:bg-[var(--teal-tint)]"
               >
                 ← {tr("toolTree", lang)}
               </Link>
@@ -103,7 +105,7 @@ export function ToolShell({ active, lang, onToggleLang, title, tagline, children
                   key={v.id}
                   href={v.href}
                   aria-current={aktiv ? "page" : undefined}
-                  className={`rounded-lg px-3.5 py-1.5 text-sm font-medium transition-colors ${
+                  className={`flex min-h-10 items-center rounded-lg px-3.5 py-1.5 text-sm font-medium transition-colors ${
                     aktiv
                       ? "bg-[var(--teal-tint)] text-[var(--teal-deep)]"
                       : "text-[var(--ink-soft)] hover:bg-[var(--nude-tint)] hover:text-[var(--ink)]"
