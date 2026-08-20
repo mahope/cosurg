@@ -290,7 +290,12 @@ export function udtraek(raa: string, lang: Lang): Fund[] {
         display: lang === "da" ? "Ingen kendte" : "None known",
         // Det faktisk hørte, ikke en standardfrase — linjen skal kunne
         // efterprøves mod det der blev sagt.
-        matched: t.slice(Math.max(0, allergi.index - 12), allergi.index + allergi[0].length).trim(),
+        // Vinduet klippes ved en ordgrænse — et halvt ord foran citatet ser ud
+        // som en fejl i genkendelsen, også når genkendelsen er rigtig.
+        matched: t
+          .slice(Math.max(0, allergi.index - 14), allergi.index + allergi[0].length)
+          .replace(/^\S*[\s,]+/, "")
+          .trim(),
       });
     } else {
       const mod = /allergi(?:sk)?\s*(?:over ?for|mod|for)\s+([a-zaeoo\s-]{3,40})|allergic to\s+([a-z\s-]{3,40})/.exec(t);

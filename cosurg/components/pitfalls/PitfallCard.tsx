@@ -58,7 +58,7 @@ export function PitfallCard({ faldgrube, lang, kompakt = false }: PitfallCardPro
         </div>
       </div>
 
-      <div className="mt-3 border-t border-[color-mix(in_srgb,var(--ink)_12%,transparent)] pt-3">
+      <div className="mt-3 border-t border-[rgba(16,41,43,0.14)] pt-3">
         {!aabent ? (
           <button
             onClick={() => setAabent(true)}

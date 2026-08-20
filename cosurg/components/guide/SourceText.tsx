@@ -20,7 +20,12 @@ import type { ReactNode } from "react";
 
 function inline(text: string, keyBase: string): ReactNode[] {
   // Billed-markdown fjernes helt; link-markdown reduceres til sin tekst.
-  const rent = text.replace(/!\[[^\]]*\]\([^)]*\)/g, "").replace(/\[([^\]]+)\]\([^)]*\)/g, "$1");
+  const rent = text
+    .replace(/!\[[^\]]*\]\([^)]*\)/g, "")
+    .replace(/\[([^\]]+)\]\([^)]*\)/g, "$1")
+    // Skrabningen efterlod markdown-undvigelser: "1\." og "20 %\." Backslashen
+    // hører til formatet, ikke til kilden, og må ikke stå i et klinisk citat.
+    .replace(/\\([.*_[\]()#+\-!|])/g, "$1");
   const nodes: ReactNode[] = [];
   const pattern = /\*\*(.+?)\*\*|_([^_]+)_/g;
   let last = 0;
@@ -35,7 +40,11 @@ function inline(text: string, keyBase: string): ReactNode[] {
           {match[1]}
         </strong>
       ) : (
-        <em key={`${keyBase}-i${i++}`}>{match[2]}</em>
+        // brandsaar.dk skriver ofte _**sådan**_ — fed inde i kursiv. Stjernerne
+        // ville ellers stå som tegn midt i et klinisk citat.
+        <em key={`${keyBase}-i${i++}`} className="font-medium">
+          {match[2].replace(/\*\*/g, "")}
+        </em>
       ),
     );
     last = match.index + match[0].length;
