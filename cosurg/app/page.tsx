@@ -1170,6 +1170,54 @@ export default function Home() {
    * trykkes send, ikke først når svaret lander.
    */
   const hasThread = !started && (lookupTurns.length > 0 || guideLookup !== null);
+
+  /*
+   * UDREDNINGEN LÆST OP.
+   *
+   * I håndfri tilstand kigger klinikeren ikke på skærmen — han har hænderne
+   * i et sår. Landede udredningens spørgsmål kun som tekst, ville hele
+   * forløbet stå stille i tavshed, og han ville tro at appen var holdt op med
+   * at lytte. Svaret på et opslag læses allerede op af `runLookup`; det her
+   * er den anden halvdel: træets spørgsmål, dets røde flag og dets
+   * anbefaling.
+   *
+   * Røde flag læses op UANSET stemmetilstand. De afbryder i forvejen hele
+   * skærmen, og en eskalering er det ene sted hvor det er værre at tie end at
+   * tale mod en slukket højttaler.
+   *
+   * Vagten er et ref med det sidst oplæste — uden den ville hver eneste
+   * render af tråden (og der er mange, fremdriften tikker) sige det samme
+   * højt igen.
+   */
+  const spokenWorkupRef = useRef<string>("");
+  useEffect(() => {
+    const turn = lookupTurns[lookupTurns.length - 1];
+    if (!turn) return;
+
+    const flag = turn.redflags?.[turn.redflags.length - 1];
+    const dispo = turn.disposition;
+    const workupQ = turn.workup?.question;
+
+    // Rækkefølgen er klinisk: flaget først, så anbefalingen, så spørgsmålet.
+    const [nøgle, tekst, altidHøjt] = flag
+      ? [`flag:${turn.id}:${flag.nodeId}`, flag.message, true]
+      : dispo
+        ? [
+            `disp:${turn.id}:${dispo.disposition.dispositionId}`,
+            `${dispo.disposition.title}. ${dispo.disposition.guidance}`,
+            false,
+          ]
+        : workupQ
+          ? [`q:${turn.id}:${workupQ.nodeId}:${turn.workup?.phase}`, workupQ.question, false]
+          : ["", "", false];
+
+    if (!nøgle || !tekst) return;
+    if (spokenWorkupRef.current === nøgle) return;
+    if (!altidHøjt && !speakAll) return;
+
+    spokenWorkupRef.current = nøgle;
+    void say(tekst);
+  }, [lookupTurns, speakAll, say]);
   const lookupPayload: LookupPayload | null = guideLookup
     ? { kind: "guide", ...guideLookup }
     : activeTurn
