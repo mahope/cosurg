@@ -28,8 +28,17 @@
  */
 :root {
   /* — Brandlag: flader og tekst — */
-  --paper: #fcf7f3; /* Nude1 */
+  /*
+   * Grundfladen er papir, ikke farve. Nude1 (#fcf7f3) er trukket næsten helt
+   * ind til hvid: varmen er stadig brandets, men den skal man kigge efter for
+   * at se. Prøven er at man ikke kan beskrive baggrundens farve efter to
+   * sekunder på skærmen.
+   */
+  --paper: #fbf9f6;
   --paper-raised: #ffffff;
+  /* En anelse dybere end papiret — til indlejrede flader (kildeuddrag,
+     transskript) der skal ligge et hak UNDER kortet uden en ramme. */
+  --paper-sunken: #f6f3ef;
   --ink: #10292b; /* SurgeonBlue kørt til tekstdybde */
   /*
    * DarkGreen og dens lyse søster bærer brødtekst og etiketter. Begge er kørt
@@ -42,8 +51,14 @@
    */
   --ink-soft: #3b757b; /* DarkGreen, tekstdyb */
   --ink-faint: #55757a;
-  --line: #dbe9ea; /* LightBlue */
-  --line-strong: #b3d2d6;
+  /*
+   * Rammerne bar tidligere LightBlue. På et papirhvidt underlag blev hver
+   * eneste kasse dermed tegnet med en blå streg, og appen fik sit blå skær
+   * fra rammerne alene. Linjerne er nu varmt neutrale — de adskiller uden at
+   * farve. Kulør er ikke det der skal fortælle at noget er en kant.
+   */
+  --line: #e7e2db;
+  --line-strong: #d3ccc2;
 
   /* — Brandlag: primær accent — */
   --teal: #005355; /* SurgeonBlue */
@@ -71,6 +86,10 @@
   --green: #2c6b4d;
   --green-tint: #e4f0e9;
   --green-line: #a6ccb6;
+
+  /* Fokusringen om skrivefelter: Turquoise, næsten udvandet. Brandlag —
+     den betyder "her skriver du", ikke noget klinisk. Se .field-shell. */
+  --field-ring: rgba(0, 186, 205, 0.24);
 
   /* — OR-tilstand — */
   --or-bg: #032325; /* SurgeonBlue i bund */
@@ -114,18 +133,27 @@
   --font-body: var(--font-body), Roboto, ui-sans-serif, sans-serif;
   --font-mono: var(--font-mono), "Roboto Mono", ui-monospace, monospace;
 
-  /* Sidebaggrunden: et let optonet hjørne → dæmpet Turquoise → LightBlue,
-     øverst venstre til nederst højre. Samme brandtoner som
-     --turquoise/--teal-tint, her som gradient i stedet for fladt papir og
-     hvidt blandet ind hele vejen, så hele fladen — ikke kun hjørnet — er
-     lysere. Bruges KUN til den fulde sidebaggrund — kort, knapper og badges
-     beholder deres flade --paper. */
-  --app-gradient: linear-gradient(
-    135deg,
-    color-mix(in srgb, #00bacd 20%, white) 0%,
-    color-mix(in srgb, #00bacd 55%, white) 45%,
-    #e6f5f8 100%
-  );
+  /*
+   * Sidebaggrunden. Den var en farvet flade — Turquoise ned i LightBlue — og
+   * dermed det første man så på hver eneste skærm. Nu er den papir: et næsten
+   * umærkeligt fald fra lys top til en tanke varmere bund, hentet fra
+   * nude-familien. Baggrunden skal ikke kunne beskrives; den skal bære.
+   *
+   * Følgen er at kort ikke længere skiller sig ud ved at være LYSERE end
+   * fladen omkring dem. Adskillelsen bæres i stedet af --shadow-raised og en
+   * hårfin ramme. Bruges KUN til den fulde sidebaggrund.
+   */
+  --app-gradient: linear-gradient(180deg, #fdfcfb 0%, #fbf9f6 45%, #f7f4f0 100%);
+
+  /*
+   * ELEVATION. Kortet løftes af lys og en hårfin kant, aldrig af en mørkere
+   * baggrund omkring det. Skyggerne er varme (samme sorte som blækket, ikke
+   * en blå), og de er svage nok til at man ser kanten før man ser skyggen.
+   */
+  --shadow-raised:
+    0 1px 2px rgba(32, 28, 24, 0.04), 0 1px 3px -1px rgba(32, 28, 24, 0.05);
+  --shadow-lifted:
+    0 2px 4px -2px rgba(32, 28, 24, 0.06), 0 10px 26px -14px rgba(32, 28, 24, 0.22);
 }
 
 @theme inline {
@@ -190,6 +218,47 @@ body {
   .brand-watermark {
     display: none;
   }
+}
+
+/*
+ * SKRIVEFELTETS FOKUS
+ *
+ * Feltet er den flade lægen kigger på hele tiden, og fokus må derfor markeres
+ * uden at råbe. En 2 px SurgeonBlue-ramme gjorde netop det: den tegnede en
+ * hård streg om det sted man skulle føle sig tilpas ved at skrive.
+ *
+ * I stedet: en hårfin ramme der bliver en tand mørkere, og en blød turkis ring
+ * udenom. Ringen er en `box-shadow` og fylder derfor ingenting i layoutet, og
+ * rammen er 1 px i BEGGE tilstande — feltet kan ikke skifte størrelse når man
+ * klikker i det.
+ *
+ * Fokusfarven er --ink-soft (DarkGreen, tekstdyb, 5,2:1 mod hvid) og ikke en
+ * lys accent alene: en tastaturbruger skal stadig kunne se hvor han er.
+ *
+ * `--field-shadow` er feltets EGEN skygge (indvendig fordybning på
+ * indgangsfeltet, elevation på komposerkortet). Den sættes pr. felt og
+ * komponeres med ringen, så de to aldrig overskriver hinanden.
+ */
+.field-shell {
+  --field-shadow: 0 0 rgba(0, 0, 0, 0);
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--line-strong);
+  box-shadow: var(--field-shadow);
+  transition:
+    border-color var(--motion-fast) var(--ease-swap),
+    box-shadow var(--motion-fast) var(--ease-swap);
+}
+
+.field-shell:focus-within {
+  border-color: var(--ink-soft);
+  box-shadow: var(--field-shadow), 0 0 0 3px var(--field-ring);
+}
+
+/* Et billede trækkes hen over feltet. Her ER SurgeonBlue rigtig: det er en
+   kortvarig tilstand med et mål, ikke en flade man skriver i. */
+.field-shell.is-dragging {
+  border-color: var(--teal);
 }
 
 /* Zone-ringe: appens tilstandssprog. Motivet er lånt fra brandsårsklinikken —
