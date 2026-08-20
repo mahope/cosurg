@@ -66,7 +66,7 @@ mere eller mindre. Kliniske træer bærer forfatternavne eller er tydeligt mærk
 | D — Deploy | serveren, compose-stacken |
 
 ## Deploy
-`cosurg.plastsurgeon.com` → 138.199.206.15 (DNS verificeret 20/8).
+`cosurg.com` → 138.199.206.15 (DNS verificeret 20/8).
 Serveren kører **Openship**, ikke Dokploy. Deployet ligger i sit eget spor.
 
 ## Klinisk indhold — venter på Magnus og Rami
