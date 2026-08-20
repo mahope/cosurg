@@ -1,190 +1,193 @@
-> 🇬🇧 **[Read this in English](README.en.md)**
+> 🇩🇰 **[Læs på dansk](README.md)**
 
 # CoSurg
 
-**Stemmestyret klinisk beslutningsstøtte til brandsår.**
-Bygget på Corti API til Corti Hack for Health, København, 20.–21. august 2026.
+**Voice-driven clinical decision support for burns.**
+Built on the Corti API for Corti Hack for Health, Copenhagen, 20–21 August 2026.
 
 | | |
 |---|---|
 | App | [cosurg.com](https://cosurg.com) |
-| Vidensserver (MCP) | [mcp.cosurg.com](https://mcp.cosurg.com/health) |
-| Tredjepartsprodukter og datasæt | [THIRD-PARTY.md](THIRD-PARTY.md) |
+| Knowledge server (MCP) | [mcp.cosurg.com](https://mcp.cosurg.com/health) |
+| Third-party products and datasets | [THIRD-PARTY.md](THIRD-PARTY.md) |
 
 ---
 
-## Problemet
+## The problem
 
-En brandsårspatient kommer ind på skadestuen. Inden den vagthavende læge kan
-ringe til Rigshospitalets brandsårsafdeling, skal fem ting være afklaret.
-Dansk Brandsårsforening skriver det som en instruks:
+A burn patient arrives at the emergency department. Before the doctor on call can
+phone the burn unit at Rigshospitalet, five things must be settled. The Danish
+Burn Association states it as an instruction:
 
-> Ved samtale med vagthavende på brandsårsafdeling er det vigtigt at fremlægge
-> skadesmekanisme, skadestidspunkt, vitale parametre, vurderet brandsårsareal
-> samt hvilken behandling der er iværksat.
+> When speaking to the on-call physician at the burn unit it is important to
+> present the injury mechanism, the time of injury, vital signs, the estimated
+> burn area, and what treatment has already been started.
 >
-> — [brandsaar.dk/overflytning-af-brandsårspatienter](https://brandsaar.dk/overflytning-af-brandsa%CC%8Arspatienter/)
+> — [brandsaar.dk/overflytning-af-brandsårspatienter](https://brandsaar.dk/overflytning-af-brandsa%CC%8Arspatienter/) (translated)
 
-Det er en tjekliste, og den er svær at holde i hovedet. Foreningen skriver selv,
-at det "ofte er vanskeligt at vurdere forbrændingens nøjagtige omfang. Det kræver
-ro og overblik" — ro er ikke det man har på en skadestue klokken tre om natten.
+That is a checklist, and it is hard to hold in your head. The association writes
+that it is "often difficult to assess the exact extent of the burn — it requires
+calm and an overview". Calm is not what an emergency department offers at three in
+the morning.
 
-Fem vurderinger afgør forløbet, og hver af dem har en fælde:
+Five assessments determine the whole course, and each has a trap:
 
-- **Dybden** kan ikke aflæses med sikkerhed de første dage. Den skal vurderes på
-  farve, kapillærrespons og sensibilitet — tre observationer, ikke ét blik.
-- **Udbredelsen (TBSA)** afgør om patienten skal have væske efter Parkland. Ved
-  20 % og derover ændrer hele behandlingen sig.
-- **Cirkulær afsnøring** er ikke farlig når man ser den. Den bliver farlig når
-  ødemet tiltager timer senere, og huden strammer perifert for skaden.
-- **Inhalationsskade** kan udvikle sig til øvre luftvejsobstruktion *under
-  transporten*. Beslutningen om intubation skal træffes før man kører.
-- **Elektrisk skade** ser lille ud på huden. Hudlæsionen undervurderer altid
-  vævsskaden nedenunder.
+- **Depth** cannot be read reliably in the first days. It must be judged from
+  colour, capillary response and sensation — three observations, not one glance.
+- **Extent (TBSA)** decides whether the patient needs Parkland fluid resuscitation.
+  At 20 % and above the entire management changes.
+- **Circumferential burns** are not dangerous when you see them. They become
+  dangerous hours later as oedema builds and the skin tightens distal to the injury.
+- **Inhalation injury** can progress to upper airway obstruction *during transport*.
+  The intubation decision has to be made before you set off.
+- **Electrical injury** looks small on the skin. The visible lesion always
+  underestimates the tissue damage underneath.
 
-Ingen af dem er svære at huske. De er svære at huske *alle sammen, hver gang,
-under tidspres*. Det er dét der bliver glemt — ikke viden, men fuldstændighed.
+None of these is hard to remember. What is hard is remembering *all of them, every
+time, under time pressure*. What gets lost is not knowledge but completeness.
 
-## Løsningen
+## The solution
 
-CoSurg fører lægen gennem vurderingen som en samtale. Agenten stiller næste
-spørgsmål højt, lægen svarer med stemmen, træet fyldes ud node for node, og til
-sidst falder disposition, journalnotat og diagnosekoder ud. Røde flag afbryder
-undervejs — ikke som en advarsel man kan overse, men som en oplæst besked med
-telefonnummeret til vagthavende brandsårslæge.
+CoSurg walks the clinician through the assessment as a conversation. The agent asks
+the next question aloud, the clinician answers by voice, the tree fills in node by
+node, and out come the disposition, the clinical note and the diagnosis codes. Red
+flags interrupt along the way — not as a warning you can scroll past, but as a
+spoken message carrying the phone number of the on-call burn physician.
 
-I operationsstue-tilstand vendes forholdet om: kirurgen er steril og rører
-aldrig skærmen. Mikrofonen er åben, kommandoerne er få og distinkte, og skærmen
-viser store procedurefotos af hvad der konkret skal gøres i dette trin.
+In operating-room mode the relationship inverts: the surgeon is scrubbed and never
+touches the screen. The microphone stays open, the commands are few and distinct,
+and the display shows large procedure photos of what to do in this exact step.
 
-### Hvad der gør den anderledes
+### What makes it different
 
-Det er let at bygge en chatbot der svarer på brandsårsspørgsmål. Forskellen på
-det og klinisk beslutningsstøtte er hvor svaret kommer fra. Fire steder har vi
-truffet valget bevidst:
+It is easy to build a chatbot that answers questions about burns. The difference
+between that and clinical decision support is where the answer comes from. We made
+that choice deliberately in four places:
 
-**Anbefalingen kommer fra træet, aldrig fra en sprogmodel.**
-Beslutningstræet er JSON skrevet af plastikkirurger. Motoren der kører det
-([`lib/tree/engine.ts`](cosurg/lib/tree/engine.ts)) er 123 linjer rene
-funktioner uden ét ord om brandsår i sig. Den slår en svarværdi op i nodens
-kanter og rykker frem. En sprogmodel kan ikke ændre hvor den lander, fordi den
-ikke er med i det opslag.
+**The recommendation comes from the tree, never from a language model.**
+The decision tree is JSON written by plastic surgeons. The engine that runs it
+([`lib/tree/engine.ts`](cosurg/lib/tree/engine.ts)) is 123 lines of pure functions
+without a single word about burns in it. It looks an answer value up against the
+node's edges and moves on. A language model cannot change where it lands, because
+it is not part of that lookup.
 
-**Agenten fortolker kun — og spørger igen frem for at gætte.**
-Cortis agentic framework får ét job: oversætte "øh, det er vist sådan halvdelen
-af underarmen" til en værdi nodens svarskema tillader. Kan svaret ikke afgøres,
-er det rigtige output at flagge tvivl, ikke at vælge det mest sandsynlige.
-Et gæt der ligner et svar er værre end intet svar, fordi det ikke kan ses på
-resultatet at der blev gættet.
+**The agent only interprets — and asks again rather than guessing.**
+Corti's agentic framework has one job: turn "uh, about half the forearm I'd say"
+into a value the node's answer schema permits. If the answer cannot be determined,
+the correct output is to flag doubt, not to pick the most likely option. A guess
+that looks like an answer is worse than no answer, because nothing in the result
+reveals that a guess was made.
 
-**Koderne kommer fra Cortis coding-API, ikke fra en model der finder på dem.**
-En sprogmodel kan producere en ICD-10-kode der ser fuldstændig rigtig ud og ikke
-findes. Beslutningsvej, transskript og diktat sendes derfor som tre adskilte
-kontekster til Corti Symphony, og skribent-agenten får koderne som en fast liste
-den ikke må røre. Den må skrive *hvilket trin i beslutningsvejen der understøtter
-hver kode* — det er alt.
+**The codes come from Corti's coding API, not from a model inventing them.**
+A language model can produce an ICD-10 code that looks entirely right and does not
+exist. The decision path, the transcript and the dictation are therefore sent as
+three separate contexts to Corti Symphony, and the writer agent receives the codes
+as a fixed list it may not touch. It may write *which step in the decision path
+supports each code* — that is all.
 
-**Chatten citerer vores egne kilder ordret.**
-Svarene kommer fra vores egen MCP-server, som returnerer uddrag der bærer deres
-kilde-URL. Er emnet ikke dækket, svarer serveren `INGEN DAEKNING I VIDENSBASEN`,
-og det er dét brugeren får at se. Den falder ikke tilbage på almen viden, og går
-serveren ned, siger siderne at der ikke er dækning frem for at improvisere.
-Serveren nås ad to veje: guide- og faldgrubesiderne kalder den direkte
-([`lib/corti/mcp.ts`](cosurg/lib/corti/mcp.ts)), mens chatten giver Corti dens
-URL som MCP-connector og lader Cortis agentic framework foretage opslaget.
+**The chat quotes our own sources verbatim.**
+Answers come from our own MCP server, which returns excerpts carrying their source
+URL. If a topic is not covered, the server answers `INGEN DAEKNING I VIDENSBASEN`
+("no coverage in the knowledge base"), and that is what the user sees. It does not
+fall back on general knowledge, and if the server goes down the pages say there is
+no coverage rather than improvising. The server is reached two ways: the guide and
+pitfall pages call it directly ([`lib/corti/mcp.ts`](cosurg/lib/corti/mcp.ts)),
+while the chat hands Corti its URL as an MCP connector and lets Corti's agentic
+framework perform the lookup.
 
-Det samme princip går igen: **hvert udsagn skal kunne peges tilbage på noget en
-fagperson har skrevet.**
+The same principle runs through all of it: **every statement must trace back to
+something a clinician wrote.**
 
-## Sådan bruges Corti
+## How Corti is used
 
-Alle fem produktområder er i brug. Tabellen beskriver hvad koden faktisk kalder.
+All five product areas are in use. The table describes what the code actually calls.
 
-| Produktområde | Hvor | Hvordan |
+| Product area | Where | How |
 |---|---|---|
-| **Ambient STT** | [`lib/audio/useTranscribe.ts`](cosurg/lib/audio/useTranscribe.ts) | `/transcribe`-websocket via `@corti/sdk` med `automaticPunctuation` og interim-resultater. Lytter mens lægen svarer på træets spørgsmål. |
-| **Dictation STT** | [`lib/audio/useDictation.ts`](cosurg/lib/audio/useDictation.ts) | Samme socket, konfigureret som diktat: `spokenPunctuation`, så lægen kan sige "punktum" og "nyt afsnit". Tilkoblet i `app/page.tsx`; diktatet føjes til notatet. |
-| **Text generation** | [`app/api/note/route.ts`](cosurg/app/api/note/route.ts) | En Corti-agent skriver journalnotatet ud fra beslutningsvejen, transskriptet og diktatet. |
-| **Agentic framework** | [`lib/corti/agent.ts`](cosurg/lib/corti/agent.ts) | Tre agenter med schema-connectors og struktureret output: svarfortolker, skribent, OR-kommandogenkender. Vores MCP-server kobles på som connector. |
-| **Medical coding** | [`lib/corti/coding.ts`](cosurg/lib/corti/coding.ts) | Corti Symphony, `POST /v2/tools/coding/`. Koderne kommer fra kode-API'et; sprogmodellen må kun begrunde dem. |
+| **Ambient STT** | [`lib/audio/useTranscribe.ts`](cosurg/lib/audio/useTranscribe.ts) | `/transcribe` websocket via `@corti/sdk` with `automaticPunctuation` and interim results. Listens while the clinician answers the tree's questions. |
+| **Dictation STT** | [`lib/audio/useDictation.ts`](cosurg/lib/audio/useDictation.ts) | Same socket, configured for dictation: `spokenPunctuation`, so the clinician can say "full stop" and "new paragraph". Wired up in `app/page.tsx`; the dictation is appended to the note. |
+| **Text generation** | [`app/api/note/route.ts`](cosurg/app/api/note/route.ts) | A Corti agent writes the clinical note from the decision path, the transcript and the dictation. |
+| **Agentic framework** | [`lib/corti/agent.ts`](cosurg/lib/corti/agent.ts) | Three agents with schema connectors and structured output: answer interpreter, note writer, OR command recogniser. Our MCP server is attached as a connector. |
+| **Medical coding** | [`lib/corti/coding.ts`](cosurg/lib/corti/coding.ts) | Corti Symphony, `POST /v2/tools/coding/`. The codes come from the coding API; the language model may only justify them. |
 
-### Forbehold vi ikke skjuler
+### Caveats we are not hiding
 
-**SKS (dansk ICD-10) har vi ikke adgang til.** Corti dokumenterer
-`/coding/icd-10-dk`, men det er tidlig alpha for udvalgte partnere. Alle danske
-systemnavne blev afvist med 400. Vi kører derfor på `icd10int-outpatient` —
-international ICD-10, som SKS' diagnosedel er en dansk udvidelse af. Får vi
-adgang, sættes `CORTI_CODING_SYSTEM` og intet andet ændres.
+**We do not have access to SKS (Danish ICD-10).** Corti documents
+`/coding/icd-10-dk`, but it is early alpha for selected partners. Every Danish
+system name was rejected with a 400. We therefore run on `icd10int-outpatient` —
+international ICD-10, of which the SKS diagnosis set is a Danish extension. Given
+access, `CORTI_CODING_SYSTEM` is set and nothing else changes.
 
-**Stemmekommandoer i diktat er konfigureret, men ikke aktive.** Corti svarer
-`CONFIG_ACCEPTED` og markerer samtidig hver kommando `"registered": false` for
-vores tenant. Vi påstår derfor ikke at de virker.
+**Voice commands in dictation are configured but not active.** Corti replies
+`CONFIG_ACCEPTED` while marking every command `"registered": false` for our tenant.
+We therefore do not claim they work.
 
-**TTS er ikke Corti.** Corti leverer ikke text-to-speech, og reglerne tillader
-eksplicit eksterne TTS-modeller. Se [THIRD-PARTY.md](THIRD-PARTY.md).
+**TTS is not Corti.** Corti does not provide text-to-speech, and the rules
+explicitly permit external TTS models. See [THIRD-PARTY.md](THIRD-PARTY.md).
 
-**Kodemodellen er ikke deterministisk.** Fem identiske kald gav samme
-hoveddiagnose 5 ud af 5 gange og varierende — men klinisk forsvarlige —
-sekundærkoder. Målingen står i [`cosurg/README.md`](cosurg/README.md).
+**The coding model is not deterministic.** Five identical calls returned the same
+principal diagnosis 5 out of 5 times, with varying — but clinically defensible —
+secondary codes. The measurement is in [`cosurg/README.md`](cosurg/README.md).
 
-## Arkitektur
+## Architecture
 
-Fire dele, og grænsen mellem dem er hvor troværdigheden bor.
+Four parts, and the boundary between them is where the trustworthiness lives.
 
-**Appen** ([`cosurg/`](cosurg/)) er Next.js 16 med App Router. Alle Corti-kald går
-gennem server-side API-ruter, så browseren aldrig ser credentials. Betalte ruter
-er bag `guard()`: origin-lås, per-IP-kvote og længdegrænse på al fritekst.
+**The app** ([`cosurg/`](cosurg/)) is Next.js 16 with the App Router. Every Corti
+call goes through a server-side API route, so the browser never sees credentials.
+Paid routes sit behind `guard()`: origin lock, per-IP quota and a length cap on all
+free text.
 
-**Træmotoren** ([`cosurg/lib/tree/`](cosurg/lib/tree/)) er tilstandsløs og
-domæne-agnostisk. Den kender ikke til brandsår — den kender til noder, kanter,
-røde flag og dispositioner. Derfor kører den samme motor begge vores træer:
+**The tree engine** ([`cosurg/lib/tree/`](cosurg/lib/tree/)) is stateless and
+domain-agnostic. It knows nothing about burns — it knows about nodes, edges, red
+flags and dispositions. That is why the same engine runs both our trees:
 
-| Træ | Hvad | Indhold |
+| Tree | What | Contents |
 |---|---|---|
-| [`burns.json`](cosurg/content/trees/burns.json) | Akut vurdering | 8 noder: mekanisme, inhalation, TBSA, væske, dybde, cirkulær, lokalisation, køling. 4 røde flag. 3 dispositioner, hver med kilde-URL. |
-| [`dressing-hand-arm.json`](cosurg/content/trees/dressing-hand-arm.json) | Procedureguide til forbinding | 12 trin med 71 procedurefotos. |
+| [`burns.json`](cosurg/content/trees/burns.json) | Acute assessment | 8 nodes: mechanism, inhalation, TBSA, fluids, depth, circumferential, location, cooling. 4 red flags. 3 dispositions, each with source URLs. |
+| [`dressing-hand-arm.json`](cosurg/content/trees/dressing-hand-arm.json) | Dressing procedure guide | 12 steps with 71 procedure photos. |
 
-En procedureguide og et diagnostisk beslutningstræ er samme datastruktur.
-**Træer er data, ikke kode** — et nyt træ til bidsår eller forfrysninger kræver
-ingen ændring i motoren.
+A procedure guide and a diagnostic decision tree are the same data structure.
+**Trees are data, not code** — a new tree for bite wounds or frostbite requires no
+change to the engine.
 
-**MCP-serveren** ([`cosurg-mcp/`](cosurg-mcp/)) holder den kliniske vidensbase og
-svarer kun med ordrette uddrag der bærer deres kilde. Ni værktøjer: fritekstsøgning
-i kilderne, hentning af hele kildeafsnit, opslag i beslutningstræerne, PubMed-søgning
-og statusvisning. Ingen database, ingen skrivbar tilstand — alt indlæses ved opstart,
-så et svar altid kan spores til en fil. Aktuelle tal står på
-[`/health`](https://mcp.cosurg.com/health).
+**The MCP server** ([`cosurg-mcp/`](cosurg-mcp/)) holds the clinical knowledge base
+and answers only with verbatim excerpts carrying their source. Nine tools: full-text
+search across the sources, retrieval of whole source sections, lookups into the
+decision trees, PubMed search, and a status view. No database, no writable state —
+everything is loaded at startup, so an answer can always be traced to a file. Current
+figures are on [`/health`](https://mcp.cosurg.com/health).
 
-Serveren er også hvor vi holder to skel som en læge ikke skal kunne overse.
-**Klinisk viden mod testdata:** `data/kilder/` bliver til vidensbasen og kan citeres;
-arrangørens syntetiske patientjournaler ligger i `test-data/` hvor serveren fysisk
-ikke kan nå dem. En opdigtet patient citeret som klinisk kilde ville se fuldstændig
-troværdig ud — derfor er adskillelsen fysisk og ikke bare en mærkat.
-**Retningslinje mod case:** hvert kildeafsnit bærer en `kildetype`, så et enkelt
-patientforløb ikke kan komme til at lyde som en anbefaling. Kildelisten og reglerne
-står i [`cosurg-mcp/data/README.md`](cosurg-mcp/data/README.md).
+The server is also where we maintain two distinctions a clinician must not be able to
+miss. **Clinical knowledge versus test data:** `data/kilder/` becomes the knowledge
+base and may be quoted; the organiser's synthetic patient records sit in `test-data/`,
+where the server physically cannot reach them. A fictional patient quoted as a clinical
+source would look entirely credible — which is why the separation is physical and not
+merely a label. **Guideline versus case:** every source section carries a `kildetype`,
+so a single patient's course cannot come to sound like a recommendation. The source
+list and the rules are in [`cosurg-mcp/data/README.md`](cosurg-mcp/data/README.md).
 
-**Deployet** kører på Nordic Surgery Labs egen server (Hetzner, Falkenstein) under
-Openship med Traefik og Let's Encrypt. Appen er et Next.js standalone-image der kører
-som non-root; MCP-serveren er distroless med read-only filsystem og 256 MB
-hukommelsesloft.
+**The deployment** runs on Nordic Surgery Lab's own server (Hetzner, Falkenstein)
+under Openship with Traefik and Let's Encrypt. The app is a Next.js standalone image
+running as non-root; the MCP server is distroless with a read-only filesystem and a
+256 MB memory cap.
 
-## Kom i gang
+## Getting started
 
-Du skal bruge Node 20+ og et sæt Corti-credentials fra Corti Console.
+You need Node 20+ and a set of Corti credentials from the Corti Console.
 
 ```bash
 git clone git@github.com:mahope/cosurg.git
 cd cosurg/cosurg
 
-cp .env.example .env.local     # udfyld CORTI_CLIENT_ID og CORTI_CLIENT_SECRET
+cp .env.example .env.local     # fill in CORTI_CLIENT_ID and CORTI_CLIENT_SECRET
 npm install
 npm run dev                    # http://localhost:3000
 ```
 
-Appen kører uden MCP-serveren — den kliniske chat melder så at der ikke er
-forbindelse til vidensbasen frem for at svare ud fra almen viden. Vil du køre
-begge dele:
+The app runs without the MCP server — the clinical chat then reports that there is
+no connection to the knowledge base rather than answering from general knowledge.
+To run both:
 
 ```bash
 cd ../cosurg-mcp
@@ -192,52 +195,52 @@ npm install && npm run build
 MCP_AUTH_TOKEN=$(openssl rand -hex 32) npm start   # http://localhost:8787/mcp
 ```
 
-Serveren finder selv `data/kilder/` og `../cosurg/content/trees/`. Sæt derefter
-`MCP_URL` og `MCP_AUTH_TOKEN` i appens `.env.local`.
+The server finds `data/kilder/` and `../cosurg/content/trees/` on its own. Then set
+`MCP_URL` and `MCP_AUTH_TOKEN` in the app's `.env.local`.
 
-| Miljøvariabel | Standard | Note |
+| Environment variable | Default | Note |
 |---|---|---|
-| `CORTI_ENVIRONMENT` | `eu` | `eu` eller `us` |
-| `CORTI_TENANT` | `base` | Indgår i auth-URL og `Tenant-Name`-header |
-| `CORTI_CLIENT_ID` / `CORTI_CLIENT_SECRET` | — | Fra Corti Console |
-| `CORTI_CODING_SYSTEM` | `icd10int-outpatient` | Sættes til et SKS-navn den dag adgangen findes |
-| `SYV_API_KEY` | — | Uden nøgle falder oplæsning tilbage til browserstemmen |
-| `MCP_URL` / `MCP_AUTH_TOKEN` | — | Uden dem er den kliniske chat slået fra |
-| `ALLOWED_ORIGINS` | — | Kommasepareret, til preview-udrulninger |
+| `CORTI_ENVIRONMENT` | `eu` | `eu` or `us` |
+| `CORTI_TENANT` | `base` | Used in the auth URL and the `Tenant-Name` header |
+| `CORTI_CLIENT_ID` / `CORTI_CLIENT_SECRET` | — | From the Corti Console |
+| `CORTI_CODING_SYSTEM` | `icd10int-outpatient` | Set to an SKS name the day access exists |
+| `SYV_API_KEY` | — | Without a key, speech falls back to the browser voice |
+| `MCP_URL` / `MCP_AUTH_TOKEN` | — | Without them the clinical chat is disabled |
+| `ALLOWED_ORIGINS` | — | Comma-separated, for preview deployments |
 
-Hele stakken i containere, fra repo-roden:
+The whole stack in containers, from the repository root:
 
 ```bash
 docker build -f cosurg-mcp/Dockerfile -t cosurg-mcp .
 docker build -f cosurg/Dockerfile -t cosurg ./cosurg
 ```
 
-## Holdet
+## The team
 
-**Magnus Avnstorp** — plastikkirurg. Klinisk indhold og fagligt grundlag for
-beslutningstræet; skaffede Rigshospitalets step-by-step-materiale fra Afsnit 6052
-og de 71 procedurefotos. Præsenterer.
+**Magnus Avnstorp** — plastic surgeon. Clinical content and the professional basis
+for the decision tree; sourced Rigshospitalet's step-by-step material from Section
+6052 and the 71 procedure photos. Presenting.
 
-**Rami Mossad Ibrahim** — plastikkirurg. Klinisk indhold og retningslinjer.
-Har skrevet [brandsaar.dk](https://brandsaar.dk) for Dansk Brandsårsforening —
-sitet der er hele vidensbasens grundlag. Præsenterer.
+**Rami Mossad Ibrahim** — plastic surgeon. Clinical content and guidelines. Author of
+[brandsaar.dk](https://brandsaar.dk) for the Danish Burn Association — the site the
+entire knowledge base rests on. Presenting.
 
-**Mads Holst Jensen** — udvikler. App, træmotor, Corti-integration, MCP-server
-og deploy.
+**Mads Holst Jensen** — developer. App, tree engine, Corti integration, MCP server
+and deployment.
 
-Procedureguiden bygger på Rigshospitalets step-by-step-materiale af **spl. Pia Høy
-og Alice Rimmen**, i samarbejde med **ovl. Rikke Holmgaard** og **reservelæge Carla
-Kruse**, Afsnit for plastikkirurgi og brandsårsbehandling 6052.
+The procedure guide is based on Rigshospitalet's step-by-step material by
+**RN Pia Høy and Alice Rimmen**, in collaboration with **consultant Rikke Holmgaard**
+and **junior doctor Carla Kruse**, Section for Plastic Surgery and Burn Treatment 6052.
 
-## Repoets indhold
+## What is in this repository
 
-| Sti | Hvad |
+| Path | What |
 |---|---|
-| [`cosurg/`](cosurg/) | Next.js-appen. Klinisk indhold i `content/trees/`, aldrig i kode. |
-| [`cosurg-mcp/`](cosurg-mcp/) | MCP-serveren og den kliniske vidensbase med proveniens. |
-| [`docs/`](docs/) | Specifikation, byggeplan og arrangørens brief. |
-| [`DEMO.md`](DEMO.md) | Demo-manuskript. |
-| [`THIRD-PARTY.md`](THIRD-PARTY.md) | Alt vi bruger som ikke er Corti. |
+| [`cosurg/`](cosurg/) | The Next.js app. Clinical content lives in `content/trees/`, never in code. |
+| [`cosurg-mcp/`](cosurg-mcp/) | The MCP server and the clinical knowledge base with provenance. |
+| [`docs/`](docs/) | Specification, build plan and the organiser's brief. |
+| [`DEMO.md`](DEMO.md) | Demo script. |
+| [`THIRD-PARTY.md`](THIRD-PARTY.md) | Everything we use that is not Corti. |
 
-Alt klinisk materiale er lavet af holdets egne medlemmer eller af navngivne
-kolleger, og må bruges i demo og submission.
+All clinical material was produced by the team's own members or by named colleagues,
+and is cleared for use in the demo and the submission.
