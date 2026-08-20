@@ -77,7 +77,9 @@ export function AboutTeamView() {
           <h2 className="font-[family-name:var(--font-display)] text-xl font-semibold tracking-tight text-[var(--ink)]">
             {tr("aboutTeamSectionTitle", lang)}
           </h2>
-          <p className="mt-2 max-w-2xl text-sm text-[var(--ink-soft)]">{tr("aboutTeamSectionIntro", lang)}</p>
+          {tr("aboutTeamSectionIntro", lang) && (
+            <p className="mt-2 max-w-2xl text-sm text-[var(--ink-soft)]">{tr("aboutTeamSectionIntro", lang)}</p>
+          )}
 
           <ul className="mt-6 grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-4">
             {TEAM.map((m) => (
