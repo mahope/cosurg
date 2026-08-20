@@ -68,7 +68,6 @@ export function cap(value: unknown, max: number): string {
 const DEFAULT_ORIGINS = [
   "https://cosurg.com",
   "https://www.cosurg.com",
-  "https://burntree.plastsurgeon.com",
   "http://localhost:3000",
   "http://127.0.0.1:3000",
 ];

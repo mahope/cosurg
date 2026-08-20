@@ -6,7 +6,7 @@ import { advance, getDisposition, getNode, goBack, questionText, startSession } 
 import type { DecisionTree, Lang, SessionState, TreeNode } from "@/lib/tree/types";
 import { useTranscribe } from "@/lib/audio/useTranscribe";
 import { prefetchSpeech, speak, stopSpeaking } from "@/lib/audio/speak";
-import { tr } from "@/lib/i18n";
+import { failureMessage, micMessage, tr } from "@/lib/i18n";
 import { ControlRail } from "@/components/ControlRail";
 import { QuestionCard } from "@/components/QuestionCard";
 import { DispositionCard } from "@/components/DispositionCard";
@@ -27,6 +27,22 @@ const initialTree = burnsTree as unknown as DecisionTree;
 
 /** Motorens kvitteringsværdi for en trin-node: kanten er "*", så alt matcher. */
 const STEP_VALUE = "done";
+
+/*
+ * Frister på klientens netværkskald.
+ *
+ * Uden dem findes ventetiden "for evigt": en fetch mod et dødt net hænger til
+ * nogen genindlæser siden, og imens står der "Fortolker…" på skærmen. Kirurgen
+ * på scenen ved ikke at han skal genindlæse — så appen skal selv give op og
+ * sige hvad man gør i stedet.
+ *
+ * Fristerne er sat ud fra MÅLT latens (interpret 1,5–2,1 s, note 14–16 s) med
+ * rigelig luft, så et kald der ville være lykkedes aldrig afbrydes. Notatet får
+ * derfor en helt anden frist end de øvrige kald — det er langsomt af natur.
+ */
+const TIMEOUT_INTERPRET = 8_000;
+const TIMEOUT_NOTE = 30_000;
+const TIMEOUT_TREE = 8_000;
 
 interface NoteResult {
   note: string;
@@ -60,6 +76,7 @@ export default function Home() {
   const [note, setNote] = useState<NoteResult | null>(null);
   const [dictating, setDictating] = useState(false);
   const [dictation, setDictation] = useState("");
+  const [noteBusy, setNoteBusy] = useState(false);
   const busyRef = useRef(false);
 
   const node = state.currentNodeId ? getNode(tree, state.currentNodeId) : undefined;
@@ -273,6 +290,7 @@ export default function Home() {
             lang,
             utterance: text,
           }),
+          signal: AbortSignal.timeout(TIMEOUT_INTERPRET),
         });
         const data = (await res.json()) as {
           value?: string;
@@ -315,6 +333,22 @@ export default function Home() {
         } else {
           askCurrent(next);
         }
+      } catch (err) {
+        /*
+         * Netværket svigtede — og DET er den fejl der kan koste demoen. Uden
+         * dette catch blev den afviste fetch til en uncaught rejection, status
+         * blev aldrig ryddet, og skærmen stod med "Fortolker…" til nogen
+         * genindlæste siden.
+         *
+         * Nu siger appen i stedet hvad der skete OG hvad man gør: klik og
+         * skrift går uden om agenten, så beslutningen kan fortsætte. Beskeden
+         * læses også op — i OR-tilstand kigger kirurgen ikke på skærmen, og
+         * browserstemmen virker uden net.
+         */
+        if (seq !== interpretSeqRef.current) return;
+        const msg = failureMessage(err, "interpret", lang);
+        setStatus(msg);
+        if (speakAll) void say(msg);
       } finally {
         // Kun den nyeste fortolkning må frigive spærren — er den overhalet,
         // ejes spærren af den kommando eller det kald der kom efter.
@@ -358,7 +392,7 @@ export default function Home() {
   // Træ-listen er en bonus i UI'et; fejler den, kører brandsårstræet uforstyrret.
   useEffect(() => {
     let cancelled = false;
-    fetch("/api/tree")
+    fetch("/api/tree", { signal: AbortSignal.timeout(TIMEOUT_TREE) })
       .then((r) => (r.ok ? r.json() : []))
       .then((list: TreeSummary[]) => {
         if (!cancelled && Array.isArray(list)) setTrees(list);
@@ -398,13 +432,17 @@ export default function Home() {
       if (id === tree.id || treeBusy) return;
       setTreeBusy(true);
       try {
-        const res = await fetch(`/api/tree?id=${encodeURIComponent(id)}`);
+        const res = await fetch(`/api/tree?id=${encodeURIComponent(id)}`, {
+          signal: AbortSignal.timeout(TIMEOUT_TREE),
+        });
         if (!res.ok) throw new Error("tree");
         const next = (await res.json()) as DecisionTree;
         setTree(next);
         askCurrent(resetSession(next, lang), next);
-      } catch {
-        setStatus(lang === "da" ? "Kunne ikke hente træet" : "Could not load the tree");
+      } catch (err) {
+        // Det aktive træ står urørt tilbage — en mislykket omskiftning må ikke
+        // efterlade sessionen halvt i ét træ og halvt i et andet.
+        setStatus(failureMessage(err, "tree", lang));
       } finally {
         setTreeBusy(false);
       }
@@ -412,23 +450,42 @@ export default function Home() {
     [tree.id, treeBusy, lang, askCurrent, resetSession],
   );
 
+  /**
+   * Journalnotatet er appens langsomste kald (målt 14–16 s) og derfor det der
+   * ligner en frossen app hvis det fejler i stilhed. Det har sin egen, meget
+   * længere frist end de øvrige kald — en generøs frist er ikke det samme som
+   * ingen frist — og en spærre så et utålmodigt klik ikke sender kaldet igen.
+   */
   const generateNote = async () => {
-    setStatus(tr("thinking", lang));
-    const res = await fetch("/api/note", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        treeId: tree.id,
-        lang,
-        path: state.path,
-        dispositionId: state.dispositionId,
-        transcript: transcript.join("\n"),
-        dictation,
-      }),
-    });
-    const data = (await res.json()) as NoteResult & { error?: string };
-    setStatus(data.error ?? null);
-    if (!data.error) setNote(data);
+    if (noteBusy) return;
+    setNoteBusy(true);
+    setStatus(tr("noteWorking", lang));
+    try {
+      const res = await fetch("/api/note", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          treeId: tree.id,
+          lang,
+          path: state.path,
+          dispositionId: state.dispositionId,
+          transcript: transcript.join("\n"),
+          dictation,
+        }),
+        signal: AbortSignal.timeout(TIMEOUT_NOTE),
+      });
+      const data = (await res.json()) as NoteResult & { error?: string };
+      setStatus(data.error ?? null);
+      if (!data.error) setNote(data);
+    } catch (err) {
+      // Anbefalingen kom fra træet og står allerede på skærmen — et manglende
+      // notat er en ærgrelse, ikke et tab af beslutningen. Det siger beskeden.
+      const msg = failureMessage(err, "note", lang);
+      setStatus(msg);
+      if (speakAll) void say(msg);
+    } finally {
+      setNoteBusy(false);
+    }
   };
 
   // Klik-svar (kort/valg) rykker direkte gennem træet — samme motorkald som
@@ -438,6 +495,10 @@ export default function Home() {
     (value: string, rawLabel: string) => {
       const { state: next, redFlag } = advance(tree, state, value, rawLabel);
       setState(next);
+      // Klikket ER vejen videre efter en fejl. Står der stadig "Fortolker…"
+      // eller en netværksbesked fra forrige forsøg, er den nu usand — og en
+      // usand statuslinje er præcis det der får appen til at se død ud.
+      setStatus(null);
       if (redFlag) {
         setFlash(redFlag.message);
         void say(redFlag.message);
@@ -459,6 +520,43 @@ export default function Home() {
   const progress = useMemo(
     () => Math.round((state.path.length / Math.max(tree.nodes.length, 1)) * 100),
     [state.path.length, tree.nodes.length],
+  );
+
+  /*
+   * Browsere afspiller ikke lyd før siden er blevet rørt. Sker det ikke, taber
+   * appen sin første oplæsning i stilhed — og på scenen ligner det at stemmen
+   * ikke virker. Vi spørger browseren direkte og fortæller det kun når det
+   * faktisk gælder; ved første klik eller tast forsvinder linjen af sig selv.
+   */
+  const [audioUnlocked, setAudioUnlocked] = useState(false);
+  useEffect(() => {
+    const unlock = () => setAudioUnlocked(true);
+
+    // Er siden allerede blevet rørt, findes spærren ikke — meld fri straks.
+    const activation = (navigator as Navigator & { userActivation?: { hasBeenActive: boolean } }).userActivation;
+    if (!activation || activation.hasBeenActive) {
+      queueMicrotask(unlock);
+      return;
+    }
+
+    window.addEventListener("pointerdown", unlock, { once: true });
+    window.addEventListener("keydown", unlock, { once: true });
+    return () => {
+      window.removeEventListener("pointerdown", unlock);
+      window.removeEventListener("keydown", unlock);
+    };
+  }, []);
+
+  /*
+   * Én besked-plads for alt der kræver en HANDLING af brugeren — mikrofonen,
+   * stemmetjenesten, den blokerede lyd. Rå browserstrenge oversættes her, ét
+   * sted, så hverken standardtilstand eller OR-tilstand kan komme til at vise
+   * "Permission denied" til en kirurg. Mikrofonfejl vejer tungest: uden den
+   * virker intet af det håndfri.
+   */
+  const notice = useMemo(
+    () => micMessage(error, lang, orMode) ?? (speakAll && !audioUnlocked ? tr("audioGesture", lang) : null),
+    [error, lang, orMode, speakAll, audioUnlocked],
   );
 
   // Forvarm oplæsningen af de mulige næste spørgsmål, så stemmen starter uden
@@ -491,8 +589,8 @@ export default function Home() {
         progress={progress}
         listening={listening}
         status={status}
-        error={error}
         canAdvance={canAdvance}
+        notice={notice}
         onNext={() => void runCommand("next")}
         onSelectOption={selectOption}
         onSubmitNumber={(v) => void handleUtterance(v)}
@@ -532,9 +630,18 @@ export default function Home() {
           }}
         />
 
-        {error && (
-          <div className="mb-4 rounded-lg border border-[var(--red-line)] bg-[var(--red-tint)] px-4 py-3 text-sm text-[var(--red)]">
-            {error}
+        {/*
+          Tekniske problemer er IKKE kliniske. Rød er reserveret til rødt flag
+          (se globals.css) — en mikrofon der mangler tilladelse er en irriterende
+          hindring, ikke en patient i fare. Derfor står beskeden i brandets nude,
+          synlig men uden at låne alvor den ikke har.
+        */}
+        {notice && (
+          <div
+            role="status"
+            className="mb-4 rounded-lg border border-[var(--nude-deep)] bg-[var(--nude-tint)] px-4 py-3 text-sm font-medium leading-relaxed text-[var(--ink)]"
+          >
+            {notice}
           </div>
         )}
 
@@ -580,6 +687,7 @@ export default function Home() {
                   onToggleMic={toggleMic}
                   onSubmitFreeText={(t) => void handleUtterance(t)}
                   onGenerateNote={generateNote}
+                  noteBusy={noteBusy}
                   onRestart={restart}
                 />
               </div>

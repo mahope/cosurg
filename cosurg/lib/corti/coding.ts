@@ -1,4 +1,4 @@
-import { CORTI_API_BASE, cortiHeaders, getAccessToken } from "./auth";
+import { CORTI_API_BASE, TIMEOUTS, cortiHeaders, getAccessToken } from "./auth";
 
 /**
  * Corti Symphony — Medical Coding.
@@ -77,6 +77,28 @@ export interface CodingContextItem {
 }
 
 /**
+ * Hvad der faktisk skete. UI'et skal aldrig vise et tomt kodefelt uden forklaring:
+ * "ingen kode kunne fastsættes" og "vi nåede ikke at spørge" er to forskellige ting,
+ * og i en klinisk kontekst må de ikke se ens ud.
+ */
+export type CodingStatus =
+  /** Corti returnerede mindst én kode. */
+  | "ok"
+  /** Kaldet lykkedes, men modellen fandt ingen kode i materialet. */
+  | "empty"
+  /** For lidt klinisk tekst til at kode meningsfuldt — vi kaldte slet ikke. */
+  | "insufficient-context"
+  /** Kaldet fejlede (netværk, timeout, 4xx/5xx). */
+  | "error";
+
+/**
+ * Under denne mængde klinisk tekst er et kodesvar ikke troværdigt — modellen kan
+ * lige så godt returnere ingenting som en tilfældig kode. Tærsklen er sat lavt
+ * nok til at en kort, men reel beslutningsvej stadig kodes.
+ */
+const MIN_CONTEXT_CHARS = 60;
+
+/**
  * Corti ekkoer evidence.text tilbage som UTF-8-bytes læst som latin-1, så danske
  * tegn kommer retur som mojibake ("flammeforbrÃ¦nding"). start/end er derimod
  * korrekte tegn-offsets — verificeret mod vores egen input-streng. Vi klipper
@@ -94,22 +116,20 @@ function repairCode(code: PredictedCode, contexts: CodingContextItem[]): Predict
   return { ...code, evidences: code.evidences.map((e) => repairEvidence(e, contexts)) };
 }
 
-/**
- * Sender én eller flere kliniske kontekster til kodemodellen.
- *
- * `codes` er dem modellen mener SKAL kodes; `candidates` er klinisk relevante men
- * valgfrie koder til menneskelig gennemgang. Vi holder dem adskilt hele vejen ud
- * til UI'et — at smelte dem sammen ville skjule at de har forskellig status.
- */
-export async function predictCodes(
-  contexts: CodingContextItem[],
-  system: string = DEFAULT_CODING_SYSTEM,
-): Promise<CodingResponse & { contexts: CodingContextItem[]; system: string }> {
-  const usable = contexts.filter((c) => c.text.trim().length > 0);
-  if (usable.length === 0) {
-    return { codes: [], candidates: [], contexts: [], system };
-  }
+export interface CodingResult extends CodingResponse {
+  status: CodingStatus;
+  contexts: CodingContextItem[];
+  system: string;
+  /** Sat når status ikke er "ok" — teknisk årsag, ikke brugertekst. */
+  detail?: string;
+  /** Hvor mange gange vi kaldte API'et (1 eller 2 — se retry nedenfor). */
+  attempts: number;
+}
 
+async function callCoding(
+  usable: CodingContextItem[],
+  system: string,
+): Promise<CodingResponse> {
   const token = await getAccessToken();
   const res = await fetch(`${CORTI_API_BASE}/v2/tools/coding/`, {
     method: "POST",
@@ -119,18 +139,77 @@ export async function predictCodes(
       context: usable.map((c) => ({ type: "text", text: c.text })),
     }),
     cache: "no-store",
+    signal: AbortSignal.timeout(TIMEOUTS.coding),
   });
 
   if (!res.ok) {
     throw new Error(`Corti coding fejlede: ${res.status} ${await res.text()}`);
   }
+  return (await res.json()) as CodingResponse;
+}
 
-  const data = (await res.json()) as CodingResponse;
+/**
+ * Sender én eller flere kliniske kontekster til kodemodellen.
+ *
+ * `codes` er dem modellen mener SKAL kodes; `candidates` er klinisk relevante men
+ * valgfrie koder til menneskelig gennemgang. Vi holder dem adskilt hele vejen ud
+ * til UI'et — at smelte dem sammen ville skjule at de har forskellig status.
+ *
+ * Modellen er ikke deterministisk. Med en fuldt udfyldt beslutningsvej rammer den
+ * konsekvent hoveddiagnosen (målt: T20.2 i 4 ud af 4 kald), mens de sekundære koder
+ * varierer. Tomme svar sås kun med tynd kontekst. Derfor: vi kalder én gang til hvis
+ * første svar er helt tomt, og rapporterer ellers ærligt hvorfor der ingen koder er.
+ */
+export async function predictCodes(
+  contexts: CodingContextItem[],
+  system: string = DEFAULT_CODING_SYSTEM,
+): Promise<CodingResult> {
+  const usable = contexts.filter((c) => c.text.trim().length > 0);
+  const totalChars = usable.reduce((n, c) => n + c.text.trim().length, 0);
+
+  if (totalChars < MIN_CONTEXT_CHARS) {
+    return {
+      status: "insufficient-context",
+      detail: `Kun ${totalChars} tegn klinisk tekst — under grænsen på ${MIN_CONTEXT_CHARS}`,
+      codes: [],
+      candidates: [],
+      contexts: usable,
+      system,
+      attempts: 0,
+    };
+  }
+
+  let attempts = 0;
+  let data: CodingResponse;
+  try {
+    attempts = 1;
+    data = await callCoding(usable, system);
+    if ((data.codes?.length ?? 0) === 0 && (data.candidates?.length ?? 0) === 0) {
+      attempts = 2;
+      data = await callCoding(usable, system);
+    }
+  } catch (err) {
+    return {
+      status: "error",
+      detail: err instanceof Error ? err.message : "ukendt kodefejl",
+      codes: [],
+      candidates: [],
+      contexts: usable,
+      system,
+      attempts,
+    };
+  }
+
+  const codes = (data.codes ?? []).map((c) => repairCode(c, usable));
+  const candidates = (data.candidates ?? []).map((c) => repairCode(c, usable));
+
   return {
-    codes: (data.codes ?? []).map((c) => repairCode(c, usable)),
-    candidates: (data.candidates ?? []).map((c) => repairCode(c, usable)),
+    status: codes.length + candidates.length > 0 ? "ok" : "empty",
+    codes,
+    candidates,
     usageInfo: data.usageInfo,
     contexts: usable,
     system,
+    attempts,
   };
 }

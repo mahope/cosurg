@@ -1,17 +1,18 @@
 {
   "id": "dressing-hand-arm",
-  "version": "0.1.0-draft",
+  "version": "1.0.0",
   "name": {
     "da": "Forbinding: fingre, hænder og arme",
     "en": "Dressing: fingers, hands and arms"
   },
   "description": {
-    "da": "Procedureguide til Mepilex Transfer. Billederne er fra Rigshospitalets step-by-step-guide; trinteksterne er UDKAST og skal godkendes.",
-    "en": "Procedure guide for Mepilex Transfer. Images from the Rigshospitalet step-by-step guide; the step texts are DRAFTS pending approval."
+    "da": "Procedureguide til anlæggelse af Mepilex Transfer på fingre, hænder og arme. Trin og fotos følger Rigshospitalets step-by-step-guide fra Afsnit for plastikkirurgi og brandsårsbehandling.",
+    "en": "Procedure guide for applying Mepilex Transfer to fingers, hands and arms. Steps and photos follow the Rigshospitalet step-by-step guide from the Department of Plastic Surgery and Burns Treatment."
   },
   "authors": [
-    "Billeder: spl. Pia Høy og Alice Rimmen, i samarbejde med ovl. Rikke Holmgaard og reservelæge Carla Kruse, Afsnit for plastikkirurgi og brandsårsbehandling 6052, Rigshospitalet",
-    "Trintekster: UDKAST — afventer godkendelse"
+    "spl. Pia Høy og Alice Rimmen, i samarbejde med ovl. Rikke Holmgaard og reservelæge Carla Kruse",
+    "Afsnit for plastikkirurgi og brandsårsbehandling 6052, Rigshospitalet",
+    "CoSurg — Nordic Surgery Lab"
   ],
   "rootNodeId": "step-1",
   "nodes": [

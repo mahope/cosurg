@@ -52,8 +52,39 @@ sprogmodel kan producere en kode der ser rigtig ud og ikke findes. Nu:
    trin i beslutningsvejen der understøtter hver kode**. Den kan ikke tilføje,
    ændre eller omformatere en kode.
 
-Fejler kode-kaldet, skrives notatet alligevel og `coding.error` sættes: et notat
-uden koder er brugbart, et notat med opfundne koder er ikke.
+Fejler kode-kaldet, skrives notatet alligevel: et notat uden koder er brugbart,
+et notat med opfundne koder er ikke.
+
+### Stabilitet — målt, ikke antaget
+
+Kodemodellen er ikke deterministisk. Fem identiske kald til `/api/note` med en
+fuldt udfyldt beslutningsvej:
+
+```
+status=ok attempts=1 codes=['T20.2', 'X09']
+status=ok attempts=1 codes=['T20.2', 'X09']
+status=ok attempts=1 codes=['T20.2', 'T30.2', 'T59.8']
+status=ok attempts=1 codes=['T20.2', 'J68.2']
+status=ok attempts=1 codes=['T20.2', 'T59.8']
+```
+
+Hoveddiagnosen `T20.2` (2. grads forbrænding af hoved og hals) rammes 5 ud af 5
+gange. De sekundære koder varierer, men er alle klinisk forsvarlige for samme
+kontakt. Tomme svar optrådte kun med tynd kontekst — derfor:
+
+- **Er beslutningsvejen ikke gennemført**, kaldes API'et slet ikke.
+  `status: "insufficient-context"` med en færdig sætning i `coding.message`.
+- **Svarer Corti tomt**, kaldes API'et automatisk én gang til (`attempts: 2`).
+  Er det stadig tomt: `status: "empty"`.
+- **Fejler kaldet eller timer ud**: `status: "error"`, `coding.detail` har den
+  tekniske årsag.
+
+`coding.message` er en færdig klinisk sætning på brugerens sprog. UI'et skal vise
+den i stedet for et tomt kodefelt — et tomt felt uden forklaring kan ikke skelnes
+fra "systemet svarede ikke".
+
+Alle udgående Corti-kald har timeout (`lib/corti/auth.ts`: auth 10 s, coding 25 s,
+agent 60 s), så en udfaldsramt demo fejler synligt i stedet for at hænge.
 
 ### Evidens-tekst repareres lokalt
 

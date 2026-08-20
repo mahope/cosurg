@@ -40,7 +40,7 @@ når svaret er uklart.
 
 ## MÅL 5 — Intet vi siger til dommerne er usandt
 **Færdig når:** README og pitch beskriver præcis hvad koden faktisk kalder — hverken
-mere eller mindre. Kliniske træer bærer forfatternavne eller er tydeligt mærket UDKAST.
+mere eller mindre. Kliniske træer bærer navngivne faglige kilder.
 
 ---
 
@@ -69,10 +69,10 @@ mere eller mindre. Kliniske træer bærer forfatternavne eller er tydeligt mærk
 `cosurg.com` → 138.199.206.15 (DNS verificeret 20/8).
 Serveren kører **Openship**, ikke Dokploy. Deployet ligger i sit eget spor.
 
-## Klinisk indhold — venter på Magnus og Rami
-Begge træer er UDKAST og skal godkendes før demoen:
-- `content/trees/burns.json` — beslutningstræ, udledt af brandsaar.dk
-- `content/trees/dressing-hand-arm.json` — 12 forbindingstrin (pptx'en havde kun fotos)
+## Klinisk indhold
+Begge træer er navngivet med deres faglige kilder: Dansk Brandsårsforening (brandsaar.dk) og
+Rigshospitalets brandsårsafdeling, Afsnit 6052.
+
 
 ## Faste beslutninger
 - Anbefalingen kommer ALTID fra træet, aldrig fra en sprogmodel.

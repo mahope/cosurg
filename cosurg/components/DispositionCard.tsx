@@ -14,6 +14,8 @@ interface DispositionCardProps {
   onToggleMic: () => void;
   onSubmitFreeText: (text: string) => void;
   onGenerateNote: () => void;
+  /** Notatet er undervejs — knappen spærres, så utålmodige klik ikke sender kaldet igen. */
+  noteBusy: boolean;
   onRestart: () => void;
 }
 
@@ -39,6 +41,7 @@ export function DispositionCard({
   onToggleMic,
   onSubmitFreeText,
   onGenerateNote,
+  noteBusy,
   onRestart,
 }: DispositionCardProps) {
   const style = severityStyle[disposition.severity];
@@ -82,9 +85,11 @@ export function DispositionCard({
         </button>
         <button
           onClick={onGenerateNote}
-          className="rounded-lg bg-[var(--teal-deep)] px-4 py-2 text-sm font-semibold text-white hover:bg-[var(--teal)] transition-colors"
+          disabled={noteBusy}
+          aria-busy={noteBusy}
+          className="rounded-lg bg-[var(--teal-deep)] px-4 py-2 text-sm font-semibold text-white transition-colors enabled:hover:bg-[var(--teal)] disabled:opacity-50"
         >
-          {tr("generateNote", lang)}
+          {noteBusy ? tr("noteWorking", lang) : tr("generateNote", lang)}
         </button>
         <button
           onClick={onRestart}

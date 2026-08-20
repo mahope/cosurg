@@ -23,8 +23,13 @@ interface OrViewProps {
   progress: number;
   listening: boolean;
   status: string | null;
-  /** Mikrofonfejl skal SES i OR-tilstand — ellers står kirurgen og taler til ingenting. */
-  error: string | null;
+  /**
+   * Noget kræver en handling af brugeren — mikrofonen mangler tilladelse,
+   * stemmetjenesten svarer ikke. Det skal SES i OR-tilstand, ellers står
+   * kirurgen og taler til ingenting. Teksten er allerede oversat til noget
+   * handlingsanvisende i page.tsx; her vises den bare stort nok.
+   */
+  notice: string | null;
   /** Trin-node: der er intet svar, kun en kvittering — så "næste" er hele svaret. */
   canAdvance: boolean;
   onNext: () => void;
@@ -67,7 +72,7 @@ export function OrView({
   progress,
   listening,
   status,
-  error,
+  notice,
   canAdvance,
   onNext,
   onSelectOption,
@@ -98,14 +103,17 @@ export function OrView({
                 <span className={listening ? undefined : "font-semibold text-[var(--or-amber)]"}>
                   {listening ? tr("micOpen", lang) : tr("micClosed", lang)}
                 </span>
-                {error && <span className="text-[var(--or-red)]"> · {error}</span>}
               </p>
             </div>
           </div>
 
           <div className="flex shrink-0 items-center gap-2">
+            {/* Statuslinjen bærer både "Fortolker…" og en netværksbesked — den
+                sidste skal kunne læses på afstand, så den får sm og ikke xs. */}
             {status && (
-              <span className="font-[family-name:var(--font-mono)] text-xs text-[var(--or-amber)]">{status}</span>
+              <span className="max-w-[28rem] text-right font-[family-name:var(--font-mono)] text-sm leading-snug text-[var(--or-amber)]">
+                {status}
+              </span>
             )}
             <button
               onClick={onExit}
@@ -123,6 +131,20 @@ export function OrView({
             style={{ width: `${Math.min(100, Math.max(0, progress))}%` }}
           />
         </div>
+
+        {/*
+          Et bånd, ikke en dialog: kirurgen er steril og kan ikke lukke noget.
+          Gul og ikke rød — rød er reserveret til rødt flag, og en mikrofon uden
+          tilladelse må aldrig kunne forveksles med en klinisk alarm.
+        */}
+        {notice && (
+          <p
+            role="status"
+            className="mt-3 rounded-xl border border-[var(--or-amber)] bg-[var(--or-amber-soft)] px-4 py-2.5 text-base font-medium leading-snug text-[var(--or-amber)]"
+          >
+            {notice}
+          </p>
+        )}
       </header>
 
       <div className="flex min-h-0 flex-1 flex-col justify-center py-6">

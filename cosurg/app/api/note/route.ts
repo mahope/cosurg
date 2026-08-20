@@ -6,6 +6,7 @@ import {
   isKnownSystem,
   predictCodes,
   type CodingContextItem,
+  type CodingStatus,
   type PredictedCode,
 } from "@/lib/corti/coding";
 import { treeSource } from "@/lib/tree/loader";
@@ -86,6 +87,28 @@ function stepLine(tree: DecisionTree, s: AnsweredStep, lang: Lang, verbose: bool
   ].join("");
 }
 
+/**
+ * Færdig, klinisk forsvarlig sætning til kodefeltet. Et tomt kodefelt uden
+ * forklaring er værre end ingen koder: lægen kan ikke se om systemet svarede
+ * "ingen kode" eller slet ikke svarede.
+ */
+function codingMessage(status: CodingStatus, lang: Lang): string | null {
+  if (status === "ok") return null;
+  const da: Record<Exclude<CodingStatus, "ok">, string> = {
+    empty: "Corti fandt ingen kode i materialet. Koder skal sættes manuelt.",
+    "insufficient-context":
+      "For lidt klinisk tekst til at kode. Gennemfør beslutningsvejen, eller tilføj et diktat.",
+    error: "Kodningen kunne ikke gennemføres. Koder skal sættes manuelt.",
+  };
+  const en: Record<Exclude<CodingStatus, "ok">, string> = {
+    empty: "Corti found no code in this material. Codes must be assigned manually.",
+    "insufficient-context":
+      "Too little clinical text to code. Complete the decision path, or add a dictated addendum.",
+    error: "Coding could not be completed. Codes must be assigned manually.",
+  };
+  return (lang === "da" ? da : en)[status];
+}
+
 export async function POST(req: Request) {
   const limited = guard(req, "note", 20);
   if (limited) return limited;
@@ -126,17 +149,12 @@ export async function POST(req: Request) {
       { label: lang === "da" ? "Diktat" : "Dictation", text: dictation },
     ];
 
-    // 1) Koder fra Corti Symphony. Fejler kaldet, skriver vi stadig notatet —
-    //    et notat uden koder er brugbart, et notat med opfundne koder er ikke.
-    let coding: Awaited<ReturnType<typeof predictCodes>> | null = null;
-    let codingError: string | null = null;
-    try {
-      coding = await predictCodes(codingContexts, system);
-    } catch (err) {
-      codingError = err instanceof Error ? err.message : "ukendt kodefejl";
-    }
+    // 1) Koder fra Corti Symphony. predictCodes kaster ikke — den rapporterer en
+    //    status. Fejler kodningen, skriver vi stadig notatet: et notat uden koder
+    //    er brugbart, et notat med opfundne koder er ikke.
+    const coding = await predictCodes(codingContexts, system);
 
-    const allCodes = [...(coding?.codes ?? []), ...(coding?.candidates ?? [])];
+    const allCodes = [...coding.codes, ...coding.candidates];
     const codeList = allCodes.map((c) => `- ${c.code} = ${c.display}`).join("\n");
 
     // 2) Notatet — og en begrundelse pr. kode. Agenten må forklare, ikke kode.
@@ -175,19 +193,23 @@ export async function POST(req: Request) {
         .map((r) => [codeKey(r.code), r.rationale]),
     );
 
-    const ctx = coding?.contexts ?? [];
+    const ctx = coding.contexts;
 
     return NextResponse.json({
       note: result.note,
       /** Koder Corti mener SKAL med. Kilde: /v2/tools/coding/ — ikke sprogmodellen. */
-      codes: (coding?.codes ?? []).map((c) => toNoteCode(c, ctx, rationales)),
+      codes: coding.codes.map((c) => toNoteCode(c, ctx, rationales)),
       /** Klinisk relevante, men valgfrie koder — til menneskelig gennemgang. */
-      candidates: (coding?.candidates ?? []).map((c) => toNoteCode(c, ctx, rationales)),
+      candidates: coding.candidates.map((c) => toNoteCode(c, ctx, rationales)),
       coding: {
         source: "corti-medical-coding",
         system,
-        credits: coding?.usageInfo?.creditsConsumed ?? null,
-        error: codingError,
+        status: coding.status,
+        /** Færdig sætning UI'et kan vise når der ingen koder er. */
+        message: codingMessage(coding.status, lang),
+        detail: coding.detail ?? null,
+        attempts: coding.attempts,
+        credits: coding.usageInfo?.creditsConsumed ?? null,
       },
     });
   } catch (err) {

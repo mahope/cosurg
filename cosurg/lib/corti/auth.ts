@@ -4,6 +4,16 @@ const TENANT = process.env.CORTI_TENANT ?? "base";
 export const CORTI_API_BASE = `https://api.${ENV}.corti.app`;
 const TOKEN_URL = `https://auth.${ENV}.corti.app/realms/${TENANT}/protocol/openid-connect/token`;
 
+/**
+ * Timeouts på alt udgående. Corti kan være langsom eller falde ud midt i en demo;
+ * et kald uden tidsgrænse hænger til Next selv giver op, og brugeren ser intet.
+ */
+export const TIMEOUTS = {
+  auth: 10_000,
+  coding: 25_000,
+  agent: 60_000,
+} as const;
+
 type CachedToken = { token: string; expiresAt: number };
 const cache = new Map<string, CachedToken>();
 
@@ -34,6 +44,9 @@ export async function getAccessToken(scope?: string): Promise<string> {
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body,
     cache: "no-store",
+    // Uden timeout hænger hele ruten hvis Corti ikke svarer. Bedre en ærlig
+    // fejl på ti sekunder end en demo der står og snurrer.
+    signal: AbortSignal.timeout(TIMEOUTS.auth),
   });
 
   if (!res.ok) {

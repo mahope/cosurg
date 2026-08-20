@@ -49,6 +49,9 @@ export async function POST(req: Request) {
 
     return NextResponse.json({
       system: result.system,
+      status: result.status,
+      detail: result.detail ?? null,
+      attempts: result.attempts,
       codes: result.codes,
       candidates: result.candidates,
       credits: result.usageInfo?.creditsConsumed ?? null,

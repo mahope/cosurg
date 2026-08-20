@@ -1,4 +1,4 @@
-import { CORTI_API_BASE, cortiHeaders, getAccessToken } from "./auth";
+import { CORTI_API_BASE, TIMEOUTS, cortiHeaders, getAccessToken } from "./auth";
 
 interface SchemaConnector {
   type: "schema";
@@ -25,6 +25,7 @@ async function createAgent(spec: AgentSpec): Promise<string> {
     headers: cortiHeaders(token),
     body: JSON.stringify({ ...spec, lifecycle: "persistent" }),
     cache: "no-store",
+    signal: AbortSignal.timeout(TIMEOUTS.agent),
   });
   if (!res.ok) throw new Error(`Kunne ikke oprette agent: ${res.status} ${await res.text()}`);
   const data = (await res.json()) as { id: string };
@@ -61,6 +62,8 @@ export async function askAgent<T>(
       },
     }),
     cache: "no-store",
+    // Agenten er det langsomste led; en time-out her er stadig bedre end at hænge.
+    signal: AbortSignal.timeout(TIMEOUTS.agent),
   });
 
   if (!res.ok) throw new Error(`Agent-kald fejlede: ${res.status} ${await res.text()}`);
