@@ -1,64 +1,75 @@
-# DEMO — CoSurg, fredag 14:00–15:30
+# DEMO — CoSurg, Friday 14:00–15:30
 
-**Til Magnus og Rami. I kører den alene. Mads er gået kl. 11.**
+**For Magnus and Rami. You are running this on your own. Mads leaves at 11:00.**
 
-Fem minutters demo + to minutters spørgsmål.
-Læs afsnit 1 og 2 igennem én gang. Kør prøven i afsnit 2 færdig, før I gør noget andet.
-Går noget galt undervejs: afsnit 5. Der står præcis hvad I gør.
+Five minutes of demo plus two minutes of questions.
+Read sections 1 and 2 through once. Finish the rehearsal in section 2 before you do
+anything else. If something goes wrong during the demo: section 5. It says exactly
+what to do.
 
 **URL:** `https://cosurg.com`
-**Sproget under demoen: engelsk.** Appen taler og lytter på engelsk. Alle replikker
-til mikrofonen står herunder på engelsk — de skal siges præcis som de står.
-Skal I køre på dansk i stedet, står de danske replikker i parentes.
+**Language during the demo: English.** The app speaks and listens in English. Every
+line spoken into the microphone is written out below in English — say them exactly as
+written. If you switch to Danish instead, the Danish lines are given in brackets.
+
+> **A note on language in this file.** The instructions are in English, like the rest
+> of this repository. The emergency procedure and the tear-off crib sheet are repeated
+> in Danish at the end (section 7), because those are the two parts you read under
+> pressure.
 
 ---
 
-## 1. Rollefordeling
+## 1. Who does what
 
-| | Hvem | Hvad |
+| | Who | What |
 |---|---|---|
-| **Stemmen** | Rami | Taler til mikrofonen. Spiller lægen. Siger kun de replikker der står i manuskriptet. |
-| **Fortælleren** | Magnus | Taler til dommerne. Har hånden på tastaturet. Griber ind hvis noget hænger. |
+| **The voice** | Rami | Speaks into the microphone. Plays the clinician. Says only the lines in the script. |
+| **The narrator** | Magnus | Speaks to the judges. Hands on the keyboard. Steps in if anything hangs. |
 
-Én computer. Én browser. Ét vindue. Luk alt andet.
-
----
-
-## 2. Generalprøve fredag kl. 9:00 (tag 20 minutter — spring den ikke over)
-
-Kør hele afsnit 3 igennem én gang fra ende til anden. Det er ikke en formalitet:
-appen henter billeder og lyd første gang og gemmer dem. Anden gang I kører,
-er alt øjeblikkeligt. **Demoen kl. 14 skal være anden gang, ikke første.**
-
-Tjek disse ni ting undervejs. Alle skal være i orden:
-
-1. Siden åbner på `https://cosurg.com` og viser et spørgsmål.
-2. **Sæt sproget til engelsk:** tryk på knappen der siger **Dansk** øverst. Den skifter til **English**, og teksterne bliver engelske.
-3. Tryk på mikrofon-knappen. Browseren spørger om lov — tryk **Tillad / Allow**.
-   Sig derefter noget. Jeres ord skal dukke op under **Transcript** i højre side.
-4. Appen læser spørgsmålet højt. I skal kunne høre det. Skru op for computeren nu, ikke kl. 14.
-5. Kør hele Del A igennem til der står **Recommendation**.
-6. Tryk **Generate note**. Der går **omkring 15 sekunder**. Et notat skal komme frem.
-7. Tryk **New assessment**, kør Del B, og se at det røde **RED FLAG**-felt kommer frem.
-8. Skift træ til forbindingsvejledningen, slå **OR mode** til, og sig **"next"** tre gange.
-   Skærmen skal skifte trin og vise billeder.
-9. Find fallback-videoen på skrivebordet og afspil de første ti sekunder. Så ved I den virker.
-
-Er der ét af de ni punkter der ikke virker: se afsnit 5, og skriv til Mads.
-Han er væk, men kan svare på en besked.
-
-**Fem minutter før I går på:** åbn siden på ny, sæt sproget til engelsk,
-tryk mikrofonen til og sig ét ord for at vække den. Lad siden stå åben.
-Rør den ikke igen før I går på scenen.
+One computer. One browser. One window. Close everything else.
 
 ---
 
-## 3. Manuskriptet — de fem minutter
+## 2. Rehearsal Friday at 09:00 (allow 20 minutes — do not skip it)
 
-Tiderne er vejledende. Er I bagud, springer I **Del B** over (den er markeret som
-kan-undværes). Del A og Del C skal med.
+Run all of section 3 end to end once. This is not a formality: the app fetches images
+and audio the first time and caches them. The second run is instant. **The 14:00 demo
+must be the second run, not the first.**
 
-### 0:00–0:35 — Åbningen (Magnus taler. Ingen rører computeren)
+Check these nine things as you go. All of them must be in order:
+
+1. The page opens at `https://cosurg.com` and shows a question.
+2. **Set the language to English:** press the button at the top that says **Dansk**. It
+   switches to **English**, and the texts become English.
+3. Press the microphone button. The browser asks for permission — press **Tillad /
+   Allow**. Then say something. Your words must appear under **Transcript** on the
+   right.
+4. The app reads the question aloud. You must be able to hear it. Turn the volume up
+   now, not at 14:00.
+5. Run all of Part A through until **Recommendation** appears.
+6. Press **Generate note**. It takes **about 15 seconds**. A note must appear.
+7. Press **New assessment**, run Part B, and check that the red **RED FLAG** panel
+   appears.
+8. Switch to the dressing guide tree, turn on **OR mode**, and say **"next"** three
+   times. The screen must change step and show images.
+9. Find the fallback video on the desktop and play the first ten seconds. Then you know
+   it works.
+
+If any one of the nine does not work: see section 5, and message Mads. He has left, but
+he can answer a message.
+
+**Five minutes before you go on:** reopen the page, set the language to English, turn
+the microphone on and say one word to wake it. Leave the page open. Do not touch it
+again before you go on stage.
+
+---
+
+## 3. The script — the five minutes
+
+The timings are approximate. If you are running late, skip **Part B** (it is marked as
+expendable). Parts A and C must be included.
+
+### 0:00–0:35 — The opening (Magnus speaks. Nobody touches the computer)
 
 > "A patient with burns arrives in the emergency department. The doctor has to
 > decide five things at once: how deep, how large, where, is the airway involved,
@@ -69,141 +80,239 @@ kan-undværes). Del A og Del C skal med.
 > it gives comes from the tree, written by us as burn surgeons — never from a
 > language model."
 
-Peg på linjen nederst på skærmen: *"The recommendation comes from the clinical
-tree — not from a language model."* Det er hele pointen. Sig den tidligt.
+Point at the line at the bottom of the screen: *"The recommendation comes from the
+clinical tree — not from a language model."* That is the whole point. Say it early.
 
-### 0:35–2:20 — Del A: Hele forløbet med stemmen (Rami taler til mikrofonen)
+### 0:35–2:20 — Part A: the full pathway by voice (Rami speaks into the microphone)
 
-Magnus starter mikrofonen. Rami siger replikkerne. **Vent til appen har læst
-spørgsmålet færdigt, før du svarer.** Der går 1–2 sekunder fra du er færdig med
-at tale, til appen svarer. Det er normalt. Stå stille i de to sekunder.
+Magnus starts the microphone. Rami says the lines. **Wait until the app has finished
+reading the question before you answer.** There is a 1–2 second gap between you
+finishing and the app responding. That is normal. Stand still for those two seconds.
 
-| # | Appen spørger om | **Rami siger (engelsk)** | (dansk) |
+| # | The app asks about | **Rami says (English)** | (Danish) |
 |---|---|---|---|
-| 1 | Skadesmekanisme | **"Scald."** | "Skoldning." |
-| 2 | Inhalationsskade | **"No."** | "Nej." |
-| 3 | Areal i procent | **"Eight percent."** | "Otte procent." |
-| 4 | Dybde | **"Superficial dermal, blisters."** | "Overfladisk dermal, blærer." |
-| 5 | Lokalisation | **"Other area, the forearm."** | "Andet område, underarmen." |
-| 6 | Skyllet 20–30 min | **"Yes."** | "Ja." |
+| 1 | Injury mechanism | **"Scald."** | "Skoldning." |
+| 2 | Inhalation injury | **"No."** | "Nej." |
+| 3 | Area in per cent | **"Eight percent."** | "Otte procent." |
+| 4 | Depth | **"Superficial dermal, blisters."** | "Overfladisk dermal, blærer." |
+| 5 | Location | **"Other area, the forearm."** | "Andet område, underarmen." |
+| 6 | Cooled for 20–30 min | **"Yes."** | "Ja." |
 
-Magnus fortæller undervejs, mens træet fyldes ud i venstre side:
+Magnus narrates while the tree fills in on the left:
 
 > "Every answer is spoken. Corti's speech-to-text hears it, and Corti's agent
 > maps it onto the allowed answers for this exact node. If it can't tell which
 > answer it is, it asks again — it never guesses. That is the whole safety
 > argument."
 
-Skærmen viser nu **Recommendation: Outpatient treatment — dress and follow up**.
+The screen now shows **Recommendation: Outpatient treatment — dress and follow up**.
 
-Magnus peger på beslutningsvejen i venstre side:
+Magnus points at the decision path on the left:
 
 > "There is the reasoning. Not a black box — six answers, and the path that led here."
 
-**Tryk nu på `Generate note`.** Der går cirka 15 sekunder. **Tal imens:**
+**Now press `Generate note`.** It takes about 15 seconds. **Talk while it runs:**
 
 > "While that runs: the note is generated from the completed path and the
 > transcript. And the diagnosis codes come from Corti's medical coding API — not
 > invented by us."
 
-Notatet kommer frem. Peg på **Plan**-afsnittet:
+The note appears. Point at the **Plan** section:
 
 > "The plan is the tree's recommendation, word for word."
 
-Er der koder på skærmen, peg på dem. **Er kodefeltet tomt, så sig ingenting om koder** og gå videre.
+If codes are on screen, point at them. **If the code field is empty, say nothing about
+codes** and move on.
 
-### 2:20–3:00 — Del B: Det røde flag *(kan springes over hvis I er bagud)*
+### 2:20–3:00 — Part B: the red flag *(skippable if you are running late)*
 
-Magnus trykker **New assessment**. Rami siger:
+Magnus presses **New assessment**. Rami says:
 
-| # | **Rami siger (engelsk)** | (dansk) |
+| # | **Rami says (English)** | (Danish) |
 |---|---|---|
 | 1 | **"Flame."** | "Flamme." |
 | 2 | **"Yes — soot in the nose and a hoarse voice."** | "Ja — sod i næsen og hæs stemme." |
 
-Det røde **RED FLAG**-felt slår ud med det samme og læses højt.
+The red **RED FLAG** panel fires immediately and is read aloud.
 
 > "Suspected inhalation injury. The tree interrupts — out loud, regardless of
 > voice mode — and escalates straight to the burn unit. Two answers. No one had
 > to remember to ask."
 
-*Virker replik 2 ikke, sig bare **"Yes."** Det giver samme røde flag.*
+*If line 2 does not work, just say **"Yes."** It gives the same red flag.*
 
-### 3:00–4:30 — Del C: OR-tilstand (klimaks — spring den ALDRIG over)
+### 3:00–4:30 — Part C: OR mode (the climax — NEVER skip this)
 
-Magnus skifter træ: tryk **Switch tree** og vælg **"Forbinding: fingre, hænder og arme"**.
+Magnus switches tree: press **Switch tree** and choose **"Forbinding: fingre, hænder og
+arme"**.
 
 > "Same engine. Different content. The tree is data, not code — bites, frostbite,
 > chemical injuries are a JSON file away."
 
-Magnus trykker **OR mode**. Skærmen bliver mørk og skriften stor.
+Magnus presses **OR mode**. The screen goes dark and the type goes large.
 
 > "Now the surgeon is scrubbed. He cannot touch anything. The microphone is open,
 > the instruction is read aloud, and the screen shows what to do — readable from
 > two metres."
 
-Rami siger, med en pause imellem hver:
+Rami says, with a pause between each:
 
 1. **"Next."**
 2. **"Next."**
-3. **"Repeat."** ← appen læser trinnet igen
+3. **"Repeat."** ← the app reads the step again
 4. **"Next."**
-5. **"Back."** ← appen går et trin tilbage
+5. **"Back."** ← the app goes one step back
 
-Appen kvitterer hørbart ("Got it.", "Repeating.", "Going one step back.") **før**
-den rykker. Peg på det:
+The app acknowledges audibly ("Got it.", "Repeating.", "Going one step back.") **before**
+it moves. Point that out:
 
 > "It answers before it moves, so the surgeon knows the command landed. And the
 > commands are matched by rule, not by a model — so background conversation
 > cannot trigger them, and they still work if the network drops."
 
-### 4:30–5:00 — Afslutning (Magnus)
+### 4:30–5:00 — The close (Magnus)
 
-> "What you saw runs on four of Corti's five product areas: ambient speech-to-text,
-> the agentic framework interpreting the answers, text generation for the note,
-> and medical coding for the diagnosis codes.
+> "What you saw runs on all five of Corti's product areas — four of them on this
+> screen: ambient speech-to-text, the agentic framework interpreting the answers,
+> text generation for the note, and medical coding for the diagnosis codes. The
+> fifth, dictation, appends the clinician's own additions to the note.
 >
-> The clinical content is written by us — burn surgeons — and the trees are drafts
-> pending our own sign-off. Next step is moving the trees onto an MCP server, so
-> a hospital can maintain its own guidelines centrally and every app reads the same
-> truth. Thank you."
+> The clinical content is written by us — burn surgeons — and every tree carries its
+> named clinical sources: the Danish Burn Association and Rigshospitalet's national
+> burn service. The knowledge behind the answers already lives on our own MCP server,
+> attached to Corti's agentic framework, so a hospital can maintain its guidelines in
+> one place and every app reads the same truth. Thank you."
 
 ---
 
-## 4. Svar på de spørgsmål I får (2 minutter)
+## 4. Answers to the questions you will get (2 minutes)
 
-**"Hvordan ved I at fortolkningen er rigtig?"**
+**"How do you know the interpretation is right?"**
 > "Every node has a closed set of allowed answers. The agent maps onto one of them
 > or flags it as unclear and asks again. It is never allowed to invent a value.
 > And the recommendation itself is not interpreted at all — it is the tree."
 
-**"Hvad hvis modellen tager fejl?"**
+**"What if the model is wrong?"**
 > "Then it asks again. The failure mode is a repeated question, not a wrong
 > recommendation. The recommendation is deterministic — the same path always
 > gives the same answer."
 
-**"Hvem har skrevet det kliniske indhold?"**
-> "We did. The burn tree is derived from brandsaar.dk, the Danish Burn Society's
-> guidelines. The dressing guide is from Rigshospitalet's burn unit, section 6052.
-> Both are marked as drafts pending clinical sign-off — we are not shipping
-> unreviewed clinical content."
+**"Who wrote the clinical content?"**
+> "We did. The burn tree is derived from brandsaar.dk, the Danish Burn Association's
+> guidelines, written by Rami. The dressing guide is from Rigshospitalet's burn unit,
+> section 6052 — the national referral centre for burns — brought in by Magnus. Every
+> tree carries its sources and its named authors in the file itself."
 
-**"Er det ikke bare endnu en scribe?"**
+**"Isn't this just another scribe?"**
 > "A scribe writes down what happened. This changes what happens — it asks the
 > question the doctor didn't get to."
 
-**"Hvad med baggrundsstøj i operationsstuen?"**
+**"What about background noise in the operating theatre?"**
 > "Known limitation. The commands are matched conservatively: five words maximum,
 > exact phrases only. A wake word is on the roadmap."
 
 ---
 
-## 5. HVIS DET GÅR GALT
+## 5. IF IT GOES WRONG
+
+Stay calm. There is a way forward in every case. **Never just stand there and wait.**
+
+### A. The microphone does not work — a red panel says "Permission denied" or similar
+
+1. Press the **padlock** to the left of the address at the top of the browser.
+2. Set **Microphone** to **Allow**.
+3. Press **F5** to reload the page. Start that part over.
+
+If it still does not work: **use the text field instead.** Under the question it says
+*"Type or say your answer…"*. Magnus types the answer and presses Enter. Tell the
+judges: *"I'll type it — same path through the engine."* This is not a failure, it is
+the other way in.
+
+### B. It says "Interpreting…" and nothing more happens
+
+The network is gone. **The app will not recover on its own — do not wait.**
+
+1. Press the **answer button** on screen instead (e.g. `Scald`). It works without a
+   network.
+2. If that does not help: press **F5**. The page restarts at question 1.
+3. If the network is completely gone: skip to point G (the video).
+
+### C. The app does not understand the answer and asks again
+
+Completely normal, and in fact the point. Tell the judges:
+*"There — it wasn't sure, so it asked again instead of guessing."*
+Then say just **one word**: `"Scald."`, `"No."`, `"Yes."`. Not a whole sentence.
+
+### D. There is no sound
+
+Turn the volume up. Check that audio is not routed to another output (headphones,
+projector). If the voice suddenly sounds more robotic than yesterday: that is the
+built-in browser voice stepping in because the good voice could not be reached.
+**Carry on — everything works.** Do not mention it.
+
+### E. OR mode: you say "next" and nothing happens
+
+Magnus presses the **space bar**. It does exactly the same as "next".
+Right arrow = next. Left arrow = back. **R** = repeat.
+Tell the judges: *"My colleague is not scrubbed — so he can press."*
+
+### F. The red panel will not go away
+
+Say **"OK."** Or press the **OK** button. Or press space.
+
+### G. The page is blank, or nothing works
+
+1. **F5.**
+2. If that fails: close the browser, open it again, go to the address.
+3. If it still fails: **open the fallback video from the desktop and play it.**
+   Say: *"Our venue connection is down — here is the same flow recorded this
+   morning."* Keep narrating over the video exactly as in the script.
+   **This is a fully valid alternative. The judges have seen it before.**
+
+### H. The venue wifi is dead
+
+Share internet from a phone (personal hotspot) and connect the computer to it.
+If that fails: point G.
+
+---
+
+## 6. The crib sheet — tear it off
+
+```
+URL       cosurg.com
+Language  Press "Dansk" → becomes "English"
+
+PART A    Scald. / No. / Eight percent. /
+          Superficial dermal, blisters. /
+          Other area, the forearm. / Yes.
+          → Generate note  (15 sec — TALK while it runs)
+
+PART B    New assessment
+          Flame. / Yes — soot in the nose and a hoarse voice.
+          → RED FLAG
+
+PART C    Switch tree → Forbinding: fingre, hænder og arme
+          OR mode
+          Next. / Next. / Repeat. / Next. / Back.
+
+HANGING   "Interpreting…" is stuck   → press the answer button, else F5
+MICROPHONE not working               → type the answer in the text field
+"NEXT"    not working in OR mode     → press SPACE
+EVERYTHING broken                    → play the video from the desktop
+```
+
+---
+---
+
+## 7. Nødplan og huskeseddel — på dansk
+
+*(Afsnit 5 og 6 på dansk. Det er dem I læser under pres.)*
+
+### Hvis det går galt
 
 Ro på. Der er en vej videre i alle tilfældene. **Bliv aldrig stående og vent.**
 
-### A. Mikrofonen virker ikke — der står "Permission denied" eller lignende i et rødt felt
-
+**A. Mikrofonen virker ikke — der står "Permission denied" eller lignende i et rødt felt**
 1. Tryk på **hængelåsen** til venstre for adressen øverst i browseren.
 2. Sæt **Mikrofon** til **Tillad**.
 3. Tryk **F5** for at genindlæse siden. Start forfra på delen.
@@ -213,39 +322,32 @@ Virker det stadig ikke: **brug skrivefeltet i stedet.** Under spørgsmålet stå
 dommerne: *"I'll type it — same path through the engine."* Det er ikke en fejl,
 det er den anden vej ind.
 
-### B. Der står "Interpreting…" og der sker ikke mere
-
+**B. Der står "Interpreting…" og der sker ikke mere**
 Nettet er væk. **Appen kommer ikke videre af sig selv — vent ikke.**
-
 1. Tryk i stedet på **svarknappen** på skærmen (fx `Scald`). Den virker uden net.
 2. Hjælper det ikke: tryk **F5**. Siden starter forfra på spørgsmål 1.
 3. Er nettet helt væk: spring til punkt G (videoen).
 
-### C. Appen forstår ikke svaret og spørger igen
-
+**C. Appen forstår ikke svaret og spørger igen**
 Helt normalt og faktisk en pointe. Sig til dommerne:
 *"There — it wasn't sure, so it asked again instead of guessing."*
 Sig så bare **ét ord**: `"Scald."`, `"No."`, `"Yes."`. Ikke en hel sætning.
 
-### D. Der kommer ingen lyd
-
+**D. Der kommer ingen lyd**
 Skru op. Tjek at lyden ikke er sat til et andet output (hovedtelefoner, projektor).
 Lyder stemmen pludselig mere robotagtig end i går: det er den indbyggede
 browserstemme der er trådt til fordi den gode stemme ikke kunne nås. **Fortsæt —
 alt virker.** Nævn det ikke.
 
-### E. OR-tilstand: I siger "next", men der sker ingenting
-
+**E. OR-tilstand: I siger "next", men der sker ingenting**
 Magnus trykker på **mellemrumstasten**. Det gør præcis det samme som "next".
 Højrepil = næste. Venstrepil = tilbage. **R** = gentag.
 Sig til dommerne: *"My colleague is not scrubbed — so he can press."*
 
-### F. Det røde felt vil ikke forsvinde
-
+**F. Det røde felt vil ikke forsvinde**
 Sig **"OK."** Eller tryk på **OK**-knappen. Eller tryk mellemrum.
 
-### G. Siden er hvid, eller intet virker
-
+**G. Siden er hvid, eller intet virker**
 1. **F5.**
 2. Virker det ikke: luk browseren, åbn den igen, gå til adressen.
 3. Virker det stadig ikke: **åbn fallback-videoen fra skrivebordet og afspil den.**
@@ -253,14 +355,11 @@ Sig **"OK."** Eller tryk på **OK**-knappen. Eller tryk mellemrum.
    morning."* Bliv ved med at fortælle henover videoen præcis som i manuskriptet.
    **Det er et fuldgyldigt alternativ. Dommerne har set det før.**
 
-### H. Wifi'et på stedet er dødt
-
+**H. Wifi'et på stedet er dødt**
 Del internet fra en telefon (personligt hotspot) og forbind computeren til det.
 Virker det ikke: punkt G.
 
----
-
-## 6. Huskesedlen — riv den ud
+### Huskesedlen — riv den ud
 
 ```
 URL      cosurg.com
@@ -279,8 +378,8 @@ DEL C    Switch tree → Forbinding: fingre, hænder og arme
          OR mode
          Next. / Next. / Repeat. / Next. / Back.
 
-HÆNGER   "Interpreting…" står fast  → tryk på svarknappen, ellers F5
-MIKROFON virker ikke                → skriv svaret i tekstfeltet
+HÆNGER   "Interpreting…" står fast   → tryk på svarknappen, ellers F5
+MIKROFON virker ikke                 → skriv svaret i tekstfeltet
 "NEXT"   virker ikke i OR-tilstand   → tryk MELLEMRUM
 ALT      er gået i stykker           → afspil videoen fra skrivebordet
 ```
