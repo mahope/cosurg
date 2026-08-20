@@ -1,9 +1,14 @@
+"use client";
+
 import type { Disposition, Lang, TreeNode } from "@/lib/tree/types";
 import { tr } from "@/lib/i18n";
 import { ZoneMark } from "./ZoneMark";
 import { StepImages } from "./StepImages";
 import { RedFlagBanner } from "./RedFlagBanner";
 import { NotePanel, type NoteResult } from "./NotePanel";
+import { StatusLine } from "./ui/Working";
+import { useStepMotion } from "./ui/useStepMotion";
+import { SizeLock, widestOf } from "./ui/SizeLock";
 
 interface OrViewProps {
   lang: Lang;
@@ -78,9 +83,19 @@ export function OrView({
 }: OrViewProps) {
   const images = node?.images ?? disposition?.images ?? [];
   const hasImages = images.length > 0;
+  /*
+   * Midterbåndet er det eneste der skifter, så det er dér bevægelsen hører
+   * hjemme. Retningen aflæses af trinnummeret: frem, tilbage eller erstattet.
+   */
+  const stageRef = useStepMotion<HTMLDivElement>(stepNumber, node?.id);
 
   return (
-    <main className="or-scope flex h-screen flex-col overflow-hidden bg-[var(--or-bg)] px-6 py-5 sm:px-10 text-[var(--or-ink)]">
+    /*
+      OR-tilstand skifter hele verden — lys skærm bliver til mørk, ét trin ad
+      gangen. `motion-world` gør skiftet til netop det: en verden der lukker
+      sig om kirurgen, ikke et tema der bytter farver.
+    */
+    <main className="or-scope motion-world flex h-screen flex-col overflow-hidden bg-[var(--or-bg)] px-6 py-5 sm:px-10 text-[var(--or-ink)]">
       <header className="shrink-0">
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
@@ -102,21 +117,26 @@ export function OrView({
             </div>
           </div>
 
-          <div className="flex shrink-0 items-center gap-2">
-            {/* Statuslinjen bærer både "Fortolker…" og en netværksbesked — den
-                sidste skal kunne læses på afstand, så den får sm og ikke xs. */}
-            {status && (
-              <span className="max-w-[28rem] text-right font-[family-name:var(--font-mono)] text-sm leading-snug text-[var(--or-amber)]">
-                {status}
-              </span>
-            )}
-            <button
-              onClick={onExit}
-              className="rounded-lg border border-[var(--or-line)] px-3 py-1.5 text-xs font-medium text-[var(--or-ink-soft)] transition-colors hover:border-[var(--or-accent)] hover:text-[var(--or-accent)]"
-            >
-              {tr("orExit", lang)}
-            </button>
-          </div>
+          {/* Statuslinjen bærer både "Fortolker…" og en netværksbesked — den
+              sidste skal kunne læses på afstand, så den får sm og ikke xs.
+              De to må ikke ligne hinanden: kun "arbejder" får prikker, og
+              kun fejl får den gule farve.
+
+              Den er `flex-1` og ikke en naboklods, så afslut-knappen bliver
+              stående i hjørnet uanset om der står noget. Kirurgen sigter aldrig
+              efter en knap der har flyttet sig. */}
+          <StatusLine
+            status={status}
+            lang={lang}
+            tone="or"
+            className="min-w-0 flex-1 justify-end text-right font-[family-name:var(--font-mono)] text-sm leading-snug"
+          />
+          <button
+            onClick={onExit}
+            className="shrink-0 rounded-lg border border-[var(--or-line)] px-3 py-1.5 text-xs font-medium text-[var(--or-ink-soft)] transition-colors hover:border-[var(--or-accent)] hover:text-[var(--or-accent)]"
+          >
+            <SizeLock variants={widestOf("orExit")}>{tr("orExit", lang)}</SizeLock>
+          </button>
         </div>
 
         {/* Fremdrift som en tynd linje — aflæselig på afstand, uden at fylde. */}
@@ -142,12 +162,12 @@ export function OrView({
         )}
       </header>
 
-      <div className="flex min-h-0 flex-1 flex-col justify-center py-6">
+      <div ref={stageRef} className="flex min-h-0 flex-1 flex-col justify-center py-6">
         {flash ? (
           <RedFlagBanner message={flash} lang={lang} orMode onAcknowledge={onAcknowledgeFlash} />
         ) : disposition ? (
           <div
-            className="overflow-y-auto rounded-2xl border-2 p-8 sm:p-10"
+            className="motion-settle overflow-y-auto rounded-2xl border-2 p-8 sm:p-10"
             style={{ borderColor: orSeverity[disposition.severity], background: "var(--or-surface)" }}
           >
             <p
@@ -170,6 +190,7 @@ export function OrView({
         ) : node ? (
           <>
             <h2
+              aria-live="polite"
               className={`shrink-0 font-[family-name:var(--font-display)] font-semibold tracking-tight ${
                 hasImages
                   ? "text-[clamp(1.6rem,3.4vw,2.9rem)] leading-[1.15]"
@@ -201,7 +222,7 @@ export function OrView({
                     onClick={() => onSelectOption(o.value, o.label[lang])}
                     className="rounded-xl border border-[var(--or-line)] bg-[var(--or-surface)] px-7 py-5 text-2xl font-medium transition-colors hover:border-[var(--or-accent)] hover:bg-[var(--or-surface-raised)]"
                   >
-                    {o.label[lang]}
+                    <SizeLock variants={[o.label.da, o.label.en]}>{o.label[lang]}</SizeLock>
                   </button>
                 ))}
               </div>
@@ -220,19 +241,34 @@ export function OrView({
       */}
       <footer className="flex shrink-0 flex-wrap items-center justify-between gap-x-6 gap-y-2 border-t border-[var(--or-line)] pt-3">
         <div className="flex min-w-0 items-center gap-4">
-          {canAdvance && (
-            <button
-              onClick={onNext}
-              className="shrink-0 rounded-lg border border-[var(--or-accent)] bg-[var(--or-accent-soft)] px-4 py-2 text-base font-semibold text-[var(--or-accent)] transition-colors hover:bg-[var(--or-surface-raised)]"
-            >
+          {/* Knappen står i sin plads hele forløbet igennem og bliver blot
+              usynlig på de noder hvor der ikke er et trin at kvittere. Ellers
+              ville stemmekommando-hintet ved siden af hoppe frem og tilbage
+              hver anden node — netop dét kirurgen læser på afstand. */}
+          <button
+            onClick={onNext}
+            tabIndex={canAdvance ? 0 : -1}
+            aria-hidden={!canAdvance}
+            className={`shrink-0 rounded-lg border border-[var(--or-accent)] bg-[var(--or-accent-soft)] px-4 py-2 text-base font-semibold text-[var(--or-accent)] transition-colors hover:bg-[var(--or-surface-raised)] ${
+              canAdvance ? "" : "invisible pointer-events-none"
+            }`}
+          >
+            <SizeLock variants={widestOf("nextStep").map((s) => `${s} →`)}>
               {tr("nextStep", lang)} →
-            </button>
-          )}
+            </SizeLock>
+          </button>
           <p className="font-[family-name:var(--font-mono)] text-sm text-[var(--or-ink-soft)]">
             <span className="text-[var(--or-accent)]">{tr("orCommands", lang)}:</span> {tr("orHint", lang)}
           </p>
         </div>
-        <p className="min-h-[1.25rem] font-[family-name:var(--font-mono)] text-sm text-[var(--or-ink)]">
+        {/* Hvad appen sidst hørte. Kirurgen skal kunne se at han blev forstået
+            uden at vente på kvitteringen — og en skærmlæser skal kunne følge
+            med i det samme. */}
+        <p
+          aria-live="polite"
+          aria-atomic="true"
+          className="motion-fade min-h-[1.25rem] font-[family-name:var(--font-mono)] text-sm text-[var(--or-ink)]"
+        >
           {lastHeard && (
             <>
               <span className="text-[var(--or-ink-soft)]">{tr("heard", lang)}: </span>

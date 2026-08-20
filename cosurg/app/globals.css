@@ -31,8 +31,17 @@
   --paper: #fcf7f3; /* Nude1 */
   --paper-raised: #ffffff;
   --ink: #10292b; /* SurgeonBlue kørt til tekstdybde */
-  --ink-soft: #407c82; /* DarkGreen */
-  --ink-faint: #6f8f92;
+  /*
+   * DarkGreen og dens lyse søster bærer brødtekst og etiketter. Begge er kørt
+   * ét trin dybere end designguidens rene værdier, fordi guidens toner kun
+   * klarer 4,5:1 mod Nude-papiret hvis man runder ned. Under skadestuelys —
+   * skrå skærm, høj omgivende lysstyrke — er den margin ikke teoretisk.
+   * Brandets kulør er uændret; kun lysheden er trukket ned.
+   *   --ink-soft  #3b757b på --paper = 4,97:1  (var #407c82 = 4,46:1)
+   *   --ink-faint #55757a på --paper = 4,74:1  (var #6f8f92 = 3,27:1)
+   */
+  --ink-soft: #3b757b; /* DarkGreen, tekstdyb */
+  --ink-faint: #55757a;
   --line: #dbe9ea; /* LightBlue */
   --line-strong: #b3d2d6;
 
@@ -168,31 +177,222 @@ body {
   }
 }
 
-@keyframes flag-in {
+.zone-pulse-ring {
+  animation: zone-pulse 2.2s cubic-bezier(0.2, 0.6, 0.4, 1) infinite;
+}
+
+/* ————————————————————————————————————————————————————————————————
+ * BEVÆGELSESSPROG
+ *
+ * Appen skifter tilstand hele tiden, og lægen skal kunne aflæse HVAD der
+ * skete uden at læse teksten igen. Derfor betyder hver bevægelse én ting, og
+ * kun én:
+ *
+ *   fremad     — noget nyt kom til        → stiger op nedefra
+ *   tilbage    — vi gik et trin tilbage   → glider ind fra venstre
+ *   erstattet  — samme plads, nyt indhold → toner ind i skala
+ *   afgørelse  — noget faldt på plads     → sætter sig med et fast greb
+ *   afbrydelse — rødt flag                → tager pladsen, én gang, hårdt nok
+ *
+ * Retningen er ikke dekoration: går man tilbage i træet og kortet kom nedefra,
+ * ville skærmen påstå at der kom noget nyt.
+ *
+ * Ingen bevægelse må forsinke en beslutning. Alt ligger på 160–340 ms, og alt
+ * animerer HEN IMOD hviletilstanden — slås animationen fra (reduced motion,
+ * ældre browser, fejl), står indholdet korrekt med det samme.
+ * ———————————————————————————————————————————————————————————————— */
+:root {
+  --motion-fast: 160ms;
+  --motion-base: 240ms;
+  --motion-slow: 340ms;
+  /* Et fast, dæmpet greb — ingen fjedring. En klinisk app må ikke hoppe. */
+  --ease-settle: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-swap: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes step-forward {
   from {
     opacity: 0;
-    transform: translateY(-4px) scale(0.99);
+    transform: translateY(10px);
   }
-  to {
+}
+
+@keyframes step-back {
+  from {
+    opacity: 0;
+    transform: translateX(-14px);
+  }
+}
+
+@keyframes step-replace {
+  from {
+    opacity: 0;
+    transform: scale(0.985);
+  }
+}
+
+@keyframes settle-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.98);
+  }
+}
+
+/* Rødt flag. Bevægelsen skal ikke kunne overses — men den må heller ikke
+   blinke som en advarselslampe i en bil: en lampe der blinker videre bliver
+   noget man lærer at se bort fra. Banneret sætter sig derfor ÉN gang, med et
+   kort, tungt greb, og bliver så helt stille. */
+@keyframes flag-interrupt {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.97);
+  }
+  55% {
+    opacity: 1;
+    transform: translateY(0) scale(1.012);
+  }
+  100% {
     opacity: 1;
     transform: translateY(0) scale(1);
   }
 }
 
-.zone-pulse-ring {
-  animation: zone-pulse 2.2s cubic-bezier(0.2, 0.6, 0.4, 1) infinite;
+/* Den røde streg løber ud fra midten — samme figur som zone-ringene: energi
+   der breder sig fra et centrum. Én gennemløbning, derefter står den fast. */
+@keyframes flag-rule {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
 }
 
-.flag-in {
-  animation: flag-in 0.28s ease-out;
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
 }
 
+/* OR-tilstand skifter hele verden. Den lyse skærm forsvinder ikke — den bliver
+   afløst af en anden, og skiftet skal mærkes som netop det. */
+@keyframes world-in {
+  from {
+    opacity: 0;
+    transform: scale(1.015);
+  }
+}
+
+.motion-forward {
+  animation: step-forward var(--motion-base) var(--ease-settle) both;
+}
+.motion-back {
+  animation: step-back var(--motion-base) var(--ease-settle) both;
+}
+.motion-replace {
+  animation: step-replace var(--motion-fast) var(--ease-swap) both;
+}
+.motion-settle {
+  animation: settle-in var(--motion-slow) var(--ease-settle) both;
+}
+.motion-fade {
+  animation: fade-in var(--motion-base) var(--ease-swap) both;
+}
+.motion-world {
+  animation: world-in var(--motion-slow) var(--ease-settle) both;
+}
+.motion-flag {
+  animation: flag-interrupt var(--motion-slow) var(--ease-settle) both;
+}
+.motion-flag-rule {
+  transform-origin: center;
+  animation: flag-rule var(--motion-slow) var(--ease-settle) both;
+}
+
+/* Ventetid. Skeletterne har brandets flader, aldrig klinisk rød/gul/grøn — en
+   app der venter er ikke en patient i fare. Strejfet løber langsomt: det skal
+   sige "her kommer noget", ikke stresse den der venter. */
+@keyframes skeleton-sheen {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+
+.skeleton {
+  background-color: var(--teal-tint);
+  background-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.75) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  background-repeat: no-repeat;
+  animation: skeleton-sheen 1.9s linear infinite;
+  border-radius: 4px;
+}
+
+.or-scope .skeleton {
+  background-color: var(--or-surface-raised);
+  background-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(0, 186, 205, 0.16) 50%,
+    transparent 100%
+  );
+}
+
+/* Tre prikker der arbejder. Bruges kun hvor appen FAKTISK venter på et svar —
+   aldrig som pynt, og aldrig når det der vises er en fejlbesked. */
+@keyframes working-dot {
+  0%,
+  70%,
+  100% {
+    opacity: 0.25;
+    transform: translateY(0);
+  }
+  35% {
+    opacity: 1;
+    transform: translateY(-2px);
+  }
+}
+
+.working-dot {
+  animation: working-dot 1.25s var(--ease-swap) infinite;
+}
+
+/*
+ * Bevægelse er en oplysning, ikke en betingelse. Slås den fra, skal ALT stå
+ * læsbart og korrekt med det samme — også de tilstande der ellers kun kan
+ * skelnes på bevægelsen. Derfor: ingen animation, ingen transition, men
+ * skeletterne beholder deres flade, og arbejdsprikkerne bliver stående synlige
+ * så "appen arbejder" stadig kan aflæses.
+ */
 @media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
   .zone-pulse-ring {
-    animation: none;
+    animation: none !important;
     opacity: 0.35;
   }
-  .flag-in {
-    animation: none;
+
+  .skeleton {
+    animation: none !important;
+    background-image: none;
+  }
+
+  .working-dot {
+    animation: none !important;
+    opacity: 0.85;
   }
 }

@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Lang } from "@/lib/tree/types";
+import { ui } from "./ui/uiText";
 
 interface ResponseBarProps {
   lang: Lang;
@@ -30,17 +31,30 @@ export function ResponseBar({
   autoFocus,
 }: ResponseBarProps) {
   const [value, setValue] = useState("");
+  /*
+   * Kort kvittering på at svaret forlod feltet. Den er sand uanset hvad
+   * agenten svarer bagefter — derfor må den ikke ligne en arbejdsindikator,
+   * og derfor forsvinder den af sig selv. Uden den er et tomt felt det eneste
+   * tegn på at man overhovedet trykkede.
+   */
+  const [sent, setSent] = useState(false);
+  const sentTimer = useRef<number | undefined>(undefined);
+
+  useEffect(() => () => window.clearTimeout(sentTimer.current), []);
 
   const submit = () => {
     const text = value.trim();
     if (!text) return;
     onSubmit(text);
     setValue("");
+    setSent(true);
+    window.clearTimeout(sentTimer.current);
+    sentTimer.current = window.setTimeout(() => setSent(false), 1400);
   };
 
   return (
     <div className="w-full">
-      <div className="flex items-center gap-1 rounded-xl border bg-[var(--paper-raised)] pr-1 pl-1.5 py-1.5 focus-within:border-[var(--teal)] transition-colors">
+      <div className="relative flex items-center gap-1 rounded-xl border bg-[var(--paper-raised)] pr-1 pl-1.5 py-1.5 focus-within:border-[var(--teal)] transition-colors">
         <button
           type="button"
           onClick={onToggleMic}
@@ -94,6 +108,21 @@ export function ResponseBar({
           placeholder={interim ? interim : placeholder}
           className="min-w-0 flex-1 bg-transparent px-1.5 py-1 text-[15px] leading-tight text-[var(--ink)] placeholder:text-[var(--ink-faint)] placeholder:italic focus:outline-none"
         />
+
+        {/*
+          Kvitteringen ligger OVEN PÅ feltets højre kant i stedet for i rækken.
+          Lå den i rækken, ville skrivefeltet blive smallere i det sekund den
+          var fremme — og feltet ville altså skifte størrelse hver gang man
+          svarede. Den toner ind og ud i en plads der ikke er nogens.
+        */}
+        <span
+          aria-hidden={!sent}
+          className={`pointer-events-none absolute right-11 top-1/2 -translate-y-1/2 bg-[var(--paper-raised)] pl-2 font-[family-name:var(--font-mono)] text-[11px] font-medium uppercase tracking-[0.12em] text-[var(--teal-deep)] transition-opacity duration-200 ${
+            sent ? "opacity-100" : "opacity-0"
+          }`}
+        >
+          {ui("sent", lang)}
+        </span>
 
         <button
           type="button"

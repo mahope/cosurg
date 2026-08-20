@@ -2,6 +2,10 @@ import type { Disposition, Lang } from "@/lib/tree/types";
 import { tr } from "@/lib/i18n";
 import { StepImages } from "./StepImages";
 import { ResponseBar } from "./ResponseBar";
+import { NoteSkeleton } from "./ui/Skeleton";
+import { NoteProgress } from "./ui/NoteProgress";
+import { ui } from "./ui/uiText";
+import { SizeLock, widestOf } from "./ui/SizeLock";
 
 interface DispositionCardProps {
   disposition: Disposition;
@@ -58,8 +62,15 @@ export function DispositionCard({
   const style = severityStyle[disposition.severity];
 
   return (
+    /*
+      Anbefalingen er det øjeblik hvor beslutningen falder på plads, og
+      bevægelsen siger netop det: den sætter sig med ét fast greb nedefra
+      (`motion-settle`) frem for bare at dukke op. Det er den eneste
+      bevægelse i appen der er en anelse tungere end de øvrige — den skal
+      kunne mærkes som en konklusion.
+    */
     <div
-      className="rounded-2xl border-2 p-6 sm:p-7"
+      className="motion-settle rounded-2xl border-2 p-6 sm:p-7"
       style={{ borderColor: style.border, background: style.bg }}
     >
       <p
@@ -114,23 +125,41 @@ export function DispositionCard({
               : "bg-[var(--paper-raised)] text-[var(--ink)] hover:border-[var(--teal)]"
           }`}
         >
-          {addendumOpen ? tr("stopDictate", lang) : tr("dictate", lang)}
+          {/* Knapperne skifter både tekst og sprog. Uden låst bredde ville
+              rækken pakke om sig selv midt i et forløb — og "Generér
+              journalnotat" ville flytte sig netop som lægen sigter efter den. */}
+          <SizeLock variants={widestOf("stopDictate", "dictate")}>
+            {addendumOpen ? tr("stopDictate", lang) : tr("dictate", lang)}
+          </SizeLock>
         </button>
         <button
           onClick={onGenerateNote}
           disabled={noteBusy}
           aria-busy={noteBusy}
+          aria-describedby="note-eta"
           className="rounded-lg bg-[var(--teal-deep)] px-4 py-2 text-sm font-semibold text-white transition-colors enabled:hover:bg-[var(--teal)] disabled:opacity-50"
         >
-          {noteBusy ? tr("noteWorking", lang) : tr("generateNote", lang)}
+          <SizeLock variants={widestOf("noteWorking", "generateNote")}>
+            {noteBusy ? tr("noteWorking", lang) : tr("generateNote", lang)}
+          </SizeLock>
         </button>
         <button
           onClick={onRestart}
-          className="rounded-lg border bg-[var(--paper-raised)] px-4 py-2 text-sm font-medium text-[var(--ink)]"
+          className="rounded-lg border bg-[var(--paper-raised)] px-4 py-2 text-sm font-medium text-[var(--ink)] transition-colors hover:border-[var(--teal)]"
         >
-          {tr("restart", lang)}
+          <SizeLock variants={widestOf("restart")}>{tr("restart", lang)}</SizeLock>
         </button>
       </div>
+
+      {/*
+        Ventetiden siges FØR klikket. Femten sekunder man er advaret om er
+        tålmodighed; femten sekunder man ikke er, er en app der hænger.
+        Linjen har sin egen faste højde og ligger uden for knaprækken, så
+        rækken ikke ombrydes når teksten forsvinder under skrivningen.
+      */}
+      <p id="note-eta" className="mt-2 h-4 font-[family-name:var(--font-mono)] text-[11px] leading-4 text-[var(--ink-soft)]">
+        {!noteBusy && ui("noteEta", lang)}
+      </p>
 
       {addendumOpen && (
         <div className="mt-4">
@@ -152,6 +181,19 @@ export function DispositionCard({
         <p className="mt-4 rounded-lg bg-[var(--paper-raised)]/80 p-3 text-sm italic text-[var(--ink-soft)]">
           {dictation}
         </p>
+      )}
+
+      {/*
+        Notatet er appens langsomste kald (målt 14–16 s). Ventetiden vises som
+        den form der er på vej — et notat med afsnit og et kodefelt — og som en
+        linje der siger hvad ruten laver netop nu. Skelettet står hvor notatet
+        selv lander, så øjet ikke skal flytte sig når det kommer.
+      */}
+      {noteBusy && (
+        <div className="mt-6 space-y-3">
+          <NoteProgress lang={lang} />
+          <NoteSkeleton lang={lang} />
+        </div>
       )}
     </div>
   );

@@ -104,7 +104,15 @@ export function NotePanel({ note, lang, orMode }: NotePanelProps) {
   const heading = `font-[family-name:var(--font-mono)] text-xs font-semibold uppercase tracking-[0.14em] ${tone.faint}`;
 
   return (
-    <div className={`mt-6 rounded-2xl border p-6 sm:p-7 ${surface}`}>
+    /*
+      Notatet afløser skelettet på samme plads, og bevægelsen siger "erstattet",
+      ikke "nyt": en ren indtoning. Et ryk her ville få lægen til at tro at
+      noget kom oveni det han allerede læste.
+    */
+    <section
+      aria-label={tr("note", lang)}
+      className={`motion-fade mt-6 rounded-2xl border p-6 sm:p-7 ${surface}`}
+    >
       <h3 className={`font-[family-name:var(--font-display)] text-lg font-semibold ${tone.ink}`}>
         {tr("note", lang)}
       </h3>
@@ -162,6 +170,6 @@ export function NotePanel({ note, lang, orMode }: NotePanelProps) {
           </ul>
         </div>
       )}
-    </div>
+    </section>
   );
 }
