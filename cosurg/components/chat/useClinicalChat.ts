@@ -388,8 +388,37 @@ export function useClinicalChat(lang: Lang) {
           }
         }
 
-        if (!answer && !turnsRef.current.find((t) => t.id === id)?.error) {
+        /*
+         * SLUTTEDE TUREN GODT?
+         *
+         * Her stod før `if (!answer)` — altså: "kom der ikke et svar, er det
+         * en fejl". Det var sandt dengang chatten kun kunne svare. Med
+         * udredningen i samtalen er det direkte forkert: en udredningstur
+         * slutter med et SPØRGSMÅL, ikke et svar, og strømmen sender aldrig
+         * en `answer`-begivenhed. Resultatet var at "Svaret kunne ikke
+         * hentes" stod over hvert eneste udredningstrin — mens trinnet
+         * fungerede upåklageligt lige nedenunder. Et produkt der ser i
+         * stykker ud mens det virker, er værre end et der fejler ærligt.
+         *
+         * Reglen er nu: turen lykkedes hvis den efterlod NOGET klinikeren
+         * kan handle på. Kun en tur der intet efterlod, er en reel fejl —
+         * og den skal stadig sige det, for en tavs tom tur er den anden
+         * måde at tabe nogen på.
+         */
+        const t = turnsRef.current.find((x) => x.id === id);
+        const landede =
+          !!t?.answer ||
+          !!t?.workup ||
+          !!t?.disposition ||
+          !!t?.noteOffer ||
+          (t?.redflags?.length ?? 0) > 0;
+
+        if (!landede && !t?.error) {
           patch(id, { error: tr("chatFailed", lang), done: true });
+        } else if (landede && !t?.done) {
+          // Udredningsture markeres først færdige her: `workup` er turens
+          // afslutning, men den ved det ikke selv, når den ankommer.
+          patch(id, { done: true });
         }
       } catch (err) {
         // Brugerens eget afbryd efterlader turen som den er, uden fejlbesked.
