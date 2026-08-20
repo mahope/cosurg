@@ -11,6 +11,8 @@ export const dynamic = "force-dynamic";
  */
 const MAX_QUESTION = 1_000;
 const MAX_RECAP = 4_000;
+/** Beslutningsvejen er højst en snes besvarede trin. Loftet afviser misbrug. */
+const MAX_PATIENT_CONTEXT = 3_000;
 
 /** Kvoten er stram: hvert kald koster credits og tager målt 35-70 sekunder. */
 const CHAT_QUOTA_PER_MINUTE = 15;
@@ -20,6 +22,7 @@ interface Body {
   lang?: unknown;
   contextId?: unknown;
   recap?: unknown;
+  patientContext?: unknown;
 }
 
 /** Hvilke eksperter chatten faktisk har koblet på. Bruges til at være ærlig i UI'et. */
@@ -46,6 +49,7 @@ export async function POST(req: Request) {
   const lang = body.lang === "en" ? "en" : "da";
   const contextId = typeof body.contextId === "string" ? cap(body.contextId, 100) : undefined;
   const recap = cap(body.recap, MAX_RECAP) || undefined;
+  const patientContext = cap(body.patientContext, MAX_PATIENT_CONTEXT) || undefined;
 
   const encoder = new TextEncoder();
 
@@ -80,6 +84,7 @@ export async function POST(req: Request) {
           lang,
           contextId,
           recap,
+          patientContext,
           signal: req.signal,
         })) {
           send(event);

@@ -101,7 +101,15 @@ export function useClinicalChat(lang: Lang) {
    * til lyd, og kalderen skal ikke gætte hvilken tur der lige blev besvaret.
    */
   const ask = useCallback(
-    async (question: string): Promise<{ id: string; answer: ChatAnswer | null }> => {
+    async (
+      question: string,
+      /**
+       * Hvad appen ved om patienten lige nu — de besvarede trin i
+       * beslutningsforløbet. Sendes med så et generelt svar kan gøres konkret;
+       * agenten mærker selv hvad der er ræsonnement og hvad der er kilde.
+       */
+      patientContext?: string,
+    ): Promise<{ id: string; answer: ChatAnswer | null }> => {
       const text = question.trim();
       if (!text || abortRef.current) return { id: "", answer: null };
 
@@ -129,6 +137,7 @@ export function useClinicalChat(lang: Lang) {
             lang,
             contextId: contextIdRef.current,
             recap,
+            patientContext,
           }),
           signal: controller.signal,
         });

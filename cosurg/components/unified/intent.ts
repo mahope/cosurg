@@ -564,6 +564,102 @@ export function looksLikeQuestion(text: string): boolean {
 }
 
 /* ------------------------------------------------------------------ *
+ * Hvilken slags opslag?
+ * ------------------------------------------------------------------ */
+
+/** Ytringen beder om BEHANDLINGEN af en tilstand — et opslagsværk, ikke et svar. */
+const TREATMENT_INTENT = [
+  "behandl",
+  "behandling",
+  "behandlingen af",
+  "haandter",
+  "haandtering",
+  "hvad goer jeg ved",
+  "hvad skal jeg goere ved",
+  "hvad goer man ved",
+  "pleje af",
+  "forbinding af",
+  "tage mig af",
+  "treat",
+  "treatment",
+  "manage",
+  "management",
+  "care for",
+  "what do i do with",
+  "how do i handle",
+];
+
+/**
+ * Snævre spørgsmål. De begynder med et ord der beder om ÉT tal, ÉT tidspunkt
+ * eller ÉN definition — og så er litteratursvaret bedre end et helt opslagsværk,
+ * også selvom ordet "behandling" står i sætningen.
+ */
+const NARROW_OPENERS = [
+  "hvor meget",
+  "hvor mange",
+  "hvor stor",
+  "hvor stort",
+  "hvor laenge",
+  "hvornaar",
+  "hvorfor",
+  "hvad er",
+  "hvilke kriterier",
+  "how much",
+  "how many",
+  "how long",
+  "when should",
+  "when do",
+  "why",
+  "what is",
+  "which criteria",
+];
+
+/**
+ * Er spørgsmålet et BEHANDLINGSOPSLAG frem for et litteraturspørgsmål?
+ *
+ * De to svarer på hver sin slags spørgsmål, og de kommer fra hver sin kilde.
+ * Behandlingsguiden slår op i VORES egen vidensbase og giver hele forløbet for
+ * en tilstand i klinisk rækkefølge, ordret og med kilde — på sekunder. Chatten
+ * går ud i litteraturen og svarer på ét præcist spørgsmål — på op mod et minut.
+ *
+ * Bemærk at valget her IKKE er sikkerhedskritisk, og at det derfor afgøres frem
+ * for at blive lagt ud til lægen. Begge veje svarer med navngivne kilder; det
+ * værste der sker ved et forkert valg er at svaret er bredere eller smallere end
+ * han ville have. Derfor gætter vi her — og lader ham skifte med ét klik — mens
+ * vi ved spørgsmål-mod-svar altid spørger. Reglen er den samme begge steder:
+ * vi spørger når fejlen er farlig, og vælger når den blot er ubelejlig.
+ */
+export function looksLikeGuideTopic(text: string): boolean {
+  const normalized = normalize(text);
+  if (!normalized) return false;
+  if (!TREATMENT_INTENT.some((p) => hasPhrase(normalized, p))) return false;
+  return !NARROW_OPENERS.some((p) => normalized === p || normalized.startsWith(`${p} `));
+}
+
+/**
+ * Begynder ytringen med en behandlingshensigt? "Behandling af ætsninger."
+ *
+ * Kun til INDGANGSSKÆRMEN, og strengere end `looksLikeGuideTopic` med vilje.
+ * Dér findes der ingen node at måle imod, og alternativet er ikke et andet
+ * opslag — det er at STARTE et patientforløb. Uden prøven her ville "behandling
+ * af ætsninger" ramme brandsårsordlisten og sende lægen ind i en vurdering af en
+ * patient han ikke har.
+ *
+ * Kravet om at hensigten står FORREST er det der holder rigtige
+ * patientbeskrivelser ude: "patienten skal have behandling for kogende vand over
+ * hånden" nævner behandling, men handler om en patient — og den skal stadig
+ * starte forløbet.
+ */
+export function startsWithTreatmentIntent(text: string): boolean {
+  const normalized = normalize(text);
+  if (!normalized) return false;
+  return TREATMENT_INTENT.some((raw) => {
+    const p = normalize(raw);
+    return normalized === p || normalized.startsWith(`${p} `);
+  });
+}
+
+/* ------------------------------------------------------------------ *
  * Talte valg
  * ------------------------------------------------------------------ */
 

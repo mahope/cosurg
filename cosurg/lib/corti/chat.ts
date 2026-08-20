@@ -25,7 +25,32 @@ const CHAT_TIMEOUT_MS = 180_000;
 /** Hvor lang tids stilstand der får os til at gensende et resumé til agenten. */
 export const CONTEXT_STALE_MS = 10 * 60_000;
 
-export type Evidence = "sourced" | "partial" | "unsupported";
+/**
+ * Hvor stærkt svaret står.
+ *
+ * `extrapolated` er tilføjet fordi "ingen dækning" ikke må være enden på
+ * samtalen. En læge der spørger om noget vi ikke har en retningslinje for,
+ * står stadig med en patient — og så er det rigtige svar ikke tavshed, men et
+ * fagligt ræsonnement der er MÆRKET som ræsonnement. Det er hele forskellen:
+ * et blandet svar uden mærkat er farligere end intet svar, fordi man så ikke
+ * kan vurdere hvor meget man tør stole på det.
+ */
+export type Evidence =
+  /** Hver klinisk påstand er dækket af en vedlagt kilde. */
+  | "sourced"
+  /** Kernen er belagt; dele er ikke. */
+  | "partial"
+  /** Ingen retningslinje dækker spørgsmålet. Svaret er litteratur plus ræsonnement. */
+  | "extrapolated"
+  /** Der kunne ikke svares fagligt forsvarligt. */
+  | "unsupported";
+
+/** Hvor kilden kom fra. De to vejer ikke ens for en dansk kliniker. */
+export type SourceOrigin =
+  /** CoSurgs egen kuraterede vidensbase — dansk praksis, ordret. */
+  | "knowledge-base"
+  /** Litteratur og guidelines hentet af Cortis eksperter. */
+  | "literature";
 
 export interface ChatSource {
   title: string;
@@ -34,11 +59,20 @@ export interface ChatSource {
   url?: string;
   /** Hvad præcis i svaret denne kilde understøtter. */
   supports: string;
+  origin?: SourceOrigin;
 }
 
 export interface ChatAnswer {
   answer: string;
   evidence: Evidence;
+  /**
+   * Den del af svaret der IKKE står i en kilde: almen faglig ræsonneren, ofte
+   * anvendt på det lægen har fortalt om patienten. Vises for sig selv og
+   * mærket, aldrig blandet ind i det belagte.
+   */
+  reasoning?: string;
+  /** Brugte agenten det lægen tidligere har fortalt om denne patient? */
+  usedContext?: boolean;
   limitations?: string;
   /** Kort udgave til oplæsning — hele svaret læst højt er ubrugeligt hands-free. */
   spokenSummary?: string;
@@ -121,9 +155,19 @@ const ANSWER_CONNECTOR: Connector = {
       },
       evidence: {
         type: "string",
-        enum: ["sourced", "partial", "unsupported"],
+        enum: ["sourced", "partial", "extrapolated", "unsupported"],
         description:
-          "'sourced': every clinical claim is backed by a listed source. 'partial': the core is sourced but parts are not. 'unsupported': you could not substantiate the answer — say so in the answer itself.",
+          "'sourced': every clinical claim is backed by a listed source. 'partial': the core is sourced but parts are not. 'extrapolated': no guideline or study answers this directly, so the answer rests on related literature plus clinical reasoning — put that reasoning in the 'reasoning' field. 'unsupported': you could not answer responsibly at all.",
+      },
+      reasoning: {
+        type: "string",
+        description:
+          "The part of the answer that is NOT in any source: general clinical reasoning, and how it applies to what the clinician has told you about THIS patient earlier in the conversation. Leave empty when every claim is sourced. Never put a sourced claim here, and never put reasoning in 'answer' without repeating it here.",
+      },
+      usedContext: {
+        type: "boolean",
+        description:
+          "True if you used what the clinician told you earlier in this conversation (age, mechanism, area, comorbidity) to make the answer specific.",
       },
       limitations: {
         type: "string",
@@ -138,7 +182,7 @@ const ANSWER_CONNECTOR: Connector = {
       sources: {
         type: "array",
         description:
-          "One entry per source actually retrieved and used. Never invent a source, a PMID or a URL. Empty array only when evidence is 'unsupported'.",
+          "One entry per source actually retrieved and used. Never invent a source, a PMID or a URL. Empty only when nothing at all was retrieved.",
         items: {
           type: "object",
           properties: {
@@ -148,6 +192,12 @@ const ANSWER_CONNECTOR: Connector = {
             supports: {
               type: "string",
               description: "Which specific claim in the answer this source supports.",
+            },
+            origin: {
+              type: "string",
+              enum: ["knowledge-base", "literature"],
+              description:
+                "'knowledge-base' if it came from cosurg-viden (the team's own curated Danish sources). 'literature' for anything from pubmed-expert, web-search-expert or clinical-trials-expert.",
             },
           },
           required: ["title", "supports"],
@@ -160,24 +210,41 @@ const ANSWER_CONNECTOR: Connector = {
 
 const SYSTEM_PROMPT = [
   "You are a clinical reference assistant used by emergency physicians and plastic surgeons, mainly about burns.",
-  "You answer free clinical questions. You are NOT the decision tree in this app: the tree owns patient-specific recommendations, you own the literature behind them.",
+  "You answer free clinical questions. You are NOT the decision tree in this app: the tree owns patient-specific recommendations, you own the evidence behind them.",
+  "This is a CONVERSATION, not a series of isolated lookups. The clinician is standing with a patient.",
   "",
-  "How you must work:",
-  "1. Before answering any clinical question, retrieve evidence.",
-  "   Consult cosurg-viden FIRST when it is available: it is the team's own curated Danish burn knowledge base",
-  "   (brandsaar.dk and the PlastSurgeon material), and it is the authority on Danish clinical practice.",
+  "RETRIEVAL LADDER — work down it, and never stop at the first rung:",
+  "1. cosurg-viden FIRST when it is available: the team's own curated Danish burn knowledge base",
+  "   (brandsaar.dk and the PlastSurgeon material). It is the authority on Danish clinical practice.",
   "   Where it and the international literature differ — for example the fluid formula — state the Danish practice first",
   "   and note the international variant as such.",
-  "   Use pubmed-expert for the peer-reviewed literature, web-search-expert for current guidelines outside it,",
-  "   clinical-trials-expert for ongoing studies, and medical-calculator-expert whenever a number has to be computed.",
-  "2. Answer only through submit_clinical_answer. Every clinical claim must map to a source in the sources array.",
-  "3. NEVER invent a source, a PMID, a URL or a quotation. Only list sources an expert actually returned to you.",
-  "4. If the retrieval finds nothing that substantiates the question, set evidence='unsupported', return an empty sources array,",
-  "   and state plainly in the answer that you cannot substantiate it. That answer is correct and useful. A fluent guess is not.",
-  "5. Named local protocols, unfamiliar syndromes and product names that no source confirms must be called out as unconfirmed, not paraphrased as if real.",
-  "6. Formulas are starting estimates. Say so, and say what the number must be titrated against.",
-  "7. Write in the language the user asks for. Do not switch language, not even for a greeting.",
-  "8. Be brief. A clinician is reading this between patients.",
+  "2. If it answers 'INGEN DAEKNING I VIDENSBASEN', or covers the topic only in general terms, DO NOT STOP THERE.",
+  "   That means we have no local guideline — not that the question is unanswerable.",
+  "   Go on to pubmed-expert for the peer-reviewed literature, web-search-expert for guidelines outside it,",
+  "   clinical-trials-expert for ongoing studies, and medical-calculator-expert whenever a number must be computed.",
+  "3. Then look at THIS CONVERSATION. If the clinician has already told you about the patient — age, mechanism,",
+  "   burn area, depth, comorbidity, time since injury — use it to make a general answer concrete for this patient.",
+  "   Set usedContext=true when you do, and say which facts you leaned on.",
+  "4. Only if all three fail, say you cannot answer it responsibly — and say it the way a colleague would:",
+  "   what you looked for, what you did not find, and what would let you help (a detail about the patient, a narrower question).",
+  "   A dead end with a way forward is useful. A bare 'no coverage' is not.",
+  "",
+  "MARKING — this is the part that must never slip:",
+  "The clinician has to be able to tell three things apart, and the fields exist for exactly that.",
+  "- What rests on a retrieved source goes in 'answer', and every such claim maps to an entry in 'sources'.",
+  "- What is general clinical reasoning, or reasoning applied to this patient, goes in 'reasoning' — ALWAYS.",
+  "- 'evidence' says which of the two dominates: 'sourced', 'partial', 'extrapolated' or 'unsupported'.",
+  "A blended answer that does not separate them is more dangerous than no answer, because it cannot be weighed.",
+  "",
+  "ALWAYS:",
+  "- Answer only through submit_clinical_answer.",
+  "- NEVER invent a source, a PMID, a URL or a quotation. Only list sources an expert actually returned to you.",
+  "- Mark each source's origin: 'knowledge-base' for cosurg-viden, 'literature' for everything else.",
+  "- Named local protocols, unfamiliar syndromes and product names that no source confirms must be called out as unconfirmed, not paraphrased as if real.",
+  "- Formulas are starting estimates. Say so, and say what the number must be titrated against.",
+  "- Reasoning is never a licence to guess a dose, a threshold or a drug. If a number is not in a source, say it is not.",
+  "- Write in the language the user asks for. Do not switch language, not even for a greeting.",
+  "- Be brief. A clinician is reading this between patients.",
 ].join("\n");
 
 function agentName(): string {
@@ -186,7 +253,9 @@ function agentName(): string {
     .join("+");
   // Navnet bærer connector-sættet, så en tilføjet MCP-server ikke kan ende med
   // at genbruge en agent der ikke har den.
-  return extra ? `cosurg-clinical-chat-v1-${extra}` : "cosurg-clinical-chat-v1";
+  // Versionen skal følge SKEMAET. Et agent-navn er bundet til sit skema hos
+  // Corti, så et nyt felt uden et nyt navn ville genbruge den gamle kontrakt.
+  return extra ? `cosurg-clinical-chat-v2-${extra}` : "cosurg-clinical-chat-v2";
 }
 
 let agentIdPromise: Promise<string> | null = null;
@@ -241,12 +310,33 @@ export interface ChatRequest {
    * længe nok til at agentens egen kontekst kan være tabt.
    */
   recap?: string;
+  /**
+   * Hvad appen allerede VED om patienten: de trin lægen har besvaret i
+   * beslutningsforløbet. Det er den kontekst der gør et generelt svar konkret —
+   * "hvor meget væske?" kan først besvares når arealet er kendt.
+   *
+   * Den sendes som OPLYSNINGER, ikke som en opgave: anbefalingen til denne
+   * patient kommer fra træet, og agenten må kun ræsonnere ud fra tallene og
+   * mærke det som ræsonnement.
+   */
+  patientContext?: string;
   signal?: AbortSignal;
 }
 
-function buildPrompt({ question, lang, recap }: ChatRequest): string {
+function buildPrompt({ question, lang, recap, patientContext }: ChatRequest): string {
   const language = lang === "da" ? "Danish" : "English";
   const lines = [`Answer in ${language}. The clinician asks:`, "", question];
+
+  if (patientContext) {
+    lines.push(
+      "",
+      "--- What this app already knows about the patient in front of the clinician ---",
+      "(from the decision pathway he is filling in right now. Use it to make the answer concrete,",
+      "and set usedContext=true when you do. The pathway — not you — owns the recommendation itself.)",
+      patientContext,
+    );
+  }
+
   if (recap) {
     lines.push(
       "",
@@ -254,10 +344,13 @@ function buildPrompt({ question, lang, recap }: ChatRequest): string {
       recap,
     );
   }
+
   lines.push(
     "",
     `Retrieve evidence first, then answer with submit_clinical_answer in ${language}.`,
-    "If nothing substantiates it, set evidence='unsupported' rather than guessing.",
+    "Work down the retrieval ladder: our own knowledge base, then the literature experts, then this conversation.",
+    "Do not stop at 'no coverage in the knowledge base' — that is the first rung, not the answer.",
+    "Anything you conclude rather than retrieve belongs in 'reasoning', never unmarked in 'answer'.",
   );
   return lines.join("\n");
 }
@@ -309,11 +402,14 @@ export function normalizeAnswer(raw: unknown): ChatAnswer {
       const title = asString(o.title);
       if (!title) continue;
 
+      const claimedOrigin = o.origin;
       const source: ChatSource = {
         title,
         identifier: asString(o.identifier),
         url: asHttpUrl(o.url),
         supports: asString(o.supports) ?? "",
+        origin:
+          claimedOrigin === "knowledge-base" || claimedOrigin === "literature" ? claimedOrigin : undefined,
       };
 
       const key = (source.url ?? source.identifier ?? title).toLowerCase();
@@ -327,14 +423,37 @@ export function normalizeAnswer(raw: unknown): ChatAnswer {
     }
   }
 
+  const reasoning = asString(r.reasoning);
+
   const claimed = r.evidence;
   let evidence: Evidence =
-    claimed === "sourced" || claimed === "partial" || claimed === "unsupported" ? claimed : "partial";
-  if (sources.length === 0) evidence = "unsupported";
+    claimed === "sourced" || claimed === "partial" || claimed === "extrapolated" || claimed === "unsupported"
+      ? claimed
+      : "partial";
+
+  /*
+   * Nedgraderingen ved nul kilder gælder KUN de belagte niveauer.
+   *
+   * Før satte vi altid "unsupported" når kildelisten var tom, og det var
+   * rigtigt dengang svaret enten var belagt eller ingenting. Nu findes en
+   * tredje mulighed: et fagligt ræsonnement ud fra det lægen har fortalt om
+   * patienten. Det HAR ingen kilde, og det er netop hvad "extrapolated"
+   * betyder — at nedgradere det til "unsupported" ville skjule at der faktisk
+   * blev tænkt, og gøre etiketten usand den anden vej.
+   *
+   * Påstår modellen derimod "sourced" eller "partial" uden at have vedlagt en
+   * eneste kilde, står den stadig for skud: er der et ræsonnement at falde
+   * tilbage på, kaldes det det, ellers er svaret ubelagt.
+   */
+  if (sources.length === 0 && (evidence === "sourced" || evidence === "partial")) {
+    evidence = reasoning ? "extrapolated" : "unsupported";
+  }
 
   return {
     answer: asString(r.answer) ?? "",
     evidence,
+    reasoning,
+    usedContext: r.usedContext === true,
     limitations: asString(r.limitations),
     spokenSummary: asString(r.spokenSummary),
     sources,

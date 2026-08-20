@@ -10,7 +10,14 @@
  */
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
-import { classifyUtterance, looksLikeQuestion, matchIntentChoice, matchAffirmative } from "./intent.ts";
+import {
+  classifyUtterance,
+  looksLikeQuestion,
+  looksLikeGuideTopic,
+  startsWithTreatmentIntent,
+  matchIntentChoice,
+  matchAffirmative,
+} from "./intent.ts";
 
 const here = fileURLToPath(new URL(".", import.meta.url));
 const tree = JSON.parse(readFileSync(`${here}../../content/trees/burns.json`, "utf8"));
@@ -113,6 +120,43 @@ for (const [text, expected] of INTAKE) {
   const ok = got === expected;
   if (!ok) failed += 1;
   console.log(`${ok ? "  ok  " : "FEJL  "}${JSON.stringify(text).padEnd(52)} -> spørgsmål=${got} (ventet ${expected})`);
+}
+
+// --- Behandlingsguide eller litteratur? ---
+const GUIDE = [
+  ["hvordan behandler jeg en dyb dermal forbrænding på hånden?", true],
+  ["hvad gør jeg ved en cirkulær forbrænding?", true],
+  ["behandling af ætsninger", true],
+  ["how do I treat a deep dermal burn of the hand?", true],
+  ["what is the treatment of a scald in a child", false], // "hvad er" -> snævert
+  ["hvor meget væske skal han have?", false],
+  ["hvornår skal jeg starte behandling?", false], // snævert trods "behandling"
+  ["hvilke kriterier udløser overflytning?", false],
+  ["hvorfor er hænder kritiske?", false],
+];
+console.log("\n-- guide eller litteratur --");
+for (const [text, expected] of GUIDE) {
+  const got = looksLikeGuideTopic(text);
+  const ok = got === expected;
+  if (!ok) failed += 1;
+  console.log(`${ok ? "  ok  " : "FEJL  "}${JSON.stringify(text).padEnd(60)} -> guide=${got} (ventet ${expected})`);
+}
+
+// --- Indgangen: behandlingsopslag maa ikke starte et patientforloeb ---
+const INTAKE_TREATMENT = [
+  ["behandling af ætsninger", true],
+  ["behandl en dyb dermal forbrænding", true],
+  ["treatment of a circumferential burn", true],
+  ["patienten skal have behandling for kogende vand over hånden", false],
+  ["en mand har fået kogende vand over hånden", false],
+  ["34-årig kvinde, flammeforbrænding på højre arm", false],
+];
+console.log("\n-- indgang: opslag vs. patient --");
+for (const [text, expected] of INTAKE_TREATMENT) {
+  const got = startsWithTreatmentIntent(text);
+  const ok = got === expected;
+  if (!ok) failed += 1;
+  console.log(`${ok ? "  ok  " : "FEJL  "}${JSON.stringify(text).padEnd(60)} -> opslag=${got} (ventet ${expected})`);
 }
 
 // --- Talte valg ---

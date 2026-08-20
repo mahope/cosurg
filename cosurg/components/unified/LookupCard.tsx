@@ -6,6 +6,8 @@ import type { Turn } from "@/components/chat/useClinicalChat";
 import { AnswerCard } from "@/components/chat/AnswerCard";
 import { ProgressTrail } from "@/components/chat/ProgressTrail";
 import { tr } from "@/lib/i18n";
+import type { GuideSvar } from "./guide";
+import { GuidePanel } from "./GuidePanel";
 import { ut } from "./text";
 
 /**
@@ -28,9 +30,19 @@ import { ut } from "./text";
  *    sin plads ved at gøre det.
  */
 
+/**
+ * Hvad opslaget viser. De to slags svar deler kort, fordi de er ét begreb for
+ * lægen: han spurgte om noget, og appen svarede. At det ene kom fra vores egen
+ * vidensbase og det andet fra litteraturen er en oplysning, ikke et valg han
+ * skulle have truffet først.
+ */
+export type LookupPayload =
+  | { kind: "chat"; turn: Turn }
+  | { kind: "guide"; question: string; guide: GuideSvar | null; error: string | null };
+
 interface LookupCardProps {
   lang: Lang;
-  turn: Turn;
+  payload: LookupPayload;
   /** Hvor forløbet står imens. Null før et forløb er valgt. */
   held: { step: number; total: number } | null;
   /** Sat når forløbet er kørt til ende — så er der intet trin at vente på. */
@@ -38,20 +50,25 @@ interface LookupCardProps {
   speaking: boolean;
   onSpeak: (answer: ChatAnswer) => void;
   onClose: () => void;
+  /** Skift til den anden slags svar på det samme spørgsmål. */
+  onSwitch: () => void;
   /** Tilbud om at blive ført gennem et forløb. Vises først når svaret er der. */
   offer?: { name: string; onAccept: () => void; onDismiss: () => void } | null;
 }
 
 export function LookupCard({
   lang,
-  turn,
+  payload,
   held,
   heldDone,
   speaking,
   onSpeak,
   onClose,
+  onSwitch,
   offer,
 }: LookupCardProps) {
+  const question = payload.kind === "chat" ? payload.turn.question : payload.question;
+
   return (
     <div className="motion-forward flex h-[26rem] flex-col overflow-hidden rounded-2xl border bg-[var(--paper-raised)] shadow-[0_1px_2px_rgba(16,32,30,0.04)]">
       <header className="flex shrink-0 items-start gap-3 border-b border-[var(--line)] px-5 py-3.5 sm:px-6">
@@ -59,8 +76,8 @@ export function LookupCard({
           <p className="font-[family-name:var(--font-mono)] text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--ink-faint)]">
             {ut("lookupTitle", lang)}
           </p>
-          <p className="mt-1 truncate text-[15px] font-medium leading-snug text-[var(--ink)]" title={turn.question}>
-            {turn.question}
+          <p className="mt-1 truncate text-[15px] font-medium leading-snug text-[var(--ink)]" title={question}>
+            {question}
           </p>
         </div>
         <button
@@ -74,14 +91,34 @@ export function LookupCard({
       </header>
 
       <div className="flex-1 overflow-y-auto px-5 py-4 sm:px-6">
-        {turn.answer ? (
+        {payload.kind === "guide" ? (
+          payload.guide ? (
+            <GuidePanel guide={payload.guide} lang={lang} topic={payload.question} onAskInstead={onSwitch} />
+          ) : payload.error ? (
+            <p className="rounded-2xl border border-dashed border-[var(--nude-deep)] bg-[var(--nude-tint)] px-4 py-3 text-[14px] leading-relaxed text-[var(--nude-deep)]">
+              {payload.error}
+            </p>
+          ) : (
+            <ProgressTrail progress={[{ expert: null, text: ut("guideWorking", lang) }]} lang={lang} />
+          )
+        ) : payload.turn.answer ? (
           <>
             <AnswerCard
-              answer={turn.answer}
+              answer={payload.turn.answer}
               lang={lang}
               speaking={speaking}
-              onSpeak={() => onSpeak(turn.answer!)}
+              onSpeak={() => onSpeak(payload.turn.answer!)}
             />
+
+            {/* Samme spørgsmål, anden kilde. Vi valgte litteraturen; kunne
+                behandlingsguiden have svaret bedre, er der ét klik til den. */}
+            <button
+              type="button"
+              onClick={onSwitch}
+              className="mt-3 rounded-lg border border-[var(--line-strong)] bg-[var(--paper)] px-3.5 py-2 text-[13.5px] font-medium text-[var(--ink-soft)] transition-colors hover:border-[var(--teal)] hover:text-[var(--ink)]"
+            >
+              {ut("guideAsGuideInstead", lang)}
+            </button>
             {offer && (
               <div className="mt-4 rounded-xl border border-[var(--teal)] bg-[var(--teal-tint)] p-4">
                 <p className="text-[14.5px] font-medium leading-snug text-[var(--ink)]">
@@ -107,12 +144,12 @@ export function LookupCard({
               </div>
             )}
           </>
-        ) : turn.error ? (
+        ) : payload.turn.error ? (
           <p className="rounded-2xl border border-dashed border-[var(--nude-deep)] bg-[var(--nude-tint)] px-4 py-3 text-[14px] leading-relaxed text-[var(--nude-deep)]">
-            {turn.error}
+            {payload.turn.error}
           </p>
         ) : (
-          <ProgressTrail progress={turn.progress} lang={lang} />
+          <ProgressTrail progress={payload.turn.progress} lang={lang} />
         )}
       </div>
 

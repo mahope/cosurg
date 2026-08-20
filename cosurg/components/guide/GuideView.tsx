@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import type { KildeUddrag } from "@/lib/corti/mcp";
 import type { Lang } from "@/lib/tree/types";
@@ -95,6 +95,24 @@ export function GuideView() {
     },
     [lang, henter],
   );
+
+  /*
+   * Kom lægen hertil fra et opslag på forsiden, bærer adressen emnet med.
+   *
+   * Forsiden svarer selv med de vigtigste afsnit; klikker han videre hertil, er
+   * det for at se det HELE — og så ville det være tåbeligt at bede ham skrive
+   * emnet igen. Vi læser adressen direkte frem for `useSearchParams`, som ville
+   * kræve en Suspense-grænse omkring en side der ellers er statisk.
+   */
+  const saaetRef = useRef(false);
+  useEffect(() => {
+    if (saaetRef.current) return;
+    saaetRef.current = true;
+    const topic = new URLSearchParams(window.location.search).get("topic");
+    // Opslaget sættes i gang EFTER renderen, ikke i den. Ellers ville den
+    // første tilstandsændring falde midt i monteringen og kaskade videre.
+    if (topic) queueMicrotask(() => void slaaOp(topic));
+  }, [slaaOp]);
 
   // Stemmelaget er præcis det samme som i beslutningstræet: Cortis ambiente
   // transskription. Et opslag skal kunne siges højt af en der har hænderne fulde.

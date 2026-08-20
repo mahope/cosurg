@@ -3,6 +3,7 @@
 import type { ChatAnswer, Evidence } from "@/lib/corti/chat";
 import type { Lang } from "@/lib/tree/types";
 import { tr } from "@/lib/i18n";
+import { ut } from "@/components/unified/text";
 import { RichText } from "./RichText";
 
 /**
@@ -15,11 +16,18 @@ import { RichText } from "./RichText";
  * en stiplet ramme, ikke med et trafiklys.
  */
 
-const EVIDENCE_KEY: Record<Evidence, "evidenceSourced" | "evidencePartial" | "evidenceUnsupported"> = {
+const EVIDENCE_KEY: Record<Evidence, "evidenceSourced" | "evidencePartial" | "evidenceUnsupported" | null> = {
   sourced: "evidenceSourced",
   partial: "evidencePartial",
+  // "Ræsonneret" er et nyt niveau og har sin tekst i unified/text.ts.
+  extrapolated: null,
   unsupported: "evidenceUnsupported",
 };
+
+function evidenceLabel(evidence: Evidence, lang: Lang): string {
+  const key = EVIDENCE_KEY[evidence];
+  return key ? tr(key, lang) : ut("evidenceExtrapolated", lang);
+}
 
 function EvidenceBadge({ evidence, lang }: { evidence: Evidence; lang: Lang }) {
   const style =
@@ -44,12 +52,20 @@ function EvidenceBadge({ evidence, lang }: { evidence: Evidence; lang: Lang }) {
           />
         </svg>
       )}
-      {tr(EVIDENCE_KEY[evidence], lang)}
+      {evidenceLabel(evidence, lang)}
     </span>
   );
 }
 
-function SourceRow({ source, index }: { source: ChatAnswer["sources"][number]; index: number }) {
+function SourceRow({
+  source,
+  index,
+  lang,
+}: {
+  source: ChatAnswer["sources"][number];
+  index: number;
+  lang: Lang;
+}) {
   const body = (
     <>
       <span className="font-[family-name:var(--font-mono)] text-[11px] font-medium text-[var(--ink-faint)]">
@@ -64,11 +80,26 @@ function SourceRow({ source, index }: { source: ChatAnswer["sources"][number]; i
             {source.supports}
           </span>
         )}
-        {source.identifier && (
-          <span className="mt-1 inline-block rounded border border-[var(--line)] bg-[var(--paper)] px-1.5 py-px font-[family-name:var(--font-mono)] text-[10.5px] text-[var(--ink-faint)]">
-            {source.identifier}
-          </span>
-        )}
+        <span className="mt-1 flex flex-wrap items-center gap-1.5">
+          {/* Vores egen validerede vidensbase vejer anderledes for en dansk
+              kliniker end international litteratur. Mærkatet siger hvilken. */}
+          {source.origin && (
+            <span
+              className={`inline-block rounded border px-1.5 py-px font-[family-name:var(--font-mono)] text-[10.5px] ${
+                source.origin === "knowledge-base"
+                  ? "border-[var(--teal)] bg-[var(--teal-tint)] text-[var(--teal-deep)]"
+                  : "border-[var(--line)] bg-[var(--paper)] text-[var(--ink-faint)]"
+              }`}
+            >
+              {ut(source.origin === "knowledge-base" ? "originKnowledgeBase" : "originLiterature", lang)}
+            </span>
+          )}
+          {source.identifier && (
+            <span className="inline-block rounded border border-[var(--line)] bg-[var(--paper)] px-1.5 py-px font-[family-name:var(--font-mono)] text-[10.5px] text-[var(--ink-faint)]">
+              {source.identifier}
+            </span>
+          )}
+        </span>
       </span>
     </>
   );
@@ -130,6 +161,33 @@ export function AnswerCard({ answer, lang, speaking, onSpeak }: AnswerCardProps)
 
       <RichText text={answer.answer} />
 
+      {/*
+        Ræsonnementet står FOR SIG SELV og med sin egen ramme.
+        Det er ikke pynt: en læge skal kunne se med et blik hvor meget af
+        svaret der hviler på en kilde, og hvor meget der er slutninger ud fra
+        det han selv har fortalt. Blandet sammen kan de to ikke vejes hver for
+        sig — og så er svaret farligere end intet svar.
+      */}
+      {answer.reasoning && (
+        <div className="mt-4 rounded-xl border border-dashed border-[var(--line-strong)] bg-[var(--paper)] p-4">
+          <p className="font-[family-name:var(--font-mono)] text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--ink-faint)]">
+            {ut("reasoningTitle", lang)}
+          </p>
+          <div className="mt-2">
+            <RichText text={answer.reasoning} />
+          </div>
+          <p className="mt-3 text-[12.5px] leading-relaxed text-[var(--ink-faint)]">
+            {ut("reasoningNote", lang)}
+          </p>
+        </div>
+      )}
+
+      {answer.usedContext && (
+        <p className="mt-3 inline-flex items-center gap-1.5 rounded-full border border-[var(--line-strong)] bg-[var(--paper)] px-2.5 py-1 font-[family-name:var(--font-mono)] text-[11px] uppercase tracking-[0.1em] text-[var(--ink-soft)]">
+          {ut("usedContext", lang)}
+        </p>
+      )}
+
       {answer.evidence === "unsupported" && (
         <p className="mt-4 rounded-lg border border-dashed border-[var(--nude-deep)] bg-[var(--nude-tint)] px-3 py-2 text-[13px] leading-relaxed text-[var(--nude-deep)]">
           {tr("chatUnsupportedNote", lang)}
@@ -152,7 +210,7 @@ export function AnswerCard({ answer, lang, speaking, onSpeak }: AnswerCardProps)
           </p>
           <ul className="mt-1.5">
             {answer.sources.map((s, i) => (
-              <SourceRow key={`${s.identifier ?? s.title}-${i}`} source={s} index={i} />
+              <SourceRow key={`${s.identifier ?? s.title}-${i}`} source={s} index={i} lang={lang} />
             ))}
           </ul>
         </div>

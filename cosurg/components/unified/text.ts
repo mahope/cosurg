@@ -59,6 +59,47 @@ const u = {
     en: "Shall I take you through the assessment? Say yes.",
   },
 
+  /* Behandlingsopslaget — vores egen vidensbase, i klinisk rækkefølge */
+  guideTitle: { da: "Behandlingsguide", en: "Treatment guide" },
+  guideAck: { da: "Jeg henter behandlingen.", en: "Fetching the treatment." },
+  guideWorking: { da: "Henter behandlingen fra kilderne…", en: "Fetching the treatment from the sources…" },
+  guideEmpty: {
+    da: "Vores kilder dækker ikke det emne. Vi svarer ikke ud fra almen viden — prøv at spørge litteraturen i stedet.",
+    en: "Our sources do not cover that topic. We do not answer from general knowledge — try asking the literature instead.",
+  },
+  guideSpokenFound: {
+    da: "Behandlingen står på skærmen, afsnit for afsnit med kilder.",
+    en: "The treatment is on screen, section by section with sources.",
+  },
+  guideFull: { da: "Åbn hele guiden", en: "Open the full guide" },
+  guideAskInstead: { da: "Spørg litteraturen i stedet", en: "Ask the literature instead" },
+  guideAsGuideInstead: { da: "Vis behandlingen i stedet", en: "Show the treatment instead" },
+  guideSourcesNote: {
+    da: "Ordret fra CoSurgs egne kilder. Overskrifterne er vores; teksten er kildens.",
+    en: "Verbatim from CoSurg's own sources. The headings are ours; the text is the source's.",
+  },
+
+  /*
+   * Svarets tre lag. De skal kunne skelnes med et blik: hvad der står i en
+   * valideret kilde, hvad der kommer fra litteraturen, og hvad der er
+   * ræsonnement. Et blandet svar uden mærkat er farligere end intet svar.
+   */
+  evidenceExtrapolated: { da: "Ræsonneret", en: "Reasoned" },
+  reasoningTitle: { da: "Fagligt ræsonnement — ikke fra en kilde", en: "Clinical reasoning — not from a source" },
+  reasoningNote: {
+    da: "Ingen af vores kilder svarer direkte på det. Det herunder er slutninger, ikke en retningslinje — vurdér det som sådan.",
+    en: "None of our sources answer this directly. What follows is inference, not a guideline — weigh it as such.",
+  },
+  usedContext: {
+    da: "Bygger på det du har fortalt om patienten",
+    en: "Built on what you have told me about the patient",
+  },
+  originKnowledgeBase: { da: "Vidensbase", en: "Knowledge base" },
+  originLiterature: { da: "Litteratur", en: "Literature" },
+
+  /* Faldgruber i forløbet */
+  pitfallsAtStep: { da: "Pas på her", en: "Watch out here" },
+
   /* Indgangen */
   intakeThinking: { da: "Et øjeblik — jeg finder ud af hvad du mener…", en: "One moment — working out what you mean…" },
   intakeAlsoAsk: {

@@ -24,10 +24,20 @@ import { followUpTreeId, routeUtterance, suggestTreeId } from "@/components/tree
 import type { SessionUsage } from "@/components/UsagePanel";
 import { useClinicalChat } from "@/components/chat/useClinicalChat";
 import type { ChatAnswer } from "@/lib/corti/chat";
-import { classifyUtterance, looksLikeQuestion, matchAffirmative, matchIntentChoice } from "@/components/unified/intent";
-import { IntentChoiceCard, LookupCard } from "@/components/unified/LookupCard";
+import {
+  classifyUtterance,
+  looksLikeGuideTopic,
+  looksLikeQuestion,
+  matchAffirmative,
+  matchIntentChoice,
+  startsWithTreatmentIntent,
+} from "@/components/unified/intent";
+import { IntentChoiceCard, LookupCard, type LookupPayload } from "@/components/unified/LookupCard";
+import { fetchGuide, type GuideSvar } from "@/components/unified/guide";
 import { spokenText } from "@/components/unified/spoken";
 import { ut } from "@/components/unified/text";
+import { PitfallRail } from "@/components/pitfalls/PitfallRail";
+import { NoteSkeleton } from "@/components/ui/Skeleton";
 
 /**
  * Brandsårstræet er bundtet med, så første skærmbillede står med det samme —
@@ -63,6 +73,14 @@ const TIMEOUT_TREE = 10_000;
  * gennemgangsnode (ingen svarmuligheder, én "*"-kant) som et trin, så et træ
  * kan lægge information ind uden at skulle erklære en ny svartype.
  */
+/**
+ * Hvor et opslag skal hentes fra.
+ *
+ * "auto" er hovedvejen: appen afgør selv. De to andre findes kun så lægen kan
+ * skifte til den anden kilde uden at stille spørgsmålet igen.
+ */
+type LookupMode = "auto" | "chat" | "guide";
+
 function isStepLike(node: TreeNode): boolean {
   if (node.answerType === "step") return true;
   if (node.answerType === "number") return false;
@@ -146,6 +164,17 @@ export default function Home() {
   const { turns: lookupTurns, ask: askLookup, reset: resetLookup } = useClinicalChat(lang);
   const [lookupOpen, setLookupOpen] = useState(false);
   const [lookupStatus, setLookupStatus] = useState<string | null>(null);
+  /*
+   * Behandlingsopslaget. Det bor for sig selv og ikke i chattens tur-liste,
+   * fordi det er en anden slags svar fra en anden kilde: vores egen vidensbase,
+   * ordret og i klinisk rækkefølge, i stedet for litteraturen. Kun ét ad gangen
+   * — et opslagsværk har ingen tråd at huske.
+   */
+  const [guideLookup, setGuideLookup] = useState<{
+    question: string;
+    guide: GuideSvar | null;
+    error: string | null;
+  } | null>(null);
   const [speakingTurn, setSpeakingTurn] = useState<string | null>(null);
   /** Ytringen vi ikke turde afgøre — vist som et valg frem for et gæt. */
   const [ambiguity, setAmbiguity] = useState<{ text: string; reasons: string[] } | null>(null);
@@ -253,7 +282,7 @@ export default function Home() {
    * højt igen, så den der ikke kigger på skærmen ved hvor han er.
    */
   const runLookup = useCallback(
-    async (question: string, suggestTreeId?: string | null) => {
+    async (question: string, suggestTreeId?: string | null, mode: LookupMode = "auto") => {
       if (lookupBusyRef.current) return;
       lookupBusyRef.current = true;
 
@@ -272,34 +301,90 @@ export default function Home() {
       setAmbiguity(null);
       setOffer(null);
       setLookupOpen(true);
-      setLookupStatus(ut("lookupWorking", lang));
-      if (speakAll) void say(ut("lookupAck", lang));
 
-      try {
-        const { answer } = await askLookup(question);
-        if (!answer) return;
+      /*
+       * Hvilken slags svar? Se `looksLikeGuideTopic` for hvorfor det valg
+       * TRÆFFES frem for at blive lagt ud til lægen.
+       *
+       * I OR-tilstand vælger vi dog altid litteraturen, uanset spørgsmålets
+       * form. Kirurgen er steril og kigger ikke på skærmen — den viser
+       * proceduretrinnet — og chatten er den eneste af de to der kan læses HØJT
+       * som ét kort, kildebelagt svar. Et opslagsværk i otte afsnit kan ikke.
+       */
+      const useGuide = mode === "guide" || (mode === "auto" && !orMode && looksLikeGuideTopic(question));
 
+      setLookupStatus(ut(useGuide ? "guideWorking" : "lookupWorking", lang));
+      if (speakAll) void say(ut(useGuide ? "guideAck" : "lookupAck", lang));
+
+      /** Fælles afslutning: tilbyd forløbet, læs op, og vend tilbage til noden. */
+      const finish = async (spoken: string | null) => {
         if (suggestTreeId) {
           const t = trees.find((x) => x.id === suggestTreeId);
           if (t) setOffer({ treeId: t.id, name: t.name[lang] });
         }
-
-        if (speakAll) {
-          await say(spokenText(answer, lang));
-          if (suggestTreeId) {
-            void say(ut("offerSpoken", lang));
-          } else if (stateRef.current.currentNodeId) {
-            await say(ut("lookupSpokenResume", lang));
-            askCurrent(stateRef.current);
-          }
+        if (!speakAll || !spoken) return;
+        await say(spoken);
+        if (suggestTreeId) {
+          void say(ut("offerSpoken", lang));
+        } else if (stateRef.current.currentNodeId) {
+          await say(ut("lookupSpokenResume", lang));
+          askCurrent(stateRef.current);
         }
+      };
+
+      try {
+        if (useGuide) {
+          setGuideLookup({ question, guide: null, error: null });
+          try {
+            const guide = await fetchGuide(question, lang);
+            setGuideLookup({ question, guide, error: null });
+            // Guiden har intet talt resumé — otte afsnit ordret fra kilderne kan
+            // ikke læses højt. Vi siger at den står der, og lader øjnene om det.
+            await finish(guide.covered > 0 ? ut("guideSpokenFound", lang) : ut("guideEmpty", lang));
+          } catch (err) {
+            setGuideLookup({ question, guide: null, error: failureMessage(err, "tree", lang) });
+          }
+          return;
+        }
+
+        setGuideLookup(null);
+        /*
+         * Det appen allerede ved om patienten sendes med.
+         *
+         * Det er hele forskellen på et opslagsværk og en kollega: "hvor meget
+         * væske?" kan ikke besvares uden arealet, og arealet står allerede i
+         * beslutningsvejen. Vi sender de BESVAREDE trin — lægens egne ord, ikke
+         * vores maskinværdier — så agenten kan gøre et generelt svar konkret.
+         *
+         * Anbefalingen kommer stadig fra træet. Agenten får konteksten som
+         * OPLYSNINGER og skal selv mærke hvad der er ræsonnement.
+         */
+        const patientContext =
+          stateRef.current.path.length > 0
+            ? stateRef.current.path.map((p) => `- ${p.question} ${p.rawAnswer}`).join("\n")
+            : undefined;
+
+        const { answer } = await askLookup(question, patientContext);
+        if (answer) await finish(spokenText(answer, lang));
       } finally {
         lookupBusyRef.current = false;
         setLookupStatus(null);
       }
     },
-    [lang, speakAll, say, askCurrent, askLookup, trees],
+    [lang, orMode, speakAll, say, askCurrent, askLookup, trees],
   );
+
+  /**
+   * Skift til den anden slags svar på det samme spørgsmål.
+   *
+   * Fordi valget mellem behandlingsguide og litteratur er TRUFFET og ikke
+   * spurgt om, skal det kunne gøres om uden at spørgsmålet skal stilles igen.
+   */
+  const switchLookup = useCallback(() => {
+    const spoergsmaal = guideLookup?.question ?? lookupTurns[lookupTurns.length - 1]?.question;
+    if (!spoergsmaal) return;
+    void runLookup(spoergsmaal, null, guideLookup ? "chat" : "guide");
+  }, [guideLookup, lookupTurns, runLookup]);
 
   const resetSession = useCallback(
     (t: DecisionTree, nextLang: Lang) => {
@@ -319,6 +404,7 @@ export default function Home() {
        * kunne henvise til en anden patients spørgsmål.
        */
       resetLookup();
+      setGuideLookup(null);
       setLookupOpen(false);
       setLookupStatus(null);
       setAmbiguity(null);
@@ -398,7 +484,12 @@ export default function Home() {
        */
       const suggestion = match?.treeId ?? ranked[0]?.treeId ?? suggestTreeId(text, trees, lang);
 
-      if (looksLikeQuestion(text)) {
+      /*
+       * Et spørgsmål — eller et rent behandlingsopslag — er ikke en patient.
+       * Begge slags ville ellers ramme forløbets ordliste og starte en
+       * vurdering af en patient der ikke findes.
+       */
+      if (looksLikeQuestion(text) || startsWithTreatmentIntent(text)) {
         setIntakeMiss(null);
         void runLookup(text, suggestion);
         return;
@@ -1013,8 +1104,18 @@ export default function Home() {
     else void start();
   }, [listening, start, stop]);
 
-  /** Det opslag der vises. Kun det seneste — tidligere svar er allerede læst. */
+  /**
+   * Det opslag der vises. Kun det seneste — tidligere svar er allerede læst.
+   *
+   * Behandlingsopslaget vinder når det findes, fordi det altid er det nyeste:
+   * hver ny `runLookup` rydder den anden slags væk.
+   */
   const activeTurn = lookupTurns.length > 0 ? lookupTurns[lookupTurns.length - 1] : null;
+  const lookupPayload: LookupPayload | null = guideLookup
+    ? { kind: "guide", ...guideLookup }
+    : activeTurn
+      ? { kind: "chat", turn: activeTurn }
+      : null;
 
   const toggleSpeakAnswer = useCallback(
     (answer: ChatAnswer, turnId: string) => {
@@ -1172,15 +1273,16 @@ export default function Home() {
         void runLookup(held);
       }}
     />
-  ) : lookupOpen && activeTurn ? (
+  ) : lookupOpen && lookupPayload ? (
     <LookupCard
       lang={lang}
-      turn={activeTurn}
+      payload={lookupPayload}
       held={started && state.currentNodeId ? { step: state.path.length + 1, total: tree.nodes.length } : null}
       heldDone={started && !!state.dispositionId}
-      speaking={speakingTurn === activeTurn.id}
-      onSpeak={(answer) => toggleSpeakAnswer(answer, activeTurn.id)}
+      speaking={!!activeTurn && speakingTurn === activeTurn.id}
+      onSpeak={(answer) => activeTurn && toggleSpeakAnswer(answer, activeTurn.id)}
       onClose={closeLookup}
+      onSwitch={switchLookup}
       offer={
         offer
           ? {
@@ -1269,16 +1371,34 @@ export default function Home() {
           hindring, ikke en patient i fare. Derfor står beskeden i brandets nude,
           synlig men uden at låne alvor den ikke har.
         */}
-        {notice && (
-          <div
-            role="status"
-            className="mb-4 rounded-lg border border-[var(--nude-deep)] bg-[var(--nude-tint)] px-4 py-3 text-sm font-medium leading-relaxed text-[var(--ink)]"
-          >
-            {notice}
-          </div>
-        )}
+        {/*
+          Pladsen er RESERVERET, ikke betinget.
 
-        {flash && (
+          Beskeden dukker op i det øjeblik mikrofonen bliver nægtet — altså mens
+          lægen sidder og prøver at få lyden til at virke. Skubbede den hele
+          siden ned netop dér, ville han miste det han kiggede på i samme
+          sekund han havde mest brug for at holde fast i det. Prisen er én
+          tom linje under instrumentpanelet; den betaler vi gerne.
+        */}
+        <div className="mb-4 min-h-[3.25rem]">
+          {notice && (
+            <div
+              role="status"
+              className="rounded-lg border border-[var(--nude-deep)] bg-[var(--nude-tint)] px-4 py-3 text-sm font-medium leading-relaxed text-[var(--ink)]"
+            >
+              {notice}
+            </div>
+          )}
+        </div>
+
+        {/*
+          Det røde flag stod før HER, over gitteret, og skubbede dermed også
+          sidepanelet 207 px ned — beslutningsvej, faldgruber og transskript,
+          som intet har med flaget at gøre. Det hører hjemme dér hvor det
+          erstatter noget: i stedet for spørgsmålskortet, inde i sektionen.
+          Indgangsskærmen har intet gitter, så dér bliver det stående.
+        */}
+        {flash && !started && (
           <div className="mb-6">
             <RedFlagBanner message={flash} lang={lang} orMode={false} onAcknowledge={() => void acknowledgeFlash()} />
           </div>
@@ -1316,12 +1436,29 @@ export default function Home() {
           </>
         )}
 
-        {note && <NotePanel note={note} lang={lang} />}
+        {/*
+          Skelettet står præcis dér hvor notatet lander. Lå det et andet sted —
+          eller manglede det — ville siden hoppe når de målte 14-16 sekunders
+          skrivning er forbi, og det er netop det øjeblik lægen kigger.
+        */}
+        {note ? <NotePanel note={note} lang={lang} /> : noteBusy ? <NoteSkeleton lang={lang} /> : null}
 
         {started && (
         <div className="grid gap-6 md:grid-cols-[1fr_320px]">
           <section>
-            {node && !flash && (
+            {/*
+              Flaget ERSTATTER spørgsmålet frem for at lægge sig oven over det.
+              Begge er sektionens øverste kort, så skiftet koster ingen
+              bevægelse i sidepanelet ved siden af.
+            */}
+            {flash ? (
+              <RedFlagBanner
+                message={flash}
+                lang={lang}
+                orMode={false}
+                onAcknowledge={() => void acknowledgeFlash()}
+              />
+            ) : node ? (
               <QuestionCard
                 node={node}
                 questionText={questionText(node, lang, orMode)}
@@ -1337,7 +1474,7 @@ export default function Home() {
                 interim={interim}
                 onToggleMic={toggleMic}
               />
-            )}
+            ) : null}
 
             {disposition && (
               <div className={node && !flash ? "mt-6" : undefined}>
@@ -1377,6 +1514,31 @@ export default function Home() {
               stepLabel={`${state.path.length}/${tree.nodes.length}`}
               lang={lang}
             />
+            {/*
+              Faldgruberne for netop dette trin.
+
+              Det er den billigste store gevinst i hele appen. Perfusionsadvarslen
+              ved cirkulær forbrænding er værdiløs som opslag man skal huske at
+              slå op — og uundværlig i det øjeblik noden spørger om skaden er
+              cirkulær. Skinnen får hele konteksten (forløb, node, afgivne svar,
+              disposition) og henter kun det der gælder her.
+
+              Loftet er sat til to. Skinnen har selv tre som standard, men her
+              deler den plads med beslutningsvejen og transskriptet, og fem
+              advarsler på én skærm er ingen advarsel.
+            */}
+            <PitfallRail
+              lang={lang}
+              kontekst={{
+                treeId: tree.id,
+                nodeId: state.currentNodeId,
+                values: state.path.map((p) => p.value),
+                dispositionId: state.dispositionId,
+              }}
+              limit={2}
+              overskrift={ut("pitfallsAtStep", lang)}
+            />
+
             <TranscriptPanel lines={transcript} interim={interim} listening={listening} status={liveStatus} lang={lang} />
 
             {tree.authors && <p className="text-xs text-[var(--ink-faint)]">{tree.authors.join(", ")}</p>}
