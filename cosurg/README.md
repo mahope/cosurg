@@ -1,64 +1,69 @@
 # CoSurg
 
-Stemmestyret klinisk beslutningsstøtte til brandsår. Bygget på Corti API til
-Corti Hack for Health, august 2026.
+Voice-driven clinical decision support for burns. Built on the Corti API for
+Corti Hack for Health, August 2026.
 
-Lægen taler; appen fører gennem beslutningstræet, skriver journalnotatet og
-henter diagnosekoderne. Alt klinisk indhold ligger i JSON (`content/trees/`),
-aldrig i kode.
+The clinician speaks; the app leads them through the decision tree, writes the
+clinical note and fetches the diagnosis codes. All clinical content lives in JSON
+(`content/trees/`), never in code.
 
-## Corti-produktområder — hvad koden faktisk kalder
+The project-level README, including a Danish version, is one level up:
+[`../README.md`](../README.md).
 
-Denne tabel er skrevet efter verificerede kald mod EU-miljøet, ikke efter hensigt.
+## Corti product areas — what the code actually calls
 
-| Produktområde | Bruges? | Hvor | Hvordan |
+This table was written from verified calls against the EU environment, not from
+intent.
+
+| Product area | Used? | Where | How |
 |---|---|---|---|
-| **Ambient speech-to-text** | Ja | `lib/audio/useTranscribe.ts` | `/transcribe`-websocket via `@corti/sdk`, `automaticPunctuation`, interim-resultater. Lytter mens lægen svarer på træets spørgsmål. |
-| **Text generation** | Ja | `app/api/note/route.ts` | Journalnotatet skrives af en Corti-agent ud fra beslutningsvejen, transskriptet og diktatet. |
-| **Agentic framework** | Ja | `lib/corti/agent.ts` | Tre agenter med schema-connectors og struktureret output: svarfortolker (flagger tvivl i stedet for at gætte), skribent, OR-kommandogenkender. |
-| **Medical coding** | Ja | `lib/corti/coding.ts`, `app/api/coding/route.ts` | Corti Symphony, `POST /v2/tools/coding/`. Koderne kommer fra kode-API'et — sprogmodellen må kun begrunde dem. |
-| **Dictation speech-to-text** | Hook klar, UI-tilkobling udestår | `lib/audio/useDictation.ts` | Samme `/transcribe`-socket, men konfigureret som diktat frem for ambient: `spokenPunctuation` (lægen siger "punktum", "nyt afsnit") og journalnær talformatering. Verificeret mod API'et med rigtig lyd (se nedenfor); tages først i brug når `NotePanel` kalder hooken. |
+| **Ambient speech-to-text** | Yes | `lib/audio/useTranscribe.ts` | `/transcribe` websocket via `@corti/sdk`, `automaticPunctuation`, interim results. Listens while the clinician answers the tree's questions. |
+| **Dictation speech-to-text** | Yes | `lib/audio/useDictation.ts` | The same `/transcribe` socket, configured for dictation rather than ambient: `spokenPunctuation` (the clinician says "full stop", "new paragraph") and note-oriented number formatting. Wired up in `app/page.tsx`; the dictation is appended to the note. |
+| **Text generation** | Yes | `app/api/note/route.ts` | The clinical note is written by a Corti agent from the decision path, the transcript and the dictation. |
+| **Agentic framework** | Yes | `lib/corti/agent.ts` | Agents with schema connectors and structured output: answer interpreter (flags doubt instead of guessing), note writer, OR command recogniser, intent router and guide topic router. |
+| **Medical coding** | Yes | `lib/corti/coding.ts`, `app/api/coding/route.ts` | Corti Symphony, `POST /v2/tools/coding/`. The codes come from the coding API — the language model may only justify them. |
 
-### Forbehold vi ikke skjuler
+### Caveats we are not hiding
 
-- **SKS (dansk ICD-10) er ikke tilgængeligt for os.** Corti dokumenterer SKS
-  (`/coding/icd-10-dk`), men det er tidlig alpha for udvalgte partnere. Alle
-  danske systemnavne blev afvist med 400 ("`sks`", "`sks-diagnosis`",
-  "`icd10dk`", "`icd10dk-inpatient`", "`icd10dk-outpatient`", "`icd10-dk`"). Vi
-  bruger derfor `icd10int-outpatient` — international ICD-10, som SKS'
-  diagnosedel er en dansk udvidelse af. Får vi adgang, sættes
-  `CORTI_CODING_SYSTEM=…` og intet andet skal ændres.
-- **Stemmekommandoer i diktat er konfigureret, men ikke aktive.** Corti svarer
-  `CONFIG_ACCEPTED`, men markerer hver kommando `"registered": false` for vores
-  tenant — også på engelsk og med enkeltord. Vi påstår derfor ikke at
-  voice commands virker.
-- **TTS er ikke Corti.** Oplæsning sker via Syv.ai (Plapre, dansk, EU-hostet)
-  med fallback til browserens egen stemme. Hackathon-reglerne tillader
-  eksterne TTS-modeller eksplicit.
+- **SKS (Danish ICD-10) is not available to us.** Corti documents SKS
+  (`/coding/icd-10-dk`), but it is early alpha for selected partners. Every
+  Danish system name was rejected with a 400 ("`sks`", "`sks-diagnosis`",
+  "`icd10dk`", "`icd10dk-inpatient`", "`icd10dk-outpatient`", "`icd10-dk`"). We
+  therefore use `icd10int-outpatient` — international ICD-10, of which the SKS
+  diagnosis set is a Danish extension. The day we are granted access,
+  `CORTI_CODING_SYSTEM=…` is set and nothing else has to change.
+- **Voice commands in dictation are configured but not active.** Corti replies
+  `CONFIG_ACCEPTED` while marking every command `"registered": false` for our
+  tenant — in English too, and with single words. We therefore do not claim that
+  voice commands work.
+- **TTS is not Corti.** Speech output goes through Syv.ai (Plapre, Danish,
+  EU-hosted) with a fallback to the browser's own voice. The hackathon rules
+  explicitly permit external TTS models.
 
-## Medical coding — hvorfor det er sat op som det er
+## Medical coding — why it is set up this way
 
-Den tidligere udgave lod skribent-agenten selv finde på ICD-10-koder. En
-sprogmodel kan producere en kode der ser rigtig ud og ikke findes. Nu:
+An earlier version let the note-writing agent invent ICD-10 codes itself. A
+language model can produce a code that looks right and does not exist. Now:
 
-1. Beslutningsvej, transskript og diktat sendes som **tre adskilte kontekster**
-   til `/v2/tools/coding/`, så evidensen kan spores til den rigtige kilde.
-2. Maskinværdier (`partial-deep`) oversættes først til de kliniske etiketter fra
-   træet (`Partiel dyb (2. grad)`) — kodemodellen læser klinisk tekst, ikke
-   vores interne enum-værdier.
-3. Corti returnerer `codes` (skal kodes) og `candidates` (relevante, valgfrie).
-   De holdes adskilt hele vejen ud i UI'et.
-4. Skribent-agenten får koderne som en fast liste og må kun skrive **hvilket
-   trin i beslutningsvejen der understøtter hver kode**. Den kan ikke tilføje,
-   ændre eller omformatere en kode.
+1. The decision path, the transcript and the dictation are sent as **three
+   separate contexts** to `/v2/tools/coding/`, so the evidence can be traced to
+   the right source.
+2. Machine values (`partial-deep`) are first translated into the clinical labels
+   from the tree (`Partiel dyb (2. grad)`) — the coding model reads clinical
+   text, not our internal enum values.
+3. Corti returns `codes` (to be coded) and `candidates` (relevant, optional).
+   They are kept apart all the way out into the UI.
+4. The note-writing agent receives the codes as a fixed list and may only write
+   **which step in the decision path supports each code**. It cannot add, change
+   or reformat a code.
 
-Fejler kode-kaldet, skrives notatet alligevel: et notat uden koder er brugbart,
-et notat med opfundne koder er ikke.
+If the coding call fails, the note is written anyway: a note without codes is
+usable, a note with invented codes is not.
 
-### Stabilitet — målt, ikke antaget
+### Stability — measured, not assumed
 
-Kodemodellen er ikke deterministisk. Fem identiske kald til `/api/note` med en
-fuldt udfyldt beslutningsvej:
+The coding model is not deterministic. Five identical calls to `/api/note` with a
+fully completed decision path:
 
 ```
 status=ok attempts=1 codes=['T20.2', 'X09']
@@ -68,72 +73,79 @@ status=ok attempts=1 codes=['T20.2', 'J68.2']
 status=ok attempts=1 codes=['T20.2', 'T59.8']
 ```
 
-Hoveddiagnosen `T20.2` (2. grads forbrænding af hoved og hals) rammes 5 ud af 5
-gange. De sekundære koder varierer, men er alle klinisk forsvarlige for samme
-kontakt. Tomme svar optrådte kun med tynd kontekst — derfor:
+The principal diagnosis `T20.2` (second-degree burn of head and neck) is hit 5
+times out of 5. The secondary codes vary, but all are clinically defensible for
+the same encounter. Empty responses occurred only with thin context, hence:
 
-- **Er beslutningsvejen ikke gennemført**, kaldes API'et slet ikke.
-  `status: "insufficient-context"` med en færdig sætning i `coding.message`.
-- **Svarer Corti tomt**, kaldes API'et automatisk én gang til (`attempts: 2`).
-  Er det stadig tomt: `status: "empty"`.
-- **Fejler kaldet eller timer ud**: `status: "error"`, `coding.detail` har den
-  tekniske årsag.
+- **If the decision path is not complete**, the API is not called at all.
+  `status: "insufficient-context"`, with a finished sentence in `coding.message`.
+- **If Corti answers empty**, the API is called once more automatically
+  (`attempts: 2`). If it is still empty: `status: "empty"`.
+- **If the call fails or times out**: `status: "error"`, with the technical cause
+  in `coding.detail`.
 
-`coding.message` er en færdig klinisk sætning på brugerens sprog. UI'et skal vise
-den i stedet for et tomt kodefelt — et tomt felt uden forklaring kan ikke skelnes
-fra "systemet svarede ikke".
+`coding.message` is a finished clinical sentence in the user's language. The UI
+shows it instead of an empty code field — an empty field with no explanation
+cannot be told apart from "the system did not answer".
 
-Alle udgående Corti-kald har timeout (`lib/corti/auth.ts`: auth 10 s, coding 25 s,
-agent 60 s), så en udfaldsramt demo fejler synligt i stedet for at hænge.
+Every outbound Corti call has a timeout (`lib/corti/auth.ts`: auth 10 s, coding
+25 s, agent 60 s), so a demo hit by an outage fails visibly instead of hanging.
 
-### Evidens-tekst repareres lokalt
+### Evidence text is repaired locally
 
-Corti ekkoer `evidence.text` tilbage som UTF-8-bytes læst som latin-1, så danske
-tegn kommer retur som `flammeforbrÃ¦nding`. `start`/`end` er derimod korrekte
-tegn-offsets. Vi klipper derfor uddraget ud af vores egen inputtekst i stedet for
-at bruge Cortis echo (`lib/corti/coding.ts`).
+Corti echoes `evidence.text` back as UTF-8 bytes read as latin-1, so Danish
+characters return as `flammeforbrÃ¦nding`. The `start`/`end` values, by contrast,
+are correct character offsets. We therefore cut the excerpt out of our own input
+text rather than using Corti's echo (`lib/corti/coding.ts`).
 
-## Diktat vs. ambient — den målte forskel
+## Dictation vs. ambient — the measured difference
 
-Begge tilstande bruger `/transcribe`, men konfigurationen gør dem til to
-forskellige produkter. Samme danske lydklip, to konfigurationer, faktiske svar
-fra API'et:
+Both modes use `/transcribe`, but the configuration makes them two different
+products. Same Danish audio clip, two configurations, actual responses from the
+API:
 
-| Konfiguration | Resultat |
+| Configuration | Result |
 |---|---|
-| `automaticPunctuation` (ambient, som i dag) | `… patienten er 42 har **komma** … **punktum** **nyt afsnit**.` — tegnsætningsordene ender som tekst i journalen. |
-| `spokenPunctuation` (diktat) | `…, patienten er 42 har.` + linjeskift — ordene bliver til tegn og fjernes fra teksten. |
+| `automaticPunctuation` (ambient) | `… patienten er 42 har **komma** … **punktum** **nyt afsnit**.` — the punctuation words end up as text in the note. |
+| `spokenPunctuation` (dictation) | `…, patienten er 42 har.` plus a line break — the words become punctuation marks and are removed from the text. |
 
-(Ordgenkendelsen er svag i tabellen fordi testlyden er syntetisk tale; det er
-tegnsætningsmekanismen der demonstreres.)
+(Word recognition is poor in the table because the test audio is synthetic
+speech; what is being demonstrated is the punctuation mechanism.)
 
-## API-ruter
+## API routes
 
-| Rute | Metode | Formål |
+| Route | Method | Purpose |
 |---|---|---|
-| `/api/tree` | GET | Beslutningstræer |
-| `/api/corti/token` | GET | Kortlivet token med scope `openid transcribe` til browseren |
-| `/api/interpret` | POST | Talt svar → tilladt træværdi (agent) |
-| `/api/note` | POST | Journalnotat + koder |
-| `/api/coding` | GET/POST | Fritstående kodning af klinisk tekst |
-| `/api/tts` | POST | Dansk oplæsning (Syv.ai) |
+| `/api/tree` | GET | Decision trees |
+| `/api/corti/token` | GET | Short-lived token scoped `openid transcribe` for the browser |
+| `/api/interpret` | POST | Spoken answer → permitted tree value (agent) |
+| `/api/route` | POST | Intent routing for an utterance the deterministic layer in the browser did not dare decide: answer, question, pathway or unclear (agent) |
+| `/api/note` | POST | Clinical note + codes |
+| `/api/coding` | GET/POST | Standalone coding of clinical text |
+| `/api/chat` | GET/POST | Clinical chat through Corti's agentic framework with our MCP server attached as a connector. GET reports which Corti experts are actually attached, so the UI can be honest about it. |
+| `/api/guide` | POST | Treatment guide assembled from the MCP knowledge base. A topic agent first normalises the clinician's question into Danish clinical search terms; if that call fails, the route falls back to the clinician's own words — worse, but never wrong. |
+| `/api/pitfalls` | GET/POST | Pitfalls, each carrying a verbatim excerpt from the MCP knowledge base as backing. POST matches pitfalls to the current context (tree, node, disposition or topic); GET returns the whole catalogue. |
+| `/api/tts` | POST | Danish speech output (Syv.ai) |
 
-Alle betalte ruter er bag `guard()` i `lib/guard.ts`: origin-lås plus per-IP-kvote,
-og al fritekst længdebegrænses før den sendes til en betalt API.
+Every paid route sits behind `guard()` in `lib/guard.ts`: origin lock plus a
+per-IP quota, and all free text is length-capped before it is sent to a paid API.
+`/api/guide`, `/api/pitfalls` and `/api/chat` answer 503 when `MCP_URL` and
+`MCP_AUTH_TOKEN` are absent, rather than falling back to general knowledge.
 
-## Kom i gang
+## Getting started
 
 ```bash
-cp .env.example .env.local   # udfyld CORTI_CLIENT_ID / CORTI_CLIENT_SECRET
+cp .env.example .env.local   # fill in CORTI_CLIENT_ID / CORTI_CLIENT_SECRET
 npm install
 npm run dev
 ```
 
-| Miljøvariabel | Standard | Note |
+| Environment variable | Default | Note |
 |---|---|---|
-| `CORTI_ENVIRONMENT` | `eu` | `eu` eller `us` |
-| `CORTI_TENANT` | `base` | Indgår i både auth-URL og `Tenant-Name`-header |
-| `CORTI_CLIENT_ID` / `CORTI_CLIENT_SECRET` | — | Fra Corti Console |
-| `CORTI_CODING_SYSTEM` | `icd10int-outpatient` | Sæt til et SKS-systemnavn den dag adgangen findes |
-| `SYV_API_KEY` | — | Uden nøgle falder oplæsning tilbage til browserstemmen |
-| `ALLOWED_ORIGINS` | — | Kommasepareret, til preview-udrulninger |
+| `CORTI_ENVIRONMENT` | `eu` | `eu` or `us` |
+| `CORTI_TENANT` | `base` | Used in both the auth URL and the `Tenant-Name` header |
+| `CORTI_CLIENT_ID` / `CORTI_CLIENT_SECRET` | — | From the Corti Console |
+| `CORTI_CODING_SYSTEM` | `icd10int-outpatient` | Set to an SKS system name once access is granted |
+| `SYV_API_KEY` | — | Without a key, spoken output falls back to the browser's built-in voice |
+| `MCP_URL` / `MCP_AUTH_TOKEN` | — | Without them the guide, pitfalls and clinical chat are disabled |
+| `ALLOWED_ORIGINS` | — | Comma-separated, for preview deployments |

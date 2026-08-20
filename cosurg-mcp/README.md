@@ -1,94 +1,105 @@
 # cosurg-mcp
 
-MCP-server med CoSurgs kliniske viden om brandsår. Den kobles på Cortis agentic
-framework som **MCP-connector**, så Cortis agent kan slå op i vores egne kilder i
-stedet for at svare ud fra almen viden.
+An MCP server holding CoSurg's clinical knowledge about burns. It attaches to
+Corti's agentic framework as an **MCP connector**, so a Corti agent can look
+things up in our own sources instead of answering from general knowledge.
 
-Serveren opfinder aldrig indhold. Hvert svar er enten et ordret uddrag med
-kildehenvisning, et stykke af et beslutningstræ klinikerne har skrevet, en
-PubMed-post med PMID — eller en klar melding om at vi ikke har dækning. Det
-sidste er et gyldigt svar, og værktøjerne siger det med rene ord
-(`INGEN DAEKNING I VIDENSBASEN`) frem for at gætte. Det er hele forskellen på
-CoSurg og en chatbot.
+The server never invents content. Every answer is either a verbatim excerpt with
+its source reference, a piece of a decision tree written by clinicians, a PubMed
+record with a PMID — or a clear statement that we have no coverage. That last one
+is a valid answer, and the tools say so in plain words
+(`INGEN DAEKNING I VIDENSBASEN` — "no coverage in the knowledge base") rather than
+guessing. That is the whole difference between CoSurg and a chatbot.
 
-## Hvad den indeholder
+The tool names, arguments and messages are in Danish, because the sources are
+Danish and the agent searches them in Danish. The reasoning below is in English;
+so is the rest of this repository.
 
-| Kilde | Kildetype | Omfang | Kildeangivelse |
+## What it contains
+
+| Source | Source type | Scope | Attribution |
 |---|---|---|---|
-| `data/kilder/brandsaar-dk.md` | retningslinje | Hele brandsaar.dk — Dansk Brandsårsforening / Rigshospitalets brandsårsafdeling. Dybdevurdering, TBSA/arealberegning, Parkland-væskebehandling, inhalationsskader, ætsninger, forfrysninger, cirkulære forbrændinger, overflytningskriterier, ambulant behandling, smertebehandling. | URL pr. afsnit |
-| `data/kilder/magnus-materiale.md` | retningslinje | Teamets eget materiale: "Burns plast surgeon"-dokumentet og forbindingsguiden fra Rigshospitalets Afsnit 6052. | Dokumentnavn + kapitelsti |
-| `data/kilder/plastsurgeon-brandsaar.md` | retningslinje | Kapitlet Burn Surgery fra teamets egen håndbog beta.plastsurgeon.com: anatomi, patofysiologi, gradsvurdering, arealberegning, henvisning til brandsårsafsnit, Parkland og 4:2:1-princippet, antibiotika, opfølgning samt de fem procedurer (rensning, forbinding, forbindingsskift, kirurgisk debridement, hudtransplantation). | URL pr. kapitelside + forfatterliste |
-| `data/kilder/jpbrs-cases.md` | **case** | Peer-reviewede brandsårscases fra teamets eget tidsskrift beta.jpbrs.com — hvert forløb med case-id, titel, forfattere, institution, trin-for-trin-operationsbeskrivelse og efterforløb. | URL + case-id + forfatterliste |
-| `cosurg/content/trees/*.json` | — | Beslutningstræerne `burns-dk` (8 noder, 3 dispositioner) og `dressing-hand-arm` (12 trin). | Træ-id, version, filnavn og forfatterliste |
+| `data/kilder/brandsaar-dk.md` | guideline | All of brandsaar.dk — the Danish Burn Association / the burn unit at Rigshospitalet. Depth assessment, TBSA/area estimation, Parkland fluid resuscitation, inhalation injury, chemical burns, frostbite, circumferential burns, transfer criteria, outpatient care, analgesia. | URL per section |
+| `data/kilder/magnus-materiale.md` | guideline | The team's own material: the "Burns plast surgeon" document and the dressing guide from Section 6052 at Rigshospitalet. | Document name + chapter path |
+| `data/kilder/plastsurgeon-brandsaar.md` | guideline | The Burn Surgery chapter from the team's own handbook, beta.plastsurgeon.com: anatomy, pathophysiology, depth classification, area estimation, referral to a burn unit, Parkland and the 4:2:1 principle, antibiotics, follow-up, and the five procedures (cleansing, dressing, dressing change, surgical debridement, skin grafting). | URL per chapter page + author list |
+| `data/kilder/jpbrs-cases.md` | **case** | Peer-reviewed burn cases from the team's own journal, beta.jpbrs.com — each with case id, title, authors, institution, step-by-step operative description and follow-up. | URL + case id + author list |
+| `cosurg/content/trees/*.json` | — | The decision trees `burns-dk` (8 nodes, 3 dispositions) and `dressing-hand-arm` (12 steps). | Tree id, version, filename and author list |
 
-Ved opstart indlæses **54 kildeafsnit → 323 søgbare uddrag** samt begge træer:
-brandsaar.dk 36 afsnit / 128 uddrag, teamets eget materiale 2 / 80,
-PlastSurgeon-håndbogen 14 / 96 og JPBRS-caserne 2 / 19. Alt ligger i hukommelsen;
-der er ingen database og ingen skrivbar tilstand.
+At startup the server loads **54 source sections into 323 searchable excerpts**,
+plus both trees: brandsaar.dk 36 sections / 128 excerpts, the team's own material
+2 / 80, the PlastSurgeon handbook 14 / 96 and the JPBRS cases 2 / 19. Everything
+sits in memory; there is no database and no writable state.
 
-### Retningslinje eller case — forskellen står i svaret
+### Guideline or case — the difference is stated in the answer
 
-De to første kilder siger *hvad der anbefales*. JPBRS-caserne siger *hvad der blev
-gjort for én patient*. Det er ikke det samme, og en læge skal kunne se hvilken slags
-kilde et udsagn kommer fra. Derfor bærer hvert kildeafsnit en **kildetype**:
+The first sources say *what is recommended*. The JPBRS cases say *what was done
+for one patient*. Those are not the same thing, and a clinician has to be able to
+see which kind of source a statement came from. Every source section therefore
+carries a **source type** (`kildetype`):
 
-- Hver søgetræffer skriver den ud (`Kildetype: KLINISK CASE …` / `RETNINGSLINJE/HAANDBOG …`),
-  og et svar med mindst én case får en eksplicit advarsel om ikke at læse den som en anbefaling.
-- `soeg_klinisk_viden` og `list_kilder` tager `kildetype: "retningslinje" | "case" | "alle"`,
-  så man kan spørge "hvad siger retningslinjen" og "har nogen gjort det her før" hver for sig.
-- Cases bærer deres case-id, titel og forfatterliste hele vejen ud i kildehenvisningen.
-- Serverens `instructions` kræver at agenten siger *case* højt når den gengiver en case.
+- Every search hit prints it (`Kildetype: KLINISK CASE …` / `RETNINGSLINJE/HAANDBOG …`),
+  and an answer containing at least one case gets an explicit warning not to read
+  it as a recommendation.
+- `soeg_klinisk_viden` and `list_kilder` take `kildetype: "retningslinje" | "case" | "alle"`,
+  so "what does the guideline say" and "has anyone done this before" can be asked
+  separately.
+- Cases carry their case id, title and author list all the way out into the
+  source reference.
+- The server's `instructions` require the agent to say *case* out loud when it
+  reproduces one.
 
-### Hvad der bevidst ikke er med
+### What is deliberately left out
 
-- **Kursusmodulerne** `beta.plastsurgeon.com/courses/burns-*` (kemiske og elektriske
-  forbrændinger, inhalationsskade, pædiatriske brandsår, væskebehandling, kirurgisk
-  behandling m.fl.) kræver betalt medlemskab. Uden adgang er de ikke hentet — der
-  gættes ikke på indhold. Har teamet et login, er de næste kilde ind.
-- **Ikke-brandsårscases på JPBRS.** Alle 73 cases på sitet blev hentet og
-  gennemsøgt; kun to handler om brandsår, og kun de to er med. Tre andre matchede
-  udelukkende på afdelingsnavnet "Department of Burns and Plastic Surgery" og er
-  udeladt. Begrundelsen står i toppen af `data/kilder/jpbrs-cases.md`.
-- **Quizzer og MCQ-sider** fra håndbogen. Et spørgsmål med svarmuligheder er ikke en
-  klinisk anvisning, og et uddrag derfra ville kunne citeres som om det var.
-- **Kapitlet Skin Transplantation** ligger uden for brandsårskapitlet. Selve
-  hudtransplantationen ved brandsår er dækket af
-  `burns-treatment/procedures/procedure-skin-grafting`, som er med.
+- **The course modules** `beta.plastsurgeon.com/courses/burns-*` (chemical and
+  electrical burns, inhalation injury, paediatric burns, fluid resuscitation,
+  surgical management and others) require paid membership. Without access they
+  were not fetched — we do not guess at content. If the team gets a login, they
+  are the next source in.
+- **Non-burn cases on JPBRS.** All 73 cases on the site were fetched and
+  searched; only two concern burns, and only those two are included. Three others
+  matched solely on the department name "Department of Burns and Plastic Surgery"
+  and are excluded. The reasoning is at the top of `data/kilder/jpbrs-cases.md`.
+- **Quizzes and MCQ pages** from the handbook. A question with answer options is
+  not clinical guidance, and an excerpt from one could be quoted as though it
+  were.
+- **The Skin Transplantation chapter**, which sits outside the burns chapter.
+  Skin grafting for burns itself is covered by
+  `burns-treatment/procedures/procedure-skin-grafting`, which is included.
 
-## Værktøjer
+## Tools
 
-| Værktøj | Formål |
+| Tool | Purpose |
 |---|---|
-| `soeg_klinisk_viden` | Fritekstsøgning i de kliniske kilder. Returnerer ordrette uddrag med URL/dokumentnavn, kildetype, forfattere, overskriftssti, uddrag-id og relevansscore. Kan begrænses til én samling (`brandsaar`, `magnus`, `plastsurgeon`, `jpbrs`) og til én kildetype (`retningslinje`, `case`). |
-| `hent_kildeafsnit` | Hele siden bag et søgetræf — via afsnit-id eller URL. Til når tre linjer ikke er kontekst nok. Viser kildetype, case-id og forfattere. |
-| `list_kilder` | Alle kildeafsnit med id, kildetype (`[CASE]` / `[retningslinje]`), titel og URL. Til at afgøre om et emne overhovedet er dækket. Kan filtreres på samling og kildetype. |
-| `list_beslutningstraeer` | Træerne med id, navn, version, forfattere, rodnode og nodeantal. |
-| `hent_beslutningstrae` | Et helt træ som læsbar oversigt eller som ordret JSON. |
-| `hent_trae_node` | Én node (spørgsmål, tilladte svarværdier med synonymer, røde flag, kanter ud, hvilke noder man kommer fra) eller én disposition. |
-| `soeg_pubmed` | Litteratursøgning via NCBI E-utilities når vores egen viden ikke rækker. Titel, år, tidsskrift, forfattere, publikationstype, PMID, DOI og link — aldrig et resultat uden reference. Rate-limits og timeouts genforsøges med voksende ventetid, så et 429 ikke bliver til "der findes ingen litteratur". |
-| `hent_pubmed_abstrakt` | Fulde abstracts (MEDLINE, ordret fra NCBI) for op til 10 PMID'er. En titel er ikke et resultat. |
-| `videnbase_status` | Hvad serveren faktisk har indlæst. Til at skelne "ingen dækning" fra "fejlkonfiguration". |
+| `soeg_klinisk_viden` | Full-text search across the clinical sources. Returns verbatim excerpts with URL/document name, source type, authors, heading path, excerpt id and relevance score. Can be limited to one collection (`brandsaar`, `magnus`, `plastsurgeon`, `jpbrs`) and to one source type (`retningslinje`, `case`). |
+| `hent_kildeafsnit` | The whole page behind a search hit — by section id or URL. For when three lines are not enough context. Shows source type, case id and authors. |
+| `list_kilder` | Every source section with id, source type (`[CASE]` / `[retningslinje]`), title and URL. For deciding whether a topic is covered at all. Filterable by collection and source type. |
+| `list_beslutningstraeer` | The trees with id, name, version, authors, root node and node count. |
+| `hent_beslutningstrae` | A whole tree, as a readable overview or as verbatim JSON. |
+| `hent_trae_node` | One node (question, permitted answer values with synonyms, red flags, outgoing edges, which nodes lead into it) or one disposition. |
+| `soeg_pubmed` | Literature search through the NCBI E-utilities when our own knowledge does not reach. Title, year, journal, authors, publication type, PMID, DOI and link — never a result without a reference. Rate limits and timeouts are retried with growing backoff, so a 429 does not turn into "there is no literature". |
+| `hent_pubmed_abstrakt` | Full abstracts (MEDLINE, verbatim from NCBI) for up to 10 PMIDs. A title is not a result. |
+| `videnbase_status` | What the server has actually loaded. For telling "no coverage" apart from "misconfiguration". |
 
-Serveren sender desuden `instructions` med i `initialize`, så agenten får reglen
-med fra start: slå op før du svarer, citér kilden, anbefalinger kommer fra træet,
-sig højt når et uddrag er en klinisk case og ikke en retningslinje, og meld ærligt
-når der ikke er dækning.
+The server also sends `instructions` with `initialize`, so the agent gets the rule
+from the start: look it up before you answer, quote the source, recommendations
+come from the tree, say out loud when an excerpt is a clinical case rather than a
+guideline, and report honestly when there is no coverage.
 
-## Kobling på en Corti-agent
+## Attaching it to a Corti agent
 
-Corti v2 (`/v2/agentic/...`) har MCP som **connector-type**. Skemaet er lille:
-`type`, `name`, `url`, `auth`. Der er **intet `transportType`-felt** — det blev
-fjernet i v2 fordi MCP-connectorer altid bruger streamable HTTP. Bygger du efter
-v1-eksemplerne i det arkiverede docs-afsnit (`transportType`,
-`authorizationType`), afvises payloaden.
+Corti v2 (`/v2/agentic/...`) has MCP as a **connector type**. The schema is small:
+`type`, `name`, `url`, `auth`. There is **no `transportType` field** — it was
+removed in v2 because MCP connectors always use streamable HTTP. If you build from
+the v1 examples in the archived docs section (`transportType`, `authorizationType`),
+the payload is rejected.
 
-### Tilknyt connectoren til en eksisterende agent
+### Attach the connector to an existing agent
 
 ```bash
-AGENT_ID="<dit-agent-id>"
+AGENT_ID="<your-agent-id>"
 ENVIRONMENT="eu"                 # eu | us
-TENANT="<dit-tenant-navn>"
-TOKEN="<dit-corti-access-token>"
+TENANT="<your-tenant-name>"
+TOKEN="<your-corti-access-token>"
 
 curl -X POST "https://api.${ENVIRONMENT}.corti.app/v2/agentic/agents/${AGENT_ID}/connectors" \
   -H "Authorization: Bearer ${TOKEN}" \
@@ -101,7 +112,7 @@ curl -X POST "https://api.${ENVIRONMENT}.corti.app/v2/agentic/agents/${AGENT_ID}
   }'
 ```
 
-### Eller inline når agenten oprettes
+### Or inline when the agent is created
 
 ```bash
 curl -X POST "https://api.${ENVIRONMENT}.corti.app/v2/agentic/agents" \
@@ -125,39 +136,44 @@ curl -X POST "https://api.${ENVIRONMENT}.corti.app/v2/agentic/agents" \
   }'
 ```
 
-**`connectors`-arrayet erstattes helt ved PATCH.** Send alle connectorer med, ikke
-kun den nye. Connector-`PATCH`-endpointet svarer i øvrigt 501 (private preview) —
-skal en connector ændres, slettes den og oprettes igen. Og `type` er immutabelt.
+(The agent's own prompt is in Danish because it answers Danish clinicians from
+Danish sources.)
 
-Når agenten kaldes, så sæt `timeoutInSeconds: 180`. Standarden er 60 sekunder, og
-den skærer orkestratorer af der fanner ud til connectorer.
+**The `connectors` array is replaced wholesale on PATCH.** Send every connector,
+not just the new one. The connector `PATCH` endpoint itself answers 501 (private
+preview) — to change a connector, delete it and create it again. And `type` is
+immutable.
 
-### Hvorfor tokenet står i URL'en
+When calling the agent, set `timeoutInSeconds: 180`. The default is 60 seconds,
+and it cuts off orchestrators that fan out to connectors.
 
-Corti dokumenterer `auth: {"type": "bearer"}` på MCP-connectorer, men mekanismen
-der leverer selve tokenet — `authorizationData` — er **ikke defineret nogen steder
-i deres docs**. Sender vi `auth: {"type":"bearer"}` uden at kunne levere
-credentials, ender opgaven i `TASK_STATE_AUTH_REQUIRED`, som REST-bindingen
-maskerer som `TASK_STATE_FAILED`.
+### Why the token is in the URL
 
-Serveren accepterer derfor tokenet to steder, og begge sammenlignes i konstant tid:
+Corti documents `auth: {"type": "bearer"}` on MCP connectors, but the mechanism
+that delivers the token itself — `authorizationData` — is **not defined anywhere
+in their docs**. If we send `auth: {"type":"bearer"}` without being able to supply
+credentials, the task ends in `TASK_STATE_AUTH_REQUIRED`, which the REST binding
+masks as `TASK_STATE_FAILED`.
 
-1. `Authorization: Bearer <token>` — standarden, som enhver MCP-klient sender.
-2. Som sidste segment i stien: `POST /mcp/<token>` — virker når connectoren kun
-   kan konfigureres med en URL.
+The server therefore accepts the token in two places, and both are compared in
+constant time:
 
-Får I `authorizationData` dokumenteret, skift til den rene `/mcp`-URL med
-`"auth": {"type": "bearer"}` og lad tokenet blive leveret den vej. Serveren
-kræver ingen ændring — den accepterer allerede headeren.
+1. `Authorization: Bearer <token>` — the standard, which any MCP client sends.
+2. As the last path segment: `POST /mcp/<token>` — which works when the connector
+   can only be configured with a URL.
 
-Serveren starter ikke uden `MCP_AUTH_TOKEN` (mindst 24 tegn). En åben klinisk
-endpoint er ikke et acceptabelt udfald.
+If `authorizationData` gets documented, switch to the plain `/mcp` URL with
+`"auth": {"type": "bearer"}` and let the token be delivered that way. The server
+needs no change — it already accepts the header.
 
-## Kald fra CoSurg-appen
+The server refuses to start without `MCP_AUTH_TOKEN` (at least 24 characters). An
+open clinical endpoint is not an acceptable outcome.
 
-Appen kan kalde serveren direkte uden en Corti-agent i midten. Streamable HTTP er
-almindelig JSON-over-HTTP; serveren svarer med `Content-Type: application/json`
-(ikke SSE), så et `fetch` er nok:
+## Calling it from the CoSurg app
+
+The app can call the server directly, with no Corti agent in between. Streamable
+HTTP is ordinary JSON over HTTP; the server answers with
+`Content-Type: application/json` (not SSE), so a `fetch` is enough:
 
 ```ts
 // Kald ét MCP-værktøj. Serveren er stateless — ingen session at holde styr på.
@@ -187,10 +203,10 @@ const uddrag = await kaldMcp("soeg_klinisk_viden", {
 });
 ```
 
-Nogle klienter skal først kalde `initialize`; det gør denne server ikke krav om i
-stateless tilstand — `tools/list` og `tools/call` virker direkte.
+Some clients have to call `initialize` first; this server does not require it in
+stateless mode — `tools/list` and `tools/call` work straight away.
 
-## Kør lokalt
+## Running it locally
 
 ```bash
 npm install
@@ -198,22 +214,23 @@ npm run build
 MCP_AUTH_TOKEN=$(openssl rand -hex 32) npm start
 ```
 
-Serveren finder selv kilderne i `data/kilder` og træerne i
-`../cosurg/content/trees` når den kører fra repoet — samme stier som i
-containeren. Se `data/README.md` for hvad der må ligge i vidensbasen.
+The server finds the sources in `data/kilder` and the trees in
+`../cosurg/content/trees` by itself when run from the repository — the same paths
+as in the container. See `data/README.md` for what is allowed in the knowledge
+base.
 
-Røgtesten starter serveren, kobler en rigtig MCP-klient på og kalder hvert
-værktøj — inklusive PubMed mod det virkelige API:
+The smoke test starts the server, attaches a real MCP client and calls every tool
+— including PubMed against the live API:
 
 ```bash
-npm run smoke            # alt
-npm run smoke -- --offline   # uden PubMed
+npm run smoke                # everything
+npm run smoke -- --offline   # without PubMed
 ```
 
-## Udrulning
+## Deployment
 
-Byggekonteksten er **repo-roden**, ikke `cosurg-mcp/` — kilderne og træerne
-ligger i naboemapper og bages ind i imaget:
+The build context is the **repository root**, not `cosurg-mcp/` — the sources and
+the trees live in sibling directories and are baked into the image:
 
 ```bash
 docker build -f cosurg-mcp/Dockerfile -t cosurg-mcp:1.0.0 .
@@ -224,17 +241,18 @@ docker run -d --name cosurg-mcp -p 8787:8787 \
   cosurg-mcp:1.0.0
 ```
 
-Eller med compose (samme kontekst, Traefik-labels til Openship-stacken):
+Or with compose (same context, Traefik labels for the Openship stack):
 
 ```bash
 MCP_AUTH_TOKEN=$(openssl rand -hex 32) \
   docker compose -f cosurg-mcp/docker-compose.yml up -d --build
 ```
 
-Sluttrinnet er `distroless/nodejs22` — ingen shell, ingen pakkemanager, non-root,
-filsystemet kan være read-only. Der er ingen skrivbar tilstand at miste.
+The final stage is `distroless/nodejs22` — no shell, no package manager, non-root,
+and the filesystem can be read-only. There is no writable state to lose.
 
-`GET /health` er uautentificeret, så Traefik og Openship kan pinge uden token:
+`GET /health` is unauthenticated, so Traefik and Openship can ping it without a
+token:
 
 ```json
 {"status":"ok","navn":"cosurg-mcp","version":"1.0.0","mcpSti":"/mcp",
@@ -242,49 +260,52 @@ filsystemet kan være read-only. Der er ingen skrivbar tilstand at miste.
  "traeer":["burns-dk","dressing-hand-arm"]}
 ```
 
-## Miljøvariabler
+## Environment variables
 
-| Variabel | Standard | Note |
+| Variable | Default | Note |
 |---|---|---|
-| `MCP_AUTH_TOKEN` | — | **Påkrævet.** Kommasepareret for flere. Mindst 24 tegn pr. token. |
+| `MCP_AUTH_TOKEN` | — | **Required.** Comma-separated for several. At least 24 characters per token. |
 | `PORT` / `HOST` | `8787` / `0.0.0.0` | |
-| `MCP_PATH` | `/mcp` | Stien streamable HTTP eksponeres på. |
-| `COSURG_KILDE_DIR` | `data/kilder`, ellers `../kilder` | Første eksisterende mappe vinder. |
-| `COSURG_TRAE_DIR` | `data/trees`, ellers `../cosurg/content/trees` | Samme. |
-| `PUBMED_API_KEY` | — | Valgfri. Uden nøgle 3 kald/sek., med nøgle 10. |
-| `PUBMED_EMAIL` / `PUBMED_TOOL` | `mads@mahope.dk` / `cosurg-mcp` | NCBI beder om begge på alle kald. |
+| `MCP_PATH` | `/mcp` | The path streamable HTTP is exposed on. |
+| `COSURG_KILDE_DIR` | `data/kilder`, otherwise `../kilder` | First existing directory wins. |
+| `COSURG_TRAE_DIR` | `data/trees`, otherwise `../cosurg/content/trees` | Same. |
+| `PUBMED_API_KEY` | — | Optional. Without a key 3 calls/second, with one 10. |
+| `PUBMED_EMAIL` / `PUBMED_TOOL` | `mads@mahope.dk` / `cosurg-mcp` | NCBI asks for both on every call. |
 | `PUBMED_TIMEOUT_MS` | `12000` | |
-| `MCP_ALLOW_ANONYMOUS` | — | `1` slår autentifikation fra. Kun til lokal fejlsøgning. |
+| `MCP_ALLOW_ANONYMOUS` | — | `1` turns authentication off. Local debugging only. |
 
-## Sådan er søgningen bygget
+## How the search is built
 
-BM25 i hukommelsen over 323 uddrag. Ingen embeddings, ingen vektordatabase — 221 KB
-tekst svarer på under et millisekund, og BM25 har den egenskab der betyder noget
-her: den kan ikke hallucinere. Et resultat er altid et ordret uddrag med sin
-kilde, eller også er der intet resultat.
+In-memory BM25 over 323 excerpts. No embeddings, no vector database — 221 KB of
+text answers in under a millisecond, and BM25 has the property that matters here:
+it cannot hallucinate. A result is always a verbatim excerpt with its source, or
+else there is no result.
 
-Tre ting er tilpasset dansk klinisk tekst:
+Three things are adapted to Danish clinical text:
 
-- **Foldning.** `æ→ae`, `ø→oe`, `å→aa`, så "ætsning", "aetsning" og "AETSNING"
-  matcher hinanden.
-- **Præfiksmatch.** Danske sammensætninger betyder at en søgning på "inhalation"
-  skal ramme "inhalationsskade". Delvise match scorer lavere end fulde.
-- **Overskriftsvægt.** Overskrifter tæller tre gange — de navngiver emnet.
+- **Folding.** `æ→ae`, `ø→oe`, `å→aa`, so "ætsning", "aetsning" and "AETSNING"
+  match each other.
+- **Prefix matching.** Danish compounding means a search for "inhalation" has to
+  hit "inhalationsskade". Partial matches score lower than full ones.
+- **Heading weight.** Headings count triple — they name the topic.
 
-To ting holder "ingen dækning" ærligt, nu hvor basen også indeholder engelsk tekst:
+Two things keep "no coverage" honest, now that the base also contains English
+text:
 
-- **Mindste dækning.** Et uddrag skal ramme mindst halvdelen af søgningens
-  forskellige ord. Ellers slog ét tilfældigt ordsammenfald igennem — en søgning på
-  "kolorektal anastomoselækage stapler" ramte overskriften "Staples" i
-  hudtransplantationsafsnittet og fik høj score, fordi overskrifter vejer tungt og
-  uddraget var kort. Svaret var ikke opdigtet, men det var irrelevant, og det er
-  lige så skadeligt når det leveres i stedet for "vi har ingen dækning".
-- **Ingen billed-uddrag.** Et uddrag der kun består af et billede-link indekseres
-  ikke. Alt-teksten er ofte casens eller kapitlets titel, så et sådant uddrag scorer
-  højest på præcis den søgning man stiller — og svarer med et billede i stedet for
-  et klinisk udsagn. Billederne bliver stående i de uddrag der også har brødtekst.
+- **Minimum coverage.** An excerpt has to hit at least half of the distinct words
+  in the query. Otherwise a single coincidental word overlap gets through — a
+  search for "kolorektal anastomoselækage stapler" hit the heading "Staples" in
+  the skin grafting section and scored highly, because headings weigh heavily and
+  the excerpt was short. The answer was not fabricated, but it was irrelevant,
+  and that is just as harmful when it is delivered instead of "we have no
+  coverage".
+- **No image-only excerpts.** An excerpt consisting only of an image link is not
+  indexed. The alt text is often the case's or the chapter's title, so such an
+  excerpt scores highest on exactly the query you asked — and answers with a
+  picture instead of a clinical statement. The images remain in the excerpts that
+  also have body text.
 
-Uddrag afgrænses af markdown-overskrifter, så en træffer altid bærer sin
-kapitelsti. Over 1400 tegn deles ved afsnitsgrænser, aldrig midt i en sætning.
-Resultater under en relevanstærskel frasorteres — det er dér "vi ved det ikke"
-bliver et ærligt svar i stedet for et dårligt.
+Excerpts are bounded by markdown headings, so a hit always carries its chapter
+path. Anything over 1400 characters is split at paragraph boundaries, never
+mid-sentence. Results below a relevance threshold are discarded — that is where
+"we do not know" becomes an honest answer instead of a poor one.

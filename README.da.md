@@ -1,4 +1,4 @@
-> 🇬🇧 **[Read this in English](README.en.md)**
+> 🇬🇧 **[Read this page in English](README.md)** — English is the primary language of this repository.
 
 # CoSurg
 
@@ -105,7 +105,7 @@ Alle fem produktområder er i brug. Tabellen beskriver hvad koden faktisk kalder
 | **Ambient STT** | [`lib/audio/useTranscribe.ts`](cosurg/lib/audio/useTranscribe.ts) | `/transcribe`-websocket via `@corti/sdk` med `automaticPunctuation` og interim-resultater. Lytter mens lægen svarer på træets spørgsmål. |
 | **Dictation STT** | [`lib/audio/useDictation.ts`](cosurg/lib/audio/useDictation.ts) | Samme socket, konfigureret som diktat: `spokenPunctuation`, så lægen kan sige "punktum" og "nyt afsnit". Tilkoblet i `app/page.tsx`; diktatet føjes til notatet. |
 | **Text generation** | [`app/api/note/route.ts`](cosurg/app/api/note/route.ts) | En Corti-agent skriver journalnotatet ud fra beslutningsvejen, transskriptet og diktatet. |
-| **Agentic framework** | [`lib/corti/agent.ts`](cosurg/lib/corti/agent.ts) | Tre agenter med schema-connectors og struktureret output: svarfortolker, skribent, OR-kommandogenkender. Vores MCP-server kobles på som connector. |
+| **Agentic framework** | [`lib/corti/agent.ts`](cosurg/lib/corti/agent.ts) | Fem agenter med schema-connectors og struktureret output: svarfortolker, skribent og OR-kommandogenkender her, plus en intent-router ([`app/api/route/agent.ts`](cosurg/app/api/route/agent.ts)) og en emne-router til behandlingsguiden ([`app/api/guide/route.ts`](cosurg/app/api/guide/route.ts)). Vores MCP-server kobles på som connector. |
 | **Medical coding** | [`lib/corti/coding.ts`](cosurg/lib/corti/coding.ts) | Corti Symphony, `POST /v2/tools/coding/`. Koderne kommer fra kode-API'et; sprogmodellen må kun begrunde dem. |
 
 ### Forbehold vi ikke skjuler
@@ -236,8 +236,9 @@ Kruse**, Afsnit for plastikkirurgi og brandsårsbehandling 6052.
 | [`cosurg/`](cosurg/) | Next.js-appen. Klinisk indhold i `content/trees/`, aldrig i kode. |
 | [`cosurg-mcp/`](cosurg-mcp/) | MCP-serveren og den kliniske vidensbase med proveniens. |
 | [`docs/`](docs/) | Specifikation, byggeplan og arrangørens brief. |
-| [`DEMO.md`](DEMO.md) | Demo-manuskript. |
+| [`DEMO.md`](DEMO.md) | Demo-manuskript. Rammen er engelsk; replikkerne står på dansk, fordi demoen køres på dansk. |
 | [`THIRD-PARTY.md`](THIRD-PARTY.md) | Alt vi bruger som ikke er Corti. |
+| [`README.md`](README.md) | Denne side på engelsk — repoets hovedsprog. |
 
 Alt klinisk materiale er lavet af holdets egne medlemmer eller af navngivne
 kolleger, og må bruges i demo og submission.

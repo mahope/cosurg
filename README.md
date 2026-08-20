@@ -1,4 +1,4 @@
-> 🇩🇰 **[Læs på dansk](README.md)**
+> 🇩🇰 **[Læs denne side på dansk](README.da.md)**
 
 # CoSurg
 
@@ -16,8 +16,9 @@ Built on the Corti API for Corti Hack for Health, Copenhagen, 20–21 August 202
 ## The problem
 
 A burn patient arrives at the emergency department. Before the doctor on call can
-phone the burn unit at Rigshospitalet, five things must be settled. The Danish
-Burn Association states it as an instruction:
+phone the burn unit at Rigshospitalet — Denmark's national referral centre for
+burns — five things must be settled. The Danish Burn Association states it as an
+instruction:
 
 > When speaking to the on-call physician at the burn unit it is important to
 > present the injury mechanism, the time of injury, vital signs, the estimated
@@ -33,11 +34,12 @@ the morning.
 Five assessments determine the whole course, and each has a trap:
 
 - **Depth** cannot be read reliably in the first days. It must be judged from
-  colour, capillary response and sensation — three observations, not one glance.
-- **Extent (TBSA)** decides whether the patient needs Parkland fluid resuscitation.
-  At 20 % and above the entire management changes.
-- **Circumferential burns** are not dangerous when you see them. They become
-  dangerous hours later as oedema builds and the skin tightens distal to the injury.
+  colour, capillary refill and sensation — three observations, not one glance.
+- **Extent** — total body surface area (TBSA) — decides whether the patient needs
+  Parkland fluid resuscitation. At 20 % and above the entire management changes.
+- **A circumferential burn** is not dangerous at the moment you see it. It turns
+  dangerous hours later, as oedema builds and unyielding skin constricts everything
+  distal to the injury.
 - **Inhalation injury** can progress to upper airway obstruction *during transport*.
   The intubation decision has to be made before you set off.
 - **Electrical injury** looks small on the skin. The visible lesion always
@@ -67,9 +69,9 @@ that choice deliberately in four places:
 **The recommendation comes from the tree, never from a language model.**
 The decision tree is JSON written by plastic surgeons. The engine that runs it
 ([`lib/tree/engine.ts`](cosurg/lib/tree/engine.ts)) is 123 lines of pure functions
-without a single word about burns in it. It looks an answer value up against the
-node's edges and moves on. A language model cannot change where it lands, because
-it is not part of that lookup.
+without a single word about burns in it. It looks the answer value up among the
+node's edges and advances. A language model cannot change where it lands, because
+it takes no part in that lookup.
 
 **The agent only interprets — and asks again rather than guessing.**
 Corti's agentic framework has one job: turn "uh, about half the forearm I'd say"
@@ -107,7 +109,7 @@ All five product areas are in use. The table describes what the code actually ca
 | **Ambient STT** | [`lib/audio/useTranscribe.ts`](cosurg/lib/audio/useTranscribe.ts) | `/transcribe` websocket via `@corti/sdk` with `automaticPunctuation` and interim results. Listens while the clinician answers the tree's questions. |
 | **Dictation STT** | [`lib/audio/useDictation.ts`](cosurg/lib/audio/useDictation.ts) | Same socket, configured for dictation: `spokenPunctuation`, so the clinician can say "full stop" and "new paragraph". Wired up in `app/page.tsx`; the dictation is appended to the note. |
 | **Text generation** | [`app/api/note/route.ts`](cosurg/app/api/note/route.ts) | A Corti agent writes the clinical note from the decision path, the transcript and the dictation. |
-| **Agentic framework** | [`lib/corti/agent.ts`](cosurg/lib/corti/agent.ts) | Three agents with schema connectors and structured output: answer interpreter, note writer, OR command recogniser. Our MCP server is attached as a connector. |
+| **Agentic framework** | [`lib/corti/agent.ts`](cosurg/lib/corti/agent.ts) | Five agents with schema connectors and structured output: answer interpreter, note writer and OR command recogniser here, plus an intent router ([`app/api/route/agent.ts`](cosurg/app/api/route/agent.ts)) and a guide topic router ([`app/api/guide/route.ts`](cosurg/app/api/guide/route.ts)). Our MCP server is attached as a connector. |
 | **Medical coding** | [`lib/corti/coding.ts`](cosurg/lib/corti/coding.ts) | Corti Symphony, `POST /v2/tools/coding/`. The codes come from the coding API; the language model may only justify them. |
 
 ### Caveats we are not hiding
@@ -115,8 +117,8 @@ All five product areas are in use. The table describes what the code actually ca
 **We do not have access to SKS (Danish ICD-10).** Corti documents
 `/coding/icd-10-dk`, but it is early alpha for selected partners. Every Danish
 system name was rejected with a 400. We therefore run on `icd10int-outpatient` —
-international ICD-10, of which the SKS diagnosis set is a Danish extension. Given
-access, `CORTI_CODING_SYSTEM` is set and nothing else changes.
+international ICD-10, of which the SKS diagnosis set is a Danish extension. The day
+we are granted access, we set `CORTI_CODING_SYSTEM` and nothing else changes.
 
 **Voice commands in dictation are configured but not active.** Corti replies
 `CONFIG_ACCEPTED` while marking every command `"registered": false` for our tenant.
@@ -203,8 +205,8 @@ The server finds `data/kilder/` and `../cosurg/content/trees/` on its own. Then 
 | `CORTI_ENVIRONMENT` | `eu` | `eu` or `us` |
 | `CORTI_TENANT` | `base` | Used in the auth URL and the `Tenant-Name` header |
 | `CORTI_CLIENT_ID` / `CORTI_CLIENT_SECRET` | — | From the Corti Console |
-| `CORTI_CODING_SYSTEM` | `icd10int-outpatient` | Set to an SKS name the day access exists |
-| `SYV_API_KEY` | — | Without a key, speech falls back to the browser voice |
+| `CORTI_CODING_SYSTEM` | `icd10int-outpatient` | Set to an SKS system name once access is granted |
+| `SYV_API_KEY` | — | Without a key, spoken output falls back to the browser's built-in voice |
 | `MCP_URL` / `MCP_AUTH_TOKEN` | — | Without them the clinical chat is disabled |
 | `ALLOWED_ORIGINS` | — | Comma-separated, for preview deployments |
 
@@ -239,8 +241,9 @@ and **junior doctor Carla Kruse**, Section for Plastic Surgery and Burn Treatmen
 | [`cosurg/`](cosurg/) | The Next.js app. Clinical content lives in `content/trees/`, never in code. |
 | [`cosurg-mcp/`](cosurg-mcp/) | The MCP server and the clinical knowledge base with provenance. |
 | [`docs/`](docs/) | Specification, build plan and the organiser's brief. |
-| [`DEMO.md`](DEMO.md) | Demo script. |
+| [`DEMO.md`](DEMO.md) | Demo script. English throughout; the spoken lines stay in Danish, because the demo is delivered in Danish. |
 | [`THIRD-PARTY.md`](THIRD-PARTY.md) | Everything we use that is not Corti. |
+| [`README.da.md`](README.da.md) | This page in Danish. |
 
 All clinical material was produced by the team's own members or by named colleagues,
 and is cleared for use in the demo and the submission.
