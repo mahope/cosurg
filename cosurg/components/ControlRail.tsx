@@ -94,30 +94,33 @@ export function ControlRail({
 
           <LangSwitch lang={lang} onToggleLang={onToggleLang} />
 
-          <div className="flex items-center rounded-lg border bg-[var(--paper-raised)] p-0.5">
-            <button
-              onClick={onToggleVoiceMode}
-              disabled={orMode}
-              aria-pressed={fullVoice}
-              className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors disabled:opacity-40 ${
-                fullVoice ? "bg-[var(--teal-tint)] text-[var(--teal-deep)]" : "text-[var(--ink-soft)]"
-              }`}
-            >
-              {/* "Oplæsning fra" er bredere end "Speech off" — uden en låst
-                  bredde flytter knapperne til højre sig hver gang man skifter
-                  sprog eller slår oplæsning til. */}
-              <SizeLock variants={widestOf("voiceFull", "voiceKey")}>
-                {fullVoice ? tr("voiceFull", lang) : tr("voiceKey", lang)}
-              </SizeLock>
-            </button>
-          </div>
+          {/* Opslæsning findes kun som kontrol i håndfri tilstand — uden for
+              den er der ingen oplæsning at slå til eller fra. */}
+          {orMode && (
+            <div className="flex items-center rounded-lg border bg-[var(--paper-raised)] p-0.5">
+              <button
+                onClick={onToggleVoiceMode}
+                disabled={orMode}
+                aria-pressed={fullVoice}
+                className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors disabled:opacity-40 ${
+                  fullVoice ? "bg-[var(--teal-tint)] text-[var(--teal-deep)]" : "text-[var(--ink-soft)]"
+                }`}
+              >
+                {/* "Oplæsning fra" er bredere end "Speech off" — uden en låst
+                    bredde flytter knapperne til højre sig hver gang man skifter
+                    sprog eller slår oplæsning til. */}
+                <SizeLock variants={widestOf("voiceFull", "voiceKey")}>
+                  {fullVoice ? tr("voiceFull", lang) : tr("voiceKey", lang)}
+                </SizeLock>
+              </button>
+            </div>
+          )}
 
-          {/* OR-tilstand forudsætter et valgt forløb — der er intet at føre
-              kirurgen igennem før da. */}
+          {/* Håndfri tilstand kan slås til før et forløb er valgt — lægen skal
+              kunne tale fra første spørgsmål, ikke først når et træ er startet. */}
           <button
             onClick={onToggleOrMode}
             aria-pressed={orMode}
-            disabled={!started}
             className={`rounded-lg px-4 py-2 text-sm font-semibold transition-colors disabled:opacity-40 ${
               orMode
                 ? "bg-[var(--or-accent)] text-[#062422]"
