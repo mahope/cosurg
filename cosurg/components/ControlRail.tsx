@@ -56,7 +56,7 @@ export function ControlRail({
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div className="flex items-center gap-3">
           <Link href="/" onClick={onGoHome} className="shrink-0 transition-opacity hover:opacity-80">
-            <BrandMark size={34} />
+            <BrandMark size={50} />
           </Link>
           <div>
             <Link href="/" onClick={onGoHome} className="transition-opacity hover:opacity-80">

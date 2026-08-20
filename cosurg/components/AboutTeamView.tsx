@@ -100,7 +100,7 @@ export function AboutTeamView() {
         <header className="mb-7 flex flex-wrap items-start justify-between gap-4">
           <div className="flex items-center gap-3">
             <Link href="/" className="shrink-0 transition-opacity hover:opacity-80">
-              <BrandMark size={34} />
+              <BrandMark size={50} />
             </Link>
             <div>
               <Link href="/" className="transition-opacity hover:opacity-80">
