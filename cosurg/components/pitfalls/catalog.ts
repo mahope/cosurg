@@ -98,7 +98,8 @@ export const FALDGRUBER: Faldgrube[] = [
     triggers: [
       { treeId: "burns-dk", nodeId: "inhalation" },
       { treeId: "burns-dk", nodeId: "mechanism", values: ["flame"] },
-      { field: "closedSpace" },
+      { field: "closedSpace", values: ["yes"] },
+      { field: "mechanism", values: ["flame"] },
     ],
   },
   {
@@ -176,7 +177,7 @@ export const FALDGRUBER: Faldgrube[] = [
     hints: ["elektrisk", "stroem", "hoejspaending", "lynned", "el-skade"],
     triggers: [
       { treeId: "burns-dk", nodeId: "mechanism", values: ["electrical"] },
-      { field: "mechanism" },
+      { field: "mechanism", values: ["electrical"] },
     ],
   },
   {
@@ -195,7 +196,7 @@ export const FALDGRUBER: Faldgrube[] = [
     hints: ["aetsning", "kemisk", "syre", "base", "flussyre", "diphoterine", "kalk", "cement"],
     triggers: [
       { treeId: "burns-dk", nodeId: "mechanism", values: ["chemical"] },
-      { field: "mechanism" },
+      { field: "mechanism", values: ["chemical"] },
     ],
   },
   {
@@ -252,7 +253,7 @@ export const FALDGRUBER: Faldgrube[] = [
     query: "antikoagulationsbehandling trombosedisponerende posttraume inkl. brandsaar profylakse",
     hints: ["antikoagul", "blodfortynd", "trombose", "immobil", "indlaeg", "ak-behandling"],
     triggers: [
-      { field: "anticoagulants" },
+      { field: "anticoagulants", values: ["yes"] },
       { treeId: "burns-dk", dispositionId: "disp-refer" },
       { treeId: "burns-dk", dispositionId: "disp-emergency" },
     ],
@@ -289,18 +290,28 @@ export interface FaldgrubeKontekst {
   fields?: string[];
 }
 
+/** Er en af trækkerens værdier blandt dem der er svaret? */
+function vaerdiRamt(t: Traekker, k: FaldgrubeKontekst): boolean {
+  if (!t.values || t.values.length === 0) return true;
+  return t.values.some((v) => (k.values ?? []).includes(v));
+}
+
 function passer(t: Traekker, k: FaldgrubeKontekst): boolean {
-  if (t.field) return (k.fields ?? []).includes(t.field);
+  /*
+   * Anamnesefelter. Værdien tæller med når trækkeren nævner den: at
+   * skadesmekanismen er UDFYLDT betyder ikke at den elektriske faldgrube
+   * gælder — kun at mekanismen ER elektrisk gør. En advarsel der altid vises,
+   * bliver ikke læst.
+   */
+  if (t.field) return (k.fields ?? []).includes(t.field) && vaerdiRamt(t, k);
 
   if (t.treeId && t.treeId !== k.treeId) return false;
   if (t.dispositionId) return t.dispositionId === k.dispositionId;
   if (t.nodeId && t.nodeId !== k.nodeId) return false;
-  if (t.values && t.values.length > 0) {
-    // Værdien kan være svaret på den node vi står på, eller et svar længere
-    // tilbage i vejen — en cirkulær dyb forbrænding holder op med at være dyb
-    // fordi man er gået to spørgsmål videre.
-    if (!t.values.some((v) => (k.values ?? []).includes(v))) return false;
-  }
+  // Værdien kan være svaret på den node vi står på, eller et svar længere
+  // tilbage i vejen — en cirkulær dyb forbrænding holder ikke op med at være
+  // dyb fordi man er gået to spørgsmål videre.
+  if (!vaerdiRamt(t, k)) return false;
   // En træ-trækker uden node gælder hele træet (procedureguiden).
   return true;
 }
