@@ -310,13 +310,20 @@ export function IntakeCard({
       onDrop={onDrop}
       /*
         Feltet skal LIGNE et felt. På det hvide kort forsvandt en flade i
-        papirfarve — så nu er den hvid med en tydelig kant og en indvendig
+        papirfarve — så nu er den hvid med en hårfin kant og en indvendig
         skygge, det ældste tegn på "her kan skrives" der findes. Cursoren
         siger det samme: tekstmarkør over hele fladen, ikke kun over linjen.
+
+        I komposeren har feltet INGEN egen ramme. Kortet udenom er allerede en
+        ramme, og to rammer om det samme felt ser ud som en fejl — det var
+        præcis dét den tykke fokusramme forstærkede. Dér markerer kortet fokus
+        for hele komposeren; feltet og værktøjslinjen er ét element.
       */
-      className={`cursor-text rounded-xl border-2 bg-[var(--paper-raised)] shadow-[inset_0_1px_4px_rgba(16,32,30,0.07)] transition-colors focus-within:border-[var(--teal)] focus-within:shadow-[inset_0_1px_4px_rgba(16,32,30,0.07),0_2px_16px_rgba(0,83,85,0.10)] ${
-        dragging ? "border-[var(--teal)] bg-[var(--teal-tint)]" : "border-[var(--line-strong)]"
-      }`}
+      className={`cursor-text rounded-xl ${
+        compact
+          ? ""
+          : "field-shell bg-[var(--paper-raised)] [--field-shadow:inset_0_1px_4px_rgba(16,32,30,0.07)]"
+      } ${dragging ? "is-dragging bg-[var(--teal-tint)]" : ""}`}
       onClick={() => areaRef.current?.focus()}
     >
       <div className="relative">
@@ -521,7 +528,7 @@ export function IntakeCard({
     return (
       <div className="mx-auto max-w-3xl">
         {unresolvedBlock}
-        <div className="rounded-2xl border border-[var(--line-strong)] bg-[var(--paper-raised)] p-2 shadow-[0_6px_24px_rgba(0,58,60,0.14)]">
+        <div className="field-shell rounded-2xl bg-[var(--paper-raised)] p-2 [--field-shadow:0_6px_24px_rgba(0,58,60,0.14)]">
           {fieldBox}
         </div>
         {errorLine}

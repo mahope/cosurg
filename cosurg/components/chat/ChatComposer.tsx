@@ -49,7 +49,9 @@ export function ChatComposer({
   };
 
   return (
-    <div className="flex items-end gap-1 rounded-2xl border bg-[var(--paper-raised)] px-1.5 py-1.5 shadow-[0_1px_2px_rgba(16,32,30,0.04)] transition-colors focus-within:border-[var(--teal)]">
+    /* Samme fokussprog som forsidens komposer: hårfin ramme, blød turkis ring
+       udenom. Se .field-shell i globals.css. */
+    <div className="field-shell flex items-end gap-1 rounded-2xl bg-[var(--paper-raised)] px-1.5 py-1.5 [--field-shadow:0_1px_2px_rgba(16,32,30,0.04)]">
       <button
         type="button"
         onClick={onToggleMic}
