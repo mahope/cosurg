@@ -1,4 +1,4 @@
-# DEMO — BurnTree, fredag 14:00–15:30
+# DEMO — CoSurg, fredag 14:00–15:30
 
 **Til Magnus og Rami. I kører den alene. Mads er gået kl. 11.**
 
@@ -6,7 +6,7 @@ Fem minutters demo + to minutters spørgsmål.
 Læs afsnit 1 og 2 igennem én gang. Kør prøven i afsnit 2 færdig, før I gør noget andet.
 Går noget galt undervejs: afsnit 5. Der står præcis hvad I gør.
 
-**URL:** `https://burntree.plastsurgeon.com`
+**URL:** `https://cosurg.com`
 **Sproget under demoen: engelsk.** Appen taler og lytter på engelsk. Alle replikker
 til mikrofonen står herunder på engelsk — de skal siges præcis som de står.
 Skal I køre på dansk i stedet, står de danske replikker i parentes.
@@ -32,7 +32,7 @@ er alt øjeblikkeligt. **Demoen kl. 14 skal være anden gang, ikke første.**
 
 Tjek disse ni ting undervejs. Alle skal være i orden:
 
-1. Siden åbner på `https://burntree.plastsurgeon.com` og viser et spørgsmål.
+1. Siden åbner på `https://cosurg.com` og viser et spørgsmål.
 2. **Sæt sproget til engelsk:** tryk på knappen der siger **Dansk** øverst. Den skifter til **English**, og teksterne bliver engelske.
 3. Tryk på mikrofon-knappen. Browseren spørger om lov — tryk **Tillad / Allow**.
    Sig derefter noget. Jeres ord skal dukke op under **Transcript** i højre side.
@@ -65,7 +65,7 @@ kan-undværes). Del A og Del C skal med.
 > is it circumferential. Under time pressure, steps get skipped. Not because the
 > doctor doesn't know them — because nobody is asking.
 >
-> BurnTree asks. It is a clinical decision tree that talks. And the recommendation
+> CoSurg asks. It is a clinical decision tree that talks. And the recommendation
 > it gives comes from the tree, written by us as burn surgeons — never from a
 > language model."
 
@@ -263,7 +263,7 @@ Virker det ikke: punkt G.
 ## 6. Huskesedlen — riv den ud
 
 ```
-URL      burntree.plastsurgeon.com
+URL      cosurg.com
 Sprog    Tryk "Dansk" → bliver til "English"
 
 DEL A    Scald. / No. / Eight percent. /

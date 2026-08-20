@@ -1,4 +1,4 @@
-# BurnTree (arbejdstitel) — stemmestyret beslutningsstøtte til brandsår
+# CoSurg (arbejdstitel) — stemmestyret beslutningsstøtte til brandsår
 
 Hackathon-projekt, Corti Hack for Health 20.–21. august 2026.
 Team: Mads (kode, væk fredag 11:00) · Magnus Avnstorp (klinisk indhold + præsentation) · Rami Mossad Ibrahim (klinisk indhold + præsentation).
@@ -7,11 +7,11 @@ Team: Mads (kode, væk fredag 11:00) · Magnus Avnstorp (klinisk indhold + præs
 
 Skadestuelæger skal træffe præcise, komplette beslutninger om brandsår under tidspres: dybde, udbredelse (TBSA), lokalisation, cirkulær afsnøring, inhalationsskade — og glemmer noder når det er travlt. SurgAI viste at et opslagsværk ikke er nok: svaret skal komme som en **ført samtale**, ikke som en søgning.
 
-BurnTree er en stemmestyret copilot der AKTIVT navigerer et klinisk valideret beslutningstræ: agenten stiller næste afklarende spørgsmål højt (TTS), lægen svarer med tale, træet udfyldes node for node til en disposition — og til sidst falder journalnotat + koder ud automatisk. Deterministisk træ + AI kun til fortolkning = "mere præcist end SurgAI": anbefalingen kommer fra træet (klinikere har skrevet det), aldrig fra en frit genererende model.
+CoSurg er en stemmestyret copilot der AKTIVT navigerer et klinisk valideret beslutningstræ: agenten stiller næste afklarende spørgsmål højt (TTS), lægen svarer med tale, træet udfyldes node for node til en disposition — og til sidst falder journalnotat + koder ud automatisk. Deterministisk træ + AI kun til fortolkning = "mere præcist end SurgAI": anbefalingen kommer fra træet (klinikere har skrevet det), aldrig fra en frit genererende model.
 
 ## De 5 produktområder (krav: mindst 4)
 
-| Corti-område | Rolle i BurnTree |
+| Corti-område | Rolle i CoSurg |
 |---|---|
 | Ambient STT | Lytter til hele encounteret (læge + patient) — svar på træets spørgsmål fanges herfra |
 | Dictation STT | Lægens afsluttende tillæg/rettelser til notatet, dikteret |

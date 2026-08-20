@@ -1,4 +1,4 @@
-# BurnTree
+# CoSurg
 
 Stemmestyret klinisk beslutningsstøtte til brandsår. Bygget på Corti API til
 Corti Hack for Health, august 2026.

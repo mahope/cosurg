@@ -29,7 +29,7 @@ const mono = Roboto_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "BurnTree — klinisk beslutningsstøtte",
+  title: "CoSurg — klinisk beslutningsstøtte",
   description: "Stemmestyret beslutningsstøtte til brandsår. Corti Hack for Health 2026.",
 };
 

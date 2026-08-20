@@ -16,3 +16,6 @@ next-env.d.ts
 kilder/magnus-materiale/*.pptx
 kilder/magnus-materiale/*.docx
 datasets/Hackathon Datasets/Audio Samples/
+
+# Gammel mappe efter omdoebning til cosurg - fjernes naar dev-serveren stoppes
+burntree/

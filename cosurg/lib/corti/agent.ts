@@ -79,7 +79,7 @@ export async function askAgent<T>(
 }
 
 export const INTERPRETER_SPEC: AgentSpec = {
-  name: "burntree-answer-interpreter",
+  name: "cosurg-answer-interpreter",
   description: "Maps a spoken clinical answer onto a decision-tree node's allowed values.",
   systemPrompt: [
     "You map a clinician's spoken answer onto exactly one allowed value of a clinical decision-tree node.",
@@ -118,7 +118,7 @@ export const INTERPRETER_SPEC: AgentSpec = {
  * bundet til sit skema hos Corti: ændrer skemaet sig, skal navnet også ændre sig.
  */
 export const SCRIBE_SPEC: AgentSpec = {
-  name: "burntree-scribe-v2",
+  name: "cosurg-scribe-v2",
   description: "Writes a clinical note and justifies pre-assigned medical codes.",
   systemPrompt: [
     "You write a concise clinical note from a completed decision-tree path and encounter transcript.",
@@ -163,7 +163,7 @@ export const SCRIBE_SPEC: AgentSpec = {
 };
 
 export const COMMAND_SPEC: AgentSpec = {
-  name: "burntree-or-command",
+  name: "cosurg-or-command",
   description: "Detects hands-free voice commands in OR mode.",
   systemPrompt: [
     "In a sterile operating-room setting a surgeon speaks while a decision tree is running.",

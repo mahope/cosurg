@@ -63,7 +63,11 @@ export function cap(value: unknown, max: number): string {
  * lag oven på kvoten, ikke i stedet for. Ekstra domæner sættes via ALLOWED_ORIGINS
  * (kommasepareret), fx til preview-udrulninger.
  */
+// Begge domæner står her med vilje: navneskiftet skete få timer før demoen, og
+// ingen af os skal opdage fredag kl. 14 at låsen peger på det gamle navn.
 const DEFAULT_ORIGINS = [
+  "https://cosurg.com",
+  "https://www.cosurg.com",
   "https://burntree.plastsurgeon.com",
   "http://localhost:3000",
   "http://127.0.0.1:3000",
