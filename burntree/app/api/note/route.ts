@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { LIMITS, cap, guard } from "@/lib/guard";
 import { SCRIBE_SPEC, askAgent, ensureAgent } from "@/lib/corti/agent";
 import { treeSource } from "@/lib/tree/loader";
 import { getDisposition } from "@/lib/tree/engine";
@@ -21,8 +22,18 @@ interface NoteResult {
 }
 
 export async function POST(req: Request) {
+  const limited = guard(req, "note", 20);
+  if (limited) return limited;
+
   try {
-    const { treeId, lang, path, dispositionId, transcript, dictation } = (await req.json()) as Body;
+    const raw = (await req.json()) as Body;
+    const { treeId, dispositionId } = raw;
+    const lang: Lang = raw.lang === "en" ? "en" : "da";
+    const transcript = cap(raw.transcript, LIMITS.transcript);
+    const dictation = cap(raw.dictation, LIMITS.dictation);
+    // Stien kommer fra vores eget træ — begræns længden så en forfalsket klient
+    // ikke kan sende en uendelig prompt afsted på vores regning.
+    const path = Array.isArray(raw.path) ? raw.path.slice(0, 40) : [];
 
     const tree = await treeSource.get(treeId);
     if (!tree) return NextResponse.json({ error: "Ukendt træ" }, { status: 404 });

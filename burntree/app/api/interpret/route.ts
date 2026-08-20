@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { LIMITS, cap, guard } from "@/lib/guard";
 import { INTERPRETER_SPEC, askAgent, ensureAgent } from "@/lib/corti/agent";
 import { treeSource } from "@/lib/tree/loader";
 import { getNode } from "@/lib/tree/engine";
@@ -21,8 +22,16 @@ interface Interpretation {
 }
 
 export async function POST(req: Request) {
+  const limited = guard(req, "interpret", 90);
+  if (limited) return limited;
+
   try {
-    const { treeId, nodeId, lang, utterance } = (await req.json()) as Body;
+    const raw = (await req.json()) as Body;
+    const { treeId, nodeId } = raw;
+    const lang: Lang = raw.lang === "en" ? "en" : "da";
+    const utterance = cap(raw.utterance, LIMITS.utterance);
+
+    if (!utterance) return NextResponse.json({ error: "Tomt svar" }, { status: 400 });
 
     const tree = await treeSource.get(treeId);
     if (!tree) return NextResponse.json({ error: "Ukendt træ" }, { status: 404 });

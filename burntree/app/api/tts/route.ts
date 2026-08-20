@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { LIMITS, cap, guard } from "@/lib/guard";
 
 export const dynamic = "force-dynamic";
 
@@ -18,7 +19,14 @@ const SYV_MODEL = process.env.SYV_TTS_MODEL ?? "syvai/plapre-nano";
  * netværksafhængigheden helt.
  */
 export async function POST(req: Request) {
-  const { text, lang } = (await req.json()) as { text: string; lang: "da" | "en" };
+  const limited = guard(req, "tts", 60);
+  if (limited) return limited;
+
+  const body = (await req.json()) as { text?: unknown; lang?: unknown };
+  const text = cap(body.text, LIMITS.tts);
+  const lang = body.lang === "en" ? "en" : "da";
+
+  if (!text) return NextResponse.json({ error: "Tom tekst" }, { status: 400 });
 
   const apiKey = process.env.SYV_API_KEY;
   if (!apiKey) {
