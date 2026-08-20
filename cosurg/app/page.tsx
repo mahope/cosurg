@@ -188,6 +188,14 @@ export default function Home() {
   const [ambiguity, setAmbiguity] = useState<{ text: string; reasons: string[] } | null>(null);
   /** Tilbuddet om at gå fra opslag til forløb, når svaret er landet. */
   const [offer, setOffer] = useState<{ treeId: string; name: string } | null>(null);
+  /**
+   * Proceduren vist i tråden — alle trin med Rigshospitalets fotos.
+   *
+   * Den bor her og ikke i samtalen, fordi den ikke ER en samtale: det er et
+   * opslagsværk lægen bad om at få vist. Kun ét ad gangen; en ny anmodning
+   * afløser den forrige.
+   */
+  const [procedure, setProcedure] = useState<{ question: string; tree: DecisionTree } | null>(null);
   const lookupBusyRef = useRef(false);
 
   const node = state.currentNodeId ? getNode(tree, state.currentNodeId) : undefined;
@@ -424,6 +432,7 @@ export default function Home() {
        */
       resetLookup();
       setGuideLookup(null);
+      setProcedure(null);
       setLookupOpen(false);
       setLookupStatus(null);
       setAmbiguity(null);
@@ -1169,7 +1178,29 @@ export default function Home() {
    * — også mens svaret stadig arbejder — så skiftet sker i samme sekund der
    * trykkes send, ikke først når svaret lander.
    */
-  const hasThread = !started && (lookupTurns.length > 0 || guideLookup !== null);
+  const hasThread = !started && (lookupTurns.length > 0 || guideLookup !== null || procedure !== null);
+
+  /**
+   * Vis forbindingsproceduren — samme to veje som når der spørges om den.
+   *
+   * Håndfri får den store skærm med ét trin ad gangen; alle andre får den i
+   * tråden. Kaldes fra anbefalingens tilbud, hvor træet selv siger at
+   * proceduren følger efter.
+   */
+  const showProcedure = useCallback(async () => {
+    const id = followUpTreeId("burns-dk", "disp-treat");
+    if (!id) return;
+    if (orMode) {
+      void beginTree(id);
+      return;
+    }
+    try {
+      const t = await loadTree(id);
+      setProcedure({ question: tr("procedureShow", lang), tree: t });
+    } catch (err) {
+      setStatus(failureMessage(err, "tree", lang));
+    }
+  }, [orMode, beginTree, loadTree, lang]);
 
   /*
    * UDREDNINGEN LÆST OP.
@@ -1531,6 +1562,7 @@ export default function Home() {
                   lang={lang}
                   turns={lookupTurns}
                   guide={guideLookup}
+                  procedure={procedure}
                   speakingTurn={speakingTurn}
                   onSpeak={toggleSpeakAnswer}
                   onSwitch={switchLookup}
@@ -1552,6 +1584,7 @@ export default function Home() {
                   onQuickReply={(t) => void handleUtterance(t)}
                   onWriteNote={(treeId, path) => void generateNote({ treeId, path })}
                   noteBusy={noteBusy}
+                  onShowProcedure={() => void showProcedure()}
                 />
               </div>
               <div className="sticky bottom-4 z-20">

@@ -720,6 +720,14 @@ export const t = {
   workupNoteWrite: { da: "Skriv notatet", en: "Write the note" },
   workupNoteLater: { da: "Ikke nu", en: "Not now" },
 
+  /* Proceduren vist i tråden — Rigshospitalets trin med fotos. */
+  procedureLabel: { da: "Procedure", en: "Procedure" },
+  procedureFollowUp: {
+    da: "Såret skal forbindes. Skal jeg vise proceduren?",
+    en: "The wound needs dressing. Shall I show you the procedure?",
+  },
+  procedureShow: { da: "Vis proceduren", en: "Show the procedure" },
+
   /*
    * Her lå genkendelsens tekster («Jeg læser det som …»), de tre eksempel-
    * ytringer og sporbarhedskortet. De er fjernet sammen med de flader de

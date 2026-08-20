@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import type { ChatAnswer } from "@/lib/corti/chat";
-import type { AnsweredStep, Lang } from "@/lib/tree/types";
+import type { AnsweredStep, DecisionTree, Lang } from "@/lib/tree/types";
 import type {
   DispositionEvent,
   RedflagEvent,
@@ -13,9 +13,11 @@ import type {
 import { AnswerCard } from "@/components/chat/AnswerCard";
 import { ProgressTrail } from "@/components/chat/ProgressTrail";
 import { PitfallCard } from "@/components/pitfalls/PitfallCard";
+import { followUpTreeId } from "@/components/treeRouting";
 import { tr } from "@/lib/i18n";
 import type { GuideSvar } from "./guide";
 import { GuidePanel } from "./GuidePanel";
+import { ProcedureSteps } from "./ProcedureSteps";
 
 /**
  * SAMTALEN — forsiden efter det første spørgsmål.
@@ -42,6 +44,8 @@ interface ChatThreadProps {
   turns: Turn[];
   /** Behandlingsopslaget. Højst ét ad gangen, og altid det seneste ærinde. */
   guide: GuideEntry | null;
+  /** Proceduren vist i fuld længde — alle trin med fotos. */
+  procedure: { question: string; tree: DecisionTree } | null;
   speakingTurn: string | null;
   onSpeak: (answer: ChatAnswer, turnId: string) => void;
   /** Skift kilde for det seneste opslag (litteratur ↔ vidensbase). */
@@ -57,12 +61,15 @@ interface ChatThreadProps {
   /** Tag imod journalnotat-tilbuddet. */
   onWriteNote: (treeId: string, path: AnsweredStep[]) => void;
   noteBusy: boolean;
+  /** Tag imod tilbuddet om at få forbindingsproceduren vist. */
+  onShowProcedure: () => void;
 }
 
 export function ChatThread({
   lang,
   turns,
   guide,
+  procedure,
   speakingTurn,
   onSpeak,
   onSwitch,
@@ -70,6 +77,7 @@ export function ChatThread({
   onQuickReply,
   onWriteNote,
   noteBusy,
+  onShowProcedure,
 }: ChatThreadProps) {
   /*
    * Nyt indhold skal kunne ses uden at lægen selv skal rulle efter det.
@@ -79,7 +87,7 @@ export function ChatThread({
    */
   const endRef = useRef<HTMLDivElement>(null);
   const seenRef = useRef(0);
-  const entryCount = turns.length + (guide ? 1 : 0);
+  const entryCount = turns.length + (guide ? 1 : 0) + (procedure ? 1 : 0);
   useEffect(() => {
     if (entryCount > seenRef.current) {
       endRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
@@ -111,6 +119,7 @@ export function ChatThread({
           onQuickReply={onQuickReply}
           onWriteNote={onWriteNote}
           noteBusy={noteBusy}
+          onShowProcedure={onShowProcedure}
         />
       ))}
 
@@ -132,6 +141,19 @@ export function ChatThread({
             ) : (
               <ProgressTrail progress={[{ expert: null, text: tr("guideFetching", lang) }]} lang={lang} />
             )}
+          </div>
+        </section>
+      )}
+
+      {/*
+        Proceduren. Den står nederst fordi den altid er det seneste ærinde:
+        lægen bad om at få den vist, og en anmodning afløser den forrige.
+      */}
+      {procedure && (
+        <section>
+          <QuestionBubble text={procedure.question} />
+          <div className="mt-3">
+            <ProcedureSteps tree={procedure.tree} lang={lang} />
           </div>
         </section>
       )}
@@ -164,6 +186,7 @@ function TurnEntry({
   onQuickReply,
   onWriteNote,
   noteBusy,
+  onShowProcedure,
 }: {
   turn: Turn;
   lang: Lang;
@@ -176,6 +199,7 @@ function TurnEntry({
   onQuickReply: (text: string) => void;
   onWriteNote: (treeId: string, path: AnsweredStep[]) => void;
   noteBusy: boolean;
+  onShowProcedure: () => void;
 }) {
   return (
     <section>
@@ -265,7 +289,23 @@ function TurnEntry({
         )}
 
         {/* Anbefalingen: udredningens konklusion, med de kilder den hviler på. */}
-        {turn.disposition && <DispositionBlock disposition={turn.disposition} lang={lang} />}
+        {turn.disposition && (
+          <DispositionBlock
+            disposition={turn.disposition}
+            lang={lang}
+            /*
+              Ambulant behandlet brandsår skal forbindes. Proceduren tilbydes
+              derfor dér hvor anbefalingen står — som ét klik, og kun når
+              træet selv siger at den følger efter. Det er et TILBUD; intet
+              skifter af sig selv.
+            */
+            onShowProcedure={
+              interactive && followUpTreeId(turn.disposition.treeId, turn.disposition.disposition.dispositionId)
+                ? onShowProcedure
+                : undefined
+            }
+          />
+        )}
 
         {/*
           Udredningens næste spørgsmål — agentens tur i samtalen.
@@ -424,7 +464,15 @@ function RedflagBlock({ flag, lang }: { flag: RedflagEvent; lang: Lang }) {
 }
 
 /** Udredningens konklusion, med de kilder den hviler på. */
-function DispositionBlock({ disposition, lang }: { disposition: DispositionEvent; lang: Lang }) {
+function DispositionBlock({
+  disposition,
+  lang,
+  onShowProcedure,
+}: {
+  disposition: DispositionEvent;
+  lang: Lang;
+  onShowProcedure?: () => void;
+}) {
   const d = disposition.disposition;
   /*
    * Rød ramme er forbeholdt den anbefaling der ikke tåler at vente.
@@ -462,6 +510,19 @@ function DispositionBlock({ disposition, lang }: { disposition: DispositionEvent
             </li>
           ))}
         </ul>
+      )}
+
+      {onShowProcedure && (
+        <div className="mt-4 rounded-xl border border-[var(--teal)] bg-[var(--teal-tint)] p-4">
+          <p className="text-[15px] font-medium leading-snug text-[var(--ink)]">{tr("procedureFollowUp", lang)}</p>
+          <button
+            type="button"
+            onClick={onShowProcedure}
+            className="mt-3 rounded-lg bg-[var(--teal-deep)] px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-[var(--teal)]"
+          >
+            {tr("procedureShow", lang)}
+          </button>
+        </div>
       )}
 
       {/* Kilderne står MED anbefalingen og ikke som en fodnote: hele appens
