@@ -15,7 +15,7 @@ import { BrandMark, BrandWatermark } from "@/components/BrandMark";
 export default function Loading() {
   return (
     <main
-      className="relative min-h-screen bg-[var(--paper)] px-4 py-6 sm:px-6 sm:py-8"
+      className="app-gradient-bg relative min-h-screen px-4 py-6 sm:px-6 sm:py-8"
       aria-busy="true"
       aria-label="CoSurg"
     >
