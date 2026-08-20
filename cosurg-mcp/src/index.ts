@@ -106,6 +106,7 @@ const httpServer = createServer((req, res) => {
       transport: "streamable_http",
       uddrag: opstartsstatus.uddrag,
       afsnit: opstartsstatus.afsnit,
+      cases: opstartsstatus.cases,
       traeer: opstartsstatus.traeer,
     });
     return;
@@ -161,7 +162,7 @@ function start(): void {
       `[cosurg-mcp] lytter paa http://${konfiguration.vaert}:${konfiguration.port}${konfiguration.mcpSti} (streamable_http)`,
     );
     console.log(
-      `[cosurg-mcp] vidensbase: ${opstartsstatus.afsnit} kildeafsnit / ${opstartsstatus.uddrag} uddrag fra ${opstartsstatus.kildemappe}`,
+      `[cosurg-mcp] vidensbase: ${opstartsstatus.afsnit} kildeafsnit (${opstartsstatus.cases} kliniske cases) / ${opstartsstatus.uddrag} uddrag fra ${opstartsstatus.kildemappe}`,
     );
     console.log(
       `[cosurg-mcp] beslutningstraeer: ${opstartsstatus.traeer.join(", ") || "(ingen)"} fra ${opstartsstatus.traemappe}`,

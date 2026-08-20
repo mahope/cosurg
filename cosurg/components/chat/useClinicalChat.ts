@@ -175,7 +175,11 @@ export function useClinicalChat(lang: Lang) {
                 answer = event.answer;
                 patch(id, { answer: event.answer, done: true });
               } else if (event.kind === "error") {
-                patch(id, { error: event.message, done: true });
+                // Serverens egen tekst ("Agent-kald fejlede: 401 …") siger en
+                // læge ingenting. Skærmen får beskeden han kan handle på;
+                // detaljen bliver i konsollen, hvor vi kan finde den.
+                console.error("chat-agent:", event.message);
+                patch(id, { error: tr("chatFailed", lang), done: true });
               }
             }
           }

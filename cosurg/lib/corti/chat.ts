@@ -78,19 +78,31 @@ const REGISTRY_EXPERTS: Connector[] = [
   { type: "registry", name: "clinical-trials-expert" },
 ];
 
+/** Navnet connectoren får hos Corti. Samme navn som på teamets egen agent. */
+const MCP_CONNECTOR_NAME = "cosurg-viden";
+
 /**
- * Teamets egen MCP-server (brandsårsviden) kobles på ved at sætte COSURG_MCP_URL.
- * Intet andet skal ændres: connectoren føjes til listen, agentnavnet får
- * MCP-navnet med, og der oprettes derfor automatisk en NY agent hos Corti frem
- * for at genbruge en gammel uden serveren. Et agentnavn er hos Corti bundet til
- * sin connector-liste — skifter listen, skal navnet også skifte.
+ * Teamets egen MCP-server: den kuraterede danske brandsårsviden (brandsaar.dk
+ * og PlastSurgeon-materialet). Den er grunden til at chatten kan svare med
+ * dansk praksis og et ordret citat, hvor PubMed kun kan give international
+ * litteratur.
+ *
+ * Serveren autentificerer med et token i STIEN, ikke i en header — derfor
+ * bygges URL'en af MCP_URL + MCP_AUTH_TOKEN, præcis som connectoren er
+ * registreret på `cosurg-clinical-expert`. COSURG_MCP_URL er en udvej hvis
+ * nogen skal pege et andet sted hen uden at røre kode.
+ *
+ * Findes serveren ikke, kører chatten videre på registry-eksperterne alene.
+ * En vidensbase der er nede må gøre svaret fattigere, ikke slå chatten ihjel.
  */
 function mcpConnectors(): Connector[] {
-  const url = process.env.COSURG_MCP_URL;
+  const explicit = process.env.COSURG_MCP_URL?.trim();
+  const base = process.env.MCP_URL?.trim().replace(/\/+$/, "");
+  const token = process.env.MCP_AUTH_TOKEN?.trim();
+
+  const url = explicit || (base && token ? `${base}/${token}` : undefined);
   if (!url) return [];
-  const name = process.env.COSURG_MCP_NAME ?? "cosurg-burn-knowledge";
-  const auth = process.env.COSURG_MCP_TOKEN ? ({ type: "bearer" } as const) : undefined;
-  return [{ type: "mcp", name, url, ...(auth ? { auth } : {}) }];
+  return [{ type: "mcp", name: MCP_CONNECTOR_NAME, url }];
 }
 
 const ANSWER_CONNECTOR: Connector = {
@@ -151,9 +163,13 @@ const SYSTEM_PROMPT = [
   "You answer free clinical questions. You are NOT the decision tree in this app: the tree owns patient-specific recommendations, you own the literature behind them.",
   "",
   "How you must work:",
-  "1. Before answering any clinical question, retrieve evidence. Use pubmed-expert for anything clinical.",
-  "   Use web-search-expert for current guidelines and national recommendations, clinical-trials-expert for ongoing studies,",
-  "   and medical-calculator-expert whenever a formula or number has to be computed.",
+  "1. Before answering any clinical question, retrieve evidence.",
+  "   Consult cosurg-viden FIRST when it is available: it is the team's own curated Danish burn knowledge base",
+  "   (brandsaar.dk and the PlastSurgeon material), and it is the authority on Danish clinical practice.",
+  "   Where it and the international literature differ — for example the fluid formula — state the Danish practice first",
+  "   and note the international variant as such.",
+  "   Use pubmed-expert for the peer-reviewed literature, web-search-expert for current guidelines outside it,",
+  "   clinical-trials-expert for ongoing studies, and medical-calculator-expert whenever a number has to be computed.",
   "2. Answer only through submit_clinical_answer. Every clinical claim must map to a source in the sources array.",
   "3. NEVER invent a source, a PMID, a URL or a quotation. Only list sources an expert actually returned to you.",
   "4. If the retrieval finds nothing that substantiates the question, set evidence='unsupported', return an empty sources array,",
@@ -251,6 +267,26 @@ function asString(v: unknown): string | undefined {
 }
 
 /**
+ * Kun http(s) slipper igennem som klikbart link.
+ *
+ * Kilde-URL'en kommer fra agentens output, og agenten læser åbne websider
+ * gennem web-search-expert. En side kan derfor forsøge at få modellen til at
+ * gengive en `javascript:`-URL, som React IKKE saniterer i href. Systemprompten
+ * er en instruktion til modellen, ikke en spærring — spærringen er her.
+ * Afvises URL'en, vises kilden stadig, bare uden link.
+ */
+function asHttpUrl(v: unknown): string | undefined {
+  const raw = asString(v);
+  if (!raw) return undefined;
+  try {
+    const parsed = new URL(raw);
+    return parsed.protocol === "https:" || parsed.protocol === "http:" ? parsed.href : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+/**
  * Normaliserer agentens output og retter det ét sted hvor modellen kan tage fejl
  * til vores ugunst: siger den "sourced" uden at have vedlagt en eneste kilde,
  * er svaret pr. definition ikke belagt. Vi nedgraderer frem for at vise et
@@ -259,18 +295,35 @@ function asString(v: unknown): string | undefined {
 export function normalizeAnswer(raw: unknown): ChatAnswer {
   const r = (raw ?? {}) as Record<string, unknown>;
 
+  /*
+   * Samme kilde kan komme retur flere gange — vidensbasen svarer fx to gange
+   * fra samme side om væskebehandling. To identiske linjer i kildelisten ser
+   * ud som sjusk, så de slås sammen og deres begrundelser lægges i forlængelse
+   * af hinanden. Ingen kilde forsvinder; kun dubletten gør.
+   */
   const sources: ChatSource[] = [];
+  const seen = new Map<string, ChatSource>();
   if (Array.isArray(r.sources)) {
     for (const entry of r.sources) {
       const o = (entry ?? {}) as Record<string, unknown>;
       const title = asString(o.title);
       if (!title) continue;
-      sources.push({
+
+      const source: ChatSource = {
         title,
         identifier: asString(o.identifier),
-        url: asString(o.url),
+        url: asHttpUrl(o.url),
         supports: asString(o.supports) ?? "",
-      });
+      };
+
+      const key = (source.url ?? source.identifier ?? title).toLowerCase();
+      const existing = seen.get(key);
+      if (!existing) {
+        seen.set(key, source);
+        sources.push(source);
+      } else if (source.supports && !existing.supports.includes(source.supports)) {
+        existing.supports = existing.supports ? `${existing.supports} ${source.supports}` : source.supports;
+      }
     }
   }
 

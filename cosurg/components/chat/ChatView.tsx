@@ -189,23 +189,51 @@ export function ChatView() {
     bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
   }, [turns]);
 
+  /*
+   * `listening` bliver først sandt efter token-hentning, socket-opkobling og
+   * en mulig tilladelsesdialog. I hele det vindue ser knappen slukket ud, så et
+   * andet klik ville starte mikrofonen én gang til — og den første MediaStream
+   * ville blive hængende åben uden at nogen kan lukke den. Ét klik ad gangen.
+   */
+  const micStartingRef = useRef(false);
+  const startMic = useCallback(() => {
+    if (micStartingRef.current || listeningRef.current) return;
+    micStartingRef.current = true;
+    void start().finally(() => {
+      micStartingRef.current = false;
+    });
+  }, [start]);
+
   const toggleMic = useCallback(() => {
     if (listening) {
       stopMic();
       setHandsFree(false);
     } else {
-      void start();
+      startMic();
     }
-  }, [listening, start, stopMic]);
+  }, [listening, startMic, stopMic]);
 
   const toggleHandsFree = useCallback(() => {
     // Bivirkningerne ligger uden for state-opdateringen med vilje: en updater
     // kan køres to gange, og mikrofonen skal ikke startes to gange.
     const next = !handsFreeRef.current;
-    if (next && !listeningRef.current) void start();
-    if (!next) haltSpeech();
+    if (next) startMic();
+    else haltSpeech();
     setHandsFree(next);
-  }, [haltSpeech, start]);
+  }, [haltSpeech, startMic]);
+
+  /*
+   * Forlader lægen siden midt i et svar, må intet køre videre: SSE-kaldet
+   * bruger Corti-credits i op til tre minutter, mikrofonen ville blive stående
+   * åben, og oplæsningen ville tale videre fra en side der ikke er der mere.
+   */
+  useEffect(() => {
+    return () => {
+      stop();
+      stopMic();
+      haltSpeech();
+    };
+  }, [haltSpeech, stop, stopMic]);
 
   const toggleSpeak = useCallback(
     (turnId: string, answer: ChatAnswer) => {

@@ -8,6 +8,8 @@ import type { Lang } from "@/lib/tree/types";
  * aldrig komme til at fortie en kilde det ikke kender.
  */
 const LABELS: Record<string, Record<Lang, string>> = {
+  // Teamets egen MCP-server med brandsaar.dk og PlastSurgeon-materialet.
+  "cosurg-viden": { da: "CoSurg-vidensbasen", en: "CoSurg knowledge base" },
   "pubmed-expert": { da: "PubMed", en: "PubMed" },
   "web-search-expert": { da: "Websøgning", en: "Web search" },
   "medical-calculator-expert": { da: "Medicinsk beregner", en: "Medical calculator" },

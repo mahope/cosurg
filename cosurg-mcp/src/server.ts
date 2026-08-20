@@ -23,16 +23,18 @@ import {
   indlaesTraeer,
   tekst,
 } from "./traeer.js";
-import { indlaesVidenbase, kildehenvisning } from "./videnbase.js";
+import { indlaesVidenbase, kildehenvisning, kildetypeEtiket, optaelling } from "./videnbase.js";
 
 /** Alt indlaeses én gang ved opstart. Ingen skrivbar tilstand, ingen cache-invalidering. */
 const videnbase = indlaesVidenbase();
 const indeks = new Soegeindeks(videnbase.uddrag);
 const traesamling = indlaesTraeer();
+const optalt = optaelling(videnbase);
 
 export const opstartsstatus = {
   uddrag: videnbase.uddrag.length,
   afsnit: videnbase.afsnit.length,
+  cases: optalt.cases,
   kildemappe: videnbase.mappe,
   kildefiler: videnbase.filer,
   traeer: traesamling.traeer.map((t) => t.id),
@@ -143,6 +145,25 @@ const sprogSkema = z
   .default("da")
   .describe("Sprog for node- og dispositionstekster. da = dansk (standard), en = engelsk.");
 
+const samlingSkema = z
+  .enum(["alle", "brandsaar", "magnus", "plastsurgeon", "jpbrs"])
+  .default("alle")
+  .describe(
+    "Begraens til én kilde. 'brandsaar' = brandsaar.dk, 'magnus' = teamets eget materiale fra " +
+      "Afsnit 6052, 'plastsurgeon' = PlastSurgeon-haandbogens Burn Surgery-kapitel, " +
+      "'jpbrs' = peer-reviewede kliniske cases fra JPBRS, 'alle' = alle fire (standard).",
+  );
+
+const kildetypeSkema = z
+  .enum(["alle", "retningslinje", "case"])
+  .default("alle")
+  .describe(
+    "Begraens til én slags viden. 'retningslinje' = retningslinjer og haandbogskapitler " +
+      "(hvad der generelt anbefales), 'case' = enkeltstaaende peer-reviewede patientforloeb " +
+      "(hvad der blev gjort i ét konkret tilfaelde). Brug 'retningslinje' naar spoergsmaalet er " +
+      "hvad man BOER goere, og 'case' naar det er om nogen har gjort noget lignende foer.",
+  );
+
 /**
  * Bygger en ny McpServer med alle vaerktoejer registreret.
  *
@@ -160,7 +181,11 @@ export function opretServer(): McpServer {
         "CoSurgs kliniske vidensbase for brandsaar. Brug soeg_klinisk_viden foer du svarer paa et " +
         "klinisk spoergsmaal, og citér altid den kilde vaerktoejet returnerer. Anbefalinger om " +
         "handling skal komme fra beslutningstraeerne (hent_beslutningstrae / hent_trae_node), ikke " +
-        "fra egen viden. Melder et vaerktoej 'INGEN DAEKNING', saa sig det — opfind aldrig et svar. " +
+        "fra egen viden. Vidensbasen indeholder to slags kilder, og de maa ikke blandes: " +
+        "retningslinjer og haandbogskapitler siger hvad der generelt anbefales, mens kliniske " +
+        "cases dokumenterer ét enkelt patientforloeb. Gengiver du en case, saa sig at det er en " +
+        "case og nævn dens case-id — en case er aldrig i sig selv en anbefaling. " +
+        "Melder et vaerktoej 'INGEN DAEKNING', saa sig det — opfind aldrig et svar. " +
         "Mangler der litteratur, brug soeg_pubmed og gengiv kun det referencerne siger.",
     },
   );
@@ -173,14 +198,18 @@ export function opretServer(): McpServer {
       title: "Soeg i CoSurgs kliniske vidensbase",
       description:
         "Fritekstsoegning i CoSurgs kliniske kilder om brandsaar: brandsaar.dk (Dansk " +
-        "Brandsaarsforening / Rigshospitalets brandsaarsafdeling) og teamets eget materiale " +
-        "(Burns plast surgeon-dokumentet + forbindingsguiden fra Afsnit 6052). Daekker " +
-        "dybdevurdering, TBSA/arealberegning, Parkland-vaeskebehandling, inhalationsskader, " +
-        "aetsninger, forfrysninger, cirkulaere forbraendinger og escharotomi, " +
-        "overflytningskriterier til Rigshospitalet, ambulant behandling og smertebehandling. " +
-        "Returnerer ordrette uddrag MED kildehenvisning (URL eller dokumentnavn). " +
+        "Brandsaarsforening / Rigshospitalets brandsaarsafdeling), teamets eget materiale " +
+        "(Burns plast surgeon-dokumentet + forbindingsguiden fra Afsnit 6052), " +
+        "PlastSurgeon-haandbogens Burn Surgery-kapitel og peer-reviewede kliniske cases fra " +
+        "JPBRS. Daekker dybdevurdering, TBSA/arealberegning, Parkland-vaeskebehandling, " +
+        "inhalationsskader, aetsninger, forfrysninger, cirkulaere forbraendinger og " +
+        "escharotomi, overflytningskriterier til Rigshospitalet, ambulant behandling, " +
+        "smertebehandling, forbindinger, debridement og hudtransplantation. " +
+        "Returnerer ordrette uddrag MED kildehenvisning (URL eller dokumentnavn) og med " +
+        "kildetypen angivet: en retningslinje siger hvad der anbefales, en case siger hvad der " +
+        "blev gjort for én patient — de to maa ikke citeres som det samme. " +
         "Findes der intet, siges det eksplicit — vaerktoejet gaetter aldrig. " +
-        "(EN: full-text search of CoSurg's own clinical burn sources; returns verbatim excerpts with citations.)",
+        "(EN: full-text search of CoSurg's own clinical burn sources; returns verbatim excerpts with citations and source type.)",
       inputSchema: {
         forespoergsel: z
           .string()
@@ -191,13 +220,8 @@ export function opretServer(): McpServer {
               "'cirkulaer forbraending escharotomi', 'inhalationsskade tegn'.",
           ),
         antal: z.number().int().min(1).max(10).default(5).describe("Antal uddrag der oenskes. Standard 5."),
-        samling: z
-          .enum(["alle", "brandsaar", "magnus"])
-          .default("alle")
-          .describe(
-            "Begraens til én kilde. 'brandsaar' = brandsaar.dk, 'magnus' = teamets eget materiale, " +
-              "'alle' = begge (standard).",
-          ),
+        samling: samlingSkema,
+        kildetype: kildetypeSkema,
         fuldt_uddrag: z
           .boolean()
           .default(false)
@@ -205,7 +229,7 @@ export function opretServer(): McpServer {
       },
       annotations: { readOnlyHint: true, openWorldHint: false },
     },
-    async ({ forespoergsel, antal, samling, fuldt_uddrag }) => {
+    async ({ forespoergsel, antal, samling, kildetype, fuldt_uddrag }) => {
       if (indeks.antalUddrag === 0) {
         return fejlsvar(
           "Vidensbasen er tom — ingen kildefiler blev fundet ved opstart. " +
@@ -215,12 +239,17 @@ export function opretServer(): McpServer {
 
       const traeffere = indeks.soeg(forespoergsel, {
         antal,
-        filter: samling === "alle" ? undefined : (u) => u.samling === samling,
+        filter:
+          samling === "alle" && kildetype === "alle"
+            ? undefined
+            : (u) =>
+                (samling === "alle" || u.samling === samling) &&
+                (kildetype === "alle" || u.kildetype === kildetype),
       });
 
       if (traeffere.length === 0) {
         return tekstsvar(
-          `${INGEN_DAEKNING}\n\nSoegning: "${forespoergsel}" (samling: ${samling}). ` +
+          `${INGEN_DAEKNING}\n\nSoegning: "${forespoergsel}" (samling: ${samling}, kildetype: ${kildetype}). ` +
             `Der blev gennemsoegt ${indeks.antalUddrag} uddrag fra ${videnbase.afsnit.length} kildeafsnit.`,
         );
       }
@@ -231,22 +260,35 @@ export function opretServer(): McpServer {
         const link = u.kildeErUrl ? u.kilde : `dokument: ${u.kilde}`;
         return [
           `## Traeffer ${i + 1} — ${kildehenvisning(u)}`,
+          `Kildetype: ${kildetypeEtiket(u.kildetype)}`,
           `Kilde: ${link}`,
+          u.forfattere !== undefined ? `Forfattere: ${u.forfattere}` : "",
           `Uddrag-id: \`${u.id}\` · afsnit-id: \`${u.afsnitId}\` · relevans: ${t.score.toFixed(2)}`,
           "",
           krop,
-        ].join("\n");
+        ]
+          .filter((s) => s !== "")
+          .join("\n");
       });
+
+      const harCase = traeffere.some((t) => t.uddrag.kildetype === "case");
 
       return tekstsvar(
         [
           `${traeffere.length} uddrag fra CoSurgs kliniske vidensbase for "${forespoergsel}".`,
           "Citér kilden ved hvert udsagn. Staar det ikke herunder, staar det ikke i vores kilder.",
+          harCase
+            ? "OBS: mindst én traeffer er en KLINISK CASE. En case dokumenterer ét forloeb og er " +
+              "ikke en anbefaling — sig eksplicit at det er en case naar du gengiver den, og bland " +
+              "den aldrig sammen med en retningslinje."
+            : "",
           "",
           dele.join("\n\n---\n\n"),
           "",
           "*Brug hent_kildeafsnit med et afsnit-id for at laese hele siden bag et uddrag.*",
-        ].join("\n"),
+        ]
+          .filter((s) => s !== "")
+          .join("\n"),
       );
     },
   );
@@ -291,12 +333,16 @@ export function opretServer(): McpServer {
       }
       const dele = fundet.slice(0, 3).map((a) =>
         [
-          `## ${a.samlingsTitel}`,
+          `## ${a.samlingsTitel}${a.caseId !== undefined ? ` — ${a.caseId}` : ""}`,
+          `Kildetype: ${kildetypeEtiket(a.kildetype)}`,
           `Kilde: ${a.kilde}`,
+          a.forfattere !== undefined ? `Forfattere: ${a.forfattere}` : "",
           `Afsnit-id: \`${a.id}\` · fil: ${a.dokument}`,
           "",
           a.tekst,
-        ].join("\n"),
+        ]
+          .filter((s) => s !== "")
+          .join("\n"),
       );
       return tekstsvar(dele.join("\n\n---\n\n"));
     },
@@ -309,27 +355,35 @@ export function opretServer(): McpServer {
     {
       title: "Vis hvad vidensbasen indeholder",
       description:
-        "Lister alle kildeafsnit i CoSurgs vidensbase med id, kilde-URL/dokumentnavn og " +
-        "stoerrelse. Brug det til at afgoere om et emne overhovedet er daekket, foer du " +
-        "konkluderer noget. (EN: list every source section in the knowledge base.)",
+        "Lister alle kildeafsnit i CoSurgs vidensbase med id, kildetype (retningslinje eller " +
+        "klinisk case), kilde-URL/dokumentnavn og stoerrelse. Brug det til at afgoere om et emne " +
+        "overhovedet er daekket, foer du konkluderer noget. " +
+        "(EN: list every source section in the knowledge base, with its source type.)",
       inputSchema: {
-        samling: z
-          .enum(["alle", "brandsaar", "magnus"])
-          .default("alle")
-          .describe("Begraens til én samling."),
+        samling: samlingSkema,
+        kildetype: kildetypeSkema,
       },
       annotations: { readOnlyHint: true, openWorldHint: false },
     },
-    async ({ samling }) => {
-      const valgte = videnbase.afsnit.filter((a) => samling === "alle" || a.samling === samling);
-      if (valgte.length === 0) return tekstsvar("Vidensbasen indeholder ingen afsnit i denne samling.");
-      const linjer = valgte.map(
-        (a) => `- \`${a.id}\` · ${a.kilde} · ${a.tekst.length} tegn · ${a.samlingsTitel.split(" — ")[0]}`,
+    async ({ samling, kildetype }) => {
+      const valgte = videnbase.afsnit.filter(
+        (a) =>
+          (samling === "alle" || a.samling === samling) && (kildetype === "alle" || a.kildetype === kildetype),
       );
+      if (valgte.length === 0) {
+        return tekstsvar("Vidensbasen indeholder ingen afsnit der matcher dette filter.");
+      }
+      const linjer = valgte.map((a) => {
+        const maerke = a.kildetype === "case" ? "CASE" : "retningslinje";
+        const navn = a.caseId !== undefined ? `${a.caseId}: ${a.titel ?? ""}` : (a.titel ?? "");
+        return `- \`${a.id}\` · [${maerke}] ${navn ? `${navn} · ` : ""}${a.kilde} · ${a.tekst.length} tegn · ${a.samlingsTitel.split(" — ")[0]}`;
+      });
       return tekstsvar(
         [
-          `CoSurgs vidensbase: ${valgte.length} kildeafsnit, ${videnbase.uddrag.length} soegbare uddrag i alt.`,
+          `CoSurgs vidensbase: ${valgte.length} kildeafsnit, ${videnbase.uddrag.length} soegbare uddrag i alt ` +
+            `(heraf ${optalt.cases} kliniske cases).`,
           `Laest fra: ${videnbase.mappe ?? "(ingen mappe fundet)"} — filer: ${videnbase.filer.join(", ") || "(ingen)"}`,
+          "[CASE] = ét patientforloeb, ikke en anbefaling. [retningslinje] = generel klinisk anvisning.",
           "",
           ...linjer,
         ].join("\n"),
@@ -614,6 +668,11 @@ export function opretServer(): McpServer {
           `Kildemappe: ${videnbase.mappe ?? "(ingen fundet)"}`,
           `Kildefiler: ${videnbase.filer.join(", ") || "(ingen)"}`,
           `Kildeafsnit: ${videnbase.afsnit.length} · soegbare uddrag: ${videnbase.uddrag.length}`,
+          `Fordeling: ${
+            optalt.samlinger
+              .map((s) => `${s.samling} [${s.kildetype}] ${s.afsnit} afsnit / ${s.uddrag} uddrag`)
+              .join(" · ") || "(ingen)"
+          }`,
           `Traemappe: ${traesamling.mappe ?? "(ingen fundet)"}`,
           `Beslutningstraeer: ${traesamling.traeer.map((t) => `${t.id} (${t.nodes.length} noder)`).join(", ") || "(ingen)"}`,
           traesamling.fejl.length > 0

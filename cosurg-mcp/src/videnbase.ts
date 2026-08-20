@@ -9,6 +9,17 @@
  * Vi deler i to niveauer:
  *   - afsnit  = alt under én `## KILDE:`-linje (én webside / ét dokument)
  *   - uddrag  = et soegbart stykke inden i et afsnit, med sin overskriftssti
+ *
+ * Kilderne er ikke af samme slags. En retningslinje siger "saadan skal det
+ * goeres"; en klinisk case siger "saadan gik det for én patient". De to maa
+ * aldrig laeses som det samme, saa hvert afsnit baerer en `kildetype`, og
+ * case-afsnit baerer desuden deres case-id, titel og forfattere. Metadata
+ * angives med store bogstaver lige under `## KILDE:`-linjen:
+ *
+ *   ## KILDE: https://beta.jpbrs.com/cases/case-16-...
+ *   CASE-ID: Case 16 (2025)
+ *   TITEL: Utilizing the reverse radial forearm flap ...
+ *   FORFATTERE: David Salim, MD; Taiba Alrasheed, MD
  */
 
 import { readFileSync, readdirSync, statSync } from "node:fs";
@@ -16,12 +27,35 @@ import { basename, join } from "node:path";
 
 import { foersteEksisterende, konfiguration } from "./konfiguration.js";
 
-export type KildeSamling = "brandsaar" | "magnus" | "ukendt";
+export type KildeSamling = "brandsaar" | "magnus" | "plastsurgeon" | "jpbrs" | "ukendt";
 
-export interface Afsnit {
+/**
+ * Hvilken slags viden kilden er.
+ *
+ * `retningslinje` = retningslinje, laerebog eller haandbogskapitel — "saadan skal det goeres".
+ * `case`         = ét peer-reviewed patientforloeb — "saadan gik det i dette tilfaelde".
+ *
+ * Forskellen er klinisk vaesentlig og skal fremgaa af hvert eneste svar.
+ */
+export type Kildetype = "retningslinje" | "case";
+
+/** Metadata en kilde kan baere ud over selve teksten. */
+export interface Kildemetadata {
+  /** Kun paa cases: fx "Case 16 (2025)". */
+  caseId?: string;
+  /** Kildens egen titel, fx casens overskrift eller kapitlets navn. */
+  titel?: string;
+  /** Forfatterlinjen ordret fra kilden. */
+  forfattere?: string;
+  /** Afdeling/hospital casen kommer fra. */
+  institution?: string;
+}
+
+export interface Afsnit extends Kildemetadata {
   /** Stabilt id, fx "brandsaar:04". Bruges af vaerktoejet hent_kildeafsnit. */
   id: string;
   samling: KildeSamling;
+  kildetype: Kildetype;
   /** Filnavnet uddraget stammer fra, fx "brandsaar-dk.md". */
   dokument: string;
   /** Menneskelaesbart navn paa samlingen, fx "brandsaar.dk (Dansk Brandsaarsforening)". */
@@ -34,11 +68,12 @@ export interface Afsnit {
   tekst: string;
 }
 
-export interface Uddrag {
+export interface Uddrag extends Kildemetadata {
   /** Stabilt id, fx "brandsaar:04#2". */
   id: string;
   afsnitId: string;
   samling: KildeSamling;
+  kildetype: Kildetype;
   dokument: string;
   samlingsTitel: string;
   kilde: string;
@@ -56,15 +91,35 @@ export interface Videnbase {
   filer: string[];
 }
 
-const SAMLINGER: Record<string, { samling: KildeSamling; titel: string }> = {
+const SAMLINGER: Record<string, { samling: KildeSamling; titel: string; kildetype: Kildetype }> = {
   "brandsaar-dk.md": {
     samling: "brandsaar",
     titel: "brandsaar.dk — Dansk Brandsaarsforening / Rigshospitalets brandsaarsafdeling",
+    kildetype: "retningslinje",
   },
   "magnus-materiale.md": {
     samling: "magnus",
     titel: "CoSurg-teamets eget materiale (Burns plast surgeon + forbindingsguide, Afsnit 6052)",
+    kildetype: "retningslinje",
   },
+  "plastsurgeon-brandsaar.md": {
+    samling: "plastsurgeon",
+    titel: "PlastSurgeon-haandbogen — kapitlet Burn Surgery (beta.plastsurgeon.com)",
+    kildetype: "retningslinje",
+  },
+  "jpbrs-cases.md": {
+    samling: "jpbrs",
+    titel: "JPBRS — Journal of Plastic, Breast & Reconstructive Surgery (peer-reviewed cases)",
+    kildetype: "case",
+  },
+};
+
+/** Metadata-linjer der maa staa lige under en `## KILDE:`-linje. */
+const METADATAFELTER: Record<string, keyof Kildemetadata> = {
+  "CASE-ID": "caseId",
+  TITEL: "titel",
+  FORFATTERE: "forfattere",
+  INSTITUTION: "institution",
 };
 
 /** Hoejeste laengde paa et uddrag foer vi deler det yderligere. */
@@ -85,12 +140,17 @@ function erStoejlinje(linje: string): boolean {
 
 /** Deler en markdown-fil op i afsnit paa `## KILDE:`-linjer. */
 function delIAfsnit(indhold: string, dokument: string): Afsnit[] {
-  const meta = SAMLINGER[dokument] ?? { samling: "ukendt" as const, titel: dokument };
+  const meta = SAMLINGER[dokument] ?? {
+    samling: "ukendt" as const,
+    titel: dokument,
+    kildetype: "retningslinje" as const,
+  };
   const linjer = indhold.split(/\r?\n/);
   const afsnit: Afsnit[] = [];
 
   let aktuelKilde: string | null = null;
   let buffer: string[] = [];
+  let kildemeta: Kildemetadata = {};
 
   const luk = () => {
     if (aktuelKilde === null) return;
@@ -100,14 +160,17 @@ function delIAfsnit(indhold: string, dokument: string): Afsnit[] {
       afsnit.push({
         id: `${meta.samling}:${nr}`,
         samling: meta.samling,
+        kildetype: meta.kildetype,
         dokument,
         samlingsTitel: meta.titel,
         kilde: aktuelKilde,
         kildeErUrl: erUrl(aktuelKilde),
+        ...kildemeta,
         tekst,
       });
     }
     buffer = [];
+    kildemeta = {};
   };
 
   for (const linje of linjer) {
@@ -119,6 +182,13 @@ function delIAfsnit(indhold: string, dokument: string): Afsnit[] {
     }
     if (aktuelKilde === null) continue; // praeambel foer foerste KILDE-linje springes over
     if (erStoejlinje(linje)) continue;
+
+    // Metadata-linjer opsamles som felter — men bliver staaende i teksten, saa
+    // en soegning paa fx et forfatternavn eller en casetitel ogsaa rammer.
+    const md = /^([A-Z][A-Z-]+):\s*(.+?)\s*$/.exec(linje);
+    const felt = md ? METADATAFELTER[md[1] ?? ""] : undefined;
+    if (md && felt !== undefined) kildemeta[felt] = md[2] ?? "";
+
     buffer.push(linje);
   }
   luk();
@@ -187,10 +257,15 @@ function delIUddrag(a: Afsnit): Uddrag[] {
         id: `${a.id}#${uddrag.length}`,
         afsnitId: a.id,
         samling: a.samling,
+        kildetype: a.kildetype,
         dokument: a.dokument,
         samlingsTitel: a.samlingsTitel,
         kilde: a.kilde,
         kildeErUrl: a.kildeErUrl,
+        ...(a.caseId !== undefined ? { caseId: a.caseId } : {}),
+        ...(a.titel !== undefined ? { titel: a.titel } : {}),
+        ...(a.forfattere !== undefined ? { forfattere: a.forfattere } : {}),
+        ...(a.institution !== undefined ? { institution: a.institution } : {}),
         overskrifter: blok.overskrifter,
         tekst: rent,
       });
@@ -226,5 +301,39 @@ export function indlaesVidenbase(): Videnbase {
 /** Kort, citerbar kildehenvisning til et uddrag eller afsnit. */
 export function kildehenvisning(x: Uddrag | Afsnit): string {
   const sti = "overskrifter" in x && x.overskrifter.length > 0 ? ` › ${x.overskrifter.join(" › ")}` : "";
-  return `${x.samlingsTitel} — ${x.kilde}${sti}`;
+  const caseDel = x.caseId !== undefined ? ` — ${x.caseId}` : "";
+  const titelDel = x.titel !== undefined ? `: "${x.titel}"` : "";
+  return `${x.samlingsTitel}${caseDel}${titelDel} — ${x.kilde}${sti}`;
+}
+
+/**
+ * Én linje der fortaeller laeseren hvad slags viden traefferen er.
+ * En case er evidens fra ét forloeb — den maa aldrig laeses som en anbefaling.
+ */
+export function kildetypeEtiket(k: Kildetype): string {
+  return k === "case"
+    ? "KLINISK CASE — ét peer-reviewed patientforloeb. Beskriver hvad der blev gjort for én patient, ikke hvad der generelt anbefales."
+    : "RETNINGSLINJE/HAANDBOG — generel klinisk anvisning.";
+}
+
+/** Talt oversigt over vidensbasen pr. samling og kildetype. */
+export function optaelling(v: Videnbase): {
+  samlinger: { samling: KildeSamling; kildetype: Kildetype; afsnit: number; uddrag: number }[];
+  cases: number;
+} {
+  const kort = new Map<string, { samling: KildeSamling; kildetype: Kildetype; afsnit: number; uddrag: number }>();
+  for (const a of v.afsnit) {
+    const noegle = `${a.samling}|${a.kildetype}`;
+    const post = kort.get(noegle) ?? { samling: a.samling, kildetype: a.kildetype, afsnit: 0, uddrag: 0 };
+    post.afsnit += 1;
+    kort.set(noegle, post);
+  }
+  for (const u of v.uddrag) {
+    const post = kort.get(`${u.samling}|${u.kildetype}`);
+    if (post) post.uddrag += 1;
+  }
+  return {
+    samlinger: [...kort.values()],
+    cases: v.afsnit.filter((a) => a.kildetype === "case").length,
+  };
 }

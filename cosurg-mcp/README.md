@@ -164,8 +164,9 @@ npm run build
 MCP_AUTH_TOKEN=$(openssl rand -hex 32) npm start
 ```
 
-Serveren finder selv kilderne i `../kilder` og træerne i
-`../cosurg/content/trees` når den kører fra repoet.
+Serveren finder selv kilderne i `data/kilder` og træerne i
+`../cosurg/content/trees` når den kører fra repoet — samme stier som i
+containeren. Se `data/README.md` for hvad der må ligge i vidensbasen.
 
 Røgtesten starter serveren, kobler en rigtig MCP-klient på og kalder hvert
 værktøj — inklusive PubMed mod det virkelige API:
