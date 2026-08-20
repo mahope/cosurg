@@ -114,11 +114,18 @@
   --font-body: var(--font-body), Roboto, ui-sans-serif, sans-serif;
   --font-mono: var(--font-mono), "Roboto Mono", ui-monospace, monospace;
 
-  /* Sidebaggrunden: Turquoise → LightBlue, øverst venstre til nederst højre.
-     Samme brandtoner som --turquoise/--teal-tint, her som gradient i stedet
-     for fladt papir. Bruges KUN til den fulde sidebaggrund — kort, knapper og
-     badges beholder deres flade --paper. */
-  --app-gradient: linear-gradient(135deg, #00bacd 0%, #e6f5f8 100%);
+  /* Sidebaggrunden: et let optonet hjørne → dæmpet Turquoise → LightBlue,
+     øverst venstre til nederst højre. Samme brandtoner som
+     --turquoise/--teal-tint, her som gradient i stedet for fladt papir og
+     hvidt blandet ind hele vejen, så hele fladen — ikke kun hjørnet — er
+     lysere. Bruges KUN til den fulde sidebaggrund — kort, knapper og badges
+     beholder deres flade --paper. */
+  --app-gradient: linear-gradient(
+    135deg,
+    color-mix(in srgb, #00bacd 20%, white) 0%,
+    color-mix(in srgb, #00bacd 55%, white) 45%,
+    #e6f5f8 100%
+  );
 }
 
 @theme inline {
