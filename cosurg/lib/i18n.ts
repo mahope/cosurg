@@ -9,7 +9,7 @@ export const t = {
   start: { da: "Start vurdering", en: "Start assessment" },
   listening: { da: "Lytter", en: "Listening" },
   micOff: { da: "Mikrofon slukket", en: "Microphone off" },
-  orMode: { da: "OR-tilstand", en: "OR mode" },
+  orMode: { da: "Handsfree mode", en: "Handsfree mode" },
   orModeOn: { da: "OR-tilstand AKTIV", en: "OR MODE ACTIVE" },
   // "Fra" skal betyde fra: netværks-TTS afregnes pr. tegn, så en tvetydig
   // mærkat koster penge hos enhver der tror den er slukket.
