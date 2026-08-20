@@ -11,8 +11,10 @@ export const t = {
   micOff: { da: "Mikrofon slukket", en: "Microphone off" },
   orMode: { da: "OR-tilstand", en: "OR mode" },
   orModeOn: { da: "OR-tilstand AKTIV", en: "OR MODE ACTIVE" },
-  voiceFull: { da: "Fuld stemmedialog", en: "Full voice dialogue" },
-  voiceKey: { da: "Kun nøglemomenter", en: "Key moments only" },
+  // "Fra" skal betyde fra: netværks-TTS afregnes pr. tegn, så en tvetydig
+  // mærkat koster penge hos enhver der tror den er slukket.
+  voiceFull: { da: "Oplæsning til", en: "Speech on" },
+  voiceKey: { da: "Oplæsning fra", en: "Speech off" },
   redFlag: { da: "RØDT FLAG", en: "RED FLAG" },
   recommendation: { da: "Anbefaling", en: "Recommendation" },
   path: { da: "Beslutningsvej", en: "Decision path" },
@@ -277,8 +279,8 @@ export const t = {
   chatLimitations: { da: "Forbehold", en: "Limitations" },
   chatExperts: { da: "Koblet på", en: "Connected to" },
   chatGrounding: {
-    da: "Svaret hentes gennem Cortis registry-eksperter — ikke fra modellens hukommelse.",
-    en: "Answers are retrieved through Corti's registry experts — not from the model's memory.",
+    da: "Svaret hentes gennem kilderne herunder — ikke fra modellens hukommelse.",
+    en: "Answers are retrieved through the sources listed below — not from the model's memory.",
   },
   chatDisclaimer: {
     da: "Litteraturopslag, ikke en ordination. Anbefalingen til en konkret patient kommer fra beslutningstræet.",

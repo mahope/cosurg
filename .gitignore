@@ -12,10 +12,12 @@ npm-debug.log*
 next-env.d.ts
 .vercel
 
-# Store binære kilder holdes ude af git — de ligger i teamets Google Drive
-kilder/magnus-materiale/*.pptx
-kilder/magnus-materiale/*.docx
-datasets/Hackathon Datasets/Audio Samples/
+# Store binaere primaerkilder holdes ude af git — de ligger i teamets Google Drive.
+# Teksten er udtrukket til vidensbasen, og de 71 procedurefotos serveres komprimeret
+# fra cosurg/public/step-images/. Se cosurg-mcp/data/originaler/PROVENIENS.md.
+cosurg-mcp/data/originaler/*.pptx
+cosurg-mcp/data/originaler/*.docx
+cosurg-mcp/data/originaler/pptx-billeder/
 
-# Gammel mappe efter omdoebning til cosurg - fjernes naar dev-serveren stoppes
-burntree/
+# Arrangoerens lydfiler (77 MB) — hentes fra Drive, se cosurg-mcp/test-data/README.md
+cosurg-mcp/test-data/audio-samples/

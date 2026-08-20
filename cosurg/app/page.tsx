@@ -67,7 +67,12 @@ function isStepLike(node: TreeNode): boolean {
 export default function Home() {
   const [lang, setLang] = useState<Lang>("da");
   const [orMode, setOrMode] = useState(false);
-  const [fullVoice, setFullVoice] = useState(true);
+  /*
+   * Oplæsning er slået FRA indtil klinikeren selv slår den til. Netværks-TTS
+   * afregnes pr. tegn, og en app der taler uopfordret koster penge hos enhver
+   * der åbner den — også dem der sidder uden lyd på maskinen.
+   */
+  const [fullVoice, setFullVoice] = useState(false);
   const [tree, setTree] = useState<DecisionTree>(initialTree);
   /*
    * Listen sås med det bundtede træ. Uden det ville et netværksudfald efterlade
@@ -311,14 +316,14 @@ export default function Home() {
    */
   const acknowledgeFlash = useCallback(async () => {
     setFlash(null);
-    await say(tr("ackFlag", lang));
+    if (speakAll) await say(tr("ackFlag", lang));
     if (state.dispositionId) {
       const d = getDisposition(tree, state.dispositionId);
-      if (d) void say(`${d.title[lang]}. ${d.guidance[lang]}`);
+      if (d && speakAll) void say(`${d.title[lang]}. ${d.guidance[lang]}`);
     } else {
       askCurrent(state);
     }
-  }, [state, tree, lang, askCurrent, say]);
+  }, [state, tree, lang, askCurrent, say, speakAll]);
 
   /**
    * Kommandoer spærres kun af en kort dublet-vagt, ALDRIG af oplæsningen.
@@ -481,8 +486,13 @@ export default function Home() {
 
         if (redFlag) {
           setFlash(redFlag.message);
-          // Røde flag læses ALTID op, uanset stemmetilstand.
-          void say(redFlag.message);
+          /*
+           * Røde flag læses op når oplæsning er slået til — men aldrig når
+           * klinikeren har slået den fra. Flaget afbryder i forvejen hele
+           * skærmen og kan ikke overses; at tale mod en slukket højttaler
+           * ville kun koste penge.
+           */
+          if (speakAll) void say(redFlag.message);
           return;
         }
 
@@ -659,7 +669,7 @@ export default function Home() {
       setStatus(null);
       if (redFlag) {
         setFlash(redFlag.message);
-        void say(redFlag.message);
+        if (speakAll) void say(redFlag.message);
       } else if (next.dispositionId) {
         const d = getDisposition(tree, next.dispositionId);
         if (d && speakAll) void say(`${d.title[lang]}. ${d.guidance[lang]}`);
@@ -747,10 +757,16 @@ export default function Home() {
     [dictationError, error, lang, orMode, speakAll, audioUnlocked],
   );
 
-  // Forvarm oplæsningen af de mulige næste spørgsmål, så stemmen starter uden
-  // ventetid når klinikeren svarer. Netværks-TTS koster ~1 s uden dette.
+  /*
+   * Forvarm oplæsningen af de mulige næste spørgsmål, så stemmen starter uden
+   * ventetid når klinikeren svarer. Netværks-TTS koster ~1 s uden dette.
+   *
+   * Men KUN når oplæsning faktisk er slået til: forvarmningen henter lyd for
+   * hver eneste kant ud af den aktuelle node, og gjorde den det uanset
+   * stemmetilstand, betalte vi for lyd ingen nogensinde hører.
+   */
   useEffect(() => {
-    if (!node) return;
+    if (!node || !speakAll) return;
     const targets = new Set(node.edges.map((e) => e.goto));
     node.redFlags?.forEach((f) => f.goto && targets.add(f.goto));
     targets.forEach((id) => {
@@ -760,7 +776,7 @@ export default function Home() {
     // Kvitteringerne er korte og gentages hele vejen gennem træet — de skal
     // ligge klar, ellers koster hver "næste" en ekstra netværksrundtur.
     [tr("ackNext", lang), tr("ackRepeat", lang), tr("ackBack", lang)].forEach((t) => prefetchSpeech(t, lang));
-  }, [node, tree, lang, orMode]);
+  }, [node, tree, lang, orMode, speakAll]);
 
   /*
    * Ambulant behandlet brandsår skal forbindes. I stedet for at lade lægen lede
