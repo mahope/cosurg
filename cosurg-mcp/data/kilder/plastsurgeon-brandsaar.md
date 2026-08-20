@@ -10,11 +10,17 @@
 > Kildetype: RETNINGSLINJE/HAANDBOG. Hvert afsnit er én kapitelside, ordret som den
 > staar paa sitet; kun sidenavigation, cookiebanner og sidefod er fjernet.
 >
-> IKKE MED: kursusmodulerne under /courses/burns-* (chemical burns, electrical burns,
+> KURSUSMODULERNE /courses/burns-*: undersoegt 20/8 2026 direkte i platformens
+> database, som holdet selv ejer. Alle 11 moduler (chemical burns, electrical burns,
 > inhalation injury, paediatric burns, fluid resuscitation, surgical management,
-> response to burn injury, early management of the burn wound, emergency examination)
-> kraever betalt medlemskab og kunne ikke hentes. Indekssiderne /handbook/burns-treatment
-> og /handbook/burns-treatment/procedures er ren navigation uden klinisk indhold.
+> response to burn injury, early management of the burn wound, emergency examination
+> m.fl.) har **nul lektioner, nul indhold og nul beskrivelse**. De er tomme skaller
+> paa platformen — der laa altsaa ikke klinisk materiale bag betalingsmuren som
+> tidligere antaget. Faar de indhold, er de naeste kilde ind.
+>
+> Indekssiderne /handbook/burns-treatment og /handbook/burns-treatment/procedures
+> er samlesider der gengiver underkapitlerne én gang til; de er udeladt, saa hvert
+> brandsaarsudsagn kun staar ét sted i basen.
 
 ---
 ## KILDE: https://beta.plastsurgeon.com/handbook/burns-treatment/introduction

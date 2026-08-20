@@ -401,7 +401,7 @@ Pt glad for resultatet.
 
 ---
 ## KILDE: https://beta.jpbrs.com/cases/case-02-2026-tarsoconjuctival-flap-for-eyelid-reconstruction
-CASE-ID: Case 02 2026 (2026)
+CASE-ID: Case 02 2026
 TITEL: Tarsoconjuctival Flap for Eyelid Reconstruction
 FORFATTERE: Ajla Sabitovic, Rikke Børthy Petersen, Nanja Gotland Sundstrup
 
@@ -511,7 +511,7 @@ The postoperative result of a tarsoconjuctival flap for the posterior lamella an
 
 ---
 ## KILDE: https://beta.jpbrs.com/cases/case-04-2026-full-thickness-skin-graft-for-areola-reconstruction-a-simple-and-reliable-technique
-CASE-ID: Case 04 2026 (2026)
+CASE-ID: Case 04 2026
 TITEL: Full-Thickness Skin Graft for Areola Reconstruction: A Simple and Reliable Technique
 FORFATTERE: Ajla Sabitovic (MD), Nanja Gotland Sundstrup (MD)
 
@@ -620,7 +620,7 @@ The postoperative result after 3 months.
 
 ---
 ## KILDE: https://beta.jpbrs.com/cases/case-05-2026-partial-avulsion-of-the-nasal-tip
-CASE-ID: Case 05 2026 (2026)
+CASE-ID: Case 05 2026
 TITEL: Partial avulsion of the nasal tip
 FORFATTERE: Nicolai Lassen Frid, Johan Hindkjær Therchilsen, Jakob Gerlach Christensen
 INSTITUTION: Department of Otorhinolaryngology and Maxillofacial Surgery, Zealand University Hospital, Køge, Denmark
@@ -726,7 +726,7 @@ A small fissure of the upper lip was closed with 6-0 nylon sutures, and the muco
 
 ---
 ## KILDE: https://beta.jpbrs.com/cases/case-06-2026-post-embolic-gangrene-of-the-left-lower-limb-managed-with-serial-debridement-vac-therapy-and-cross-leg-free-flap-reconstruction-for-limb-salvage
-CASE-ID: Case 06 2026 (2026)
+CASE-ID: Case 06 2026
 TITEL: Post-Embolic Gangrene of the Left Lower Limb Managed with Serial Debridement, VAC Therapy, and Cross-Leg Free Flap Reconstruction for Limb Salvage
 FORFATTERE: Dr. RAHUL KAPOOR
 
@@ -837,7 +837,7 @@ Pressure sore developed over heel area due to absence of any sensation. With gra
 
 ---
 ## KILDE: https://beta.jpbrs.com/cases/case-07-2026-reconstruction-of-a-complex-epigastric-abdominal-wall-defect-following-wide-excision-of-giant-fibrosarcoma-using-prolene-mesh-and-modified-keystone-flap-in-a-resource-limited-setting-a-2
-CASE-ID: Case 07 2026 (2026)
+CASE-ID: Case 07 2026
 TITEL: Reconstruction of a Complex Epigastric Abdominal Wall Defect Following Wide Excision of Giant Fibrosarcoma Using Prolene mesh and Modified Keystone Flap in a Resource-Limited Setting: A Case Report”
 FORFATTERE: Abdirahman Abdifatah Mohamed, Numan Omar Ibrahim, Rose Alenyo, Kalanzi Edris
 
@@ -954,7 +954,7 @@ Before rising the flap we inserted synthetic Proline mesh patient could not affo
 
 ---
 ## KILDE: https://beta.jpbrs.com/cases/case-08-2026-a-hella-lamella-a-three-flap-full-thickness-lower-eyelid-reconstruction
-CASE-ID: Case 08 2026 (2026)
+CASE-ID: Case 08 2026
 TITEL: A Hella Lamella: A Three-Flap, Full-Thickness Lower Eyelid Reconstruction
 FORFATTERE: Sondre F. Koren (MD), Jette B. Løvenwald (MD). Roskilde, SUH, Denmark
 
@@ -1048,7 +1048,7 @@ At the donor site, Müller’s muscle was released up to the levator aponeurosis
 
 ---
 ## KILDE: https://beta.jpbrs.com/cases/case-09-2026-single-stage-spear-flap-reconstruction-of-recurrent-full-thickness-nasal-alar-defects-a-two-case-series
-CASE-ID: Case 09 2026 (2026)
+CASE-ID: Case 09 2026
 TITEL: Single-Stage Spear Flap Reconstruction of Recurrent Full-Thickness Nasal Alar Defects: A Two-Case Series
 FORFATTERE: Lukas Kure-Rosenberg, Matilda Svenning, Mille Vissing. Magnus Balslev Avnstorp
 
@@ -1347,7 +1347,7 @@ View at follow up of ALT flap covering the large defect, with the radial bridge 
 
 ---
 ## KILDE: https://beta.jpbrs.com/cases/case-10-2026-propeller-flap-based-on-two-perforators-of-the-scapular-artery-for-the-management-of-a-severely-traumatized-upper-extremity
-CASE-ID: Case 10 2026 (2026)
+CASE-ID: Case 10 2026
 TITEL: Propeller Flap Based on Two Perforators of the Scapular Artery for the Management of a Severely Traumatized Upper Extremity
 FORFATTERE: Nelson Ramirez Lozano, Oncólogos de Occidente Manizales
 INSTITUTION: Hospital de Santa Sofía Manizales, Colombia.
@@ -1579,7 +1579,7 @@ The patient was seen two weeks postoperatively for suture removal around the umb
 
 ---
 ## KILDE: https://beta.jpbrs.com/cases/case-11-2026-dual-internal-mammary-artery-perforator-propeller-flap-for-anterior-chest-wall-reconstruction
-CASE-ID: Case 11 2026 (2026)
+CASE-ID: Case 11 2026
 TITEL: Dual Internal Mammary Artery Perforator Propeller Flap for Anterior Chest Wall Reconstruction
 FORFATTERE: Nelson Ramirez Lozano, Alejandro Angelillis Osorio
 INSTITUTION: Hospital de Santa Sofía Manizales, Colombia
@@ -1981,7 +1981,7 @@ At the three-month post-operative follow-up, the patient presented with a satisf
 
 ---
 ## KILDE: https://beta.jpbrs.com/cases/case-12-2026-closure-of-defect-on-ala-nasi-with-modified-shark-island-flap
-CASE-ID: Case 12 2026 (2026)
+CASE-ID: Case 12 2026
 TITEL: Closure of defect on ala nasi with modified shark island flap
 FORFATTERE: Mickie Bang Christensen (MD), Magnus Avnstorp (MD)
 INSTITUTION: Department of Plastic- & Breast Surgery, Zealand University Hospital Roskilde, Denmark
@@ -2298,7 +2298,7 @@ On POD 31, the papillae remained mildly discolored but continued to improve with
 
 ---
 ## KILDE: https://beta.jpbrs.com/cases/case-13-2026-fillet-flap-reconstruction-following-hemicorporectomy-for-recurrent-high-grade-gluteal-sarcoma
-CASE-ID: Case 13 2026 (2026)
+CASE-ID: Case 13 2026
 TITEL: Fillet Flap Reconstruction Following Hemicorporectomy for Recurrent High-Grade Gluteal Sarcoma
 FORFATTERE: Authors: Isha Joshi, Zachary Erlichman, Nia Nikkhahmanesh, Christina Chopra, Jason Ganz
 INSTITUTION: Stony Brook University Hospital, Stony Brook, New York
@@ -2466,7 +2466,7 @@ The patient was medically optimized by the multidisciplinary team over the subse
 
 ---
 ## KILDE: https://beta.jpbrs.com/cases/case-14-2026-nail-removal-and-punch-biopsy-subungual-melanoma
-CASE-ID: Case 14 2026 (2026)
+CASE-ID: Case 14 2026
 TITEL: Nail removal and punch biopsy - Subungual Melanoma
 FORFATTERE: Linnea Kristensen Ejiofor
 INSTITUTION: Department of Plastic Surgery and Burns Treatment, Copenhagen University Hospital, Rigshospitalet, and Magnus Balslev Avnstorp, Specialist plastic surgeon, Zealand University Hospital, Roskilde
@@ -2831,7 +2831,7 @@ After completing outpatient rehabilitation, the patient resumed all daily activi
 
 ---
 ## KILDE: https://beta.jpbrs.com/cases/case-15-2026-the-goldilocks-mastectomy
-CASE-ID: Case 15 2026 (2026)
+CASE-ID: Case 15 2026
 TITEL: The Goldilocks mastectomy
 FORFATTERE: Nanja Gotland Sundstrup (MD), Pia Cajsa Leth Andersen (MD)
 INSTITUTION: Department of Plastic Surgery and Burns, Rigshospitalet, Copenhagen University Hospital, Denmark
@@ -3081,7 +3081,7 @@ Once the radial free flap was harvested, closure of the donor site was performed
 
 ---
 ## KILDE: https://beta.jpbrs.com/cases/case-16-2026-severe-foot-degloving-injury-following-a-forklift-crush-a-limb-salvage-case
-CASE-ID: Case 16 2026 (2026)
+CASE-ID: Case 16 2026
 TITEL: Severe Foot Degloving Injury Following a Forklift Crush: A Limb-Salvage Case
 FORFATTERE: Cecilie Jansen, Emil Villiam Holm-Rasmussen, Mette Stueland Wolthers
 INSTITUTION: University Hospital, Rigshospitalet, Denmark
@@ -3333,7 +3333,7 @@ Functional flap and complete healing of the donor site with a STSG. Only a minor
 
 ---
 ## KILDE: https://beta.jpbrs.com/cases/case-17-2026-papilla-reconstruction-using-the-tennessee-flap-following-diep-flap-breast-reconstruction
-CASE-ID: Case 17 2026 (2026)
+CASE-ID: Case 17 2026
 TITEL: Papilla Reconstruction Using the Tennessee Flap Following DIEP Flap Breast Reconstruction
 FORFATTERE: Mikkel Halborg Sørensen, Nanja Gotland Sundstrup, Christian Lyngsaa Lang
 INSTITUTION: Department of Plastic Surgery and Burns, Rigshospitalet, Copenhagen University Hospital, Denmark
@@ -3533,7 +3533,7 @@ The postoperative result was controlled under X-ray, showing full range of motio
 
 ---
 ## KILDE: https://beta.jpbrs.com/cases/case-18-2026-nipple-reconstruction-on-a-diep-flap-after-breast-cancer
-CASE-ID: Case 18 2026 (2026)
+CASE-ID: Case 18 2026
 TITEL: Nipple reconstruction on a DIEP-flap after breast cancer
 FORFATTERE: Alaa Jady, Pia Cajsa Leth Andersen
 INSTITUTION: University Hospital, Rigshospitalet. Denmark
@@ -3635,7 +3635,7 @@ Patient sent in a picture of her breast as a 3 month follow up (see picture 8). 
 
 ---
 ## KILDE: https://beta.jpbrs.com/cases/case-19-2026-split-perforator-flaps-for-bilateral-ankle-defects-a-modern-microsurgical-approach-to-preserve-function-and-reduce-secondary-thinning-operations
-CASE-ID: Case 19 2026 (2026)
+CASE-ID: Case 19 2026
 TITEL: Split Perforator Flaps for bilateral ankle defects: A modern microsurgical approach to preserve function and reduce secondary thinning operations
 FORFATTERE: Luisa Lotter¹, Marta Jezierska¹, Ilja W. Käch¹, Volker J. Schmidt¹
 INSTITUTION: Hospital St.Gallen, St.Gallen, Switzerland
@@ -3866,7 +3866,7 @@ Follow-up
 
 ---
 ## KILDE: https://beta.jpbrs.com/cases/case-20-2026-staged-excision-and-delayed-primary-closure-of-a-large-nodular-basal-cell-carcinoma-of-the-anterior-scalp
-CASE-ID: Case 20 2026 (2026)
+CASE-ID: Case 20 2026
 TITEL: Staged Excision and Delayed Primary Closure of a large Nodular Basal Cell Carcinoma of the Anterior Scalp
 FORFATTERE: Mikkel Halborg Sørensen, Nanja Gotland Sundstrup, Christian Lyngsaa Lang
 INSTITUTION: Department of Plastic Surgery and Burns, Rigshospitalet, Copenhagen University Hos-pital, Denmark
@@ -3979,7 +3979,7 @@ Final skin closure was achieved using interrupted and mattress sutures (Prolene 
 
 ---
 ## KILDE: https://beta.jpbrs.com/cases/case-21-2026-reconstructing-the-challenging-eyelid-hard-palate-graft-and-radial-forearm-free-flap-reconstruction-in-gorlin-goltz-syndrome
-CASE-ID: Case 21 2026 (2026)
+CASE-ID: Case 21 2026
 TITEL: Reconstructing the Challenging Eyelid: Hard Palate Graft and Radial Forearm Free Flap Reconstruction in Gorlin–Goltz Syndrome
 FORFATTERE: Miss Ketki Kaushal, Mr Oliver Bassett
 
@@ -4137,7 +4137,7 @@ Clinic Photo
 
 ---
 ## KILDE: https://beta.jpbrs.com/cases/case-22-2026-superior-gluteal-vessel-a-rarely-used-recipient-for-free-flap-reconstruction-of-lumbosacral-defects-a-case-report
-CASE-ID: Case 22 2026 (2026)
+CASE-ID: Case 22 2026
 TITEL: Superior Gluteal vessel: A rarely used recipient for free flap reconstruction of lumbosacral defects: a case report.
 FORFATTERE: Tushar Dutta, Arun PS, Swati Sattavan
 INSTITUTION: State Cancer Institute, Guwahati, Assam, India
@@ -4231,7 +4231,7 @@ After flap reperfusion, inset is completed with Latissimus dorsi muscle stretche
 
 ---
 ## KILDE: https://beta.jpbrs.com/cases/case-23-2026-minimally-invasive-finger-amputation-using-a-volar-toilet-seat-flap-for-invasive-squamous-cell-carcinoma
-CASE-ID: Case 23 2026 (2026)
+CASE-ID: Case 23 2026
 TITEL: “Minimally Invasive Finger Amputation Using a Volar ‘Toilet seat’ Flap for Invasive Squamous Cell Carcinoma”
 FORFATTERE: Claes Hannibal Killerich, Nikolaj Warming
 
@@ -4324,7 +4324,7 @@ The volar “toilet seat” flap sutured into the defect using interrupted flap 
 
 ---
 ## KILDE: https://beta.jpbrs.com/cases/case-24-2026-ipsilateral-myocutaneous-latissimus-dorsi-flap-for-traumatic-upper-limb-soft-tissue-and-vascular-injury-following-road-traffic-accident
-CASE-ID: Case 24 2026 (2026)
+CASE-ID: Case 24 2026
 TITEL: Ipsilateral Myocutaneous Latissimus Dorsi Flap for Traumatic Upper Limb Soft Tissue and Vascular Injury Following Road Traffic Accident
 FORFATTERE: Sumaira Sattar
 INSTITUTION: SMBB Institute of Trauma, Karachi, Pakistan
@@ -4418,7 +4418,7 @@ The flap was tunneled through the axillary region and inset to cover the exposed
 
 ---
 ## KILDE: https://beta.jpbrs.com/cases/case-25-2026-closed-reduction-of-a-distal-radius-fracture-in-the-emergency-department
-CASE-ID: Case 25 2026 (2026)
+CASE-ID: Case 25 2026
 TITEL: Closed Reduction of a Distal Radius Fracture in the Emergency Department
 FORFATTERE: Maria Lerche Mortensen and Philip Månsson
 INSTITUTION: Department of Orthopedic Surgery, SUH Nykøbing Falster, Denmark
@@ -4582,7 +4582,7 @@ If the post-reduction position is acceptable, the patient continues with conserv
 
 ---
 ## KILDE: https://beta.jpbrs.com/cases/case-26-2026-dual-hybrid-flap-advancement-for-proximal-dorsal-nasal-reconstruction-2
-CASE-ID: Case 26 2026 (2026)
+CASE-ID: Case 26 2026
 TITEL: Dual-Hybrid Flap Advancement for Proximal Dorsal Nasal Reconstruction
 FORFATTERE: Lukas Kure-Rosenberg, Magnus Balslev Avnstorp
 INSTITUTION: Department of Plastic- & Breast Surgery, Zealand University Hospital, Denmark
@@ -4687,7 +4687,7 @@ The flaps were transposed into the defect and secured with Vicryl 5.0 sutures. P
 
 ---
 ## KILDE: https://beta.jpbrs.com/cases/case-3-2026-emergency-limb-salvage-with-combined-free-vastus-lateralis-and-anterolateral-thigh-flap-after-post-traumatic-brachial-artery-graft-thrombosis-in-a-16-year-old-patient
-CASE-ID: Case 03 2026 (2026)
+CASE-ID: Case 03 2026
 TITEL: Emergency limb salvage with combined free vastus lateralis and anterolateral thigh flap after post-traumatic brachial artery graft thrombosis in a 16-year-old patient
 FORFATTERE: Dr. Ibrahim Güler
 INSTITUTION: Department of Plastic, Reconstructive and Aesthetic Surgery, Dokuz Eylül University, Izmir, Turkey; Department of Plastic, Aesthetic and Hand Surgery, Otto von Guericke University, Magdeburg, Germany

@@ -151,10 +151,20 @@ const SAMLINGER: Record<string, { samling: KildeSamling; titel: string; kildetyp
     titel: "PlastSurgeon — Validated expert platform (beta.plastsurgeon.com)",
     kildetype: "retningslinje",
   },
-  "plastsurgeon-kurser.md": {
+  // Kursusmodulerne har ingen egen fil, og det er et resultat, ikke en mangel:
+  // de 11 `/courses/burns-*`-moduler er tomme i platformens database (nul
+  // lektioner, nul HTML, nul beskrivelse) — der laa intet bag betalingsmuren.
+  // De kurser der HAR indhold (massive-weight-loss x6) er ordret de samme sider
+  // som haandbogen allerede indeholder: 35 af 42 lektioner matcher tegn for tegn
+  // og alle 42 titler matcher. Et separat kursusdokument ville lade hvert af de
+  // udsagn fylde to pladser i et soegeresultat.
+  // Case competition-bidragene er patientforloeb, ikke retningslinjer. De ligger
+  // i deres egen fil netop derfor — laa de i haandbogsfilen, ville de blive
+  // maerket som retningslinje, og en laege kunne ikke se forskel paa svaret.
+  "plastsurgeon-cases.md": {
     samling: "plastsurgeon",
     titel: "PlastSurgeon — Validated expert platform (beta.plastsurgeon.com)",
-    kildetype: "retningslinje",
+    kildetype: "case",
   },
   "jpbrs-cases.md": {
     samling: "jpbrs",
