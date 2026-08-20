@@ -113,7 +113,7 @@ export const t = {
     en: "Describe the patient by voice or text - I will find the right assessment and treatment",
   },
   intakePlaceholder: {
-    da: "Fx «kogende vand over hånden»…",
+    da: "Patient forbrændt med kogende vand på hånden",
     en: "e.g. “boiling water over the hand”…",
   },
   intakeAmbiguous: {
