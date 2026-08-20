@@ -3,6 +3,7 @@
 import type { Lang } from "@/lib/tree/types";
 import { tr } from "@/lib/i18n";
 import { BrandMark } from "./BrandMark";
+import { Flag } from "./Flag";
 import { TreePicker, type TreeSummary } from "./TreePicker";
 import { UsagePanel, type SessionUsage } from "./UsagePanel";
 
@@ -77,12 +78,30 @@ export function ControlRail({
         <div className="flex flex-wrap items-center gap-2">
           <UsagePanel lang={lang} usage={usage} />
 
-          <button
-            onClick={onToggleLang}
-            className="rounded-lg border bg-[var(--paper-raised)] px-3 py-2 text-sm font-medium text-[var(--ink)] hover:border-[var(--teal)] transition-colors"
-          >
-            {lang === "da" ? "Dansk" : "English"}
-          </button>
+          <div className="flex items-center gap-1 rounded-lg border bg-[var(--paper-raised)] p-0.5">
+            <button
+              type="button"
+              onClick={() => lang !== "da" && onToggleLang()}
+              aria-pressed={lang === "da"}
+              aria-label="Dansk"
+              className={`flex items-center justify-center rounded-md p-1.5 transition-opacity ${
+                lang === "da" ? "bg-[var(--teal-tint)] ring-1 ring-[var(--teal)]" : "opacity-50 hover:opacity-80"
+              }`}
+            >
+              <Flag country="dk" size={22} />
+            </button>
+            <button
+              type="button"
+              onClick={() => lang !== "en" && onToggleLang()}
+              aria-pressed={lang === "en"}
+              aria-label="English"
+              className={`flex items-center justify-center rounded-md p-1.5 transition-opacity ${
+                lang === "en" ? "bg-[var(--teal-tint)] ring-1 ring-[var(--teal)]" : "opacity-50 hover:opacity-80"
+              }`}
+            >
+              <Flag country="gb" size={22} />
+            </button>
+          </div>
 
           <div className="flex items-center rounded-lg border bg-[var(--paper-raised)] p-0.5">
             <button
