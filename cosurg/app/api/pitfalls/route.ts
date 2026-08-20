@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { cap, guard } from "@/lib/guard";
-import { filtrerRelevante, mcpKonfigureret, soegKliniskViden } from "@/lib/corti/mcp";
+import { mcpKonfigureret } from "@/lib/corti/mcp";
+import { loesFaldgruber, loesHeleKataloget } from "@/lib/corti/grounding";
 import {
   FALDGRUBER,
   matchEmne,
@@ -8,7 +9,6 @@ import {
   type Faldgrube,
   type FaldgrubeKontekst,
 } from "@/components/pitfalls/catalog";
-import type { LoestFaldgrube } from "@/components/pitfalls/types";
 
 export const dynamic = "force-dynamic";
 
@@ -24,20 +24,6 @@ export const dynamic = "force-dynamic";
 
 /** Så mange faldgruber ad gangen. Fem advarsler på én skærm er ingen advarsel. */
 const MAX_KONTEKST = 4;
-
-async function loes(f: Faldgrube): Promise<LoestFaldgrube> {
-  const fælles = { id: f.id, title: f.title, consequence: f.consequence, alvor: f.alvor, fase: f.fase };
-  try {
-    const svar = await soegKliniskViden(f.query, { antal: 3, fuldt: false });
-    const relevante = filtrerRelevante(svar.uddrag);
-    if (relevante.length === 0) return { ...fælles, evidence: null, coverage: "none" };
-    return { ...fælles, evidence: relevante[0], coverage: "ok" };
-  } catch {
-    // "Vi kunne ikke spørge" er ikke det samme som "der er ikke dækning".
-    // Klinikeren skal kunne se forskel — så det skal API'et også kunne.
-    return { ...fælles, evidence: null, coverage: "error" };
-  }
-}
 
 interface Body extends FaldgrubeKontekst {
   /** Hent bestemte faldgruber frem for at matche på kontekst. */
@@ -90,7 +76,7 @@ export async function POST(req: Request) {
         });
 
     const loft = Math.min(Math.max(Number(raw.limit) || MAX_KONTEKST, 1), 12);
-    const pitfalls = await Promise.all(valgte.slice(0, loft).map(loes));
+    const pitfalls = await loesFaldgruber(valgte.slice(0, loft));
 
     return NextResponse.json({ pitfalls });
   } catch (err) {
@@ -107,6 +93,6 @@ export async function GET(req: Request) {
     return NextResponse.json({ error: "Vidensbasen er ikke konfigureret" }, { status: 503 });
   }
 
-  const pitfalls = await Promise.all(FALDGRUBER.map(loes));
+  const pitfalls = await loesHeleKataloget();
   return NextResponse.json({ pitfalls });
 }

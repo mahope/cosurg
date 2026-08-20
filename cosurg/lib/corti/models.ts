@@ -27,8 +27,16 @@ const BASE_URL = (process.env.CORTI_MODELS_URL ?? "https://ai.eu.corti.app/v1").
 export const MODELS = {
   /** Routing og klassifikation. Målt 0,7-2,0 s. */
   triage: process.env.CORTI_MODELS_TRIAGE ?? "corti-s1-instant",
-  /** Sammenskrivning af uddrag vi selv har hentet. Lidt større, stadig hurtig. */
-  synthesis: process.env.CORTI_MODELS_SYNTHESIS ?? "corti-s1-mini",
+  /**
+   * Sammenskrivning af uddrag vi selv har hentet.
+   *
+   * `-instant` er ikke en detalje her. Målt på samme prompt brugte
+   * `corti-s1-mini` 26 sekunder og løb tør for tokens uden at levere en eneste
+   * byte indhold — den ræsonnerer først, og ræsonnementet æder budgettet.
+   * `corti-s1-mini-instant` svarede færdigt på 5 sekunder. Et hurtigspor der
+   * tager 26 sekunder og fejler er ikke et hurtigspor.
+   */
+  synthesis: process.env.CORTI_MODELS_SYNTHESIS ?? "corti-s1-mini-instant",
 } as const;
 
 export function cortiModelsKonfigureret(): boolean {
@@ -91,11 +99,19 @@ export async function kaldModel({
   }
 
   const data = (await res.json()) as {
-    choices?: Array<{ message?: { content?: string } }>;
+    choices?: Array<{ finish_reason?: string; message?: { content?: string } }>;
   };
-  const tekst = data.choices?.[0]?.message?.content;
+  const valg = data.choices?.[0];
+  const tekst = valg?.message?.content;
   if (typeof tekst !== "string" || !tekst.trim()) {
-    throw new Error("Corti Models leverede et tomt svar");
+    // Et tomt indhold med finish_reason "length" er den fælde de ræsonnerende
+    // modeller stiller: hele token-budgettet gik til tankerne. Fejlen skal sige
+    // det, ellers fejlsøger man på det forkerte.
+    throw new Error(
+      valg?.finish_reason === "length"
+        ? `Corti Models (${model}) løb tør for tokens før den svarede`
+        : "Corti Models leverede et tomt svar",
+    );
   }
   return tekst.trim();
 }

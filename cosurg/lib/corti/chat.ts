@@ -214,7 +214,14 @@ const SYSTEM_PROMPT = [
   "This is a CONVERSATION, not a series of isolated lookups. The clinician is standing with a patient.",
   "",
   "RETRIEVAL LADDER — work down it, and never stop at the first rung:",
-  "1. cosurg-viden FIRST when it is available: the team's own curated Danish burn knowledge base",
+  "0. READ WHAT IS ALREADY IN THE PROMPT FIRST. The app often retrieves the relevant knowledge-base excerpts",
+  "   and the applicable pitfalls before calling you, and puts them under headings marked '--- FROM OUR OWN",
+  "   KNOWLEDGE BASE ---' and '--- PITFALLS THAT APPLY HERE ---'. Those are real sources, already retrieved.",
+  "   Use them, cite them with origin='knowledge-base', and do not spend a search re-finding them.",
+  "   The pitfalls are not an appendix: work the relevant ones into the clinical advice itself, whether or not",
+  "   the clinician asked about them. Answering only the question that was asked is what a lookup does.",
+  "   A colleague says the thing you did not know to ask about.",
+  "1. cosurg-viden when the prompt does not already cover it: the team's own curated Danish burn knowledge base",
   "   (brandsaar.dk and the PlastSurgeon material). It is the authority on Danish clinical practice.",
   "   Where it and the international literature differ — for example the fluid formula — state the Danish practice first",
   "   and note the international variant as such.",
@@ -320,12 +327,26 @@ export interface ChatRequest {
    * mærke det som ræsonnement.
    */
   patientContext?: string;
+  /**
+   * Grundlaget vi selv har hentet FØR agenten blev kaldt: uddrag fra
+   * vidensbasen og de faldgruber der gælder her, hver med sit ordrette belæg.
+   *
+   * Det er lagt ind i prompten frem for at være værktøjer agenten selv kan
+   * vælge at kalde. Begrundelsen står i `lib/corti/grounding.ts`; kort sagt må
+   * en faldgrube ikke kunne udeblive fordi modellen ikke fandt den værd at slå
+   * op, og vores egne opslag tager 40-60 ms mod agentens 35-72 sekunder.
+   */
+  grounding?: string;
   signal?: AbortSignal;
 }
 
-function buildPrompt({ question, lang, recap, patientContext }: ChatRequest): string {
+function buildPrompt({ question, lang, recap, patientContext, grounding }: ChatRequest): string {
   const language = lang === "da" ? "Danish" : "English";
   const lines = [`Answer in ${language}. The clinician asks:`, "", question];
+
+  if (grounding) {
+    lines.push("", grounding);
+  }
 
   if (patientContext) {
     lines.push(
@@ -347,8 +368,10 @@ function buildPrompt({ question, lang, recap, patientContext }: ChatRequest): st
 
   lines.push(
     "",
-    `Retrieve evidence first, then answer with submit_clinical_answer in ${language}.`,
-    "Work down the retrieval ladder: our own knowledge base, then the literature experts, then this conversation.",
+    `Answer with submit_clinical_answer in ${language}.`,
+    grounding
+      ? "Start from the excerpts and pitfalls already given above — they are retrieved sources, not suggestions. Search further only for what they do not cover."
+      : "Retrieve evidence first. Work down the retrieval ladder: our own knowledge base, then the literature experts, then this conversation.",
     "Do not stop at 'no coverage in the knowledge base' — that is the first rung, not the answer.",
     "Anything you conclude rather than retrieve belongs in 'reasoning', never unmarked in 'answer'.",
   );
