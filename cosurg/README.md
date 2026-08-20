@@ -29,6 +29,10 @@ explainable layer goes first and only decides what it is certain of.
    the active node's answer schema permits, or flags doubt.
 3. **Corti's intent router** (`/api/route`) is asked only when layer 1 said `unknown`
    *and* layer 2 reported doubt: was this a question rather than an answer after all?
+   It now runs on Corti Models (`corti-s1-instant`) rather than the agentic
+   framework — classifying one sentence needs neither retrieval nor tools, so the
+   agent round trip was pure waiting, and it was waiting at the worst possible
+   moment. The agent remains as the fallback if the Models call does not land.
    On a network failure it returns `unclear`, so the failure mode is a repeated
    question rather than a wrong reading.
 
@@ -53,6 +57,43 @@ intent.
 | **Text generation** | Yes | `app/api/note/route.ts` | The clinical note is written by a Corti agent from the decision path, the transcript and the dictation. |
 | **Agentic framework** | Yes | `lib/corti/agent.ts` | Five agents with schema connectors and structured output: answer interpreter (flags doubt instead of guessing) and note writer here, an intent router (`app/api/route/agent.ts`), a guide topic router (`app/api/guide/route.ts`), and the clinical lookup agent (`lib/corti/chat.ts`) with Corti's registry experts and our own MCP server as connectors. `COMMAND_SPEC` is a sixth spec that is deliberately not called — see below. |
 | **Medical coding** | Yes | `lib/corti/coding.ts`, `app/api/coding/route.ts` | Corti Symphony, `POST /v2/tools/coding/`. The codes come from the coding API — the language model may only justify them. |
+| **Corti Models** | Yes | `lib/corti/models.ts`, `lib/corti/triage.ts`, `lib/corti/fastAnswer.ts` | Corti's own LLMs on the OpenAI-compatible endpoint `https://ai.eu.corti.app/v1`. `corti-s1-instant` triages an utterance and routes intent; `corti-s1-mini-instant` writes the fast answer from excerpts we retrieved ourselves. Used by `/api/triage`, `/api/route` and `/api/chat`. |
+
+### Two tracks, and what decides between them
+
+An answer through the agentic framework takes a measured 35–72 seconds, because
+the agent fans out to PubMed, web search and our own knowledge base for *every*
+question — including the ones our own Danish sources answer in full. Corti Models
+decides in 0.7–2.0 seconds whether that round trip is needed.
+
+```mermaid
+flowchart TD
+    Q["The clinician asks something"] --> T["<b>Triage — corti-s1-instant</b><br/>0.7–2.0 s. What kind of question is it,<br/>what is the Danish topic, and does this<br/>need the literature at all?"]
+    T --> G["<b>We retrieve the grounding ourselves</b><br/>the pitfalls that apply here (40–60 ms)<br/>and the guide's sections (&lt; 4 s), in parallel"]
+    G --> D{"Does the literature<br/>have to be consulted?"}
+    D -- "no, and our sources cover it" --> F["<b>Fast track — corti-s1-mini-instant</b><br/>writes the answer from the excerpts.<br/>No search tools, no source list of its own.<br/><b>Measured 20 s end to end.</b>"]
+    D -- "yes, or coverage is thin" --> A["<b>Agentic framework</b><br/>PubMed, web search, trials, calculator —<br/>now with the grounding already in the prompt,<br/>so no round trip is spent re-finding it."]
+    F -- "if it fails" --> A
+```
+
+**The grounding goes into the prompt, not into tools the agent may call.** Three
+reasons, and the first is the one that matters: a pitfall the agent might decide
+not to look up is not a safety feature. The second is latency — every tool call
+is another round trip on top of the 35–72 seconds. The third is provenance: we
+know an excerpt came from the knowledge base, so we mark it `knowledge-base`
+ourselves instead of hoping the model marks it correctly.
+
+On the fast track the model is handed a fixed set of excerpts, has no search
+tools, and writes no source list — the list is built from the excerpts *we*
+retrieved. A fabricated source is therefore not possible on that track. Anything
+the model concludes beyond the excerpts goes in `reasoning`, and the answer is
+labelled `sourced`, `partial` or `extrapolated` exactly as before.
+
+Verified against production sources: *"hvordan behandler jeg en dyb dermal
+forbrænding på hånden?"* now answers, unprompted, that the dressing must not
+stiffen the hand, that oedema threatens perfusion in a circumferential injury,
+and that depth is only settled at the follow-up — `evidence: "sourced"` with
+seven knowledge-base citations, in 20 seconds instead of 56.
 
 ### Caveats we are not hiding
 
@@ -174,10 +215,11 @@ was meant.
 | `/api/tree` | GET | Decision trees |
 | `/api/corti/token` | GET | Short-lived token scoped `openid transcribe` for the browser |
 | `/api/interpret` | POST | Spoken answer → permitted tree value (agent) |
-| `/api/route` | POST | Intent routing for an utterance the deterministic layer in the browser did not dare decide: answer, question, pathway or unclear (agent) |
+| `/api/route` | POST | Intent routing for an utterance the deterministic layer in the browser did not dare decide: answer, question, pathway or unclear. Corti Models first, the agent as fallback; the response now carries `routedBy` saying which answered |
+| `/api/triage` | POST | What does the clinician want, does this need the literature, and what are the Danish search terms — one Corti Models call, 0.7–2.0 s. The same triage `/api/chat` runs internally, exposed so the UI can show the topic while the heavy answer is still being fetched |
 | `/api/note` | POST | Clinical note + codes |
 | `/api/coding` | GET/POST | Standalone coding of clinical text |
-| `/api/chat` | GET/POST | The question lookup: Corti's agentic framework with our MCP server attached as a connector. Each answer carries an evidence label and its sources, marked as knowledge base or literature. GET reports which Corti experts are actually attached, so the UI can be honest about it. |
+| `/api/chat` | GET/POST | The question lookup. POST triages with Corti Models, retrieves the applicable pitfalls and the guide's sections itself, and then either writes the answer from those excerpts (fast track) or hands them to the agentic framework along with the question. Each answer carries an evidence label and its sources, marked as knowledge base or literature. Two additive SSE events, `triage` and `pitfalls`, are emitted before the answer; a client may ignore them. Pass `fastPath: false` to force the agentic track. GET reports which Corti experts are actually attached, so the UI can be honest about it. |
 | `/api/guide` | POST | The treatment lookup, assembled from the MCP knowledge base. A topic agent first normalises the clinician's question into Danish clinical search terms; if that call fails, the route falls back to the clinician's own words — worse, but never wrong. |
 | `/api/pitfalls` | GET/POST | Pitfalls, each carrying a verbatim excerpt from the MCP knowledge base as backing. POST matches pitfalls to the current context (tree, node, disposition or topic); GET returns the whole catalogue. |
 | `/api/tts` | POST | Danish speech output (Syv.ai) |
@@ -187,8 +229,11 @@ per-IP, per-route quota over a 60-second window. The length cap is the separate
 `cap()` helper, applied to all free text before it is sent to a paid API
 (`LIMITS`: utterance 600, transcript 20 000, dictation 5 000, TTS 500 characters).
 `/api/tree` is the one route without a guard: it only reads local files.
-`/api/guide`, `/api/pitfalls` and `/api/chat` answer 503 when `MCP_URL` and
-`MCP_AUTH_TOKEN` are absent, rather than falling back to general knowledge.
+`/api/guide` and `/api/pitfalls` answer 503 when `MCP_URL` and `MCP_AUTH_TOKEN`
+are absent, rather than falling back to general knowledge; `/api/chat` then runs
+without grounding and lets the literature experts answer, which is the one place
+where a source outside our own base is the right fallback. `/api/triage` answers
+503 without `CORTI_MODELS_KEY`.
 
 ## Getting started
 
@@ -204,6 +249,9 @@ npm run dev
 | `CORTI_TENANT` | `base` | Used in both the auth URL and the `Tenant-Name` header |
 | `CORTI_CLIENT_ID` / `CORTI_CLIENT_SECRET` | — | From the Corti Console |
 | `CORTI_CODING_SYSTEM` | `icd10int-outpatient` | Set to an SKS system name once access is granted |
+| `CORTI_MODELS_KEY` | — | Corti Models. Without it, `/api/triage` answers 503, `/api/route` falls back to the agent, and `/api/chat` always takes the slow agentic track |
+| `CORTI_MODELS_URL` | `https://ai.eu.corti.app/v1` | OpenAI-compatible endpoint |
+| `CORTI_MODELS_TRIAGE` / `CORTI_MODELS_SYNTHESIS` | `corti-s1-instant` / `corti-s1-mini-instant` | The `-instant` variants are not cosmetic: on the same prompt `corti-s1-mini` spent 26 s reasoning and ran out of tokens without returning a byte of content, while `corti-s1-mini-instant` finished in 5 s |
 | `SYV_API_KEY` | — | Without a key, spoken output falls back to the browser's built-in voice |
 | `MCP_URL` / `MCP_AUTH_TOKEN` | — | Without them the guide, pitfalls and clinical chat are disabled |
 | `ALLOWED_ORIGINS` | — | Comma-separated, for preview deployments |
