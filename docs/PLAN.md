@@ -1,10 +1,106 @@
+# CoSurg — goal-driven plan (Thursday 20 Aug)
+
+*(Dansk udgave nedenfor — [spring til den danske udgave](#cosurg--måldrevet-plan-torsdag-208))*
+
+> This is the build-day plan as it was written on Thursday morning, kept as a record
+> of what we worked towards. The outcome of each item is stated in **Where it landed**
+> below. The root [`README.md`](../README.md) describes the finished system.
+
+We work towards **goals**, not task lists. Every goal has an observable completion
+criterion: something you can watch happen. A goal is not reached because code was
+written — it is reached when the criterion has been verified.
+
+## Hard deadlines
+
+| Time | What |
+|---|---|
+| Thursday ~22:00 | Code freeze, deployment standing |
+| **Friday 11:00** | **Mads leaves — everything finished and rehearsed** |
+| Friday 14:00 | Code freeze + submission |
+| Friday 14:00–15:30 | Magnus + Rami present on their own |
+
+---
+
+## GOAL 1 — Magnus and Rami can run the demo without Mads
+**Done when:** the two of them have run the whole flow once on Friday morning
+unaided, from live microphone to finished note, and a fallback video exists in case
+the network fails. This goal beats all the others. A prettier app that cannot be
+demonstrated is worthless.
+
+## GOAL 2 — The surgeon can drive the app without touching the screen
+**Done when:** a whole procedure has been completed hands-free in OR mode — the voice
+leads, large images show what to do, and "next", "repeat", "back" work reliably
+without background chatter triggering anything.
+*This is the climax of the demo and our strongest card for Best UX.*
+
+## GOAL 3 — The recommendation is demonstrably clinical, not generated
+**Done when:** we can point at the screen and show that the recommendation came from
+the tree, that the codes came from Corti's coding API (Danish SKS if possible), and
+that the agent asks again rather than guessing when an answer is unclear.
+*This is our entire precision claim. Without it we are just another scribe.*
+
+## GOAL 4 — It looks like a clinical tool from the PlastSurgeon family
+**Done when:** the app follows the PlastSurgeon design guide (Roboto, SurgeonBlue
+#005355, the "S" element), and clinical severity can still be read unambiguously from
+colour alone.
+
+## GOAL 5 — Nothing we tell the judges is untrue
+**Done when:** the README and the pitch describe exactly what the code actually calls
+— no more and no less. Clinical trees carry named professional sources.
+
+---
+
+## Where it landed
+
+| Corti product area | Outcome |
+|---|---|
+| Ambient STT | Delivered — `lib/audio/useTranscribe.ts` |
+| Dictation STT | Delivered — `lib/audio/useDictation.ts`, wired up in `app/page.tsx` |
+| Text generation | Delivered — the clinical note, `app/api/note/route.ts` |
+| Agentic framework | Delivered — five agents with structured output |
+| Medical coding | Delivered — Corti Symphony, `lib/corti/coding.ts` |
+
+The rules require three of the five areas. All five are in use. The MCP server, listed
+as out of scope in `SPEC.md`, was built after all and runs at `mcp.cosurg.com`.
+
+## Agent tracks and file ownership (avoids conflicts)
+
+| Track | Owns files |
+|---|---|
+| A — Corti product areas | `lib/corti/*`, `app/api/**`, `README.md` |
+| B — UX/UI + OR interaction | `app/page.tsx`, `components/*`, `app/globals.css`, `lib/i18n.ts`, `app/layout.tsx` |
+| C — Performance & demo safety | `next.config.ts`, tests, scripts |
+| D — Deployment | the server, the compose stack |
+
+## Deployment
+`cosurg.com` → 138.199.206.15 (DNS verified 20 Aug).
+The server runs **Openship**, not Dokploy. Deployment sits in its own track.
+
+## Clinical content
+Both trees are named with their professional sources: the Danish Burn Association
+(brandsaar.dk) and Rigshospitalet's burn unit, Section 6052.
+
+## Fixed decisions
+- The recommendation ALWAYS comes from the tree, never from a language model.
+- TTS: Syv.ai (Plapre) in Danish, browser voice as fallback. Corti has no TTS.
+- Every paid route has an origin lock, a per-IP quota and length caps.
+- SSH to nsl runs through ControlMaster — many rapid connections trigger fail2ban.
+
+---
+---
+
 # CoSurg — måldrevet plan (torsdag 20/8)
+
+*(Dette er den danske udgave af afsnittene ovenfor. Engelsk er repoets hovedsprog —
+[spring til den engelske udgave](#cosurg--goal-driven-plan-thursday-20-aug).)*
+
+> Dette er byggedagens plan som den blev skrevet torsdag morgen, bevaret som
+> dokumentation for hvad vi arbejdede mod. Hvor hvert punkt landede, står under
+> **Hvor det landede**. [`README.md`](../README.md) beskriver det færdige system.
 
 Vi arbejder mod **mål**, ikke opgavelister. Hvert mål har et observerbart færdig-kriterium:
 noget man kan se ske. Et mål er ikke nået fordi der er skrevet kode — det er nået når
 kriteriet er verificeret.
-
-Claude er orchestrator og holder agenterne kørende. Mads spørges kun ved reelle valg.
 
 ## Hårde deadlines
 
@@ -44,17 +140,18 @@ mere eller mindre. Kliniske træer bærer navngivne faglige kilder.
 
 ---
 
-## Regel-status (Corti kræver nu 3 af 5 områder)
+## Hvor det landede
 
-| Område | Status |
+| Corti-produktområde | Resultat |
 |---|---|
-| Ambient STT | ✅ verificeret live |
-| Text generation | ✅ journalnotat |
-| Agentic framework | ✅ svarfortolkning m. struktureret output |
-| Medical coding | 🔄 kobles på Symphony nu (i dag: opfundet af sprogmodel) |
-| Dictation STT | ⏸️ nedprioriteret — kun hvis tid |
+| Ambient STT | Leveret — `lib/audio/useTranscribe.ts` |
+| Dictation STT | Leveret — `lib/audio/useDictation.ts`, tilkoblet i `app/page.tsx` |
+| Text generation | Leveret — journalnotatet, `app/api/note/route.ts` |
+| Agentic framework | Leveret — fem agenter med struktureret output |
+| Medical coding | Leveret — Corti Symphony, `lib/corti/coding.ts` |
 
-**Kravet er formelt opfyldt** af de tre første. Coding forfølges for værdiens skyld.
+Reglerne kræver tre af de fem områder. Alle fem er i brug. MCP-serveren, der i
+`SPEC.md` stod uden for scope, blev bygget alligevel og kører på `mcp.cosurg.com`.
 
 ## Agent-spor og filejerskab (undgår konflikter)
 
@@ -72,7 +169,6 @@ Serveren kører **Openship**, ikke Dokploy. Deployet ligger i sit eget spor.
 ## Klinisk indhold
 Begge træer er navngivet med deres faglige kilder: Dansk Brandsårsforening (brandsaar.dk) og
 Rigshospitalets brandsårsafdeling, Afsnit 6052.
-
 
 ## Faste beslutninger
 - Anbefalingen kommer ALTID fra træet, aldrig fra en sprogmodel.

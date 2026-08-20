@@ -105,7 +105,7 @@ professional references within the text, not systems we integrate with.
 |---|---|
 | **What** | Step-by-step guide to burn dressings (71 slides with photos) and the "Burns plast surgeon" document |
 | **Where** | `cosurg-mcp/data/kilder/magnus-materiale.md`; the 71 photos as JPG in `cosurg/public/step-images/`; provenance in `cosurg-mcp/data/originaler/PROVENIENS.md` |
-| **Used for** | The `dressing-hand-arm.json` procedure guide and its 71 images — what you see in operating-room mode |
+| **Used for** | The `dressing-hand-arm.json` procedure guide — what you see in operating-room mode. All 71 photos are in the repository; the guide's 12 steps reference 34 of them. |
 | **Authors** | Verbatim from `dressing-hand-arm.json:12-16`: *"spl. Pia Høy og Alice Rimmen, i samarbejde med ovl. Rikke Holmgaard og reservelæge Carla Kruse"* (RN Pia Høy and Alice Rimmen, in collaboration with consultant Rikke Holmgaard and junior doctor Carla Kruse), Section for Plastic Surgery and Burn Treatment 6052, Rigshospitalet |
 | **Terms** | Obtained by team member Magnus Avnstorp from his own department. Use cleared on 20 Aug 2026. |
 
@@ -340,7 +340,7 @@ faglige referencer i teksten, ikke systemer vi integrerer med.
 |---|---|
 | **Hvad** | Step-by-step-guide til brandsårsforbindinger (71 slides med fotos) og dokumentet "Burns plast surgeon" |
 | **Hvor** | `cosurg-mcp/data/kilder/magnus-materiale.md`; de 71 fotos som JPG i `cosurg/public/step-images/`; proveniens i `cosurg-mcp/data/originaler/PROVENIENS.md` |
-| **Bruges til** | Procedureguiden `dressing-hand-arm.json` og dens 71 billeder — det man ser i operationsstue-tilstand |
+| **Bruges til** | Procedureguiden `dressing-hand-arm.json` — det man ser i operationsstue-tilstand. Alle 71 fotos ligger i repoet; guidens 12 trin henviser til 34 af dem. |
 | **Forfattere** | Ordret fra `dressing-hand-arm.json:12-16`: *"spl. Pia Høy og Alice Rimmen, i samarbejde med ovl. Rikke Holmgaard og reservelæge Carla Kruse"*, Afsnit for plastikkirurgi og brandsårsbehandling 6052, Rigshospitalet |
 | **Vilkår** | Skaffet af holdmedlem Magnus Avnstorp fra hans eget afsnit. Brugen er afklaret 20/8 2026. |
 

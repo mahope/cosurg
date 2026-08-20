@@ -1,4 +1,209 @@
+# CoSurg (working title) — voice-driven decision support for burns
+
+*(Dansk udgave nedenfor — [spring til den danske udgave](#cosurg-arbejdstitel--stemmestyret-beslutningsstøtte-til-brandsår))*
+
+> **This is the specification as it was written on Thursday morning, before the
+> build.** It is kept unchanged as a record of what we committed to. Several things
+> turned out differently, and those are listed under **Where the build diverged**
+> below. For what the finished system actually does, read the root
+> [`README.md`](../README.md).
+
+Hackathon project, Corti Hack for Health, 20–21 August 2026.
+Team: Mads (code, leaves Friday 11:00) · Magnus Avnstorp (clinical content +
+presentation) · Rami Mossad Ibrahim (clinical content + presentation).
+
+## Purpose
+
+Emergency physicians have to make precise, complete decisions about burns under time
+pressure: depth, extent (TBSA), location, circumferential constriction, inhalation
+injury — and they skip nodes when it is busy. SurgAI showed that a reference work is
+not enough: the answer has to arrive as a **led conversation**, not as a search.
+
+CoSurg is a voice-driven copilot that ACTIVELY navigates a clinically validated
+decision tree: the agent asks the next clarifying question aloud (TTS), the clinician
+answers by voice, the tree fills in node by node until a disposition — and finally the
+clinical note and the codes fall out automatically. A deterministic tree plus AI only
+for interpretation is what makes it "more precise than SurgAI": the recommendation
+comes from the tree, which clinicians wrote, never from a freely generating model.
+
+## The 5 product areas (requirement: at least 4)
+
+| Corti area | Role in CoSurg |
+|---|---|
+| Ambient STT | Listens to the whole encounter (clinician + patient) — answers to the tree's questions are captured from here |
+| Dictation STT | The clinician's closing additions and corrections to the note, dictated |
+| Text generation | Generates the clinical note from the completed tree path plus the transcript |
+| Agentic framework | Interprets the spoken answer against the active node's answer schema; red-flag watch |
+| Medical coding | Diagnosis and procedure codes from the encounter plus the disposition |
+
+## Scope — version 1 (Friday's demo)
+
+1. **Session start:** choose language (Danish/English) and voice mode (full dialogue /
+   key moments only). Both MUST work — that is a requirement, not a nice-to-have.
+1b. **OR override (sterile mode):** one button — or the voice command "OR mode" —
+   turns on operating-room mode. It changes four things at once: (a) answers become
+   SHORT and direct (imperative, one step at a time — the agent prompt changes
+   register), (b) the microphone is always open and everything is voice-controlled
+   ("next", "repeat", "back", "show image") — the surgeon NEVER touches the screen and
+   does not have to scrub out, (c) everything is read aloud via TTS, not just key
+   moments, (d) the screen shows large step images of what concretely has to be done
+   (from Magnus's step-by-step material, `kilder/magnus-materiale/pptx-billeder/` — 71
+   images extracted) with type readable from two metres. The tree schema gains an
+   optional `images: []` field per node/step.
+2. **Live STT:** microphone → Corti transcribe → transcript visible on screen in real
+   time (the mandatory live-STT moment in the presentation).
+3. **Generic tree engine:** the engine is state-agnostic — it runs ANY tree that
+   follows the JSON schema (nodes: question, answer type [yes/no, choice, number],
+   edges, red flags, dispositions, `{da,en}` text pairs). Burns is the FIRST tree, not
+   the only possible one: the UI has a tree selector (holding just one tree for the
+   demo), so extending to bites/frostbite/chemical burns is visibly trivial. Magnus and
+   Rami write the burns content today — content is not code, so it may build on their
+   existing knowledge and the sources in `kilder/`.
+4. **Led dialogue:** the agent asks the active node's question via TTS, interprets the
+   spoken answer through Corti's agentic framework (the answer is validated against the
+   node's answer schema — if it cannot be determined, the agent asks again instead of
+   guessing), and advances through the tree. The screen shows the tree filling in live.
+5. **Red flags:** nodes marked critical (circumferential burn, suspected inhalation,
+   high voltage) interrupt with voice plus a red banner regardless of voice mode.
+6. **Closing:** disposition (home / emergency department treatment / specialist unit or
+   burn centre) with justification from the tree path → generated clinical note → codes
+   → the clinician dictates additions (dictation).
+7. **Deployment** on a public URL Thursday evening, plus a fallback video and a demo
+   script (EN + DA) that Magnus and Rami can run alone.
+
+## Out of scope
+
+- Injury types other than burns (the tree schema is generic, but ONLY the burns tree is
+  filled).
+- **Our own MCP server** for guidelines and cases (like SurgAI's) — that is the
+  LONG-TERM architecture: trees and sources move to an MCP server attached to Corti's
+  agentic framework, so content can be managed centrally and shared across apps. For the
+  hackathon the tree lives in the repository (faster, fewer moving parts), but the
+  engine's tree loader is written as an interface so an MCP source can be plugged in
+  later without touching the engine. Mentioned in the pitch as roadmap.
+- Login/users, history, EHR integration, PDF export.
+- Body chart / TBSA drawing (the number is spoken, not drawn).
+- Patient-facing output (a "take home" sheet) — mentioned in the pitch as roadmap only.
+- Persistence beyond the session (in-memory is enough for a demo).
+
+## Clinical sources (for tree content and pitch)
+
+- `kilder/brandsaar-dk.md` — ALL of brandsaar.dk (the Danish Burn Association, Rami's
+  site): 34 pages plus both pocket-card PDFs as text. Depth assessment, TBSA/area
+  estimation, Parkland fluid resuscitation, inhalation injury, chemical burns, transfer
+  criteria and more.
+- `kilder/magnus-materiale.md` — Magnus's Drive material: the "Burns plast surgeon"
+  document plus the text content of the step-by-step dressing deck. Images (anatomy,
+  pathophysiology, zones of burn) are in `kilder/magnus-materiale/`.
+- Note: "Brandsårsforbinding tips og tricks -Final.docx" is 0 bytes on Drive — Magnus
+  is re-uploading.
+- Both .md files are also placed in the team's Google Drive folder.
+
+## Architecture and stack
+
+- **Next.js (App Router) + TypeScript** — Mads's home ground, one deployment. API
+  routes as a server-side proxy for Corti tokens (the client never sees credentials —
+  Corti's SDK proxy pattern).
+- **Corti JS SDK** for the transcribe websocket and agent calls. Known traps (from
+  experience, not from the code): flat `TranscribeConfig`, audio as a base64 string in
+  JSON, the `Bearer ` prefix URL-encoded on the ws token.
+- **The decision tree is deterministic client/server logic** — the agent ONLY interprets
+  answers and ONLY generates text. That is the precision argument and it has to be said
+  in the pitch.
+- **TTS:** the browser's SpeechSynthesis as the baseline (it has both da-DK and en-US
+  voices, no latency dependency) — upgrade only if time allows and the rules permit
+  external TTS without a Corti equivalent (to clarify: "TTS models are permitted").
+- **Bilingual content:** every node has a `{da, en}` text pair; the language choice
+  drives STT language, TTS voice and node texts.
+
+## Completion criteria
+
+*The boxes below are unticked because this is the document as written on Thursday
+morning. Every criterion was met — the finished system is described in the root
+[`README.md`](../README.md).*
+
+- [ ] Live microphone → transcript on screen (both languages).
+- [ ] The agent asks questions aloud and understands spoken answers well enough to
+      traverse the whole burns tree without a keyboard.
+- [ ] At least one red flag demonstrable (circumferential → escalation).
+- [ ] Clinical note plus at least one diagnosis or procedure code generated at the close.
+- [ ] Dictated additions inserted into the note.
+- [ ] OR mode demonstrable: the whole flow from "OR mode" to a completed step done by
+      voice alone (no touch), with at least one step image shown and the instruction
+      read aloud.
+- [ ] The deployed URL works on venue wifi; fallback video recorded; demo script tested
+      by Magnus and Rami Friday 09:00–10:00.
+- [ ] The repository contains a file listing the products and datasets used (rule
+      requirement).
+
+## Risks and open questions
+
+1. **Danish STT quality** — ASK THE CORTI ENGINEERS NOW. If Danish is weak: Danish stays
+   in the UI and TTS, but the live part of the demo script runs in English.
+2. **Precision of answer interpretation** — mitigated by giving every node a closed
+   answer schema plus "ask again when in doubt" (never guess). It is the hardest
+   component of the day; build and test it first.
+3. **TTS latency/robustness** — browser TTS is the fallback for everything; it cannot
+   fail on venue wifi.
+4. **Corti console setup of agents/experts cannot be done headless** (known from
+   before) — Mads configures it manually in the morning; document it in the README so it
+   can be reproduced.
+5. **Credits/rate limits on hackathon keys** — establish the ceiling, build context
+   reuse.
+6. **Time box:** all code frozen Thursday ~22:00 (Friday 10:30 at the latest). Friday is
+   ONLY dress rehearsal and fallback.
+7. **The open microphone in OR mode** — background noise and other people's speech can
+   trigger commands. Mitigation: the commands are few and distinct ("næste"/"next"), and
+   the agent always acknowledges aloud before it moves. The demo takes place in a quiet
+   room, so the risk is mainly theoretical — but mention it in the pitch as a known
+   limitation (a wake word is roadmap).
+8. ~~Image rights~~ **RESOLVED 20 Aug:** all content (images, brandsaar.dk, documents) was
+   produced by Rami, Magnus or others on the team — everything may be used in the demo
+   and the submission repository.
+
+## Timetable for today (Thursday)
+
+| Phase | What | Verified by |
+|---|---|---|
+| 1 (now) | Skeleton + Corti auth proxy + live transcribe round trip + hello-world deployment | Transcript on screen at the deployed URL |
+| 2 | Tree engine + tree visualisation; Magnus and Rami write the burns tree in parallel (JSON schema from Mads) | The tree can be clicked through without voice |
+| 3 | TTS questions + agent answer interpretation = the full voice loop | One hands-free traversal |
+| 4 | Red flags + note generation + coding + dictated additions | Completion criteria 3–5 |
+| 5 (evening) | Language switching finished, voice modes, UI polish, fallback video, demo script | Dress rehearsal |
+
+---
+
+## Where the build diverged
+
+Four things turned out differently from this specification, all in the same direction —
+more was built, not less:
+
+- **The MCP server was built.** Listed above as out of scope and long-term
+  architecture, it exists and runs at `mcp.cosurg.com` with nine tools over the clinical
+  knowledge base and both decision trees.
+- **TTS is not the browser voice.** Speech output goes through Syv.ai's Danish Plapre
+  model, EU-hosted, with the browser voice retained as the fallback it was always meant
+  to be.
+- **Both trees were filled.** The burns tree and a 12-step dressing procedure guide run
+  on the same engine, which is the clearest available proof that trees are data and not
+  code.
+- **The OR voice commands are not an agent.** They are matched by deterministic rules,
+  because an agent round trip costs 1–2 seconds and fails when the network does.
+
+All five Corti product areas ended up in use, not the four the rules required.
+
+---
+---
+
 # CoSurg (arbejdstitel) — stemmestyret beslutningsstøtte til brandsår
+
+*(Dette er den danske udgave af afsnittene ovenfor. Engelsk er repoets hovedsprog —
+[spring til den engelske udgave](#cosurg-working-title--voice-driven-decision-support-for-burns).)*
+
+> **Dette er specifikationen som den blev skrevet torsdag morgen, før byggeriet.** Den
+> er bevaret uændret som dokumentation for hvad vi forpligtede os på. Flere ting gik
+> anderledes; de står under **Hvor byggeriet afveg** til sidst. Hvad det færdige system
+> gør, står i [`README.md`](../README.md).
 
 Hackathon-projekt, Corti Hack for Health 20.–21. august 2026.
 Team: Mads (kode, væk fredag 11:00) · Magnus Avnstorp (klinisk indhold + præsentation) · Rami Mossad Ibrahim (klinisk indhold + præsentation).
@@ -56,6 +261,10 @@ CoSurg er en stemmestyret copilot der AKTIVT navigerer et klinisk valideret besl
 
 ## Færdig-kriterier
 
+*Boksene nedenfor er ikke afkrydsede, fordi dette er dokumentet som det blev skrevet
+torsdag morgen. Alle kriterier blev opfyldt — det færdige system er beskrevet i
+[`README.md`](../README.md).*
+
 - [ ] Live mikrofon → transkript på skærmen (begge sprog).
 - [ ] Agenten stiller spørgsmål højt og forstår talte svar godt nok til at gennemløbe hele brandsårstræet uden tastatur.
 - [ ] Mindst ét rødt flag demonstrerbart (cirkulær → eskalation).
@@ -85,3 +294,21 @@ CoSurg er en stemmestyret copilot der AKTIVT navigerer et klinisk valideret besl
 | 3 | TTS-spørgsmål + agent-svarfortolkning = fuld stemmesløjfe | Ét gennemløb hands-free |
 | 4 | Røde flag + notat-generering + coding + dictation-tillæg | Færdig-kriterierne 3–5 |
 | 5 (aften) | Sprogskifte-finish, stemmetilstande, UI-polish, fallback-video, demo-manuskript | Generalprøve |
+
+## Hvor byggeriet afveg
+
+Fire ting gik anderledes end specifikationen — alle i samme retning: der blev bygget
+mere, ikke mindre.
+
+- **MCP-serveren blev bygget.** Den står ovenfor som uden for scope og langsigtet
+  arkitektur, men den findes og kører på `mcp.cosurg.com` med ni værktøjer over den
+  kliniske vidensbase og begge beslutningstræer.
+- **TTS er ikke browserstemmen.** Oplæsningen går gennem Syv.ais danske Plapre-model,
+  EU-hostet, med browserstemmen bevaret som den fallback den altid skulle være.
+- **Begge træer blev fyldt.** Brandsårstræet og en 12-trins procedureguide til
+  forbinding kører på samme motor — det klareste bevis vi har på at træer er data og
+  ikke kode.
+- **OR-stemmekommandoerne er ikke en agent.** De matches med deterministiske regler,
+  fordi en agent-rundtur koster 1–2 sekunder og fejler når nettet gør.
+
+Alle fem Corti-produktområder endte i brug, ikke de fire reglerne krævede.

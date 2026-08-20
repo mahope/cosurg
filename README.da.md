@@ -105,7 +105,7 @@ Alle fem produktområder er i brug. Tabellen beskriver hvad koden faktisk kalder
 | **Ambient STT** | [`lib/audio/useTranscribe.ts`](cosurg/lib/audio/useTranscribe.ts) | `/transcribe`-websocket via `@corti/sdk` med `automaticPunctuation` og interim-resultater. Lytter mens lægen svarer på træets spørgsmål. |
 | **Dictation STT** | [`lib/audio/useDictation.ts`](cosurg/lib/audio/useDictation.ts) | Samme socket, konfigureret som diktat: `spokenPunctuation`, så lægen kan sige "punktum" og "nyt afsnit". Tilkoblet i `app/page.tsx`; diktatet føjes til notatet. |
 | **Text generation** | [`app/api/note/route.ts`](cosurg/app/api/note/route.ts) | En Corti-agent skriver journalnotatet ud fra beslutningsvejen, transskriptet og diktatet. |
-| **Agentic framework** | [`lib/corti/agent.ts`](cosurg/lib/corti/agent.ts) | Fem agenter med schema-connectors og struktureret output: svarfortolker, skribent og OR-kommandogenkender her, plus en intent-router ([`app/api/route/agent.ts`](cosurg/app/api/route/agent.ts)) og en emne-router til behandlingsguiden ([`app/api/guide/route.ts`](cosurg/app/api/guide/route.ts)). Vores MCP-server kobles på som connector. |
+| **Agentic framework** | [`lib/corti/agent.ts`](cosurg/lib/corti/agent.ts) | Fire agenter med schema-connectors og struktureret output: svarfortolker og skribent her, plus en intent-router ([`app/api/route/agent.ts`](cosurg/app/api/route/agent.ts)) og en emne-router til behandlingsguiden ([`app/api/guide/route.ts`](cosurg/app/api/guide/route.ts)). Vores MCP-server kobles på som connector. |
 | **Medical coding** | [`lib/corti/coding.ts`](cosurg/lib/corti/coding.ts) | Corti Symphony, `POST /v2/tools/coding/`. Koderne kommer fra kode-API'et; sprogmodellen må kun begrunde dem. |
 
 ### Forbehold vi ikke skjuler
@@ -133,7 +133,8 @@ Fire dele, og grænsen mellem dem er hvor troværdigheden bor.
 
 **Appen** ([`cosurg/`](cosurg/)) er Next.js 16 med App Router. Alle Corti-kald går
 gennem server-side API-ruter, så browseren aldrig ser credentials. Betalte ruter
-er bag `guard()`: origin-lås, per-IP-kvote og længdegrænse på al fritekst.
+er bag `guard()` — origin-lås plus per-IP-kvote — og al fritekst passerer en
+længdegrænse (`cap()`), før den når et betalt API.
 
 **Træmotoren** ([`cosurg/lib/tree/`](cosurg/lib/tree/)) er tilstandsløs og
 domæne-agnostisk. Den kender ikke til brandsår — den kender til noder, kanter,
@@ -141,8 +142,8 @@ røde flag og dispositioner. Derfor kører den samme motor begge vores træer:
 
 | Træ | Hvad | Indhold |
 |---|---|---|
-| [`burns.json`](cosurg/content/trees/burns.json) | Akut vurdering | 8 noder: mekanisme, inhalation, TBSA, væske, dybde, cirkulær, lokalisation, køling. 4 røde flag. 3 dispositioner, hver med kilde-URL. |
-| [`dressing-hand-arm.json`](cosurg/content/trees/dressing-hand-arm.json) | Procedureguide til forbinding | 12 trin med 71 procedurefotos. |
+| [`burns.json`](cosurg/content/trees/burns.json) | Akut vurdering | 8 noder: mekanisme, inhalation, TBSA, væske, dybde, cirkulær, lokalisation, køling. 5 røde flag. 3 dispositioner, hver med sine kildehenvisninger. |
+| [`dressing-hand-arm.json`](cosurg/content/trees/dressing-hand-arm.json) | Procedureguide til forbinding | 12 trin, der viser 34 procedurefotos udvalgt fra de 71 slides i kildematerialet. |
 
 En procedureguide og et diagnostisk beslutningstræ er samme datastruktur.
 **Træer er data, ikke kode** — et nyt træ til bidsår eller forfrysninger kræver

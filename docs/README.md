@@ -7,16 +7,15 @@ we built towards, and what we committed to along the way.
 
 | File | What |
 |---|---|
-| `SPEC.md` | The specification written on Thursday morning: scope, what was deliberately left out, clinical sources, risks and completion criteria. Written in Danish. |
-| `PLAN.md` | The goal-driven plan for the build day, each goal with an observable completion criterion. Written in Danish. |
+| `SPEC.md` | The specification written on Thursday morning: scope, what was deliberately left out, clinical sources, risks and completion criteria. Ends with where the build diverged from it. |
+| `PLAN.md` | The goal-driven plan for the build day, each goal with an observable completion criterion, and where each one landed. |
 | `participant-brief.md` | The organiser's challenge, rules and judging criteria (from Notion). |
 | `schedule.md` | The Wednesday–Friday programme. |
 
-`SPEC.md` and `PLAN.md` are working documents, written in Danish on the day and left
-as they were. We keep them unedited because their value to a reader is that they show
-what we planned before we knew how it would turn out — a cleaned-up translation would
-be a different document. Everything a judge needs in English is in the root
-[`README.md`](../README.md).
+`SPEC.md` and `PLAN.md` are working documents written on the day. The content is kept
+as it was, because its value to a reader is that it shows what we planned before we
+knew how it would turn out; each one closes with a short, honest account of what
+actually happened instead. Both carry the Danish original below the English.
 
 ## Corti's own documentation
 
@@ -39,14 +38,15 @@ men det viser hvad vi byggede efter, og hvad vi lovede undervejs.
 
 | Fil | Hvad |
 |---|---|
-| `SPEC.md` | Specifikationen skrevet torsdag morgen: scope, det der bevidst blev holdt ude, kliniske kilder, risici og færdig-kriterier. På dansk. |
-| `PLAN.md` | Den måldrevne arbejdsplan for byggedagen, med observerbare færdig-kriterier pr. mål. På dansk. |
+| `SPEC.md` | Specifikationen skrevet torsdag morgen: scope, det der bevidst blev holdt ude, kliniske kilder, risici og færdig-kriterier. Slutter med hvor byggeriet afveg. |
+| `PLAN.md` | Den måldrevne arbejdsplan for byggedagen, med observerbare færdig-kriterier pr. mål, og hvor hvert mål landede. |
 | `participant-brief.md` | Arrangørens challenge, regler og bedømmelseskriterier (fra Notion). |
 | `schedule.md` | Programmet onsdag–fredag. |
 
-`SPEC.md` og `PLAN.md` er arbejdsdokumenter, skrevet på dansk undervejs og efterladt
-som de var. Deres værdi for en læser er at de viser hvad vi planlagde, før vi vidste
-hvordan det gik — en pudset oversættelse ville være et andet dokument.
+`SPEC.md` og `PLAN.md` er arbejdsdokumenter skrevet undervejs. Indholdet er bevaret
+som det var — værdien for en læser er at de viser hvad vi planlagde, før vi vidste
+hvordan det gik — og hver af dem slutter med en kort, ærlig opgørelse over hvad der
+faktisk skete. Begge har engelsk øverst og den danske original nedenunder.
 
 ## Cortis egen dokumentation
 

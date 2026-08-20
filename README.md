@@ -109,7 +109,7 @@ All five product areas are in use. The table describes what the code actually ca
 | **Ambient STT** | [`lib/audio/useTranscribe.ts`](cosurg/lib/audio/useTranscribe.ts) | `/transcribe` websocket via `@corti/sdk` with `automaticPunctuation` and interim results. Listens while the clinician answers the tree's questions. |
 | **Dictation STT** | [`lib/audio/useDictation.ts`](cosurg/lib/audio/useDictation.ts) | Same socket, configured for dictation: `spokenPunctuation`, so the clinician can say "full stop" and "new paragraph". Wired up in `app/page.tsx`; the dictation is appended to the note. |
 | **Text generation** | [`app/api/note/route.ts`](cosurg/app/api/note/route.ts) | A Corti agent writes the clinical note from the decision path, the transcript and the dictation. |
-| **Agentic framework** | [`lib/corti/agent.ts`](cosurg/lib/corti/agent.ts) | Five agents with schema connectors and structured output: answer interpreter, note writer and OR command recogniser here, plus an intent router ([`app/api/route/agent.ts`](cosurg/app/api/route/agent.ts)) and a guide topic router ([`app/api/guide/route.ts`](cosurg/app/api/guide/route.ts)). Our MCP server is attached as a connector. |
+| **Agentic framework** | [`lib/corti/agent.ts`](cosurg/lib/corti/agent.ts) | Four agents with schema connectors and structured output: answer interpreter and note writer here, plus an intent router ([`app/api/route/agent.ts`](cosurg/app/api/route/agent.ts)) and a guide topic router ([`app/api/guide/route.ts`](cosurg/app/api/guide/route.ts)). Our MCP server is attached as a connector. |
 | **Medical coding** | [`lib/corti/coding.ts`](cosurg/lib/corti/coding.ts) | Corti Symphony, `POST /v2/tools/coding/`. The codes come from the coding API; the language model may only justify them. |
 
 ### Caveats we are not hiding
@@ -137,8 +137,8 @@ Four parts, and the boundary between them is where the trustworthiness lives.
 
 **The app** ([`cosurg/`](cosurg/)) is Next.js 16 with the App Router. Every Corti
 call goes through a server-side API route, so the browser never sees credentials.
-Paid routes sit behind `guard()`: origin lock, per-IP quota and a length cap on all
-free text.
+Paid routes sit behind `guard()` — an origin lock plus a per-IP quota — and all free
+text passes a length cap (`cap()`) before it reaches a paid API.
 
 **The tree engine** ([`cosurg/lib/tree/`](cosurg/lib/tree/)) is stateless and
 domain-agnostic. It knows nothing about burns — it knows about nodes, edges, red
@@ -146,8 +146,8 @@ flags and dispositions. That is why the same engine runs both our trees:
 
 | Tree | What | Contents |
 |---|---|---|
-| [`burns.json`](cosurg/content/trees/burns.json) | Acute assessment | 8 nodes: mechanism, inhalation, TBSA, fluids, depth, circumferential, location, cooling. 4 red flags. 3 dispositions, each with source URLs. |
-| [`dressing-hand-arm.json`](cosurg/content/trees/dressing-hand-arm.json) | Dressing procedure guide | 12 steps with 71 procedure photos. |
+| [`burns.json`](cosurg/content/trees/burns.json) | Acute assessment | 8 nodes: mechanism, inhalation, TBSA, fluids, depth, circumferential, location, cooling. 5 red flags. 3 dispositions, each carrying its source references. |
+| [`dressing-hand-arm.json`](cosurg/content/trees/dressing-hand-arm.json) | Dressing procedure guide | 12 steps, showing 34 procedure photos drawn from the 71-slide source set. |
 
 A procedure guide and a diagnostic decision tree are the same data structure.
 **Trees are data, not code** — a new tree for bite wounds or frostbite requires no

@@ -20,7 +20,7 @@ intent.
 | **Ambient speech-to-text** | Yes | `lib/audio/useTranscribe.ts` | `/transcribe` websocket via `@corti/sdk`, `automaticPunctuation`, interim results. Listens while the clinician answers the tree's questions. |
 | **Dictation speech-to-text** | Yes | `lib/audio/useDictation.ts` | The same `/transcribe` socket, configured for dictation rather than ambient: `spokenPunctuation` (the clinician says "full stop", "new paragraph") and note-oriented number formatting. Wired up in `app/page.tsx`; the dictation is appended to the note. |
 | **Text generation** | Yes | `app/api/note/route.ts` | The clinical note is written by a Corti agent from the decision path, the transcript and the dictation. |
-| **Agentic framework** | Yes | `lib/corti/agent.ts` | Agents with schema connectors and structured output: answer interpreter (flags doubt instead of guessing), note writer, OR command recogniser, intent router and guide topic router. |
+| **Agentic framework** | Yes | `lib/corti/agent.ts` | Four agents with schema connectors and structured output: answer interpreter (flags doubt instead of guessing) and note writer here, plus an intent router (`app/api/route/agent.ts`) and a guide topic router (`app/api/guide/route.ts`). |
 | **Medical coding** | Yes | `lib/corti/coding.ts`, `app/api/coding/route.ts` | Corti Symphony, `POST /v2/tools/coding/`. The codes come from the coding API — the language model may only justify them. |
 
 ### Caveats we are not hiding
@@ -39,6 +39,13 @@ intent.
 - **TTS is not Corti.** Speech output goes through Syv.ai (Plapre, Danish,
   EU-hosted) with a fallback to the browser's own voice. The hackathon rules
   explicitly permit external TTS models.
+- **The OR voice commands are not an agent.** `COMMAND_SPEC` exists in
+  `lib/corti/agent.ts`, but nothing calls it. "Next", "repeat" and "back" are
+  matched by deterministic rules in `components/voiceCommands.ts` instead — an
+  agent round trip costs 1–2 seconds, it fails when the network does, and a rule
+  is easier to keep conservative than a model when background conversation must
+  never trigger a command. The spec stays as a documented upgrade path for the
+  day the command set becomes a language rather than a set of buttons.
 
 ## Medical coding — why it is set up this way
 
@@ -127,8 +134,11 @@ speech; what is being demonstrated is the punctuation mechanism.)
 | `/api/pitfalls` | GET/POST | Pitfalls, each carrying a verbatim excerpt from the MCP knowledge base as backing. POST matches pitfalls to the current context (tree, node, disposition or topic); GET returns the whole catalogue. |
 | `/api/tts` | POST | Danish speech output (Syv.ai) |
 
-Every paid route sits behind `guard()` in `lib/guard.ts`: origin lock plus a
-per-IP quota, and all free text is length-capped before it is sent to a paid API.
+Every paid route sits behind `guard()` in `lib/guard.ts` — an origin lock plus a
+per-IP, per-route quota over a 60-second window. The length cap is the separate
+`cap()` helper, applied to all free text before it is sent to a paid API
+(`LIMITS`: utterance 600, transcript 20 000, dictation 5 000, TTS 500 characters).
+`/api/tree` is the one route without a guard: it only reads local files.
 `/api/guide`, `/api/pitfalls` and `/api/chat` answer 503 when `MCP_URL` and
 `MCP_AUTH_TOKEN` are absent, rather than falling back to general knowledge.
 
