@@ -45,8 +45,8 @@ export const t = {
   thinking: { da: "Fortolker…", en: "Interpreting…" },
   sources: { da: "Kilder", en: "Sources" },
   sourceNote: {
-    da: "Anbefalingen kommer fra det kliniske træ — ikke fra en sprogmodel.",
-    en: "The recommendation comes from the clinical tree — not from a language model.",
+    da: "Build on validated expert content",
+    en: "Build on validated expert content",
   },
   orHint: {
     da: "Sig «næste», «gentag», «tilbage» — eller svar direkte.",
