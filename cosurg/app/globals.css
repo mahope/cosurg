@@ -98,6 +98,12 @@
   --font-display: var(--font-display), Roboto, ui-sans-serif, sans-serif;
   --font-body: var(--font-body), Roboto, ui-sans-serif, sans-serif;
   --font-mono: var(--font-mono), "Roboto Mono", ui-monospace, monospace;
+
+  /* Sidebaggrunden: Turquoise → LightBlue, øverst venstre til nederst højre.
+     Samme brandtoner som --turquoise/--teal-tint, her som gradient i stedet
+     for fladt papir. Bruges KUN til den fulde sidebaggrund — kort, knapper og
+     badges beholder deres flade --paper. */
+  --app-gradient: linear-gradient(135deg, #00bacd 0%, #e6f5f8 100%);
 }
 
 @theme inline {
@@ -112,9 +118,16 @@
 }
 
 body {
-  background: var(--paper);
+  background: var(--app-gradient) fixed;
   color: var(--ink);
   font-family: var(--font-body);
+}
+
+/* Sidernes fulde baggrund. `fixed` låser gradienten til viewportet, så
+   øverste venstre og nederste højre hjørne altid er de rigtige farver —
+   uafhængigt af hvor lang siden er eller hvor man har scrollet til. */
+.app-gradient-bg {
+  background: var(--app-gradient) fixed;
 }
 
 ::selection {

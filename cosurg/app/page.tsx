@@ -1337,7 +1337,7 @@ export default function Home() {
   }
 
   return (
-    <main className="relative min-h-screen bg-[var(--paper)] px-4 py-6 text-[var(--ink)] sm:px-6 sm:py-8">
+    <main className="app-gradient-bg relative min-h-screen px-4 py-6 text-[var(--ink)] sm:px-6 sm:py-8">
       <BrandWatermark />
       <div className="relative z-10 mx-auto max-w-5xl">
         <ControlRail
