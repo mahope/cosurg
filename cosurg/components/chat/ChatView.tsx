@@ -242,7 +242,7 @@ export function ChatView() {
       <header className="sticky top-0 z-10 border-b bg-[color-mix(in_srgb,var(--paper)_92%,transparent)] backdrop-blur">
         <div className="mx-auto flex w-full max-w-3xl flex-wrap items-center gap-x-3 gap-y-2 px-4 py-3 sm:px-6">
           <Link href="/" className="shrink-0 transition-opacity hover:opacity-80">
-            <BrandMark size={30} />
+            <BrandMark size={50} />
           </Link>
           <div className="min-w-0">
             <Link href="/" className="transition-opacity hover:opacity-80">
