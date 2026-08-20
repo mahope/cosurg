@@ -80,7 +80,10 @@ const CASES = [
   // --- Engelsk ---
   ["mechanism", "hot water over the hand", "answer", "engelsk synonym"],
   ["tbsa", "how do I estimate TBSA in a child?", "question", "engelsk spørgeord forrest"],
+  ["mechanism", "how do I estimate TBSA in a child?", "question", "spørgsmål om en ANDEN node end den aktive"],
   ["inhalation", "yes", "answer", "engelsk bekræftelse"],
+  ["circumferential", "when should I do an escharotomy?", "question", "engelsk, verificeret i browseren"],
+  ["location", "the palm and two fingers", "answer", "engelsk synonym i sætning"],
 ];
 
 let failed = 0;

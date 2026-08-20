@@ -16,15 +16,20 @@ import { expertLabel } from "./experts";
 import { useClinicalChat } from "./useClinicalChat";
 
 /**
- * Den kliniske chat.
+ * Den kliniske chat — den lange samtale.
  *
- * Den bor på sin egen rute frem for i et panel over beslutningstræet, og det er
- * et bevidst valg med to grunde. Der er kun ÉN mikrofon: både træet og chatten
- * vil have `getUserMedia`, og to lyttere om samme lyd giver en app der svarer på
- * det forkerte spørgsmål midt i en demo. Og træets flow er lineært og
- * hands-free — et sideløbende chatpanel ville konkurrere om præcis den
- * opmærksomhed OR-tilstanden er bygget til at fjerne. Chatten er et opslag man
- * går TIL og kommer tilbage fra, ikke en notifikation der afbryder.
+ * Den er IKKE længere vejen ind. Forsiden svarer selv på faglige spørgsmål midt
+ * i et forløb (`app/page.tsx` + `components/unified/`), så lægen aldrig skal
+ * vælge mellem "forløb" og "chat". Denne side er blevet det den altid burde
+ * være: stedet hvor man bliver hængende i en tråd — flere spørgsmål i træk, med
+ * agentens hukommelse imellem — når man ikke står med en patient foran sig.
+ *
+ * Den bliver liggende på sin egen rute af én teknisk grund, og den er stadig
+ * gyldig: der er kun ÉN mikrofon. Både forsiden og denne side vil have
+ * `getUserMedia`, og to lyttere om samme lyd giver en app der svarer på det
+ * forkerte spørgsmål. Ruterne kan aldrig være fremme samtidig, så lytteren er
+ * altid alene. Derfor deler de to flader oplæsningen (`unified/spoken.ts`) og
+ * samtalen (`useClinicalChat`) — men aldrig en mikrofon.
  */
 
 /** Hvor længe efter egen tale vi ignorerer mikrofonen, så appen ikke hører sig selv. */
