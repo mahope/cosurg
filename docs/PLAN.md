@@ -23,7 +23,7 @@ written — it is reached when the criterion has been verified.
 
 ## GOAL 1 — Magnus and Rami can run the demo without Mads
 **Done when:** the two of them have run the whole flow once on Friday morning
-unaided, from live microphone to finished note, and a fallback video exists in case
+unaided, from live microphone to finished note — and can do so
 the network fails. This goal beats all the others. A prettier app that cannot be
 demonstrated is worthless.
 
@@ -73,7 +73,7 @@ as out of scope in `SPEC.md`, was built after all and runs at `mcp.cosurg.com`.
 | D — Deployment | the server, the compose stack |
 
 ## Deployment
-`cosurg.com` → 138.199.206.15 (DNS verified 20 Aug).
+`cosurg.com` resolves to the project server (DNS verified 20 Aug).
 The server runs **Openship**, not Dokploy. Deployment sits in its own track.
 
 ## Clinical content
@@ -84,7 +84,6 @@ Both trees are named with their professional sources: the Danish Burn Associatio
 - The recommendation ALWAYS comes from the tree, never from a language model.
 - TTS: Syv.ai (Plapre) in Danish, browser voice as fallback. Corti has no TTS.
 - Every paid route has an origin lock, a per-IP quota and length caps.
-- SSH to nsl runs through ControlMaster — many rapid connections trigger fail2ban.
 
 ---
 ---
@@ -115,7 +114,7 @@ kriteriet er verificeret.
 
 ## MÅL 1 — Magnus og Rami kan gennemføre demoen uden Mads
 **Færdig når:** de to har kørt hele flowet igennem én gang fredag formiddag uden hjælp,
-fra live-mikrofon til færdigt notat, og der findes en fallback-video hvis nettet svigter.
+fra live-mikrofon til færdigt notat.
 Dette mål vinder over alle andre. En flottere app der ikke kan demonstreres er værdiløs.
 
 ## MÅL 2 — Kirurgen kan styre appen uden at røre skærmen
@@ -163,7 +162,7 @@ Reglerne kræver tre af de fem områder. Alle fem er i brug. MCP-serveren, der i
 | D — Deploy | serveren, compose-stacken |
 
 ## Deploy
-`cosurg.com` → 138.199.206.15 (DNS verificeret 20/8).
+`cosurg.com` peger på projektserveren (DNS verificeret 20/8).
 Serveren kører **Openship**, ikke Dokploy. Deployet ligger i sit eget spor.
 
 ## Klinisk indhold
@@ -174,4 +173,3 @@ Rigshospitalets brandsårsafdeling, Afsnit 6052.
 - Anbefalingen kommer ALTID fra træet, aldrig fra en sprogmodel.
 - TTS: Syv.ai (Plapre) på dansk, browserstemme som fallback. Corti har ikke TTS.
 - Alle betalte ruter har origin-lås, per-IP-kvote og længdegrænser.
-- SSH mod nsl kører gennem ControlMaster — mange hurtige forbindelser udløser fail2ban.

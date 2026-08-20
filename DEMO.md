@@ -52,8 +52,6 @@ Check these nine things as you go. All of them must be in order:
    appears.
 8. Switch to the dressing guide tree, turn on **OR mode**, and say **"next"** three
    times. The screen must change step and show images.
-9. Find the fallback video on the desktop and play the first ten seconds. Then you know
-   it works.
 
 If any one of the nine does not work: see section 5, and message Mads. He has left, but
 he can answer a message.
@@ -264,10 +262,12 @@ Say **"OK."** Or press the **OK** button. Or press space.
 
 1. **F5.**
 2. If that fails: close the browser, open it again, go to the address.
-3. If it still fails: **open the fallback video from the desktop and play it.**
-   Say: *"Our venue connection is down — here is the same flow recorded this
-   morning."* Keep narrating over the video exactly as in the script.
-   **This is a fully valid alternative. The judges have seen it before.**
+3. If it still fails: **tell the story instead of showing it.** Say: *"Our
+   connection is down, so let me tell you what you would have seen — and I am
+   happy to show it to you right after."* Then walk through the clinical problem
+   and how CoSurg answers it, using the printed script. A judge who understands
+   the idea will remember it; a demo nobody could follow is worth less than a
+   clear explanation.
 
 ### H. The venue wifi is dead
 
@@ -326,7 +326,7 @@ det er den anden vej ind.
 Nettet er væk. **Appen kommer ikke videre af sig selv — vent ikke.**
 1. Tryk i stedet på **svarknappen** på skærmen (fx `Scald`). Den virker uden net.
 2. Hjælper det ikke: tryk **F5**. Siden starter forfra på spørgsmål 1.
-3. Er nettet helt væk: spring til punkt G (videoen).
+3. Er nettet helt væk: spring til punkt G.
 
 **C. Appen forstår ikke svaret og spørger igen**
 Helt normalt og faktisk en pointe. Sig til dommerne:
@@ -350,10 +350,12 @@ Sig **"OK."** Eller tryk på **OK**-knappen. Eller tryk mellemrum.
 **G. Siden er hvid, eller intet virker**
 1. **F5.**
 2. Virker det ikke: luk browseren, åbn den igen, gå til adressen.
-3. Virker det stadig ikke: **åbn fallback-videoen fra skrivebordet og afspil den.**
-   Sig: *"Our venue connection is down — here is the same flow recorded this
-   morning."* Bliv ved med at fortælle henover videoen præcis som i manuskriptet.
-   **Det er et fuldgyldigt alternativ. Dommerne har set det før.**
+3. Virker det stadig ikke: **fortæl det i stedet for at vise det.** Sig: *"Our
+   connection is down, so let me tell you what you would have seen — and I am
+   happy to show it to you right after."* Gennemgå så det kliniske problem og
+   hvordan CoSurg løser det, ud fra det trykte manuskript. En dommer der forstår
+   idéen husker den; en demo ingen kunne følge er mindre værd end en klar
+   forklaring.
 
 **H. Wifi'et på stedet er dødt**
 Del internet fra en telefon (personligt hotspot) og forbind computeren til det.
@@ -381,5 +383,5 @@ DEL C    Switch tree → Forbinding: fingre, hænder og arme
 HÆNGER   "Interpreting…" står fast   → tryk på svarknappen, ellers F5
 MIKROFON virker ikke                 → skriv svaret i tekstfeltet
 "NEXT"   virker ikke i OR-tilstand   → tryk MELLEMRUM
-ALT      er gået i stykker           → afspil videoen fra skrivebordet
+ALT      er gået i stykker           → fortæl historien fra manuskriptet
 ```

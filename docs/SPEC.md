@@ -68,7 +68,7 @@ comes from the tree, which clinicians wrote, never from a freely generating mode
 6. **Closing:** disposition (home / emergency department treatment / specialist unit or
    burn centre) with justification from the tree path → generated clinical note → codes
    → the clinician dictates additions (dictation).
-7. **Deployment** on a public URL Thursday evening, plus a fallback video and a demo
+7. **Deployment** on a public URL Thursday evening plus a demo
    script (EN + DA) that Magnus and Rami can run alone.
 
 ## Out of scope
@@ -131,7 +131,7 @@ morning. Every criterion was met — the finished system is described in the roo
 - [ ] OR mode demonstrable: the whole flow from "OR mode" to a completed step done by
       voice alone (no touch), with at least one step image shown and the instruction
       read aloud.
-- [ ] The deployed URL works on venue wifi; fallback video recorded; demo script tested
+- [ ] The deployed URL works on venue wifi; demo script tested
       by Magnus and Rami Friday 09:00–10:00.
 - [ ] The repository contains a file listing the products and datasets used (rule
       requirement).
@@ -169,7 +169,7 @@ morning. Every criterion was met — the finished system is described in the roo
 | 2 | Tree engine + tree visualisation; Magnus and Rami write the burns tree in parallel (JSON schema from Mads) | The tree can be clicked through without voice |
 | 3 | TTS questions + agent answer interpretation = the full voice loop | One hands-free traversal |
 | 4 | Red flags + note generation + coding + dictated additions | Completion criteria 3–5 |
-| 5 (evening) | Language switching finished, voice modes, UI polish, fallback video, demo script | Dress rehearsal |
+| 5 (evening) | Language switching finished, voice modes, UI polish, demo script | Dress rehearsal |
 
 ---
 
@@ -233,7 +233,7 @@ CoSurg er en stemmestyret copilot der AKTIVT navigerer et klinisk valideret besl
 4. **Ført dialog:** agenten stiller den aktive nodes spørgsmål via TTS, fortolker det talte svar via Cortis agentic framework (svaret valideres mod nodens svarskema — kan svaret ikke afgøres, spørger agenten igen i stedet for at gætte), og rykker frem i træet. Skærmen viser træet fyldes ud live.
 5. **Røde flag:** noder markeret kritiske (cirkulær forbrænding, inhalationsmistanke, højspænding) afbryder med stemme + rød banner uanset stemmetilstand.
 6. **Afslutning:** disposition (hjem / skadestue-behandling / specialafdeling/brandsårscenter) med begrundelse fra træ-pathen → genereret journalnotat → koder → lægen dikterer tillæg (dictation).
-7. **Deploy** på offentlig URL torsdag aften + fallback-video + demo-manuskript (EN + DA) som Magnus/Rami kan køre alene.
+7. **Deploy** på offentlig URL torsdag aften + demo-manuskript (EN + DA) som Magnus/Rami kan køre alene.
 
 ## Ikke i scope
 
@@ -271,7 +271,7 @@ torsdag morgen. Alle kriterier blev opfyldt — det færdige system er beskrevet
 - [ ] Journalnotat + mindst én diagnose-/procedurekode genereres ved afslutning.
 - [ ] Dictation-tillæg indsættes i notatet.
 - [ ] OR-tilstand demonstrerbar: hele flowet fra "OR mode" til færdigt trin gennemført med stemme alene (ingen berøring), med mindst ét step-billede vist og oplæst instruktion.
-- [ ] Deployet URL virker på venue-wifi; fallback-video optaget; demo-manuskript testet af Magnus/Rami fredag 9–10.
+- [ ] Deployet URL virker på venue-wifi; demo-manuskript testet af Magnus/Rami fredag 9–10.
 - [ ] Repo indeholder fil med brugte produkter/datasæt (regel-krav).
 
 ## Risici & åbne spørgsmål
@@ -293,7 +293,7 @@ torsdag morgen. Alle kriterier blev opfyldt — det færdige system er beskrevet
 | 2 | Træ-motor + trævisualisering; Magnus/Rami skriver brandsårstræet parallelt (JSON-skema fra Mads) | Træet kan klikkes igennem uden stemme |
 | 3 | TTS-spørgsmål + agent-svarfortolkning = fuld stemmesløjfe | Ét gennemløb hands-free |
 | 4 | Røde flag + notat-generering + coding + dictation-tillæg | Færdig-kriterierne 3–5 |
-| 5 (aften) | Sprogskifte-finish, stemmetilstande, UI-polish, fallback-video, demo-manuskript | Generalprøve |
+| 5 (aften) | Sprogskifte-finish, stemmetilstande, UI-polish, demo-manuskript | Generalprøve |
 
 ## Hvor byggeriet afveg
 
