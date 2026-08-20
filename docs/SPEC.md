@@ -3,10 +3,11 @@
 *(Dansk udgave nedenfor — [spring til den danske udgave](#cosurg-arbejdstitel--stemmestyret-beslutningsstøtte-til-brandsår))*
 
 > **This is the specification as it was written on Thursday morning, before the
-> build.** It is kept unchanged as a record of what we committed to. Several things
-> turned out differently, and those are listed under **Where the build diverged**
-> below. For what the finished system actually does, read the root
-> [`README.md`](../README.md).
+> build.** It is kept as a record of what we committed to, with one exception:
+> **Purpose** below states what the product turned out to be, because the product
+> moved further than any other single thing in this document. Everything else is
+> untouched, and what changed is listed under **Where the build diverged**. For what
+> the finished system actually does, read the root [`README.md`](../README.md).
 
 Hackathon project, Corti Hack for Health, 20–21 August 2026.
 Team: Mads (code, leaves Friday 11:00) · Magnus Avnstorp (clinical content +
@@ -17,14 +18,25 @@ presentation) · Rami Mossad Ibrahim (clinical content + presentation).
 Emergency physicians have to make precise, complete decisions about burns under time
 pressure: depth, extent (TBSA), location, circumferential constriction, inhalation
 injury — and they skip nodes when it is busy. SurgAI showed that a reference work is
-not enough: the answer has to arrive as a **led conversation**, not as a search.
+not enough: the answer has to arrive as a **led conversation**, not as a search. But a
+led conversation is not enough either, because the doubt that arrives mid-assessment —
+how is area estimated on a child, what is actually done for a circumferential burn —
+sends the clinician into a different system and leaves the assessment behind.
 
-CoSurg is a voice-driven copilot that ACTIVELY navigates a clinically validated
-decision tree: the agent asks the next clarifying question aloud (TTS), the clinician
-answers by voice, the tree fills in node by node until a disposition — and finally the
-clinical note and the codes fall out automatically. A deterministic tree plus AI only
-for interpretation is what makes it "more precise than SurgAI": the recommendation
-comes from the tree, which clinicians wrote, never from a freely generating model.
+CoSurg is therefore **one field**. The clinician says what he is looking at, and the
+app works out what kind of help that was: a led assessment through a clinically
+validated decision tree, a sourced answer to a clinical question, a treatment lookup
+from our own knowledge base — or, when the utterance can be read two ways, a question
+back. The convergence is the product. The decision tree is one of the shapes an answer
+can take, and it is the shape that ends in a disposition, a clinical note and codes.
+
+What makes it more precise than a chatbot is not fluency but provenance. The
+recommendation comes from a tree clinicians wrote, never from a freely generating
+model. The codes come from Corti's coding API rather than being invented. Lookups are
+verbatim excerpts carrying their source, and when the sources are silent the app says
+so. And where the reading is genuinely ambiguous, the app asks rather than guesses —
+because an answer read as a question costs a repetition, while a question read as an
+answer costs a decision, and leaves no trace that it did.
 
 ## The 5 product areas (requirement: at least 4)
 
@@ -175,9 +187,14 @@ morning. Every criterion was met — the finished system is described in the roo
 
 ## Where the build diverged
 
-Four things turned out differently from this specification, all in the same direction —
+Five things turned out differently from this specification, all in the same direction —
 more was built, not less:
 
+- **The product converged.** The scope below describes a session that begins by
+  choosing a language, a voice mode and a tree. What was built begins with one field
+  and no choice at all: the app decides from the utterance whether to open a pathway,
+  look something up, fetch a treatment or ask what was meant. Everything the scope
+  lists is still there — it is simply no longer something the clinician has to pick.
 - **The MCP server was built.** Listed above as out of scope and long-term
   architecture, it exists and runs at `mcp.cosurg.com` with nine tools over the clinical
   knowledge base and both decision trees.
@@ -201,18 +218,22 @@ All five Corti product areas ended up in use, not the four the rules required.
 [spring til den engelske udgave](#cosurg-working-title--voice-driven-decision-support-for-burns).)*
 
 > **Dette er specifikationen som den blev skrevet torsdag morgen, før byggeriet.** Den
-> er bevaret uændret som dokumentation for hvad vi forpligtede os på. Flere ting gik
-> anderledes; de står under **Hvor byggeriet afveg** til sidst. Hvad det færdige system
-> gør, står i [`README.md`](../README.md).
+> er bevaret som dokumentation for hvad vi forpligtede os på, med én undtagelse:
+> **Formål** nedenfor siger hvad produktet endte med at være, fordi produktet flyttede
+> sig længere end noget andet enkelt punkt i dokumentet. Resten står urørt, og hvad
+> der ændrede sig står under **Hvor byggeriet afveg**. Hvad det færdige system gør,
+> står i [`README.md`](../README.md).
 
 Hackathon-projekt, Corti Hack for Health 20.–21. august 2026.
 Team: Mads (kode, væk fredag 11:00) · Magnus Avnstorp (klinisk indhold + præsentation) · Rami Mossad Ibrahim (klinisk indhold + præsentation).
 
 ## Formål
 
-Skadestuelæger skal træffe præcise, komplette beslutninger om brandsår under tidspres: dybde, udbredelse (TBSA), lokalisation, cirkulær afsnøring, inhalationsskade — og glemmer noder når det er travlt. SurgAI viste at et opslagsværk ikke er nok: svaret skal komme som en **ført samtale**, ikke som en søgning.
+Skadestuelæger skal træffe præcise, komplette beslutninger om brandsår under tidspres: dybde, udbredelse (TBSA), lokalisation, cirkulær afsnøring, inhalationsskade — og glemmer noder når det er travlt. SurgAI viste at et opslagsværk ikke er nok: svaret skal komme som en **ført samtale**, ikke som en søgning. Men en ført samtale er heller ikke nok, for den tvivl der melder sig midt i en vurdering — hvordan beregnes arealet på et barn, hvad gør man egentlig ved en cirkulær forbrænding — sender lægen ind i et andet system og efterlader vurderingen bag sig.
 
-CoSurg er en stemmestyret copilot der AKTIVT navigerer et klinisk valideret beslutningstræ: agenten stiller næste afklarende spørgsmål højt (TTS), lægen svarer med tale, træet udfyldes node for node til en disposition — og til sidst falder journalnotat + koder ud automatisk. Deterministisk træ + AI kun til fortolkning = "mere præcist end SurgAI": anbefalingen kommer fra træet (klinikere har skrevet det), aldrig fra en frit genererende model.
+CoSurg er derfor **ét felt**. Lægen siger hvad han står med, og appen finder selv ud af hvilken slags hjælp det var: en ført vurdering gennem et klinisk valideret beslutningstræ, et kildebelagt svar på et fagligt spørgsmål, et behandlingsopslag fra vores egen vidensbase — eller, når ytringen kan læses på to måder, et spørgsmål tilbage. Sammensmeltningen er produktet. Beslutningstræet er én af de former et svar kan tage, og det er den form der ender i en disposition, et journalnotat og koder.
+
+Det der gør den mere præcis end en chatbot, er ikke sproget men sporbarheden. Anbefalingen kommer fra et træ klinikere har skrevet, aldrig fra en frit genererende model. Koderne kommer fra Cortis coding-API frem for at blive fundet på. Opslag er ordrette uddrag der bærer deres kilde, og tier kilderne, siger appen det. Og hvor læsningen er ægte tvetydig, spørger appen frem for at gætte — fordi et svar læst som spørgsmål koster en gentagelse, mens et spørgsmål læst som svar koster en beslutning og ikke efterlader spor af det.
 
 ## De 5 produktområder (krav: mindst 4)
 
@@ -297,9 +318,14 @@ torsdag morgen. Alle kriterier blev opfyldt — det færdige system er beskrevet
 
 ## Hvor byggeriet afveg
 
-Fire ting gik anderledes end specifikationen — alle i samme retning: der blev bygget
+Fem ting gik anderledes end specifikationen — alle i samme retning: der blev bygget
 mere, ikke mindre.
 
+- **Produktet smeltede sammen.** Scopet nedenfor beskriver en session der begynder med
+  at vælge sprog, stemmetilstand og træ. Det byggede begynder med ét felt og intet
+  valg: appen afgør ud fra ytringen om den skal åbne et forløb, slå noget op, hente en
+  behandling eller spørge hvad der var ment. Alt det scopet nævner findes stadig — det
+  er blot ikke længere noget lægen skal vælge.
 - **MCP-serveren blev bygget.** Den står ovenfor som uden for scope og langsigtet
   arkitektur, men den findes og kører på `mcp.cosurg.com` med ni værktøjer over den
   kliniske vidensbase og begge beslutningstræer.

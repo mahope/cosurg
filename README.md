@@ -94,6 +94,25 @@ handsfree mode the relationship inverts: the surgeon is scrubbed and never touch
 the screen. The microphone stays open, the commands are few and distinct, and the
 display shows large procedure photos of what to do in this exact step.
 
+### From utterance to outcome
+
+```mermaid
+flowchart TD
+    U["One field — the clinician says<br/>what they are looking at"] --> L1["<b>Layer 1 — deterministic classifier</b><br/>in the browser: no latency, no network,<br/>can name its own reason.<br/>Decides only what it is certain of."]
+    L1 -- "not certain" --> L2["<b>Layer 2 — Corti answer interpreter</b><br/>does the utterance answer<br/>the question that is standing?"]
+    L2 -- "reports doubt" --> L3["<b>Layer 3 — Corti intent router</b><br/>was it a question after all?"]
+    L1 --> R{"What was<br/>the utterance?"}
+    L2 --> R
+    L3 --> R
+    R -- "describes a patient" --> A["<b>Led assessment</b><br/>the matching pathway opens"]
+    R -- "asks a question" --> B["<b>Sourced answer</b><br/>verbatim excerpt, source named"]
+    R -- "asks how to treat" --> C["<b>Treatment lookup</b><br/>the whole course, in clinical order"]
+    R -- "genuinely two-way" --> D["<b>A question back</b><br/>CoSurg asks which was meant"]
+```
+
+Each layer decides only what it is certain of. Doubt falls through to the next
+layer — and at the end of the chain it is asked about, never guessed away.
+
 ### What makes it different
 
 It is easy to build a chatbot that answers questions about burns. The difference
@@ -129,6 +148,26 @@ node's edges and advances. A language model cannot change where it lands, becaus
 takes no part in that lookup. The led assessment is one of the shapes an answer can
 take — and it is the shape where determinism matters most, because it is the one
 that ends in a disposition.
+
+```mermaid
+flowchart TD
+    Q["The node's question is read aloud — TTS"] --> V["The clinician answers by voice"]
+    V --> STT["Corti ambient STT — live transcript"]
+    STT --> INT{"Corti agent interprets the utterance.<br/>Does it match a value the node's<br/>answer schema permits?"}
+    INT -- "cannot be determined" --> AGAIN["Doubt is flagged —<br/>ask again, never guess"]
+    AGAIN --> Q
+    INT -- "permitted value" --> ENG["The tree engine looks the value up<br/>among the node's edges —<br/>a deterministic lookup, no model involved"]
+    ENG -- "red-flag value" --> RF["🔴 Spoken interruption + red banner<br/>with the burn unit's phone number"]
+    RF --> NEXT
+    ENG --> NEXT{"Where does the edge lead?"}
+    NEXT -- "next node" --> Q
+    NEXT -- "disposition" --> OUT["Disposition with its sources<br/>→ clinical note → diagnosis codes"]
+```
+
+The language model appears exactly once in this loop, and the only thing it can
+hand back is a value the node's schema already permits — or doubt. Everything that
+decides — which node comes next, when a red flag fires, where the patient ends
+up — is a lookup in JSON written by plastic surgeons.
 
 **The codes come from Corti's coding API, not from a model inventing them.**
 A language model can produce an ICD-10 code that looks entirely right and does not
@@ -193,6 +232,43 @@ secondary codes. The measurement is in [`cosurg/README.md`](cosurg/README.md).
 
 Four parts, and the boundary between them is where the trustworthiness lives.
 
+```mermaid
+flowchart LR
+    subgraph BROWSER["Browser"]
+        UI["One field, tree view,<br/>note and lookups"]
+        MIC["Microphone"]
+        DET["Deterministic layer —<br/>intent classifier, pathway match,<br/>handsfree voice commands"]
+    end
+    subgraph APP["cosurg — Next.js, server side"]
+        API["API routes — every paid route<br/>behind guard() and cap()"]
+        ENG["Tree engine — lib/tree<br/>stateless, domain-agnostic"]
+        TREES[("content/trees/<br/>burns.json · dressing-hand-arm.json")]
+    end
+    subgraph CORTI["Corti API — EU"]
+        WS["/transcribe websocket"]
+        AGENTS["Agentic framework — four agents"]
+        SYM["Symphony — medical coding"]
+    end
+    subgraph MCPS["cosurg-mcp — knowledge server"]
+        TOOLS["Ten tools — verbatim excerpts<br/>carrying their source URL"]
+        KB[("data/kilder/<br/>the clinical knowledge base")]
+    end
+    TTS["Syv.ai TTS — Plapre<br/>fallback: the browser voice"]
+
+    MIC -- "audio — short-lived token<br/>scoped to transcription" --> WS
+    WS -- "transcript" --> UI
+    UI --> DET
+    DET -- "only what the browser<br/>cannot decide itself" --> API
+    API --> ENG
+    ENG --> TREES
+    API --> AGENTS
+    API --> SYM
+    API --> TTS
+    API -- "treatment lookup —<br/>direct MCP calls" --> TOOLS
+    AGENTS -- "question lookup — our server<br/>attached as an MCP connector" --> TOOLS
+    TOOLS --> KB
+```
+
 **The app** ([`cosurg/`](cosurg/)) is Next.js 16 with the App Router. Every Corti
 call goes through a server-side API route, so the browser never sees credentials.
 Paid routes sit behind `guard()` — an origin lock plus a per-IP quota — and all free
@@ -208,6 +284,38 @@ flags and dispositions. That is why the same engine runs both our trees:
 |---|---|---|
 | [`burns.json`](cosurg/content/trees/burns.json) | Acute assessment | 8 nodes: mechanism, inhalation, TBSA, fluids, depth, circumferential, location, cooling. 5 red flags. 3 dispositions, each carrying its source references. |
 | [`dressing-hand-arm.json`](cosurg/content/trees/dressing-hand-arm.json) | Dressing procedure guide | 12 steps, showing 34 procedure photos drawn from the 71-slide source set. |
+
+The burns tree as the engine walks it — every 🔴 edge is a red flag that
+interrupts aloud, and the gravest jump straight to the emergency disposition:
+
+```mermaid
+flowchart TD
+    M{"Mechanism?"} -- "electrical 🔴" --> E
+    M -- "chemical 🔴 irrigate now" --> I
+    M -- "flame · scald · contact" --> I
+    I{"Inhalation injury<br/>suspected?"} -- "yes 🔴" --> E
+    I -- "no" --> T
+    T{"TBSA — % of<br/>body surface?"} -- "≥ 20 %" --> F
+    T -- "< 20 %" --> D
+    F{"Fluids running —<br/>two IV lines?"} -- "major burn 🔴" --> E
+    D{"Depth?"} -- "deep dermal · full thickness" --> C
+    D -- "epidermal · superficial dermal" --> L
+    C{"Circumferential?"} -- "yes 🔴" --> E
+    C -- "no" --> L
+    L{"Location?"} -- "face · hands · feet<br/>genitals · joints" --> R
+    L -- "elsewhere" --> K
+    K{"Cooled 20–30<br/>minutes?"} --> B
+    E["Emergency — call the burn unit now"]
+    R["Refer — burn in a special area"]
+    B["Outpatient — dress and follow up"]
+
+    classDef emergency fill:#b91c1c,stroke:#7f1d1d,color:#ffffff
+    classDef refer fill:#b45309,stroke:#78350f,color:#ffffff
+    classDef treat fill:#15803d,stroke:#14532d,color:#ffffff
+    class E emergency
+    class R refer
+    class B treat
+```
 
 A procedure guide and a diagnostic decision tree are the same data structure.
 **Trees are data, not code** — a new tree for bite wounds or frostbite requires no

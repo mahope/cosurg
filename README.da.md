@@ -91,6 +91,25 @@ tilstand vendes forholdet om: kirurgen er steril og rører aldrig skærmen.
 Mikrofonen er åben, kommandoerne er få og distinkte, og skærmen viser store
 procedurefotos af hvad der konkret skal gøres i dette trin.
 
+### Fra ytring til udfald
+
+```mermaid
+flowchart TD
+    U["Ét felt — lægen siger<br/>hvad han står med"] --> L1["<b>Lag 1 — deterministisk lag</b><br/>i browseren: ingen latens, intet net,<br/>kan navngive sin egen begrundelse.<br/>Afgør kun det det er sikkert på."]
+    L1 -- "ikke sikkert" --> L2["<b>Lag 2 — Cortis svarfortolker</b><br/>besvarer ytringen det spørgsmål<br/>der står?"]
+    L2 -- "melder tvivl" --> L3["<b>Lag 3 — Cortis intent-router</b><br/>var det mon et spørgsmål alligevel?"]
+    L1 --> R{"Hvad var<br/>ytringen?"}
+    L2 --> R
+    L3 --> R
+    R -- "beskriver en patient" --> A["<b>Ført vurdering</b><br/>det rigtige forløb åbnes"]
+    R -- "stiller et spørgsmål" --> B["<b>Kildebelagt svar</b><br/>ordret uddrag, kilden navngivet"]
+    R -- "spørger hvordan der behandles" --> C["<b>Behandlingsopslag</b><br/>hele forløbet i klinisk rækkefølge"]
+    R -- "ægte tvetydig" --> D["<b>Et spørgsmål tilbage</b><br/>CoSurg spørger hvad der var ment"]
+```
+
+Hvert lag afgør kun det det er sikkert på. Tvivl falder igennem til næste lag —
+og for enden af kæden bliver den spurgt om, aldrig gættet væk.
+
 ### Hvad der gør den anderledes
 
 Det er let at bygge en chatbot der svarer på brandsårsspørgsmål. Forskellen på det
@@ -125,6 +144,26 @@ uden ét ord om brandsår i sig. Den slår en svarværdi op i nodens kanter og r
 frem. En sprogmodel kan ikke ændre hvor den lander, fordi den ikke er med i det
 opslag. Den førte vurdering er én af de former et svar kan tage — og det er den
 form hvor determinisme betyder mest, fordi det er den der ender i en disposition.
+
+```mermaid
+flowchart TD
+    Q["Nodens spørgsmål læses højt — TTS"] --> V["Lægen svarer med stemmen"]
+    V --> STT["Corti ambient STT — live-transskript"]
+    STT --> INT{"Corti-agenten fortolker ytringen.<br/>Matcher den en værdi nodens<br/>svarskema tillader?"}
+    INT -- "kan ikke afgøres" --> AGAIN["Tvivl flagges —<br/>spørg igen, gæt aldrig"]
+    AGAIN --> Q
+    INT -- "tilladt værdi" --> ENG["Træmotoren slår værdien op<br/>i nodens kanter —<br/>deterministisk opslag, ingen model"]
+    ENG -- "rødt flag-værdi" --> RF["🔴 Oplæst afbrydelse + rødt banner<br/>med brandsårsafdelingens telefonnummer"]
+    RF --> NEXT
+    ENG --> NEXT{"Hvor peger kanten hen?"}
+    NEXT -- "næste node" --> Q
+    NEXT -- "disposition" --> OUT["Disposition med sine kilder<br/>→ journalnotat → diagnosekoder"]
+```
+
+Sprogmodellen optræder præcis én gang i sløjfen, og det eneste den kan levere
+tilbage er en værdi nodens skema i forvejen tillader — eller tvivl. Alt det der
+afgør — hvilken node der kommer næst, hvornår et rødt flag fyrer, hvor patienten
+ender — er et opslag i JSON skrevet af plastikkirurger.
 
 **Koderne kommer fra Cortis coding-API, ikke fra en model der finder på dem.**
 En sprogmodel kan producere en ICD-10-kode der ser fuldstændig rigtig ud og ikke
@@ -188,6 +227,43 @@ sekundærkoder. Målingen står i [`cosurg/README.md`](cosurg/README.md).
 
 Fire dele, og grænsen mellem dem er hvor troværdigheden bor.
 
+```mermaid
+flowchart LR
+    subgraph BROWSER["Browser"]
+        UI["Ét felt, trævisning,<br/>notat og opslag"]
+        MIC["Mikrofon"]
+        DET["Deterministisk lag —<br/>intent-genkendelse, forløbsmatch,<br/>håndfri stemmekommandoer"]
+    end
+    subgraph APP["cosurg — Next.js, server-side"]
+        API["API-ruter — hver betalt rute<br/>bag guard() og cap()"]
+        ENG["Træmotor — lib/tree<br/>tilstandsløs, domæne-agnostisk"]
+        TREES[("content/trees/<br/>burns.json · dressing-hand-arm.json")]
+    end
+    subgraph CORTI["Corti API — EU"]
+        WS["/transcribe-websocket"]
+        AGENTS["Agentic framework — fire agenter"]
+        SYM["Symphony — medical coding"]
+    end
+    subgraph MCPS["cosurg-mcp — vidensserver"]
+        TOOLS["Ti værktøjer — ordrette uddrag<br/>der bærer deres kilde-URL"]
+        KB[("data/kilder/<br/>den kliniske vidensbase")]
+    end
+    TTS["Syv.ai TTS — Plapre<br/>fallback: browserstemmen"]
+
+    MIC -- "lyd — kortlivet token<br/>begrænset til transskription" --> WS
+    WS -- "transskript" --> UI
+    UI --> DET
+    DET -- "kun det browseren<br/>ikke selv kan afgøre" --> API
+    API --> ENG
+    ENG --> TREES
+    API --> AGENTS
+    API --> SYM
+    API --> TTS
+    API -- "behandlingsopslag —<br/>direkte MCP-kald" --> TOOLS
+    AGENTS -- "spørgsmålsopslag — vores server<br/>koblet på som MCP-connector" --> TOOLS
+    TOOLS --> KB
+```
+
 **Appen** ([`cosurg/`](cosurg/)) er Next.js 16 med App Router. Alle Corti-kald går
 gennem server-side API-ruter, så browseren aldrig ser credentials. Betalte ruter
 er bag `guard()` — origin-lås plus per-IP-kvote — og al fritekst passerer en
@@ -203,6 +279,38 @@ røde flag og dispositioner. Derfor kører den samme motor begge vores træer:
 |---|---|---|
 | [`burns.json`](cosurg/content/trees/burns.json) | Akut vurdering | 8 noder: mekanisme, inhalation, TBSA, væske, dybde, cirkulær, lokalisation, køling. 5 røde flag. 3 dispositioner, hver med sine kildehenvisninger. |
 | [`dressing-hand-arm.json`](cosurg/content/trees/dressing-hand-arm.json) | Procedureguide til forbinding | 12 trin, der viser 34 procedurefotos udvalgt fra de 71 slides i kildematerialet. |
+
+Brandsårstræet som motoren gennemløber det — hver 🔴-kant er et rødt flag der
+afbryder højt, og de alvorligste springer direkte til akut-dispositionen:
+
+```mermaid
+flowchart TD
+    M{"Mekanisme?"} -- "elektrisk 🔴" --> E
+    M -- "kemisk 🔴 skyl straks" --> I
+    M -- "flamme · skoldning · kontakt" --> I
+    I{"Mistanke om<br/>inhalationsskade?"} -- "ja 🔴" --> E
+    I -- "nej" --> T
+    T{"TBSA — % af<br/>kropsoverfladen?"} -- "≥ 20 %" --> F
+    T -- "< 20 %" --> D
+    F{"Væske i gang —<br/>to PVK?"} -- "stor skade 🔴" --> E
+    D{"Dybde?"} -- "dyb dermal · fuldhud" --> C
+    D -- "epidermal · overfladisk dermal" --> L
+    C{"Cirkulær?"} -- "ja 🔴" --> E
+    C -- "nej" --> L
+    L{"Lokalisation?"} -- "ansigt · hænder · fødder<br/>genitalier · led" --> R
+    L -- "andet område" --> K
+    K{"Skyllet 20–30<br/>minutter?"} --> B
+    E["Akut — ring til brandsårsafdelingen nu"]
+    R["Henvis — skade i specialområde"]
+    B["Ambulant — pak ind og følg op"]
+
+    classDef emergency fill:#b91c1c,stroke:#7f1d1d,color:#ffffff
+    classDef refer fill:#b45309,stroke:#78350f,color:#ffffff
+    classDef treat fill:#15803d,stroke:#14532d,color:#ffffff
+    class E emergency
+    class R refer
+    class B treat
+```
 
 En procedureguide og et diagnostisk beslutningstræ er samme datastruktur.
 **Træer er data, ikke kode** — et nyt træ til bidsår eller forfrysninger kræver
