@@ -51,6 +51,13 @@ export interface Kildemetadata {
   institution?: string;
 }
 
+/** Et billede der hoerer til et kildeafsnit — en illustration, ikke et svar. */
+export interface Billede {
+  url: string;
+  /** Alt-tekst eller billedtekst fra kilden. Kan vaere tom. */
+  tekst: string;
+}
+
 export interface Afsnit extends Kildemetadata {
   /** Stabilt id, fx "brandsaar:04". Bruges af vaerktoejet hent_kildeafsnit. */
   id: string;
@@ -66,6 +73,16 @@ export interface Afsnit extends Kildemetadata {
   kildeErUrl: boolean;
   /** Afsnittets raa markdown. */
   tekst: string;
+  /**
+   * Illustrationerne i afsnittet, udtrukket af markdown'en.
+   *
+   * De indekseres bevidst IKKE: et uddrag der kun er et billede-link scorer
+   * hoejest paa praecis den soegning man stiller (alt-teksten er ofte kapitlets
+   * titel) og ville svare med et billede i stedet for et klinisk udsagn.
+   * Billederne naas derfor kun gennem et afsnit man allerede har fundet —
+   * de supplerer et svar, de erstatter det aldrig.
+   */
+  billeder: Billede[];
 }
 
 export interface Uddrag extends Kildemetadata {
@@ -170,6 +187,21 @@ function erUrl(s: string): boolean {
   return /^https?:\/\//i.test(s);
 }
 
+/** Plukker `![alt](url)` ud af markdown. Kun http(s) — lokale stier kan ikke vises. */
+function udtraekBilleder(markdown: string): Billede[] {
+  const ud: Billede[] = [];
+  const set = new Set<string>();
+  const m = /!\[([^\]]*)\]\((https?:\/\/[^)\s]+)\)/g;
+  let t: RegExpExecArray | null;
+  while ((t = m.exec(markdown)) !== null) {
+    const url = t[2] ?? "";
+    if (url === "" || set.has(url)) continue;
+    set.add(url);
+    ud.push({ url, tekst: (t[1] ?? "").trim() });
+  }
+  return ud;
+}
+
 /** Fjerner scraper-stoej der ikke er klinisk indhold. */
 function erStoejlinje(linje: string): boolean {
   const t = linje.trim();
@@ -208,6 +240,7 @@ function delIAfsnit(indhold: string, dokument: string): Afsnit[] {
         kildeErUrl: erUrl(aktuelKilde),
         ...kildemeta,
         tekst,
+        billeder: udtraekBilleder(tekst),
       });
     }
     buffer = [];

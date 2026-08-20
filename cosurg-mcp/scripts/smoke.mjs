@@ -115,7 +115,7 @@ await klient.connect(transport);
 overskrift("TOOLS/LIST");
 const { tools } = await klient.listTools();
 for (const t of tools) console.log(`- ${t.name}: ${t.title ?? ""}`);
-paastaa(tools.length === 9, `${tools.length} vaerktoejer udstillet (forventet 9)`);
+paastaa(tools.length === 10, `${tools.length} vaerktoejer udstillet (forventet 10)`);
 
 overskrift("videnbase_status");
 vis("videnbase_status", await klient.callTool({ name: "videnbase_status", arguments: {} }));
@@ -185,6 +185,29 @@ vis(
   }),
   1500,
 );
+
+overskrift("hent_billeder");
+{
+  // Find et afsnit der faktisk har illustrationer, og hent dem.
+  const kilder = (
+    await klient.callTool({ name: "list_kilder", arguments: { kildetype: "case" } })
+  ).content
+    .map((c) => c.text ?? "")
+    .join("\n");
+  const afsnitId = /`(jpbrs:\d+)`/.exec(kilder)?.[1];
+  paastaa(afsnitId !== undefined, "fandt et case-afsnit at hente billeder fra");
+  if (afsnitId) {
+    const r = await klient.callTool({ name: "hent_billeder", arguments: { afsnit_id: afsnitId } });
+    const t = vis(`hent_billeder(${afsnitId})`, r, 1400);
+    paastaa(t.includes("https://"), "billed-URL'er returneret");
+    paastaa(t.includes("Kilde:"), "billederne baerer deres kildehenvisning");
+  }
+  const tom = await klient.callTool({ name: "hent_billeder", arguments: { afsnit_id: "findes-ikke:99" } });
+  paastaa(
+    vis("hent_billeder(ukendt afsnit)", tom, 400).includes("INGEN DAEKNING"),
+    "ukendt afsnit melder INGEN DAEKNING i stedet for at gaette",
+  );
+}
 
 overskrift("list_kilder");
 {

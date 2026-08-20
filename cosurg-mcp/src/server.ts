@@ -346,6 +346,9 @@ export function opretServer(): McpServer {
           `Kilde: ${a.kilde}`,
           a.forfattere !== undefined ? `Forfattere: ${a.forfattere}` : "",
           `Afsnit-id: \`${a.id}\` · fil: ${a.dokument}`,
+          a.billeder.length > 0
+            ? `Illustrationer: ${a.billeder.length} — hent dem med hent_billeder(afsnit_id: "${a.id}").`
+            : "",
           "",
           a.tekst,
         ]
@@ -353,6 +356,79 @@ export function opretServer(): McpServer {
           .join("\n"),
       );
       return tekstsvar(dele.join("\n\n---\n\n"));
+    },
+  );
+
+  // -- 2b. Illustrationerne bag et kildeafsnit ------------------------------
+
+  server.registerTool(
+    "hent_billeder",
+    {
+      title: "Hent illustrationerne til et kildeafsnit",
+      description:
+        "Henter billed-URL'erne fra ét kildeafsnit — operationstrin fra en JPBRS-case, figurer " +
+        "fra PlastSurgeon-haandbogen, forbindingsfotos fra Afsnit 6052 — med billedtekst og fuld " +
+        "kildehenvisning, saa et svar kan pege paa den rigtige illustration. " +
+        "Billeder kan kun hentes gennem et afsnit man allerede har fundet: de supplerer et " +
+        "klinisk udsagn, de erstatter det aldrig. Derfor er de heller ikke soegbare — et uddrag " +
+        "der kun er et billede ville ellers score hoejest paa netop det spoergsmaal man stiller " +
+        "og svare med et foto i stedet for klinik. " +
+        "(EN: fetch the illustrations belonging to one source section, with captions and citation.)",
+      inputSchema: {
+        afsnit_id: z
+          .string()
+          .optional()
+          .describe("Afsnit-id fra en soegetraeffer, fx 'jpbrs:07'."),
+        kilde: z
+          .string()
+          .optional()
+          .describe("URL eller dokumentnavn, fx 'https://beta.jpbrs.com/cases/...'."),
+      },
+      annotations: { readOnlyHint: true, openWorldHint: false },
+    },
+    async ({ afsnit_id, kilde }) => {
+      if (!afsnit_id && !kilde) {
+        return fejlsvar("Angiv enten afsnit_id eller kilde.");
+      }
+      const fundet = videnbase.afsnit.filter(
+        (a) =>
+          (afsnit_id !== undefined && a.id === afsnit_id) ||
+          (kilde !== undefined && (a.kilde === kilde || a.kilde.includes(kilde))),
+      );
+      if (fundet.length === 0) {
+        return tekstsvar(
+          `${INGEN_DAEKNING}\n\nIntet kildeafsnit matcher ` +
+            `${afsnit_id ? `afsnit_id "${afsnit_id}"` : `kilde "${kilde}"`}.`,
+        );
+      }
+      const medBilleder = fundet.filter((a) => a.billeder.length > 0);
+      if (medBilleder.length === 0) {
+        return tekstsvar(
+          `Kildeafsnittet findes, men har ingen illustrationer.\n\n` +
+            fundet.map((a) => `- \`${a.id}\` — ${kildehenvisning(a)}`).join("\n"),
+        );
+      }
+      const dele = medBilleder.slice(0, 3).map((a) =>
+        [
+          `## ${kildehenvisning(a)}`,
+          `Kildetype: ${kildetypeEtiket(a.kildetype)}`,
+          `Kilde: ${a.kilde}`,
+          a.forfattere !== undefined ? `Forfattere: ${a.forfattere}` : "",
+          `Afsnit-id: \`${a.id}\` · ${a.billeder.length} illustration(er)`,
+          "",
+          ...a.billeder.map((b, i) => `${i + 1}. ${b.tekst !== "" ? `${b.tekst} — ` : ""}${b.url}`),
+        ]
+          .filter((s) => s !== "")
+          .join("\n"),
+      );
+      return tekstsvar(
+        [
+          "Illustrationer fra CoSurgs egne kilder. Vis dem kun sammen med det kliniske udsagn de",
+          "hoerer til, og angiv altid kilden — et billede er dokumentation, ikke et svar i sig selv.",
+          "",
+          dele.join("\n\n---\n\n"),
+        ].join("\n"),
+      );
     },
   );
 
