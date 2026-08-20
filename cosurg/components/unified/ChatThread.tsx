@@ -215,10 +215,13 @@ function TurnEntry({
 
 /**
  * Billedobservationen — modellens beskrivelse af fotoet, aldrig en kilde.
- * Samme regler som i LookupCard: eget mærkat, neutral flade, usikkerheden
- * lige så tydelig som observationen, og en fejlet analyse sagt med samme vægt.
+ *
+ * Eget mærkat, neutral flade, usikkerheden lige så tydelig som observationen,
+ * og en fejlet analyse sagt med samme vægt. Eksporteret fordi alle tre flader
+ * der viser chatsvar (tråden her, LookupCard i forløbet, /chat-siden) skal
+ * vise NØJAGTIG samme blok — et svar må ikke være fattigere ét sted.
  */
-function VisionBlock({ vision, lang }: { vision: VisionResult; lang: Lang }) {
+export function VisionBlock({ vision, lang }: { vision: VisionResult; lang: Lang }) {
   return (
     <section className="mb-4 rounded-xl border border-[var(--line-strong)] bg-[var(--paper)] p-4">
       <p className="font-[family-name:var(--font-mono)] text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--ink-faint)]">

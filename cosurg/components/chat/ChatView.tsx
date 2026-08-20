@@ -11,6 +11,8 @@ import { micMessage, tr } from "@/lib/i18n";
 import type { ChatAnswer } from "@/lib/corti/chat";
 import type { Lang } from "@/lib/tree/types";
 import { spokenText } from "@/components/unified/spoken";
+import { VisionBlock } from "@/components/unified/ChatThread";
+import { PitfallCard } from "@/components/pitfalls/PitfallCard";
 import { AnswerCard } from "./AnswerCard";
 import { ChatComposer } from "./ChatComposer";
 import { ProgressTrail } from "./ProgressTrail";
@@ -346,13 +348,36 @@ export function ChatView() {
                   </p>
                 )}
 
+                {/*
+                  Samme blokke som forsidens tråd — de to flader skal give det
+                  samme svar. Billedobservationen står FØR svaret (og allerede
+                  under ventetiden), faldgruberne EFTER med deres ordrette
+                  belæg. Triagen er allerede en fremdriftslinje via den delte
+                  useClinicalChat.
+                */}
+                {turn.vision && <VisionBlock vision={turn.vision} lang={lang} />}
+
                 {turn.answer ? (
-                  <AnswerCard
-                    answer={turn.answer}
-                    lang={lang}
-                    speaking={speakingId === turn.id}
-                    onSpeak={() => toggleSpeak(turn.id, turn.answer!)}
-                  />
+                  <>
+                    <AnswerCard
+                      answer={turn.answer}
+                      lang={lang}
+                      speaking={speakingId === turn.id}
+                      onSpeak={() => toggleSpeak(turn.id, turn.answer!)}
+                    />
+                    {turn.pitfalls && turn.pitfalls.length > 0 && (
+                      <div>
+                        <p className="font-[family-name:var(--font-mono)] text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--ink-faint)]">
+                          {tr("answerPitfalls", lang)}
+                        </p>
+                        <div className="mt-2 space-y-2.5">
+                          {turn.pitfalls.map((f) => (
+                            <PitfallCard key={f.id} faldgrube={f} lang={lang} kompakt />
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </>
                 ) : turn.error ? (
                   <p className="rounded-2xl border border-dashed border-[var(--nude-deep)] bg-[var(--nude-tint)] px-4 py-3 text-sm leading-relaxed text-[var(--nude-deep)]">
                     {turn.error}

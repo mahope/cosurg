@@ -2,10 +2,11 @@
 
 import type { ChatAnswer } from "@/lib/corti/chat";
 import type { Lang } from "@/lib/tree/types";
-import type { Turn, VisionResult } from "@/components/chat/useClinicalChat";
+import type { Turn } from "@/components/chat/useClinicalChat";
 import { AnswerCard } from "@/components/chat/AnswerCard";
 import { ProgressTrail } from "@/components/chat/ProgressTrail";
 import { PitfallCard } from "@/components/pitfalls/PitfallCard";
+import { VisionBlock } from "./ChatThread";
 import { tr } from "@/lib/i18n";
 import type { GuideSvar } from "./guide";
 import { GuidePanel } from "./GuidePanel";
@@ -205,42 +206,6 @@ export function LookupCard({
             : tr("chatDisclaimer", lang)}
       </footer>
     </div>
-  );
-}
-
-/**
- * Billedobservationen — modellens beskrivelse af fotoet, aldrig en kilde.
- *
- * Blokken må ikke kunne forveksles med et kildeuddrag: alt andet i svaret
- * bærer et navngivet dokument, og denne tekst er genereret. Derfor eget
- * mærkat, egen neutral flade (ingen kilde-ramme, ingen citationstegn) og
- * usikkerheden vist LIGE så tydeligt som observationen. Fejler analysen,
- * siges det med samme vægt — et foto der stille ignoreres, ville lade lægen
- * tro at svaret så det.
- */
-function VisionBlock({ vision, lang }: { vision: VisionResult; lang: Lang }) {
-  return (
-    <section className="mb-4 rounded-xl border border-[var(--line-strong)] bg-[var(--paper)] p-4">
-      <p className="font-[family-name:var(--font-mono)] text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--ink-faint)]">
-        {tr(vision.ok ? "visionLabel" : "visionFailedLabel", lang)}
-      </p>
-      {vision.ok ? (
-        <>
-          <p className="mt-2 text-sm leading-relaxed text-[var(--ink)]">{vision.observations.observations}</p>
-          <p className="mt-2.5 text-sm leading-relaxed text-[var(--ink-soft)]">
-            <span className="font-semibold">{tr("visionUncertainty", lang)}:</span>{" "}
-            {vision.observations.uncertainty}
-          </p>
-          {vision.observations.qualityIssues && (
-            <p className="mt-1.5 text-[13px] leading-relaxed text-[var(--ink-faint)]">
-              {tr("visionQuality", lang)}: {vision.observations.qualityIssues}
-            </p>
-          )}
-        </>
-      ) : (
-        <p className="mt-2 text-sm leading-relaxed text-[var(--ink-soft)]">{vision.message}</p>
-      )}
-    </section>
   );
 }
 
