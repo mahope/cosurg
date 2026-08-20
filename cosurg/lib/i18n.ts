@@ -97,10 +97,10 @@ export const t = {
    * Indgangen. Lægen beskriver patienten; appen finder forløbet. Ordet
    * "beslutningstræ" optræder bevidst ikke — det er vores begreb, ikke hans.
    */
-  intakeQuestion: { da: "Hvad kan jeg hjælpe dig med?", en: "What is this about?" },
+  intakeQuestion: { da: "Hvad kan jeg hjælpe dig med?", en: "What can I help you with?" },
   intakeHelp: {
     da: "Beskriv patienten med tale eller tekst - Så hjælper jeg med udredning og behandling.",
-    en: "Describe the patient by voice or text — I will find the right pathway.",
+    en: "Describe the patient by voice or text - I will find the right assessment and treatment",
   },
   intakePlaceholder: {
     da: "Fx «kogende vand over hånden»…",
