@@ -27,13 +27,13 @@ Rigshospitalet (RH) har landsfunktion for svære forbrændinger, ætsninger og e
 
 Hjemmesiden vil løbende blive opdateret af læger fra Afdeling for Plastikkirurgi og Brandsårsbehandling, Afdeling for Intensiv behandling og Afdeling for Bedøvelse, operation og Traumecenter på Rigshospitalet og vil som udgangspunkt følge Emergency Management of Severe Burns (EMSB) retningslinjer.
 
-Klik for [webdokumentar om forløb hos svært forbrændt patient](https://rigshospitalet.atavist.com/brandsaar)
+Klik for [webdokumentar om forløb hos svært forbrændt patient](https://rigshospitalet.atavist.com/brandsaar)
 
 ![](https://brandsaar.dk/wp-content/uploads/2018/12/Uden-navn-768x524.png)
 
 ![](https://brandsaar.dk/wp-content/uploads/2018/08/Logo_Rigshospitalet_png-300x86.png)
 
-Seneste opdateret d.  23 Januar 2022
+Seneste opdateret d. 23 Januar 2022
 
 ---
 
@@ -41,7 +41,7 @@ Seneste opdateret d.  23 Januar 2022
 
 [Skip to content](https://brandsaar.dk/brandsarsdybde/#content)
 
-I Danmark søger ca. 12.000 lægebehandling for forbrændinger hvert år.  Der omkommer i gennemsnit ca. 80 mennesker om året ved brandulykker i Danmark. Der er langt flere brandsår, som behandles i hjemmene uden involvering af sundhedspersonale.
+I Danmark søger ca. 12.000 lægebehandling for forbrændinger hvert år. Der omkommer i gennemsnit ca. 80 mennesker om året ved brandulykker i Danmark. Der er langt flere brandsår, som behandles i hjemmene uden involvering af sundhedspersonale.
 
 Forbrændinger rammer oftest børn i alderen 0-2 år, skoldning er den hyppigste årsag.
 
@@ -63,7 +63,7 @@ Det samlede brandsårsareal angives i procent (%) af den totale legemsoverflade/
 
 Der findes flere metoder til at beregne arealet af brandsårsskaden, se herunder:
 
-**Rules of nine:** Kroppen inddeles i områder af 9% (figur 1).                                          Kan anvendes til voksne, men ikke til børn (<9 år) da børn ikke har de samme proportioner som voksne.                                                                                    Ifølge 9%-reglen udgør en arm 9%, et ben 18%, kroppens for- og bagside hver 18% og hovedet 9%.
+**Rules of nine:** Kroppen inddeles i områder af 9% (figur 1). Kan anvendes til voksne, men ikke til børn (<9 år) da børn ikke har de samme proportioner som voksne. Ifølge 9%-reglen udgør en arm 9%, et ben 18%, kroppens for- og bagside hver 18% og hovedet 9%.
 
 ![](https://brandsaar.dk/wp-content/uploads/2018/08/Arealberegning-1-.png)
 
@@ -71,7 +71,7 @@ Der findes flere metoder til at beregne arealet af brandsårsskaden, se herunder
 
 ![](https://brandsaar.dk/wp-content/uploads/2018/10/B%C3%B8rn-arealberegning.png)
 
-Patientens **håndflade:**Patientens hånd (hele håndfladen til spidsen af alle 5 fingre) svarer til 1% af arealet.  Dette gælder for både børn og voksne. Svært overvægtige er en undtagelse fra denne regel (figur 3).
+Patientens **håndflade:**Patientens hånd (hele håndfladen til spidsen af alle 5 fingre) svarer til 1% af arealet. Dette gælder for både børn og voksne. Svært overvægtige er en undtagelse fra denne regel (figur 3).
 
 **_Hvis man er i tvivl_** og har meget store brandskader, kan man gøre det, at den ene læge udregner det forbrændte område, mens en anden læge udregner det ikke-forbrændte område. Når det lægges sammen, skulle det gerne give 100%. Hvis deviationen er større end fra 95-105, gentages udregningen, men således at de to læger bytter område.
 
@@ -95,9 +95,9 @@ Store brandsår fører til hypovolæmi pga. væskeudsivning fra kapillærerne ud
 
 > **Modificeret Parkland formel for væskeberegning**
 
-Første døgns væskemængde gives efter en modificeret Parkland formel med Ringer Laktat:                                                                                                                                                     **3 ml x vægt i kg x forbrændt overfladeareal i % (TBSA).**                  Fx. 3 ml x 80 kg x 20 % = 4800 ml. Husk at modregne evt. væske givet under transporten.
+Første døgns væskemængde gives efter en modificeret Parkland formel med Ringer Laktat: **3 ml x vægt i kg x forbrændt overfladeareal i % (TBSA).** Fx. 3 ml x 80 kg x 20 % = 4800 ml. Husk at modregne evt. væske givet under transporten.
 
-Væskemængden gives i 2 perioder:                                                                                1. Periode: 0-8 timer efter skaden. Her gives halvdelen af væskemængden.          2. Periode: 9-24 timer efter skaden. Her gives den anden halvdel af væskemængden.
+Væskemængden gives i 2 perioder: 1. Periode: 0-8 timer efter skaden. Her gives halvdelen af væskemængden. 2. Periode: 9-24 timer efter skaden. Her gives den anden halvdel af væskemængden.
 
 Væskebehandling skal udregnes fra tidspunktet for skaden, og ikke fra patienten modtages på hospitalet. Patienterne må drikke og spise frit.
 
@@ -113,9 +113,9 @@ Den modificerede Parkland formel gives også til børn. Men da børn har en mind
 - 2 ml per kg fra 10-20 kg
 - 1 ml per kg > 20 kg
 
-Fx. skal et barn på 27 kg have:                4 ml x 10 kg = 40 ml/t                              2 ml x 10 kg = 20 ml/t                              1 ml x 7 kg = 7 ml/t                                    I alt 67 ml/t
+Fx. skal et barn på 27 kg have: 4 ml x 10 kg = 40 ml/t 2 ml x 10 kg = 20 ml/t 1 ml x 7 kg = 7 ml/t I alt 67 ml/t
 
-Dette gives som 0,9% NaCl med 5% dextrose.                                                        Det basale væskebehov gives når patienten modtages på behandlingssted. Diuresen justeres ved at regulere væsken gives i hht. Parkland formlen.
+Dette gives som 0,9% NaCl med 5% dextrose. Det basale væskebehov gives når patienten modtages på behandlingssted. Diuresen justeres ved at regulere væsken gives i hht. Parkland formlen.
 
 | Væskebehandling | 1\. periode (8 timer) | 2\. periode (16 timer) |
 | --- | --- | --- |
@@ -149,7 +149,7 @@ Væskebehandlingen kan ikke forhindre væskeudsivningen og ødemdannelsen, men k
 
 Hvis brandskaden er en del af et større traume og patienten er hypovolæmisk umiddelbart efter skaden, skal man mistænke en anden grund end brandsåret og søge efter en blødningskilde. Derfor behandles alle traumepatienter efter ATLS-principperne.
 
-Børn har begrænsede fysiologiske ressourcer og et relativt større overfladeareal, hvorfor grænsen for væskebehandling hos børn er TBSA >10%. Kombinationen af forbrænding og inhalationsskade øger væskebehovet.
+Børn har begrænsede fysiologiske ressourcer og et relativt større overfladeareal, hvorfor grænsen for væskebehandling hos børn er TBSA >10%. Kombinationen af forbrænding og inhalationsskade øger væskebehovet.
 
 Ødemer opstår typisk i de første 2 døgn efter ulykken. Varigheden af væskebehandlingen er variabel, men skal fortsætte indtil timediuresen er normaliseret.
 
@@ -161,9 +161,9 @@ Børn har begrænsede fysiologiske ressourcer og et relativt større overfladear
 
 > Modificeret **Parkland formel for væskeberegning**
 
-Første døgns væskemængde gives efter en modificeret Parkland formel med Ringer Laktat:                                                                                                                                                     **3 ml x vægt i kg x forbrændt overfladeareal i % (TBSA)**        Fx. 3 ml x 80 kg x 20 % = 4800 ml. Husk at modregne evt. væske givet under transporten.
+Første døgns væskemængde gives efter en modificeret Parkland formel med Ringer Laktat: **3 ml x vægt i kg x forbrændt overfladeareal i % (TBSA)** Fx. 3 ml x 80 kg x 20 % = 4800 ml. Husk at modregne evt. væske givet under transporten.
 
-Væskemængden gives i 2 perioder:                                                                             1\. Periode: 0-8 timer efter skaden. Her gives halvdelen af væskemængden.                 2. Periode: 9-24 timer efter skaden. Her gives den anden halvdel af væskemængden.
+Væskemængden gives i 2 perioder: 1\. Periode: 0-8 timer efter skaden. Her gives halvdelen af væskemængden. 2. Periode: 9-24 timer efter skaden. Her gives den anden halvdel af væskemængden.
 
 Væskebehandling skal udregnes fra tidspunktet for skaden, og ikke fra patienten modtages på hospitalet. Patienterne må drikke og spise frit.
 
@@ -180,7 +180,7 @@ Beregn
 
 ## Væskebehandling til børn:
 
-    Den modificerede Parkland formel gives også til børn. Men da børn har en mindre fysiologisk reserve og en større risiko for at udvikle hypoglykæmi, skal de have supplerende glukoseholdig væske til at dækket det basale glucose behov.
+ Den modificerede Parkland formel gives også til børn. Men da børn har en mindre fysiologisk reserve og en større risiko for at udvikle hypoglykæmi, skal de have supplerende glukoseholdig væske til at dækket det basale glucose behov.
 
 .
 
@@ -190,9 +190,9 @@ Beregn
 - 2 ml per kg fra 10-20 kg
 - 1 ml per kg > 20 kg
 
-Fx. skal et barn på 27 kg have:                4 ml x 10 kg = 40 ml/t                             2 ml x 10 kg = 20 ml/t                              1 ml x 7 kg = 7 ml/t                                    I alt 67 ml/t
+Fx. skal et barn på 27 kg have: 4 ml x 10 kg = 40 ml/t 2 ml x 10 kg = 20 ml/t 1 ml x 7 kg = 7 ml/t I alt 67 ml/t
 
-Dette gives som 0,9% NaCl med 5% dextrose. Det basale væskebehov gives når patienten modtages på behandlingssted. Diuresen justeres ved at regulere væsken gives i hht. Parkland formlen.
+Dette gives som 0,9% NaCl med 5% dextrose. Det basale væskebehov gives når patienten modtages på behandlingssted. Diuresen justeres ved at regulere væsken gives i hht. Parkland formlen.
 
 ### Basalt væskebehov (4-2-1-regel)
 
@@ -213,7 +213,7 @@ Afspejler effektmålet ved væskebehandlingen/hydreringen.
 
 I dagene efterfølgende når brandsårsødemet skal udskilles, vil diureserne stige og væskebehandlingen kan nedjusteres til patienten overgår til peroral indgift.
 
-Ved væskebehandling **SKAL der anlægges kateter** for at kunne monitorere behandlingen. Kateteret skal fjernes så snart patienten er ude af væsketerapien, medmindre der er andre indikationer for at lade det ligge (fx ITA pt., brandsår på genitalier mm).
+Ved væskebehandling **SKAL der anlægges kateter** for at kunne monitorere behandlingen. Kateteret skal fjernes så snart patienten er ude af væsketerapien, medmindre der er andre indikationer for at lade det ligge (fx ITA pt., brandsår på genitalier mm).
 
 Det er ikke tilrådeligt med højere diureser end ovenstående de første døgn, da man herved kan øge brandsårsødemet, nedsætte den perifere cirkulation og dermed øge iskæmien i vævet.
 
@@ -221,15 +221,15 @@ Små timediureser trods tilstrækkelig indgift og et velfungerende blærekateter
 
 **Opjustering af væskeindgift:**Opjustering af væske ved lave TD kan gives som en bolus på 5-10ml/kg over 1 time eller ved at øge væskeindgiften til 150% af den planlagte indgift på dråbetælleren i 1 time.
 
-**Albumin:**Ved fortsat lave TD kan der i 2. periode gives albumin. Dette øger den osmotiske gradient over karvæggen når kapillærerne ikke længere er permeable for kolloider og øger dermed nyrernes filtrationstryk med større diureser til følge.      Albumin 5% gives efter formlen: 0,5ml x kg x TBSA
+**Albumin:**Ved fortsat lave TD kan der i 2. periode gives albumin. Dette øger den osmotiske gradient over karvæggen når kapillærerne ikke længere er permeable for kolloider og øger dermed nyrernes filtrationstryk med større diureser til følge. Albumin 5% gives efter formlen: 0,5ml x kg x TBSA
 
 Vær opmærksom på at tegn på konfusion, rastløshed eller ængstelse kan skyldes hypovolæmi, hvorfor patienter med disse symptomer skal have revurderet deres væskebehandling og TD.
 
-**Overhydrering:**Børn, ældre og patienter med hjertesygdom skal monitoreres tæt, da de kan være i risiko for overhydrering. Lungeødem er sjældent forekommende, men kan opstå i kombination med kardiel insufficiens.
+**Overhydrering:**Børn, ældre og patienter med hjertesygdom skal monitoreres tæt, da de kan være i risiko for overhydrering. Lungeødem er sjældent forekommende, men kan opstå i kombination med kardiel insufficiens.
 
 **Ekstra væske:**Patienter med inhalationsskade, elektriske forbrændinger, forsinket væskeresuscitation og dehydrering kan have brug for ekstra væske.
 
-**Ved myoglobinuri** skal TD fordobles for at mindske skader på nyrerne. Voksne 1-2ml/kg og børn >2ml/kg/t. Overvej en dosis Mannitol 12,5g/L over 1 time.
+**Ved myoglobinuri** skal TD fordobles for at mindske skader på nyrerne. Voksne 1-2ml/kg og børn >2ml/kg/t. Overvej en dosis Mannitol 12,5g/L over 1 time.
 
 ---
 
@@ -249,13 +249,13 @@ Formålet med væskebehandlingen er, at opretholde normale tilstande og formåle
 - Notér omhyggeligt alt der gives, og notér mængden meget nøjagtigt og som tidligere omtalt: _Der må drikkes og spises helt frit_
 - Tal for væskemængderne lægges sammen for:
 
-1\. De første 8 timer (1. periode)                                                      2. De næste 16 timer (2. periode)
+1\. De første 8 timer (1. periode) 2. De næste 16 timer (2. periode)
 
-En evt. opkastning trækkes fra, således at indgiften af væske justeres herefter. Blod regnes ikke med som indgift. Sygeplejersken sørger i øvrigt for at give den rette væske med den rette hastighed. Infusionen sker ved hjælp af infusomater
+En evt. opkastning trækkes fra, således at indgiften af væske justeres herefter. Blod regnes ikke med som indgift. Sygeplejersken sørger i øvrigt for at give den rette væske med den rette hastighed. Infusionen sker ved hjælp af infusomater
 
 ## Udgift af væske
 
-**Fæcesafgang.** **Opkastning:** Mængden og udseende beskrives. Der undersøges for blod.                **Urin:** Observation af diureserne er den vigtigste monitorering af patienter i væskebehandlingen, da de angiver om pt. får den relevante mængde væske.    Der skal være anlagt uretralkateter ved væsketerapi behandling.      Sygeplejersken sørger for at sikre sig, at det anlagte kateter fungerer. Hvis der ikke kommer urin, er første spørgsmål: Er kateteret stoppet? Ligger det rigtigt? Notér mængden af urin på væskeskemaet.                                                        Det tal der noteres, fx kl. 17, angiver den mængde urin, der er målt fra kl. 16-17.    Notér farven: “Normal”, “koncentreret”, “tynd” og specielt vigtigt: “rød-farvet”, dvs. at der er hæmoglobinuri.
+**Fæcesafgang.** **Opkastning:** Mængden og udseende beskrives. Der undersøges for blod. **Urin:** Observation af diureserne er den vigtigste monitorering af patienter i væskebehandlingen, da de angiver om pt. får den relevante mængde væske. Der skal være anlagt uretralkateter ved væsketerapi behandling. Sygeplejersken sørger for at sikre sig, at det anlagte kateter fungerer. Hvis der ikke kommer urin, er første spørgsmål: Er kateteret stoppet? Ligger det rigtigt? Notér mængden af urin på væskeskemaet. Det tal der noteres, fx kl. 17, angiver den mængde urin, der er målt fra kl. 16-17. Notér farven: “Normal”, “koncentreret”, “tynd” og specielt vigtigt: “rød-farvet”, dvs. at der er hæmoglobinuri.
 
 ## Diuresens volumen
 
@@ -270,7 +270,7 @@ En evt. opkastning trækkes fra, således at indgiften af væske justeres hereft
 
 ## Øvrige observationer
 
-**EWS** **Klinisk tilstand:** Hudfarve, bevidsthedsplan, psykiske ændringer hos patienten. Er patienten orienteret i tid og sted? Er der hallucinationer?                            **Patientens lejring og evt. tournique-effekt** **Prøver:** Gastal + CO + hgb ved mistanke om inhalationsskade                          **Andre prøver:** Der tages rutinemæssigt indlæggelses blodprøver: hgb., væsketal, infektionstal, koagulationstal og albumin. Gentages ved behov                        **Vægt:** Sygeplejersken vejer patienten, evt. vha. sengevægt.
+**EWS** **Klinisk tilstand:** Hudfarve, bevidsthedsplan, psykiske ændringer hos patienten. Er patienten orienteret i tid og sted? Er der hallucinationer? **Patientens lejring og evt. tournique-effekt** **Prøver:** Gastal + CO + hgb ved mistanke om inhalationsskade **Andre prøver:** Der tages rutinemæssigt indlæggelses blodprøver: hgb., væsketal, infektionstal, koagulationstal og albumin. Gentages ved behov **Vægt:** Sygeplejersken vejer patienten, evt. vha. sengevægt.
 
 ## Medicin
 
@@ -286,7 +286,7 @@ En evt. opkastning trækkes fra, således at indgiften af væske justeres hereft
 
 Lægen har udfyldt væskeberegningen.
 
-Inden lægen forlader patienten eller afdelingen, aftaler han med sygeplejersken, hvornår sygeplejersken skal kalde vagthavende læge.                                              _Giv helt eksakte instruktioner, f. eks: fx hvis timediuresen 2 timer i træk har været mindre end 30 ml, skal lægen kontaktes._
+Inden lægen forlader patienten eller afdelingen, aftaler han med sygeplejersken, hvornår sygeplejersken skal kalde vagthavende læge. _Giv helt eksakte instruktioner, f. eks: fx hvis timediuresen 2 timer i træk har været mindre end 30 ml, skal lægen kontaktes._
 
 - NB! Der skal altid kaldes læge ved hæmoglobinuri
 - EWS: Kaldes efter aftale
@@ -300,7 +300,7 @@ Inden lægen forlader patienten eller afdelingen, aftaler han med sygeplejersken
 
 [Skip to content](https://brandsaar.dk/smertebehandling-af-brandsa%CC%8Ar/#content)
 
-    Brandskader er meget smertefulde, hvorfor smertebehandling er essentiel og skal opstartes hurtigst muligt.
+ Brandskader er meget smertefulde, hvorfor smertebehandling er essentiel og skal opstartes hurtigst muligt.
 
 Ved køling af brandskaderne lindres smerterne, men dette må ikke være på bekostning af patientens kropstemperatur.
 
@@ -342,7 +342,7 @@ HUSK: Patient med forbrændinger under væsketerapigrænsen kan ved samtidig inh
 
 Inhalationsskader kan være én eller en kombination af ovenstående.
 
-Øvre luftvejsskader: Er termiske skader, der opstår når man indånder varme gasser/luft. Disse skader ses næsten udelukkende i øvre luftveje og patofysiologien er lig de termiske skader vi ser på huden. Primært medfører inflammatoriske mediatorer ødem i vævet og risiko for obstruktion. Ligesom skaden ødelægger cilier mm.
+Øvre luftvejsskader: Er termiske skader, der opstår når man indånder varme gasser/luft. Disse skader ses næsten udelukkende i øvre luftveje og patofysiologien er lig de termiske skader vi ser på huden. Primært medfører inflammatoriske mediatorer ødem i vævet og risiko for obstruktion. Ligesom skaden ødelægger cilier mm.
 
 Klinik: Man skal mistænke en øvre luftvejskade ved forbrændinger i ansigt/hals, hvor der er afbrændte næsehår, øjenbryn eller skæg.
 
@@ -354,7 +354,7 @@ Stridor og dyspnø er absolutte indikationer for intubation. Andre kan være cer
 
 HUSK: Ved svær forbrænding forværres ødemet over timer pga. universelt ødem og væsketerapi. En obstruktion kan udvikle sig over timer.
 
-Nedre luftvejsskader: Opstår ved inhalation af de kemiske forbindelser som branden producerer: carbon, sulphor, fosfat, nitrogen, kemiske forbindelser mm. Når disse produkter opløses i luftvejene dannes syrer og baser som resulterer i ætsninger i det dybe lungevæv. Indånding af små sodpartikler skader alveolerne, som medfører ødem og afskalning af mucosa. På baggrund af dette kan der opstå skorper som obstruerer nedre luftveje.
+Nedre luftvejsskader: Opstår ved inhalation af de kemiske forbindelser som branden producerer: carbon, sulphor, fosfat, nitrogen, kemiske forbindelser mm. Når disse produkter opløses i luftvejene dannes syrer og baser som resulterer i ætsninger i det dybe lungevæv. Indånding af små sodpartikler skader alveolerne, som medfører ødem og afskalning af mucosa. På baggrund af dette kan der opstå skorper som obstruerer nedre luftveje.
 
 Klinik: Man skal mistænke en nedre luftvejsskade ud fra sygehistorien med ophold i et lukket røgfyldt rum over nogle minutter. Samt ved sod i opspyt/øvre luftveje evt. abnorm oxygenering og tiltagende rastløshed og konfusion.
 
@@ -373,11 +373,11 @@ Primært udføres bronkoskopien for at vurdere sværhedsgraden med abbreviated i
 
 Sekundært udføres bronkoskopien for at rense nedre luftveje. Evidensen for aggressiv oprensning er sparsom og skal opvejes mod bortskylning af surfactant, slimhindelæsion og infektionsrisiko.
 
-Systemisk forgiftning: Ses oftest ved inhalation af CO (kulmonooxid/carbonmonoxid) og HCN (cyanid).
+Systemisk forgiftning: Ses oftest ved inhalation af CO (kulmonooxid/carbonmonoxid) og HCN (cyanid).
 
 ![](https://brandsaar.dk/wp-content/uploads/2018/09/Carbon-monoxid.bmp)
 
-Carbonmonoxidforgiftning (CO): Er en farveløs og lugtfri gas som opstår ved en indkomplet forbrænding af carbon. CO optages hurtigt i blodbanen ved inhalation og binder til hgb-molekylet med en affinitet som er 240 gange højere end ilt. Dette mindsker iltbindingen til hgb-molekylet, forskyder iltdissociationskurven og medfører vævshypoxi. Ved CO-forgiftning ser man ikke de vanlige tegn på hypoxi. Hvorfor vævet ikke fremstår blåt/cyanotisk og saturationen er normalt ikke er påvirket, da oximeteret ikke kan skelne mellem COHb og oxyhæmoglobin. _CO måles på a-gas._
+Carbonmonoxidforgiftning (CO): Er en farveløs og lugtfri gas som opstår ved en indkomplet forbrænding af carbon. CO optages hurtigt i blodbanen ved inhalation og binder til hgb-molekylet med en affinitet som er 240 gange højere end ilt. Dette mindsker iltbindingen til hgb-molekylet, forskyder iltdissociationskurven og medfører vævshypoxi. Ved CO-forgiftning ser man ikke de vanlige tegn på hypoxi. Hvorfor vævet ikke fremstår blåt/cyanotisk og saturationen er normalt ikke er påvirket, da oximeteret ikke kan skelne mellem COHb og oxyhæmoglobin. _CO måles på a-gas._
 
 Hvorfor er CO (kulmonoxid) farligt?
 CO binder til hgb-molekylet med høj affinitet. Lugtfri, farveløs og ikke-irriterende gasart.
@@ -412,7 +412,7 @@ Rene cyanid forgiftninger er sjældne og ofte er det en blanding af CO og HCN.
 
 **Symptomer på inhalationsskader er:** Brændende fornemmelse i mund/næse/svælg, afbrændte eller svitsede næsehår/øjenbryn/skæg, sodtilblandet spyt, vejrtrækningsbesvær.
 
-**Objektive tegn:** Produktiv hoste, hæshed/ændret stemme, besværet vejrtrækning og inspiratorisk stridor.
+**Objektive tegn:** Produktiv hoste, hæshed/ændret stemme, besværet vejrtrækning og inspiratorisk stridor.
 
 ## Behandling
 
@@ -453,7 +453,7 @@ Udvaskning af HCN via blodet efter metabolisering i leveren er langsommelig. Beh
 
 ## Behandling af ansigtsforbrændinger:
 
-På Rigshospitalet behandles patienterne med ansigtsforbrændinger med indpakning i det omfang det er muligt. For 2. gradsskader bandageres med Epicite hydro.  Sygeplejeinterventioner i Traumecentret består af: brandsårsvask, bulla og løs hud fjernes og der podes. Derefter bandageres ansigtsforbrændingen i sengeafdelingen med Epicite.
+På Rigshospitalet behandles patienterne med ansigtsforbrændinger med indpakning i det omfang det er muligt. For 2. gradsskader bandageres med Epicite hydro. Sygeplejeinterventioner i Traumecentret består af: brandsårsvask, bulla og løs hud fjernes og der podes. Derefter bandageres ansigtsforbrændingen i sengeafdelingen med Epicite.
 
 ## Bandagering af ansigtsforbrændinger
 
@@ -466,7 +466,7 @@ På Rigshospitalet behandles patienterne med ansigtsforbrændinger med indpaknin
 - Områder der ikke er dækket af Epicite, vaskes og smøres med vaseline dagligt.
 - Der vaskes med sterile gazepads og rent vand fra vandhanen.
 
-Tilses minimum 1 gang pr vagt for ødem og infektionstegn. Ved mindre og ukomplicerede ansigtsforbrændinger kan patient udskrives med Epicite til kontrol i amb. 10 dage efter skaden. Hvis brandskaden har tæt relation til øjne skal øjne og omgivelserne vaskes dagligt og dryppes x flere med kloramfenikol øjendråber og smøres til natten med kloramfenikolsalve, så længe det er nødvendigt.
+Tilses minimum 1 gang pr vagt for ødem og infektionstegn. Ved mindre og ukomplicerede ansigtsforbrændinger kan patient udskrives med Epicite til kontrol i amb. 10 dage efter skaden. Hvis brandskaden har tæt relation til øjne skal øjne og omgivelserne vaskes dagligt og dryppes x flere med kloramfenikol øjendråber og smøres til natten med kloramfenikolsalve, så længe det er nødvendigt.
 
 ---
 
@@ -486,9 +486,9 @@ Forbrændinger har oftest varierende dybde, hvorfor smertende brandsår med 3. g
 
 ```
 
-**Behandling:**Den initiale behandling består i at afkøle brandsårene med rindende køligt vand (ca. 15ºC) fra hanen. Patienten kan selv regulere temperaturen så det føles behageligt.                                                                                                            For at undgå hypotermi er det vigtigt at vandtemperaturen ikke kommer under 8ºC.   _**Hvis skylningen opstartes øjeblikkeligt, er skylning i ca. 20-30 minutter nok.**_    Såfremt behandlingen ikke opstartes med det samme, kan skylningen forlænges op til 3 timer. Efter 3 timer efter skaden er der ingen effekt af skylning.
+**Behandling:**Den initiale behandling består i at afkøle brandsårene med rindende køligt vand (ca. 15ºC) fra hanen. Patienten kan selv regulere temperaturen så det føles behageligt. For at undgå hypotermi er det vigtigt at vandtemperaturen ikke kommer under 8ºC. _**Hvis skylningen opstartes øjeblikkeligt, er skylning i ca. 20-30 minutter nok.**_ Såfremt behandlingen ikke opstartes med det samme, kan skylningen forlænges op til 3 timer. Efter 3 timer efter skaden er der ingen effekt af skylning.
 
-Hvis forbrændingen kun er lokaliseret på hænderne, kan man skylle i længere tid, da skylning med køligt vand virker smertestillende og der ikke er risiko for hypotermi.    Hvis patienten er intuberet, vil skylning i 20-30 minutter være nok.
+Hvis forbrændingen kun er lokaliseret på hænderne, kan man skylle i længere tid, da skylning med køligt vand virker smertestillende og der ikke er risiko for hypotermi. Hvis patienten er intuberet, vil skylning i 20-30 minutter være nok.
 
 ## Behandling i skadestuen
 
@@ -525,7 +525,7 @@ Hvis forbrændingen kun er lokaliseret på hænderne, kan man skylle i længere 
 
 ![](https://brandsaar.dk/wp-content/uploads/2021/06/IMG_8155-1024x768.jpg)
 
-Efter 3-4 dage skiftes forbindingen. Enten helt eller som minimum indtil vaselinegazen. Derefter pakkes sårene ind igen med vaseline gaze (eller andet tilsvarende sårkontaktlag) inderst, men med en mindre mængde sugende gaze yderst, da sårene ikke væsker så meget mere. Dette gør det muligt for patienten af opnå funktion af hænder og fingre igen.
+Efter 3-4 dage skiftes forbindingen. Enten helt eller som minimum indtil vaselinegazen. Derefter pakkes sårene ind igen med vaseline gaze (eller andet tilsvarende sårkontaktlag) inderst, men med en mindre mængde sugende gaze yderst, da sårene ikke væsker så meget mere. Dette gør det muligt for patienten af opnå funktion af hænder og fingre igen.
 
 (På Rigshospitalet LDI-scannes forbrændingerne på ca.3. dagen for at bedømme brandsårets eksakte dybde hvorefter sårene pakkes ind med Mepilex transfer Ag inderst).
 
@@ -556,7 +556,7 @@ Skal indlægges på brandsårsafdeling
 - Derefter forbindes sårene med Mepilex transfer Ag og sugende gaze. Da sårene væsker mindre efter nogen dage, kan gazemængden også gøres mindre for bedre bevægelighed.
 - Endelig udpakning gøres på 10.-12. dagen og skaderne vurderes igen mht. operationsbehov.
 
-**HUSK** det er vigtigt at patienten fortsat bruger sine hænder så meget som muligt trods forbinding.
+**HUSK** det er vigtigt at patienten fortsat bruger sine hænder så meget som muligt trods forbinding.
 
 **Patienten instrueres i:**
 
@@ -587,9 +587,9 @@ Objektiv undersøgelse: farve, kapillærrepons, saturationsmåling.
 
 ## Behov for aflastende incisioner ?
 
-Ved tvivl om skadens omfang og evt. behov for aflastende incisioner ved cirkulære forbrændinger, kontaktes **Rigshospitalets vagthavende plastikkirurg på Klinik for Plastikkirurgi og Brandsårsbehandling på telefon 35 45 12 45**.
+Ved tvivl om skadens omfang og evt. behov for aflastende incisioner ved cirkulære forbrændinger, kontaktes **Rigshospitalets vagthavende plastikkirurg på Klinik for Plastikkirurgi og Brandsårsbehandling på telefon 35 45 12 45**.
 
-Aflastende incisioner anlægges kun ved cirkulære dybe forbrændinger der medføre nedsat perfusion i vævet.
+Aflastende incisioner anlægges kun ved cirkulære dybe forbrændinger der medføre nedsat perfusion i vævet.
 
 1. Mange brandsår på fingre medfører, at det arterielle tilløb (fingrene bliver hvide), eller det venøse tilbageløb (fingrene bliver blå) kompromitteres, og i så fald skal der laves aflastende incisioner. _Brug gerne saturationsmåleren som måleinstrument for at få en ide om, hvorvidt der er normal blodforsyning, ved at sammenligne fx fingre eller tæer._
 2. Symptomer: Udover farveforandringerne er de objektive fund: Nedsat bevægelighed, nedsat sensibilitet og nedsat temperatur. Patientens subjektive klager er dunkende eller sammenskrumpende smerter, der forværres ved bevægelser.
@@ -599,7 +599,7 @@ Læg ikke incisionerne over sener (altså på dorsal- eller volarsiden), men på
 
 Incisionerne skal medføre, at det bløder, og at de objektive og subjektive symptomer forsvinder eller bedres.
 
-Lav hæmostase, uden gennemstikninger og uden ligaturer, brug gazeforbinding og elevation. Silvaderma/Flamazine påsmøres og pose påsættes.
+Lav hæmostase, uden gennemstikninger og uden ligaturer, brug gazeforbinding og elevation. Silvaderma/Flamazine påsmøres og pose påsættes.
 4. Kontrollér, at der er effekt af behandlingen, også efter nogle timer. Anlæg derfor forbindinger der tillader dette. Hvis der ikke er anlagt incisioner primært, kontrollér da efter nogle timer, om der er behov for incisioner.
 5. Patienter med cirkulære forbrændinger forbliver indlagt.
 
@@ -611,7 +611,7 @@ Lav hæmostase, uden gennemstikninger og uden ligaturer, brug gazeforbinding og 
 
 ![](https://brandsaar.dk/wp-content/uploads/2018/11/acid-base-chemistry-3284.jpg)
 
-Vævsskaden forårsages af en kemisk påvirkning af hud eller slimhinde.                  _Kaldes på engelsk chemical burn._ Der sker en denaturering af proteiner og et henfald af celler. Der er mange ligheder mellem denne ”kemiske forbrænding” og den termiske, men en væsentlig forskel er, at man ikke i behandlingen har behov for at køle vævet for at stoppe den ødelæggende proces, men derimod skal det ætsende stof fortyndes/neutraliseres, og **_dette skal ske så hurtigt som overhovedet muligt._**
+Vævsskaden forårsages af en kemisk påvirkning af hud eller slimhinde. _Kaldes på engelsk chemical burn._ Der sker en denaturering af proteiner og et henfald af celler. Der er mange ligheder mellem denne ”kemiske forbrænding” og den termiske, men en væsentlig forskel er, at man ikke i behandlingen har behov for at køle vævet for at stoppe den ødelæggende proces, men derimod skal det ætsende stof fortyndes/neutraliseres, og **_dette skal ske så hurtigt som overhovedet muligt._**
 
 Styrken af en syre/base afhænger af om det kemiske agens afgiver protoner (H+) og bliver til en syre, eller optager protoner og bliver til en base.
 
@@ -634,7 +634,7 @@ Den normale pH i vævsvæske er ca. 7
 
 **Syrer (acids): pH < 7**Syrer danner en koagulativ nekrose ved at denaturere proteiner og danne et koagel. Dette kan begrænse penetrationen af syren ned gennem vævet.
 
-**Baser (alkalis): pH > 7**Baser danner en henflydende nekrose som omdanner vævet til en flydende viskøs masse. Dette medfører denaturering af proteinerne og opløsning af fedtet.                                                                                                                    _På kort sigt er baser mindre skadelige, men på lang sigt mere ødelæggende da de gør vævet henflydende hvilket tillader dybere penetration af stoffet ind i vævet._
+**Baser (alkalis): pH > 7**Baser danner en henflydende nekrose som omdanner vævet til en flydende viskøs masse. Dette medfører denaturering af proteinerne og opløsning af fedtet. _På kort sigt er baser mindre skadelige, men på lang sigt mere ødelæggende da de gør vævet henflydende hvilket tillader dybere penetration af stoffet ind i vævet._
 
 **Kontakt eventuelt Giftlinjen Bispebjerg Hospital, tlf.: 82 12 12 12.**
 
@@ -674,7 +674,7 @@ Det kan være svært at bedømme omfanget af vævsskaden i de første dage efter
 
 ## Overflytning af patient til Rigshospitalets brandsårsafdeling:
 
-Modtagelse af patienterne tilbydes altid. Det er selvsagt ekstremt vigtigt, at skylningen er påbegyndt på ulykkesstedet, fortsat i ambulancen og på skadestuen, og at den fortsættes under transporten hertil. Se dog undtagelse nedenfor.                                                        **Vagthavende brandsårslæge Rigshospitalet,** **tlf.: 35451245**
+Modtagelse af patienterne tilbydes altid. Det er selvsagt ekstremt vigtigt, at skylningen er påbegyndt på ulykkesstedet, fortsat i ambulancen og på skadestuen, og at den fortsættes under transporten hertil. Se dog undtagelse nedenfor. **Vagthavende brandsårslæge Rigshospitalet,** **tlf.: 35451245**
 
 | Syrer | Findes i : | Skader: |
 | --- | --- | --- |
@@ -695,9 +695,9 @@ Modtagelse af patienterne tilbydes altid. Det er selvsagt ekstremt vigtigt, at s
 | Lever og nyreskader | Garvesyre<br>Myresyre<br>Pironsyre<br>Fosfor<br>Petroleum |
 | Inhalationsskade | Stærke syrer<br>Ammoniak |
 
-**Flussyre:**Ekstremt ætsende. Behandles som andre ætsninger med skylning med vand.  NB! Selv ved beskeden hudskade (2%) kan flussyre i høj koncentration have en stor metabolisk toksicitet.
+**Flussyre:**Ekstremt ætsende. Behandles som andre ætsninger med skylning med vand. NB! Selv ved beskeden hudskade (2%) kan flussyre i høj koncentration have en stor metabolisk toksicitet.
 
-Mekanisme:Hydrogenioner forårsager typisk syreskader, som minimeres ved at skylle med vand.    Opløselige frie fluoridioner trænger ind i beskadiget hud og binder calciumioner. Dette forårsager nekrose af vævet hvilket kan medføre hypocalcæmi, der er så alvorligt, at mobilisering af calciumioner fra knoglerne er utilstrækkelig til at overvinde det.    Skadens omfang afhænger af koncentrationen af flussyre og omfanget af overfladen der påvirkes samt varigheden af kontakt.                                                                      _Hypocalcæmi og hypomagnesæmi kan medføre arytmier._
+Mekanisme:Hydrogenioner forårsager typisk syreskader, som minimeres ved at skylle med vand. Opløselige frie fluoridioner trænger ind i beskadiget hud og binder calciumioner. Dette forårsager nekrose af vævet hvilket kan medføre hypocalcæmi, der er så alvorligt, at mobilisering af calciumioner fra knoglerne er utilstrækkelig til at overvinde det. Skadens omfang afhænger af koncentrationen af flussyre og omfanget af overfladen der påvirkes samt varigheden af kontakt. _Hypocalcæmi og hypomagnesæmi kan medføre arytmier._
 
 Behandling:
 
@@ -706,15 +706,15 @@ Hurtig skylning i mindst 30 minutter.
 1. Klip fingernegle (for at fjerne evt. resterende forurening under disse).
 2. Inaktivering af giftige frie fluorider:                                                                                                                                                                                           Topikal calciumglukonat gel (10% med dimethylsulfoxid).                                  Lokal inj. med 10% calciumgluconat (multiple injektioner 0,1-0,2 ml i såret).         Antal og hyppighed af injektioner overvåget af smerte respons.                          Kan rekvireres via Herlev Hospital på tlf.: 38683868 eller på Rigshospitalet  medicinsk gastroenterologisk afd. 3-16-4.                                                            Ved systemisk påvirkning kan intraarteriel infusion af calciumglukonate bruges.      Tidlig excision af det afficerede område skal overvejes.
 
-**Fenol:**Giftigt og ætsende. Virker desuden lokalbedøvende på huden. Fenol er en svag syre men har stor hudpenetrans og har som flussyre stor metabolisk toxicitet.      _Kontakt eventuelt Giftlinjen Bispebjerg, tlf.: 82 12 12 12._
+**Fenol:**Giftigt og ætsende. Virker desuden lokalbedøvende på huden. Fenol er en svag syre men har stor hudpenetrans og har som flussyre stor metabolisk toxicitet. _Kontakt eventuelt Giftlinjen Bispebjerg, tlf.: 82 12 12 12._
 
-**Cement:**Våd cement indeholder en kaustisk base med en pH på op til 12,9. Virkningerne kan være uspecifikke med smerter og forbrænding, der forekommer sent (efter flere timer).                                                                                                Som med andre baser er langvarig skylning på mindst 30 minutter (gerne længere) vigtig.
+**Cement:**Våd cement indeholder en kaustisk base med en pH på op til 12,9. Virkningerne kan være uspecifikke med smerter og forbrænding, der forekommer sent (efter flere timer). Som med andre baser er langvarig skylning på mindst 30 minutter (gerne længere) vigtig.
 
 **Benzin:**Benzin er en kompleks blanding af alkaner, cycloalkaner og carbonhydrider. Kulbrintekomponenterne forårsager skader på endotelceller, som medfører skade på lungerne, leveren, milten og nyrerne, der hvor omfattende hudkontakt med benzin er sket. Benzin opløser let lipidforbindelser, hvilket medfører øget membranpermeabilitet og væsketab.
 
-Der er to typer benzinforbrænding:                                                              Antændelse, ved termiske forbrændinger er væskekrav ofte højere end ved andre termiske forbrændinger.                                                                            Forbrændinger har tendens til at være større, kræver mere kirurgi, og efterfølgende har patienterne længere sygehusophold.                                                                      Dyb penetration eller omfattende hudkontakt, hvor langvarig kontakt opstår uden tænding, kan resultere i fuldhudskader og der kan være systemiske- og inhalationsskader.
+Der er to typer benzinforbrænding: Antændelse, ved termiske forbrændinger er væskekrav ofte højere end ved andre termiske forbrændinger. Forbrændinger har tendens til at være større, kræver mere kirurgi, og efterfølgende har patienterne længere sygehusophold. Dyb penetration eller omfattende hudkontakt, hvor langvarig kontakt opstår uden tænding, kan resultere i fuldhudskader og der kan være systemiske- og inhalationsskader.
 
-**Fosfor:**Fosfor forekommer almindeligt i et militært miljø.                                        Hvid fosfor tændes spontant, når det udsættes for luft.                                    Brændende fosfor slukkes med vand.                                                                Partikler af fosfor, der er indlejret i huden, fortsætter med at brænde når det tages ud af vandet igen.                                                                                              Behandling: skylning, eventuelle synlige partikler skal debrideres/fjernes manuelt.
+**Fosfor:**Fosfor forekommer almindeligt i et militært miljø. Hvid fosfor tændes spontant, når det udsættes for luft. Brændende fosfor slukkes med vand. Partikler af fosfor, der er indlejret i huden, fortsætter med at brænde når det tages ud af vandet igen. Behandling: skylning, eventuelle synlige partikler skal debrideres/fjernes manuelt.
 
 ---
 
@@ -790,7 +790,7 @@ Der eksisterer forskellige klassifikationsmodeller til bedømmelse af frostskade
 - 2\. grad: Vesikler med klart indhold, ledsager hyperæmi og ødem.
 - 3\. grad: Vesikler med hæmorragisk indhold. Fuldhuds- og subkutan vævsnekrose.
 - 4\. grad: Fuldhudsnekrose, som også inkluderer muskler og knogler.
-Men kan også inddeles i risikoen for amputation ud fra billeddiagnostik (angiografi, MR-scanning eller 99 Tc-knoglescanning).
+Men kan også inddeles i risikoen for amputation ud fra billeddiagnostik (angiografi, MR-scanning eller 99 Tc-knoglescanning).
 
 - Ved grad 2-4 bør patienten henvises til et hospital med specialistekspertise.
 
@@ -901,13 +901,13 @@ Referencer:
 
 En brandskade er en udefrakommende termisk/kemisk/elektrisk påvirkning af hud og/eller andet væv der medfører celledød.
 
-En brandskade er en udefrakommende termisk/kemisk eller elektrisk påvirkning af hud og/eller andet væv, der medfører celledød. I forbindelse med vævshenfaldet frigøres store mængder vasoaktive stoffer som fører til øget karpermeabilitet. Vand, elektrolytter og kolloider siver ud i det interstitielle rum og danner ødemer.
+En brandskade er en udefrakommende termisk/kemisk eller elektrisk påvirkning af hud og/eller andet væv, der medfører celledød. I forbindelse med vævshenfaldet frigøres store mængder vasoaktive stoffer som fører til øget karpermeabilitet. Vand, elektrolytter og kolloider siver ud i det interstitielle rum og danner ødemer.
 
 Behandlingen af brandskader kan ikke forhindre at væsken siver ud af karrene, men ved større brandsår gives væskebehandling for at mindske hæmokoncentration, hypovolæmi og hypovolæmisk shock, med det formål at give mindst mulig væske som sikre sufficient organperfusion.
 
 Brandsårsdybden afhænger af den energi, der afsættes i vævet, og er derfor en konsekvens af temperaturen og varigheden af kontakt. Dybden er prognostisk for hvorvidt brandsåret kan hele konservativt eller skal opereres. Patientens overlevelse afhænger af skadens omfang samt patientens fysiologiske reserver.
 
-Bedømmelsen af brandsårsdybden er lettest for de helt overfladiske og helt dybe skader. De dermale skader (2. grad) inddeles i overfladiske og dybe dermale, er lettest at kategorisere på 3.-5. dagen. Derfor afhænger vurderingen ofte af, hvor mange timer efter ulykken bedømmelsen foretages. Brandskadens dybde og areal afgør den videre behandling. Dybden afhænger af den energi der er afsat i vævet.
+Bedømmelsen af brandsårsdybden er lettest for de helt overfladiske og helt dybe skader. De dermale skader (2. grad) inddeles i overfladiske og dybe dermale, er lettest at kategorisere på 3.-5. dagen. Derfor afhænger vurderingen ofte af, hvor mange timer efter ulykken bedømmelsen foretages. Brandskadens dybde og areal afgør den videre behandling. Dybden afhænger af den energi der er afsat i vævet.
 
 Brandskadens udbredning samt patientens alder og co-morbiditet er afgørende for påvirkning af almentilstanden og mortaliteten.
 
@@ -919,17 +919,17 @@ Huden består af 2 dele: **Epidermis** og **dermis**.
 
 **Epidermis** udgør det superficielle lag som bl.a. hindrer at væske tabes fra kroppen. Epidermis fornyes kontinuerligt fra basallaget.
 
-**Dermis** udgør læderhuden som giver holdbarhed og styrke i huden. I dermis ligger det dermale plexus, sensoriske nerver, hårfollikler, sved- og talgkirtler. Vækstfaktorer og epithelialceller i dermis kan aktiveres og medføre heling af epidermale skader. Under dermis ligger det subkutane fedtvæv og fascien, som adskiller huden fra muskler og knogler.
+**Dermis** udgør læderhuden som giver holdbarhed og styrke i huden. I dermis ligger det dermale plexus, sensoriske nerver, hårfollikler, sved- og talgkirtler. Vækstfaktorer og epithelialceller i dermis kan aktiveres og medføre heling af epidermale skader. Under dermis ligger det subkutane fedtvæv og fascien, som adskiller huden fra muskler og knogler.
 
 ## Brandskaders inddeling
 
 ![Uden navn5](https://brandsaar.dk/wp-content/uploads/2018/11/Uden-navn5.png)
 
-**1\. grads brandskade (epidermal):**    Der ses rødme som ved en solskoldning (erytem), men ingen blærer (bullae). Kræver ikke behandling udover smertestillende (håndkøbsmedicin), og medregnes IKKE i brandsårsarealet.
+**1\. grads brandskade (epidermal):** Der ses rødme som ved en solskoldning (erytem), men ingen blærer (bullae). Kræver ikke behandling udover smertestillende (håndkøbsmedicin), og medregnes IKKE i brandsårsarealet.
 
 ![2.grads](https://brandsaar.dk/wp-content/uploads/2018/11/2.grads_.png)
 
-**2\. grads brandskade (dermal):**Huden ses hævet og med væskefyldte bullae.                                                Hvis bullae fjernes/brister, ses en rød, glinsende, fugtig overflade.                  Ved kompression af huden bliver denne hvid, når der slippes bliver den atter rød (intakt kapillærrespons). Såret er smertefuldt. Heler op i løbet af 10-14 dage uden ar, medmindre der opstår infektion.
+**2\. grads brandskade (dermal):**Huden ses hævet og med væskefyldte bullae. Hvis bullae fjernes/brister, ses en rød, glinsende, fugtig overflade. Ved kompression af huden bliver denne hvid, når der slippes bliver den atter rød (intakt kapillærrespons). Såret er smertefuldt. Heler op i løbet af 10-14 dage uden ar, medmindre der opstår infektion.
 
 ![](https://brandsaar.dk/wp-content/uploads/2018/11/Unavngivet2-pdf-1024x581.jpg)
 
@@ -959,7 +959,7 @@ AK-behandling bremser væksten af tromben og øger muligheden for at tromben opl
 
 ## Forekomst
 
-Tromboembolisk sygdom er en hyppig komplikation til nogle typer kirurgiske indgreb. Indlagte patienter har op til 100 x forhøjet risiko for VTE sammenlignet med baggrundsbefolkningen. Omkring 1/3 af tilfældene optræder i månederne efter indlæggelsen. Man antager, at en stor andel af disse dødsfald kunne forebygges med profylaktiske tiltag, men denne gevinst skal opvejes mod blødningskomplikationer. Risikoen for symptomatisk VTE er fundet at være <1 % i metaanalyser af risikopopulationer.
+Tromboembolisk sygdom er en hyppig komplikation til nogle typer kirurgiske indgreb. Indlagte patienter har op til 100 x forhøjet risiko for VTE sammenlignet med baggrundsbefolkningen. Omkring 1/3 af tilfældene optræder i månederne efter indlæggelsen. Man antager, at en stor andel af disse dødsfald kunne forebygges med profylaktiske tiltag, men denne gevinst skal opvejes mod blødningskomplikationer. Risikoen for symptomatisk VTE er fundet at være <1 % i metaanalyser af risikopopulationer.
 
 ## Kirurgi
 
@@ -990,7 +990,7 @@ Kirurgi er den vigtigste risikofaktor for udvikling af VTE. Ca. 1/3 del af alle 
 
 ## Profylakse ved brandsår
 
-Lavmolekylært heparin har lige så god effekt som almindelig heparin, men formentlig mindre tendens til at forårsage blødningskomplikationer. Behandlingen påbegyndes ved modtagelsen af patienten eller mindst 2 timer præoperativt. Til patienter >40 år med mere end 15% forbrænding anbefales inj. Innohep 4500IE x 1 s.c. (eller tilsvarende) indtil fuld mobilisering. Ved 2 eller flere disponerende faktorer gives også profylakse til yngre patienter over 15 år.
+Lavmolekylært heparin har lige så god effekt som almindelig heparin, men formentlig mindre tendens til at forårsage blødningskomplikationer. Behandlingen påbegyndes ved modtagelsen af patienten eller mindst 2 timer præoperativt. Til patienter >40 år med mere end 15% forbrænding anbefales inj. Innohep 4500IE x 1 s.c. (eller tilsvarende) indtil fuld mobilisering. Ved 2 eller flere disponerende faktorer gives også profylakse til yngre patienter over 15 år.
 
 Kontraindikationer for tromboseprofylakse er hæmoragisk diatese, blødende ulcus ventriculi og akut cerebralt insult.
 
@@ -1025,7 +1025,7 @@ TED-strømperanvendes som monoterapi ved høj blødningsrisiko og som supplement
 
 Den initielle vurdering og behandling af brandskader sker ofte i skadestuen.
 
-Skylning, smertestillende behandling og vurdering af skadens omfang/areal samt dybde vurderes.
+Skylning, smertestillende behandling og vurdering af skadens omfang/areal samt dybde vurderes.
 
 Vagthavende brandsårslæge på Rigshospitalet tlf.: 35 45 12 45
 
@@ -1059,7 +1059,7 @@ Ved behov for specialist behandling er hurtig overflytning essentiel og kommunik
 
 **HYPOTERMI:**Patienten SKAL pakkes varmt ind under transporten, så man undgår hypotermi og patienten holdes normoterm. Skylningen må, såfremt der ikke er skyllet længe nok, pauseres eller seponeres helt. Er skylning med koldt vand påbegyndt straks efter forbrændingen og har pt skyllet i 20-30 min. behøver man ikke skylle mere. Skylning efter 20-30 min er kun smertestillende og kan lige så godt behandles med smertestillende præparater, så patientens temperatur ikke kompromitteres. Se afsnittet: Primær behandling af brandskader.
 
-**SMERTESTILLENDE:**Paracetamol, NSAID eller opioider kan gives. Opioider gives i refrakte doser fx morfin 0,05mg/kg ad gangen. Børn har ofte god effekt af benzodiazepin, eksempelvis Dormicum (0,5mg/kg) rektalt. Benzodiazepin virker dog ikke smertestillende og bør gives sammen med smertestillende medicin. I kombination med opioider bør anæstesilæge kontaktes.
+**SMERTESTILLENDE:**Paracetamol, NSAID eller opioider kan gives. Opioider gives i refrakte doser fx morfin 0,05mg/kg ad gangen. Børn har ofte god effekt af benzodiazepin, eksempelvis Dormicum (0,5mg/kg) rektalt. Benzodiazepin virker dog ikke smertestillende og bør gives sammen med smertestillende medicin. I kombination med opioider bør anæstesilæge kontaktes.
 
 **AFLASTENDE INCISIONER:**Ved dybe cirkulære skader kan aflastende incisioner (eskarotomier) blive nødvendige, når brandsårsødemet tiltager. Ved dybe forbrændinger bliver huden sej, stram og ueftergivelig hvorved cirkulationen kan blive kompromiteret perifert for stramningen. Behandlingen består i gennemskæring af den strammende, forbrændte hud til stramningen løsner sig. Der skal kun incideres i huden (se skitse), ikke i subcutis eller fascie og eskarotomierne skal kun anlægges på steder hvor brandskaden er dyb.
 
@@ -1067,9 +1067,9 @@ Kontakt venligst Rigshospitalets brandsårsafdeling på tlf. 3545 1245 for råd 
 
 ## Process ved overflytning:
 
-Umiddelbart efter initial behandling tages der kontakt til Rigshospitalet vagthavende på brandsårsafdeling, **tlf.:** 35 45 12 45
+Umiddelbart efter initial behandling tages der kontakt til Rigshospitalet vagthavende på brandsårsafdeling, **tlf.:** 35 45 12 45
 
-Ved samtale med vagthavende på brandsårsafdeling er det vigtigt at fremlægge skadesmekaniske, skadestidspunkt, vital parametre brandsårs areal samt hvilken initiel behandling der er iværksat. Brandsårsvagthavende vil herefter tage stilling til evt. overflytning.
+Ved samtale med vagthavende på brandsårsafdeling er det vigtigt at fremlægge skadesmekaniske, skadestidspunkt, vital parametre brandsårs areal samt hvilken initiel behandling der er iværksat. Brandsårsvagthavende vil herefter tage stilling til evt. overflytning.
 
 ## Flowchart til behandling af brandsår
 
@@ -1105,19 +1105,19 @@ Der foranstaltes isolering på enestue til der foreligger svar, dvs:
 
 ## Patienter der skal behandles ambulant på Rigshospitalet
 
-Disse behandles uanset tidspunkt på døgnet på afsnit 2103. Ideen er at undgå kontakt med brandsårsstuen i Traumecentret, men direkte op til enten en isolationsstue på afdelingen eller badeværelset. Patienter der skal indlægges på Rigshospitalet bringes til stue 19, dvs. uden om Traumecentret. Traumesygeplejersken tilkaldes og sammen med læge fjernes evt. forbindinger. Når patienten herefter har forladt enten sygestuen eller badeværelset, da rengøring i henhold til isolationsbestemmelserne. På stuen foretages sædvanlig skiftning af sår. Engangsmateriale kasseres i plastikpose. Det øvrige anvendte materiale sendes direkte til sterilisering. Der podes fra sår, næse, svælg, perineum og evt. indstikssteder mhp. multiresistente mikroorganismer og anmodes om hurtigt svar. Herefter anmodes om slutrengøring af stuen med klor.
+Disse behandles uanset tidspunkt på døgnet på afsnit 2103. Ideen er at undgå kontakt med brandsårsstuen i Traumecentret, men direkte op til enten en isolationsstue på afdelingen eller badeværelset. Patienter der skal indlægges på Rigshospitalet bringes til stue 19, dvs. uden om Traumecentret. Traumesygeplejersken tilkaldes og sammen med læge fjernes evt. forbindinger. Når patienten herefter har forladt enten sygestuen eller badeværelset, da rengøring i henhold til isolationsbestemmelserne. På stuen foretages sædvanlig skiftning af sår. Engangsmateriale kasseres i plastikpose. Det øvrige anvendte materiale sendes direkte til sterilisering. Der podes fra sår, næse, svælg, perineum og evt. indstikssteder mhp. multiresistente mikroorganismer og anmodes om hurtigt svar. Herefter anmodes om slutrengøring af stuen med klor.
 
 Hos ambulante patienter med MRSA kan supplerende retningslinjerne først ophæves, når der foreligger 2 negative podninger. Disse podninger skal tages 1 måned og 6 måneder efter afsluttet behandling for MRSA-bærertilstand.
 
 Efter ambulant behandling/udskrivelse noteres i patientjournalen og epikrisen retningslinjer for hvornår patienten skal kontrolpodes og at der ved fornyet kontakt med hospitalet inden for de næste 6 måneder skal oplyses om patientens MRSA-status.
 
-MRSA risikovurdering ved indlæggelse på hospital i Region Hovedstaden: En person med MRSA kan enten have sygdom forårsaget af MRSA (være inficeret) eller være rask smittebærer (MRSA-bærertilstand).
+MRSA risikovurdering ved indlæggelse på hospital i Region Hovedstaden: En person med MRSA kan enten have sygdom forårsaget af MRSA (være inficeret) eller være rask smittebærer (MRSA-bærertilstand).
 
 Alle patienter, der indlægges eller skal have foretaget dagkirurgi på et hospital i Region Hovedstaden, skal spørges, om der foreligger de 4 almene risikosituationer, som fremgår nedenfor.
 
 ## Hvilke patienter skal undersøges for MRSA ?
 
-Patienter, der har været i en risikosituation inden for de sidste 6 måneder, skal undersøges for MRSA, se skema nedenfor. Er patienten podet negativ for MRSA indenfor de sidste 4 uger, vil det som hovedregel betyde, at man ikke behøver pode igen. I tilfælde hvor patienten er i stor risiko for smitte, f.eks. pga. daglig kontakt til levende svin, anbefales det at re-pode tidligere, se Rigshospitalets instruks.
+Patienter, der har været i en risikosituation inden for de sidste 6 måneder, skal undersøges for MRSA, se skema nedenfor. Er patienten podet negativ for MRSA indenfor de sidste 4 uger, vil det som hovedregel betyde, at man ikke behøver pode igen. I tilfælde hvor patienten er i stor risiko for smitte, f.eks. pga. daglig kontakt til levende svin, anbefales det at re-pode tidligere, se Rigshospitalets instruks.
 
 **MRSA screening for særlige patientgrupper/særlige risikosituationer:**Arbejde i svinestald. Ved dagligt arbejde i en svinestald anbefales at pode på ny for MRSA, hvis de negative podninger er mere end 1 uge gamle, men isolation kan undlades, hvis der foreligger negative MRSA podninger inden for de sidste 4 uger.
 
@@ -1153,7 +1153,7 @@ Brandsår kan være uforenelige med overlevelse i tilfælde hvor skadens karakte
 
 I disse tilfælde er livsforlængende behandling derfor uden mening, og der skal ikke opstartes væskeresucitationsbehandling.
 
-    Prognosen for patienter med brandskader afhænger af alder, brandsårets udstrækning, komorbiditeter og behandling.
+ Prognosen for patienter med brandskader afhænger af alder, brandsårets udstrækning, komorbiditeter og behandling.
 
 Beslutningen om ikke at opstarte resucitation tages af bagvagten på skadesstedet evt. i samråd med Rigshospitalets vagthavende brandsårslæge/specialeansvarlig brandsårs overlæge og anæstesien.
 
@@ -1189,7 +1189,7 @@ _Små overfladiske eller dybe skader som kan pakkes ind og hvor forbindingen kan
 - Forbindingen skal lades urørt i 10 dage medmindre der er gennemsivning eller infektionstegn
 - For håndskader skal forbindingen placeres så den begrænser bevægeligheden så lidt som muligt for at undgå stive fingre. Netop håndskader kan ombandageres efter 3 dage hvor mængden af gaze kan reduceres for en bedre bevægelighed. Større håndskader skal indlægges.
 
-Efter den primære behandling af brandskaden med forsvarlig forbinding, kan patienten sendes hjem og møde til ambulant opfølgning med udpakning af brandskaden.    Patienten skal møde til opfølgning med udpakning af brandskaden ca. 10-14 dage efter skaden, hos enten egen læge, på lokalt sygehus eller i brandsårsambulatoriet.
+Efter den primære behandling af brandskaden med forsvarlig forbinding, kan patienten sendes hjem og møde til ambulant opfølgning med udpakning af brandskaden. Patienten skal møde til opfølgning med udpakning af brandskaden ca. 10-14 dage efter skaden, hos enten egen læge, på lokalt sygehus eller i brandsårsambulatoriet.
 
 Før patienten møder til udpakning af brandskaden, rådes patienten til at tage paracetamol 1 g + Ibuprofen 400 mg. Børn gives smertestillende efter vægt.
 
@@ -1197,11 +1197,11 @@ Før patienten møder til udpakning af brandskaden, rådes patienten til at tage
 
 Efter bandagen er fjernet vaskes sårene med vand og neutral sæbe. Såfremt der fortsat er ikke-helede områder, pakkes sårene ind igen enten med Mepilex transfer (alt. nitrofurazongaze/jelonet) og gaze.
 
-                           Forbindingen skal sidde urørt og må ikke blive våd.
+ Forbindingen skal sidde urørt og må ikke blive våd.
 
-_Det er vigtigt at være opmærksom på infektionstegn: rødme og pus._                  Såfremt der er tegn på lokal infektion, skal sårene behandles med anti-mikrobakteriel topikal behandling. Hvis patienten er alment påvirket (feber), skal patienten opstartes i antibiotikabehandling og henvises til indlæggelse.
+_Det er vigtigt at være opmærksom på infektionstegn: rødme og pus._ Såfremt der er tegn på lokal infektion, skal sårene behandles med anti-mikrobakteriel topikal behandling. Hvis patienten er alment påvirket (feber), skal patienten opstartes i antibiotikabehandling og henvises til indlæggelse.
 
-Ved den ambulante kontrol efter ca. 10 dage lægges en plan for videre behandling og kontrol. Hvis sårene vurderes til at være dybe dermale skader, skal patienten henvises til brandsårsafdeling til vurdering og operation.
+Ved den ambulante kontrol efter ca. 10 dage lægges en plan for videre behandling og kontrol. Hvis sårene vurderes til at være dybe dermale skader, skal patienten henvises til brandsårsafdeling til vurdering og operation.
 
 ## Henvisning til brandsårsafdeling/brandsårsambulatoriet
 
@@ -1229,7 +1229,7 @@ Vagthavende brandsårslæge på Rigshospitalet tlf.: 35 45 12 45
 
 [Skip to content](https://brandsaar.dk/praehospitalspersonale/#content)
 
-Ambulancelæger og andre første respondenter er med til at bidrage væsentligt til den præhospitale behandling af patienter med forbrændinger ved at initialisere førstehjælp, stabilisere luftvejene, initialisering væske behandling og yde hurtig transport af forbrændte patienter til en hospital. Den tidlige  præhospitale behandling af forbrændte patienter hjælper de brændte chance for at overleve og optimalt resultat.
+Ambulancelæger og andre første respondenter er med til at bidrage væsentligt til den præhospitale behandling af patienter med forbrændinger ved at initialisere førstehjælp, stabilisere luftvejene, initialisering væske behandling og yde hurtig transport af forbrændte patienter til en hospital. Den tidlige præhospitale behandling af forbrændte patienter hjælper de brændte chance for at overleve og optimalt resultat.
 
 ---
 
@@ -1267,7 +1267,7 @@ Lednære forbrændinger giver nedsatte bevægelighed og dybe forbrændinger kan 
 
 **Efterbehandling med kompression:**Patienter med behov for ar-behandling med kompression kan tilbydes standardbandage (Mainat) eller specialfremstillede bandager (JOBST). Måltagning til og bestilling af bandager varetages af fysioterapeuten i forbindelse med udskrivelse eller i ambulatoriet.
 
-**Udskrivelse:**Ved udskrivelsen udfærdiges fysioterapeutisk status indeholdende beskrivelse af funktionsniveau, anvendte behandlingsteknikker og mål for genoptræningen. Ved behov for fortsat ambulant genoptræning i hjemkommunen, ordinerer lægen genoptræningsplan og sekretæren effektuere den.
+**Udskrivelse:**Ved udskrivelsen udfærdiges fysioterapeutisk status indeholdende beskrivelse af funktionsniveau, anvendte behandlingsteknikker og mål for genoptræningen. Ved behov for fortsat ambulant genoptræning i hjemkommunen, ordinerer lægen genoptræningsplan og sekretæren effektuere den.
 
 ---
 
@@ -1275,7 +1275,7 @@ Lednære forbrændinger giver nedsatte bevægelighed og dybe forbrændinger kan 
 
 [Skip to content](https://brandsaar.dk/download-lommekort-til-brandsarsbehandling/#content)
 
-**Tryk her for at downloade: [Brandsår lommekort A5 03.02.26](http://brandsaar.dk/wp-content/uploads/2026/02/Brands%C3%A5r-lommekort-A5-03.02.26.pdf)**
+**Tryk her for at downloade: [Brandsår lommekort A5 03.02.26](http://brandsaar.dk/wp-content/uploads/2026/02/Brands%C3%A5r-lommekort-A5-03.02.26.pdf)**
 
 ![](https://brandsaar.dk/wp-content/uploads/2022/01/Sk%C3%A6rmbillede-2022-01-23-kl.-14.39.48-718x1024.png)
 
@@ -1295,11 +1295,11 @@ Følg med i tidligere og kommende projekter.
 
 Brandsårslejr Lalandia / Legoland d. 23-25. august 2023 (7-15 år).
 
-National Brandsårsdag d. 16\. september 2023.
+National Brandsårsdag d. 16\. september 2023.
 
 EMSB kursus i Danmark d. 24. maj 2024.
 
-Skriv til os på [brandsaarsforening@brandsår.dk](mailto:brandsaarsforening@brands%C3%A5r.dk) hvis du er interesseret.
+Skriv til os på [brandsaarsforening@brandsår.dk](mailto:brandsaarsforening@brands%C3%A5r.dk) hvis du er interesseret.
 
 ## Tidligere projekter
 
@@ -1313,7 +1313,7 @@ Glade kursister og en fin kage til anledningen.
 
 Tak for de flotte donationer fra:
 
-Borgervennen, Cavallino pizza, Meyers, Bertels saloner, Goodiebox, Tivoli, Nilens jord, Charlotte Bonnen, Pixizoo, Legeakademiet, Smilet, Stagedoor professionel make-up,  Karmameju, Matas, Mild, Rigshospitalet
+Borgervennen, Cavallino pizza, Meyers, Bertels saloner, Goodiebox, Tivoli, Nilens jord, Charlotte Bonnen, Pixizoo, Legeakademiet, Smilet, Stagedoor professionel make-up, Karmameju, Matas, Mild, Rigshospitalet
 
 Det var en stor succes med deltagelse af over 50 patienter og pårørende.
 
@@ -1403,7 +1403,7 @@ Foreningen drives af sundhedsfaglige personer med særlig interesse for brandså
 
 I 2022 er foreningen a administrative årsager lagt ind under Brandsårsafdelingen på Rigshospitalet.
 
-Du kan kontakte os på mail via: [brandsaarsforening@brandsår.dk](mailto:brandsaarsforening@brands%C3%A5r.dk)
+Du kan kontakte os på mail via: [brandsaarsforening@brandsår.dk](mailto:brandsaarsforening@brands%C3%A5r.dk)
 
 ## Teamet bag Dansk Brandsårsforening
 
@@ -1413,7 +1413,7 @@ Du kan kontakte os på mail via: [brandsaarsforening@brandsår.dk](mailto:brand
 
 ![Jennifer](https://brandsaar.dk/wp-content/uploads/2018/11/Jennifer-.png)
 
-**Jennifer Berg Drejøe**            Uddannelsesansvarlig overlæge, Klinik for Plastikkirurgi og Brandsårsbehandling, Rigshospitalet
+**Jennifer Berg Drejøe** Uddannelsesansvarlig overlæge, Klinik for Plastikkirurgi og Brandsårsbehandling, Rigshospitalet
 
 ![CLL+foto](https://brandsaar.dk/wp-content/uploads/2022/12/CLLfoto.jpg)
 
@@ -1461,19 +1461,19 @@ Foreningen er forankret i Rigshospitalets klinik for plastikkirurgi og brandsår
 
 ![Pasfoto](https://brandsaar.dk/wp-content/uploads/2018/08/Pasfoto.png)
 
-**Rikke Holmgaard**                                 Ph.d., Klinisk Lektor, Specialeansvarlig overlæge, Klinik for Plastikkirurgi og Brandsårsbehandling, Rigshospitalet
+**Rikke Holmgaard** Ph.d., Klinisk Lektor, Specialeansvarlig overlæge, Klinik for Plastikkirurgi og Brandsårsbehandling, Rigshospitalet
 
 Ansvarlig for fagligt indhold.
 
 ![Jennifer](https://brandsaar.dk/wp-content/uploads/2018/11/Jennifer-.png)
 
-**Jennifer Berg Drejøe**                                  Uddannelsesansvarlig overlæge, Klinik for Plastikkirurgi og Brandsårsbehandling, Rigshospitalet
+**Jennifer Berg Drejøe** Uddannelsesansvarlig overlæge, Klinik for Plastikkirurgi og Brandsårsbehandling, Rigshospitalet
 
 Ansvarlig for fagligt indhold.
 
 ![C lang](https://brandsaar.dk/wp-content/uploads/2026/04/C-lang.jpeg)
 
-**Christian Lyngsaa Lang**                            Overlæge, Klinik for Plastikkirurgi og Brandsårsbehandling, Rigshospitalet
+**Christian Lyngsaa Lang** Overlæge, Klinik for Plastikkirurgi og Brandsårsbehandling, Rigshospitalet
 
 Ansvarlig for fagligt indhold.
 
@@ -1501,7 +1501,7 @@ Ansvarlig for fagligt indhold.
 
 ![0C0FA622-23D4-497B-A0CA-DADFA035DCF2](https://brandsaar.dk/wp-content/uploads/2026/04/0C0FA622-23D4-497B-A0CA-DADFA035DCF2.jpeg)
 
-**Anna Louise Norling**                        Læge
+**Anna Louise Norling** Læge
 
 Ansvarlig for design og opdatering af fagligt indhold.
 
@@ -1545,7 +1545,7 @@ National Brandsårsdag 2024:
 
 Lørdag d. 23. november 2024.
 
-Tilmeld på: [brandsaarsforening@brandsår.dk](mailto:brandsaarsforening@brands%C3%A5r.dk) hvis I er interesserede i at deltage. Af hensyn til forplejning angiv venligst antal deltagere samt alder på deltagere under 18 år.
+Tilmeld på: [brandsaarsforening@brandsår.dk](mailto:brandsaarsforening@brands%C3%A5r.dk) hvis I er interesserede i at deltage. Af hensyn til forplejning angiv venligst antal deltagere samt alder på deltagere under 18 år.
 
 [Program Brandsårsdag 2024](http://brandsaar.dk/wp-content/uploads/2024/10/Endeligt-Program-Brands%C3%A5rsdag-l%C3%B8rdag-d-23-11-24.docx) – Med forbehold for ændringer.
 
@@ -1565,7 +1565,7 @@ Her kan du se sidste års program:
 
 [Skip to content](https://brandsaar.dk/medlemskab/#content)
 
-Tusind tak til alle vores sponsorer for deres meget flotte og generøse donationer til Danmarks første Nationale Brandsårsdag afholdt på Rigshospitalet lørdag d. 27. august 2022.
+Tusind tak til alle vores sponsorer for deres meget flotte og generøse donationer til Danmarks første Nationale Brandsårsdag afholdt på Rigshospitalet lørdag d. 27. august 2022.
 
 [Tak til vores sponsorer](http://brandsaar.dk/wp-content/uploads/2023/02/Sponsorer-National-Brands%C3%A5rsdag-270822.docx)
 
@@ -1597,13 +1597,13 @@ Donationer kan indbetales på følgende konto:
 
 Bankkonto: 3100 – 3100333716 reference: PSP L-22900-00214
 
-Skriv til os på [brandsaarsforening@brandsår.dk](mailto:brandsaarsforening@brands%C3%A5r.dk)
+Skriv til os på [brandsaarsforening@brandsår.dk](mailto:brandsaarsforening@brands%C3%A5r.dk)
 
-Vi sætter pris på alle donationer. Hvis du har lyst, kan du følge med her eller på [facebook](https://www.facebook.com/groups/160126614796319/).
+Vi sætter pris på alle donationer. Hvis du har lyst, kan du følge med her eller på [facebook](https://www.facebook.com/groups/160126614796319/).
 
 Virksomhedsdonationer vil figurere på hjemmesiden.
 
-Kontakt gerne vores administrator vedrørende nærmere detaljer på [brandsaarsforening@brandsår.dk](mailto:brandsaarsforening@brands%C3%A5r.dk)
+Kontakt gerne vores administrator vedrørende nærmere detaljer på [brandsaarsforening@brandsår.dk](mailto:brandsaarsforening@brands%C3%A5r.dk)
 
 Private donationer kan ligeledes fremgå af hjemmesiden hvis dette ønskes.
 

@@ -38,7 +38,7 @@ HAENGEORD = re.compile(
 )
 
 
-def sammenfoej(tekst):
+def sammenfoej(tekst, kun_whitespace=False):
     ud = []
     for raa in tekst.split("\n"):
         t = raa.rstrip()
@@ -49,8 +49,13 @@ def sammenfoej(tekst):
             ud.append(t)
             continue
         # Gentagne mellemrum midt i prosa er skrab-/PDF-alignment, ikke indhold.
+        # NBSP (\xa0) taeller med: web-skrab efterlader strenge af "\xa0 \xa0 ..."
+        # som hverken renderes paent eller matches af et ASCII-mellemrumsmoenster.
         # Kun i ikke-struktur-linjer: tabelraekker og lister er undtaget ovenfor.
-        t = re.sub(r"  +", " ", t)
+        t = re.sub(r"[  ]{2,}", " ", t.replace(" ", " ")).rstrip()
+        if kun_whitespace:
+            ud.append(t)
+            continue
         i = len(ud) - 1
         while i >= 0 and ud[i] == "":
             i -= 1
@@ -90,11 +95,17 @@ def ordkontrol(gammel, ny, navn):
 REPO = Path(r"C:\Projects\Freelance\magnus\corti-hackathon")
 KILDER = REPO / "cosurg-mcp" / "data" / "kilder"
 
+# --kun-whitespace: normalisér kun NBSP og gentagne mellemrum, sammenfoej ikke
+# linjer. Til kilder der allerede ER hele afsnit (database-/API-markdown), hvor
+# eneste problem er skrab-rester i selve teksten.
 ok = True
+kun_ws = "--kun-whitespace" in sys.argv
 for navn in sys.argv[1:]:
+    if navn.startswith("--"):
+        continue
     sti = KILDER / navn
     gammel = sti.read_text(encoding="utf-8")
-    ny = sammenfoej(gammel)
+    ny = sammenfoej(gammel, kun_whitespace=kun_ws)
     if not ordkontrol(gammel, ny, navn):
         ok = False
         continue

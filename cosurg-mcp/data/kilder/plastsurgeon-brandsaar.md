@@ -89,7 +89,7 @@ _Large burns affect both the respiratory- and the cardiovascular system, the met
 
 The systemic response depends on the size of the burn and occurs when burned TBSA exceeds 20-25 % (1). The damage alters homeostasis, fluid balance, nutrient absorption and induces a hypermetabolic state with a humoral and cellular immunodeficiency (2).
 
-These changes shift the body into a general catabolic state with a greater risk of developing infections with fatal outcome (2). Sepsis is one of the leading causes of death among patients with large burns (3,4). Larger burns lead to severe capillary leakage and can accentuates into a state of shock. The immune response is activated leading to increased production of nitric oxide synthase (NOS), vasodilatation and capillary leakage, resulting in hypovolemia and hypoperfusion (Stage 1 shock) (5).
+These changes shift the body into a general catabolic state with a greater risk of developing infections with fatal outcome (2). Sepsis is one of the leading causes of death among patients with large burns (3,4). Larger burns lead to severe capillary leakage and can accentuates into a state of shock. The immune response is activated leading to increased production of nitric oxide synthase (NOS), vasodilatation and capillary leakage, resulting in hypovolemia and hypoperfusion (Stage 1 shock) (5).
 
 |     |     |
 | --- | --- |
@@ -99,7 +99,7 @@ These changes shift the body into a general catabolic state with a greater risk 
 | **Metabolic changes** | The basal metabolic rate increases up to three times its original rate. This, combined with splanchnic hypoperfusion, necessitates early an aggressive fluid resuscitation and nutrients to decrease catabolism and maintain gut integrity. |
 | **Immunological changes** | Non-specific down regulation of the immune response occurs affecting both cell- and humoral mediated pathways. This can lead to an increased rate of infections and may last years after initial trauma. |
 
-Table 1 \| Systemic responses to burns
+Table 1 \| Systemic responses to burns
 
 # Local response
 
@@ -111,24 +111,24 @@ Is a result of direct contact with the burning hot object, which results in loca
 
 ## **The zone of stasis**, Zone 2
 
-Zone 2 sorrounds the zone of coagulation. The blood flow in this zone is decreased and the tissue has approximately 50% chance of survival. Tissue in this zone is potentially salvageable, depending on the acute treatment i.e. cooling of the burn and burn resuscitation leading to increased tissue perfusion. Additional damage — such as prolonged hypotension, infection or oedema, can convert this zone into an area of complete tissue loss(6,7).
+Zone 2 sorrounds the zone of coagulation. The blood flow in this zone is decreased and the tissue has approximately 50% chance of survival. Tissue in this zone is potentially salvageable, depending on the acute treatment i.e. cooling of the burn and burn resuscitation leading to increased tissue perfusion. Additional damage — such as prolonged hypotension, infection or oedema, can convert this zone into an area of complete tissue loss(6,7).
 
 ## **The zone of hyperaemia, Zone 3**
 
-Is the peripheral to the zone of stasis (Zone 2). This zone maintains a normal blood flow. The tissue will recover unless severe sepsis or prolonged hypoperfusion occurs(6,7).
+Is the peripheral to the zone of stasis (Zone 2). This zone maintains a normal blood flow. The tissue will recover unless severe sepsis or prolonged hypoperfusion occurs(6,7).
 
 # **Symptoms of compromised perfusion**(circular burns)
 
 Circular burns on fingers, arms and/or lower legs can compromise the perfusion.
 
 - Symptoms
-  - Change of color towards a pale and bluish tone, distant of the burn
-  - Decreased movement/mobility and sensibility
-  - Pain that worsens/increases with movement
+ - Change of color towards a pale and bluish tone, distant of the burn
+ - Decreased movement/mobility and sensibility
+ - Pain that worsens/increases with movement
 - Clinical examination
-  - Assessment of skin color and temperature, measuring oxygenation of the fingers and palpating the pulse.
+ - Assessment of skin color and temperature, measuring oxygenation of the fingers and palpating the pulse.
 - Treatment
-  - Surgical fasciotomy by incision, will result in release of the skin contraction.
+ - Surgical fasciotomy by incision, will result in release of the skin contraction.
 
 ## References
 
@@ -158,7 +158,7 @@ FORFATTERE: Rami Mossad Ibrahim, MD, Elisabeth Lauritzen, MD, Frederik Gulmark H
 
 # Epidermal burns (1st  degree)
 
-The burn presents itself as a red (erythema), but there are no bullae. Cell destruction only extends only into the epidermis (1). A sunburn is a typical epidermal burn. The skin is red but intact. The epidermal burns do not require treatment beside sun cream and painkillers. 1st degree burns should not be taken into account when calculating the area of the burn (TBSA%) in regard to fluid resuscitation and hospital admission.
+The burn presents itself as a red (erythema), but there are no bullae. Cell destruction only extends only into the epidermis (1). A sunburn is a typical epidermal burn. The skin is red but intact. The epidermal burns do not require treatment beside sun cream and painkillers. 1st degree burns should not be taken into account when calculating the area of the burn (TBSA%) in regard to fluid resuscitation and hospital admission.
 
 # Dermal burns (2nd degree)
 
@@ -174,7 +174,7 @@ If the dermal burn remains non-infected it heals conservatively. The superficial
 
 # Subdermal burns (3rd degree)
 
-Presents with a brown or black form an inelastic crust. There are no bullae. The lesion is without pain as the cutaneous nerves are damaged. All dermal cells are affected, and the damage has reached the subcutaneous part of the skin (1). Only cells from connective tissue remain intact. A subdermal burn will therefore not heal conservatively from the epithelial cells of the woundbed. The lesion must either be excised and grafted or heal by shrinkage and epithelial growth from the rim.
+Presents with a brown or black form an inelastic crust. There are no bullae. The lesion is without pain as the cutaneous nerves are damaged. All dermal cells are affected, and the damage has reached the subcutaneous part of the skin (1). Only cells from connective tissue remain intact. A subdermal burn will therefore not heal conservatively from the epithelial cells of the woundbed. The lesion must either be excised and grafted or heal by shrinkage and epithelial growth from the rim.
 
 ## References
 
@@ -194,20 +194,20 @@ FORFATTERE: Rami Mossad Ibrahim, MD, Elisabeth Lauritzen, MD, Frederik Gulmark H
 
 **Authors:** _Rami Mossad Ibrahim, MD, Elisabeth Lauritzen, MD, Frederik Gulmark Hansen med.stud., Magnus Balslev Avnstorp, MD and Rikke Holmgaard, Consultant, Burns Specialist, MD, PhD_
 
-When calculating the size of the burn in % of TBSA, only 2nd and 3rd degree burns are included (1). In adults, the Wallace rule of nines (fig. 1) may be applied to determine the total percentage of area burned for each major section of the body (2).
+When calculating the size of the burn in % of TBSA, only 2nd and 3rd degree burns are included (1). In adults, the Wallace rule of nines (fig. 1) may be applied to determine the total percentage of area burned for each major section of the body (2).
 
-_The patient’s palm_ can serve as a reference point, roughly equivalent to 1% of TBSA. For children and infants, the _Lund and Browder chart_ is used to assess the TBSA (3). In children, it is important to remember that the relative combined surface area of the head and neck compared to the surface area of the limbs is typically larger.
+_The patient’s palm_ can serve as a reference point, roughly equivalent to 1% of TBSA. For children and infants, the _Lund and Browder chart_ is used to assess the TBSA (3). In children, it is important to remember that the relative combined surface area of the head and neck compared to the surface area of the limbs is typically larger.
 
 ![](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2020/12/RuleOfNines_Eng_Caroline_Lilja-1024x683.jpg?resize=1024%2C683&ssl=1)Figure1 \| Wallace rule of nines
 
-Another feasible and easy way to estimate burn size is the [Burn Size Calculator](http://www.plastsurgeon.com/burn-size-calculator). Our “Burn Size Calculator”, also known as “Burn Assessment Tool”, is an excellent tool to quickly estimate the size (%) of the burn area and to calculate the fluid resuscitation to be administered in the first 24 hours hours of treatment using the Parkland Formula.
+Another feasible and easy way to estimate burn size is the [Burn Size Calculator](http://www.plastsurgeon.com/burn-size-calculator). Our “Burn Size Calculator”, also known as “Burn Assessment Tool”, is an excellent tool to quickly estimate the size (%) of the burn area and to calculate the fluid resuscitation to be administered in the first 24 hours hours of treatment using the Parkland Formula.
 
 - ![](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2020/12/Skaermbillede-2020-12-29-kl.-16.03.22-1024x474.png?resize=1024%2C474&ssl=1)
 - ![](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2020/12/Skaermbillede-2020-12-29-kl.-16.03.26-1024x474.png?resize=1024%2C474&ssl=1)
 - ![](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2020/12/Skaermbillede-2020-12-29-kl.-16.03.35-1024x474.png?resize=1024%2C474&ssl=1)
 - ![](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2020/12/Skaermbillede-2020-12-29-kl.-16.03.42-1024x474.png?resize=1024%2C474&ssl=1)
 
-Figure 2 \| How to use the Burn Size Calculator in steps
+Figure 2 \| How to use the Burn Size Calculator in steps
 
 ## References
 
@@ -249,7 +249,7 @@ Transfer to a burn unit is indicated when the patient has suffered larger burns,
 
 Can often wait until the patient is seen by a burn specialist!
 
-Escharotomy is ONLY indicated in deep circumferential burns with clinical symptoms of compromised perfusion.  Should be evaluated and performed by a burn specialist.
+Escharotomy is ONLY indicated in deep circumferential burns with clinical symptoms of compromised perfusion. Should be evaluated and performed by a burn specialist.
 
 ---
 
@@ -278,7 +278,7 @@ Indications for fluid resuscitation depends on the age of the patient:
 | **Adults ≥ 15 years** | TBSA ≥ 20% |
 | **Children < 15 years** | TBSA ≥ 10% |
 
-Table 1 \| Indications for fluid resuscitation
+Table 1 \| Indications for fluid resuscitation
 
 # Administration of fluids
 
@@ -321,7 +321,7 @@ Input has to balance the output and should be adjusted according to the hourly u
 
 ## **The 4:2:1 principle**
 
-Children should also receive fluid therapy during the first 24 hours after the burn injury. Fluid administration is calculated using **the 4:2:1 principle**. Lower physiological reserves causes a higher risk of developing hypoglycaemia. A supplement of fluids consisting of 0.9% NaCl with 5% dextrose is indicated.
+Children should also receive fluid therapy during the first 24 hours after the burn injury. Fluid administration is calculated using **the 4:2:1 principle**. Lower physiological reserves causes a higher risk of developing hypoglycaemia. A supplement of fluids consisting of 0.9% NaCl with 5% dextrose is indicated.
 
 The dose is calculated according to weight:
 
@@ -331,7 +331,7 @@ The dose is calculated according to weight:
 | **From 10-20 kg** | 2 ml per kg |
 | **>20 kg** | 1 ml per kg |
 
-Table 3 \| The 4:2:1 principle
+Table 3 \| The 4:2:1 principle
 
 # Summary
 
@@ -343,7 +343,7 @@ The table below is a summary of the management of fluid resuscitation during the
 | **Adults ≥ 15 years** | Parkland: 3 ml x weight in kg x % TBSA | 50% of the calculated fluid | 50% of the calculated fluid |
 | **Children < 15 years** | Parkland: 3 ml x weight in kg x % TBSA + Maintenance fluid (4:2:1 principle) | 50% of the calculated fluid | 50% of the calculated fluid |
 
-Table 4 \| Summary of fluid resuscitation practice
+Table 4 \| Summary of fluid resuscitation practice
 
 ## **Example**
 
@@ -368,14 +368,14 @@ Within the first 24 hours after burn injury, the child should be given:
 
 - First period (0-8 hours after burn injury)
 
-  - 50% of the calculated Parkland formula = 375 ml +
+ - 50% of the calculated Parkland formula = 375 ml +
 
-  - Supplemental fluid according to the 4:2:1 principle: 65 ml/hour
+ - Supplemental fluid according to the 4:2:1 principle: 65 ml/hour
 - Second period (9-24 hours after burn injury)
 
-  - 50% of the calculated Parkland formula = 375 ml +
+ - 50% of the calculated Parkland formula = 375 ml +
 
-  - Supplemental fluid according to the 4:2:1 principle: 65 ml/hour
+ - Supplemental fluid according to the 4:2:1 principle: 65 ml/hour
 
 ## Pearls
 
@@ -412,11 +412,11 @@ Aquacel Ag is active against almost all types of pathogenic bacteria such as:
 - Candida albicans
 - MRSA
 
-Aquacel Ag supports wound healing by providing a moist wound environment. It binds to the wound surface of dermal burns, and can be used for superficial and deep second degree hand burns.
+Aquacel Ag supports wound healing by providing a moist wound environment. It binds to the wound surface of dermal burns, and can be used for superficial and deep second degree hand burns.
 
 ## Nitrofurazone
 
-Nitrofurazone is applied impregnated in gaze. Effective against gram-negative and gram-positive bacteria, but not pseudomonas. Can cause cutaneous allergic reactions. Should be covered with vaseline gaze to keep the wound moist and preventing the bandage to dry.
+Nitrofurazone is applied impregnated in gaze. Effective against gram-negative and gram-positive bacteria, but not pseudomonas. Can cause cutaneous allergic reactions. Should be covered with vaseline gaze to keep the wound moist and preventing the bandage to dry.
 
 ---
 

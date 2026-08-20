@@ -327,10 +327,10 @@ In patients with deep circumferential burns of the extremities, thorax, abdomen,
 * Only the skin should be incised—fascial compartments must not be entered during escharotomy (unlike fasciotomy)
 * May be performed at bedside or in the operating room depending on urgency and setting
 * Common incision sites:
- + **Upper limbs:** Mid-medial and mid-lateral lines
- + **Lower limbs:** Mid-medial and mid-lateral lines
- + **Thorax:** Along the anterior axillary lines (may be connected across the front at the upper thorax just beneath the clavicles and under the costa margin og the upper abdomen.
- + **Neck:** Vertical incisions along in the midline to relieve airway compression
+ + **Upper limbs:** Mid-medial and mid-lateral lines
+ + **Lower limbs:** Mid-medial and mid-lateral lines
+ + **Thorax:** Along the anterior axillary lines (may be connected across the front at the upper thorax just beneath the clavicles and under the costa margin og the upper abdomen.
+ + **Neck:** Vertical incisions along in the midline to relieve airway compression
 
 This procedure restores perfusion in compromised extremities and improves ventilation when thoracic or cervical expansion is impaired.
 
@@ -426,13 +426,13 @@ Burns in enclosed spaces (e.g. house fires) increase the risk of inhalation inju
 ### **Carbon Monoxide Poisoning**
 
 * + Treat with **100% oxygen** via non-rebreather mask or intubation with high FiO2
- + Monitor **carboxyhemoglobin** levels via blood gas analysis
+ + Monitor **carboxyhemoglobin** levels via blood gas analysis
  + Hyperbaric oxygen therapy may be considered in severe cases
 
 ### **Cyanide Poisoning**
 
 * + Suspected in patients with lactic acidosis, hypotension, or coma after smoke inhalation—especially if the fire occurred in enclosed spaces containing synthetic materials (e.g., furniture, mattresses), which can release hydrogen cyanide when burned
- + **Cyanokit (hydroxocobalamin)** is the first-line antidote:
+ + **Cyanokit (hydroxocobalamin)** is the first-line antidote:
  - Binds cyanide to form cyanocobalamin (vitamin B12), which is excreted renally
 
 # Assessing Burn Depth
@@ -491,7 +491,7 @@ For example:
 * + A **1-year-old** child has:
  - Head: 17% (18 - 1)
  - Each leg: 14.5% (14 + 0.5)
- + A **6-year-old** child has:
+ + A **6-year-old** child has:
  - Head: 12% (18 - 6)
  - Each leg: 17% (14 + 3.0)
 
@@ -524,13 +524,13 @@ Dehydrated patients (e.g., elderly) with smaller TBSA involvement but low urine 
 
 The modified Parkland formula is used to calculate fluid requirements during the first 24 hours after a burn injury:
 
-**3 mL × body weight (kg) × %TBSA burned** (minus any fluids already administered prior to arrival)
+**3 mL × body weight (kg) × %TBSA burned** (minus any fluids already administered prior to arrival)
 
 Half of the calculated volume is administered in the first 8 hours from the time of injury (not from admission). The remaining half is given over the next 16 hours.
 
 This formula is an estimate only and should always be adjusted based on the patient's clinical response.
 
-**Example:** A 70 kg adult with 30% TBSA. The total fluid requirement is:
+**Example:** A 70 kg adult with 30% TBSA. The total fluid requirement is:
 
 3 mL × 70 kg × 30% = 6300 mL
 
@@ -541,7 +541,7 @@ The patient received 500 mL during ambulance transport.
 * First half: 2900 mL
 * Second half: 2900 mL
 
-**Important:** Fluid calculation starts at the **time of injury**, not upon hospital arrival.
+**Important:** Fluid calculation starts at the **time of injury**, not upon hospital arrival.
 
 For example, if the patient arrives 2 hours after injury:
 
@@ -568,8 +568,8 @@ The wound should be washed thoroughly with water and mild soap. In cases of majo
 * A non-adherent wound contact layer should be applied directly to the burn wound. This layer should be cut to fit the size and shape of the burn area only. Common options include **Mepilex Transfer** or **Jelonet** (two layers of vaseline-impregnated gauze; only to be used if Mepilex is not available).
 * On top of the contact layer, a thick layer of absorbent gauze is placed to manage the significant exudate often produced by burn wounds.
 * Compression is then applied:
- + **Extremities:** Use elastic bandages to reduce edema and secure the dressing. The compressive gauze and bandages may extend beyond the wound onto healthy skin.
- + **Torso/Thorax:** Use an elastic net shirt to hold the dressings in place
+ + **Extremities:** Use elastic bandages to reduce edema and secure the dressing. The compressive gauze and bandages may extend beyond the wound onto healthy skin.
+ + **Torso/Thorax:** Use an elastic net shirt to hold the dressings in place
 
 ## 4. Special areas
 
@@ -609,7 +609,7 @@ The extent of internal damage is often disproportionate to the external appearan
 
 * **Low-voltage injuries (under 1000 volts):** Usually domestic or workplace-related. These injuries typically cause localized full-thickness contact burns but rarely result in systemic effects. Standard wound care is usually sufficient. Cardiac monitoring is only required if there are electrocardiographic abnormalities or cardiac symptoms.
 * **High-voltage injuries (over 1000 volts):** These may result in full-thickness contact burns and extensive deep tissue injury. Two primary injury mechanisms include:
- + **Current passing through the body:** Can cause profound deep tissue injury and internal organ damage, often disproportionate to the visible cutaneous burns.
+ + **Current passing through the body:** Can cause profound deep tissue injury and internal organ damage, often disproportionate to the visible cutaneous burns.
 
 Internal injuries may involve muscle, bone, and neurovascular structures, leading to severe complications.
 
@@ -617,7 +617,7 @@ Internal injuries may involve muscle, bone, and neurovascular structures, leadin
  - When the injury cause damage from within, deep muscle layers may be non-viable even if outer layer of muscle looks intact. Early fasciotomy may be required to relieve pressure and prevent further tissue loss.
  - ECG monitoring is required.
  - Cutaneous wounds should be managed as for any thermal burn.
- + **Flash burns from electrical arcs:** These may cause extensive superficial burns to the skin surface without current transmission through the body. Clothing ignition can further increase the affected surface area.
+ + **Flash burns from electrical arcs:** These may cause extensive superficial burns to the skin surface without current transmission through the body. Clothing ignition can further increase the affected surface area.
  - Flash burns should be treated as thermal burns and do not carry the same risk for internal injury as direct current injuries.
  + Keep in mind that a high-voltage injury may involve both mechanisms - flash burns and deep tissue damage caused by electrical current passing through the body.
 * **Lightning injuries:** Extremely high-voltage but very short duration. Can result in superficial burns, cardiac arrest, tympanic membrane rupture, and neurological complications such as delayed brain atrophy. Lichtenberg figures may be observed.
@@ -734,8 +734,8 @@ Severity and risk of amputation may also be assessed using imaging modalities su
  + If cyanosis or weak capillary response distal to PIP joint or weak peripheral pulse on Doppler:
  - **Imaging**: Angiography or SPECT/CT if not contraindicated
  - If reduced distal perfusion:
- * If **no contraindication** and within 24 hours of rewarming: initiate **thrombolysis with alteplase (tPA)** for max 12 hours, **concurrent heparin infusion**, and repeat angiography daily until normalization or 48 hours without improvement
- * If **contraindication** to thrombolysis: initiate **vasodilation with Iloprost** and repeat angiography daily until perfusion is normalized or after 48 hours without improvement
+ * If **no contraindication** and within 24 hours of rewarming: initiate **thrombolysis with alteplase (tPA)** for max 12 hours, **concurrent heparin infusion**, and repeat angiography daily until normalization or 48 hours without improvement
+ * If **contraindication** to thrombolysis: initiate **vasodilation with Iloprost** and repeat angiography daily until perfusion is normalized or after 48 hours without improvement
  - If no signs of impaired perfusion: treat as superficial frostbite
 
 #### Step 3: Aftercare
@@ -764,7 +764,7 @@ INSTITUTION: Rigshospitalet, Afsnit for plastikkirurgi og brandsårsbehandling 6
 # Brandsårsforbindinger
 STEP BY STEP GUIDE
 
-Udarbejdet af spl. Pia Høy og Alice Rimmen
+Udarbejdet af spl. Pia Høy og Alice Rimmen
 I samarbejde med Ovl. Rikke Holmgaard og reservelæge Carla Kruse
 Afsnit for plastikkirurgi og brandsårsbehandling, 6052
 Rigshospitalet
@@ -893,7 +893,7 @@ Rigshospitalet
 ![](Picture4.jpg)
 Masken klippes større ved øjne og mund
 
-Der suppleres med yderligere Epicite på hoved/hals, hvis masken ikke dækker sufficient
+Der suppleres med yderligere Epicite på hoved/hals, hvis masken ikke dækker sufficient
 
 <!-- Slide number: 18 -->
 
