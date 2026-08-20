@@ -1,0 +1,5 @@
+Ret commit-beskeder til korrekt dansk retskrivning
+
+Danske tegn er skrevet som ae, oe og aa for at undgå encoding-problemer i
+shell'en. Det er løst med i18n.commitEncoding, så æ, ø og å skrives korrekt
+fremover. En commit-historik er også dokumentation.
