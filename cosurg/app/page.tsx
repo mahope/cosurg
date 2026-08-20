@@ -189,7 +189,6 @@ export default function Home() {
   const [ambiguity, setAmbiguity] = useState<{ text: string; reasons: string[] } | null>(null);
   /** Tilbuddet om at gå fra opslag til forløb, når svaret er landet. */
   const [offer, setOffer] = useState<{ treeId: string; name: string } | null>(null);
-  const [intakeBusy, setIntakeBusy] = useState(false);
   const lookupBusyRef = useRef(false);
 
   const node = state.currentNodeId ? getNode(tree, state.currentNodeId) : undefined;
@@ -537,38 +536,33 @@ export default function Home() {
       }
 
       /*
-       * Hverken et forløb eller et tydeligt spørgsmål. Før stoppede appen her
-       * med "det kunne jeg ikke henføre til et forløb" — en blindgyde. Nu
-       * spørger vi agenten hvad det var. Kaldet koster tid og credits, men KUN
-       * på den vej der i forvejen ikke førte nogen steder hen.
+       * Ytringen ramte forløbenes kliniske ordlister, men uden en klar vinder
+       * — "forbinding på en hånd med brandsår" rammer to forløb lige godt.
+       * Det er tydeligt en patient, så HER er et valg stadig det rigtige: at
+       * starte det forkerte forløb er værre end at spørge.
        */
-      setIntakeBusy(true);
-      try {
-        const res = await fetch("/api/route", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            context: "intake",
-            lang,
-            utterance: text,
-            pathways: trees.map((t) => t.name[lang]),
-          }),
-          signal: AbortSignal.timeout(TIMEOUT_INTERPRET),
-        });
-        const data = (await res.json()) as { intent?: string };
-        if (data.intent === "question") {
-          setIntakeMiss(null);
-          void runLookup(text, suggestion);
-          return;
-        }
-      } catch {
-        // Nettet svigtede. Så falder vi tilbage på det vi selv kunne se — og
-        // det er stadig bedre end at gætte på et forløb.
-      } finally {
-        setIntakeBusy(false);
+      if (ranked.length > 0) {
+        setIntakeMiss({ text, candidates: ranked.map((r) => r.treeId) });
+        return;
       }
 
-      setIntakeMiss({ text, candidates: ranked.map((r) => r.treeId) });
+      /*
+       * Alt andet slås op. Punktum.
+       *
+       * Her stod før en blindgyde: ytringer uden spørgeord og uden kliniske
+       * forløbsord — "Parkland Formel", "escharotomi", "Nexobrid" — blev sendt
+       * til en klassificerings-agent, og sagde den ikke "question", endte
+       * skærmen med "det kunne jeg ikke henføre til et forløb". Et fagligt
+       * opslag uden svar, i en app hvis produkt ER svaret.
+       *
+       * Reglen er nu principiel: kun en KLAR patientbeskrivelse starter et
+       * forløb (grenene ovenfor), og alt der ikke er det, går til opslaget.
+       * Chatten er standardvejen — den kan altid svare eller ærligt sige at
+       * kilderne er tavse, og begge dele er bedre end en blindgyde. Bagendens
+       * egen triage vælger spor derefter; klienten skal ikke gætte først.
+       */
+      setIntakeMiss(null);
+      void runLookup(text, suggestion);
     },
     [trees, lang, beginTree, runLookup],
   );
@@ -1562,14 +1556,6 @@ export default function Home() {
               onSelectTree={(id) => void beginTree(id)}
             />
           ))}
-
-        {/* Kun mens agenten afgør om ytringen var et spørgsmål. Linjen
-            erstatter intet og skubber intet — den lægger sig under kortet. */}
-        {!started && intakeBusy && (
-          <p role="status" aria-live="polite" className="mt-4 text-sm leading-relaxed text-[var(--ink-soft)]">
-            {tr("intakeThinking", lang)}
-          </p>
-        )}
 
         {/*
           Skelettet står præcis dér hvor notatet lander. Lå det et andet sted —
