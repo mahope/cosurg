@@ -327,10 +327,10 @@ In patients with deep circumferential burns of the extremities, thorax, abdomen,
 * Only the skin should be incised—fascial compartments must not be entered during escharotomy (unlike fasciotomy)
 * May be performed at bedside or in the operating room depending on urgency and setting
 * Common incision sites:
-  + **Upper limbs:** Mid-medial and mid-lateral lines
-  + **Lower limbs:** Mid-medial and mid-lateral lines
-  + **Thorax:** Along the anterior axillary lines (may be connected across the front at the upper thorax just beneath the clavicles and under the costa margin og the upper abdomen.
-  + **Neck:** Vertical incisions along in the midline to relieve airway compression
+ + **Upper limbs:** Mid-medial and mid-lateral lines
+ + **Lower limbs:** Mid-medial and mid-lateral lines
+ + **Thorax:** Along the anterior axillary lines (may be connected across the front at the upper thorax just beneath the clavicles and under the costa margin og the upper abdomen.
+ + **Neck:** Vertical incisions along in the midline to relieve airway compression
 
 This procedure restores perfusion in compromised extremities and improves ventilation when thoracic or cervical expansion is impaired.
 
@@ -357,20 +357,20 @@ Initial management of a severe burn patient in the trauma center or emergency de
 ### Primary Survey – ABCDE
 
 * **Airway with cervical spine protection**
-  + Assess for inhalation injury (hoarseness, stridor, burns in the mouth or nose, soot in sputum)
-  + Be prepared for early intubation in patients with signs of airway compromise
+ + Assess for inhalation injury (hoarseness, stridor, burns in the mouth or nose, soot in sputum)
+ + Be prepared for early intubation in patients with signs of airway compromise
 * **Breathing**
-  + Assess chest wall movement
-  + Circumferential thoracic burns may restrict ventilation and require escharotomy
+ + Assess chest wall movement
+ + Circumferential thoracic burns may restrict ventilation and require escharotomy
 * **Circulation**
-  + Assess for signs of burn shock (cool extremities, delayed capillary refill, tachycardia)
-  + Establish IV access (preferably two large-bore peripheral lines in unburned skin)
+ + Assess for signs of burn shock (cool extremities, delayed capillary refill, tachycardia)
+ + Establish IV access (preferably two large-bore peripheral lines in unburned skin)
 * **Disability (neurologic status)**
-  + Brief neurological exam (AVPU)
+ + Brief neurological exam (AVPU)
 * **Exposure and environmental control**
-  + Completely undress the patient and assess for other trauma
-  + Prevent hypothermia (cover with clean sheets, warm fluids, warm ambient temperature)
-  + Estimate the burn, depth and size
+ + Completely undress the patient and assess for other trauma
+ + Prevent hypothermia (cover with clean sheets, warm fluids, warm ambient temperature)
+ + Estimate the burn, depth and size
 
 ### FATT – Fluids, Analgesia, Tests, Tubes
 
@@ -426,14 +426,14 @@ Burns in enclosed spaces (e.g. house fires) increase the risk of inhalation inju
 ### **Carbon Monoxide Poisoning**
 
 * + Treat with **100% oxygen** via non-rebreather mask or intubation with high FiO2
-  + Monitor **carboxyhemoglobin** levels via blood gas analysis
-  + Hyperbaric oxygen therapy may be considered in severe cases
+ + Monitor **carboxyhemoglobin** levels via blood gas analysis
+ + Hyperbaric oxygen therapy may be considered in severe cases
 
 ### **Cyanide Poisoning**
 
 * + Suspected in patients with lactic acidosis, hypotension, or coma after smoke inhalation—especially if the fire occurred in enclosed spaces containing synthetic materials (e.g., furniture, mattresses), which can release hydrogen cyanide when burned
-  + **Cyanokit (hydroxocobalamin)** is the first-line antidote:
-    - Binds cyanide to form cyanocobalamin (vitamin B12), which is excreted renally
+ + **Cyanokit (hydroxocobalamin)** is the first-line antidote:
+ - Binds cyanide to form cyanocobalamin (vitamin B12), which is excreted renally
 
 # Assessing Burn Depth
 
@@ -468,32 +468,32 @@ Accurate assessment of the Total Body Surface Area (TBSA) burned is essential fo
 This is a fast and easy method to estimate the percentage of the body surface area affected by burns. It allows clinicians to quickly form an overview of the extent of injury and guide initial management. The body is divided into anatomical regions, each corresponding to approximately 9% (or a multiple) of the total body surface area (TBSA).-
 
 * + Head and neck: 9%
-  + Each arm: 9%
-  + Each leg: 18%
-  + Front of torso: 18%
-  + Back of torso: 18%
-  + Perineum: 1%
+ + Each arm: 9%
+ + Each leg: 18%
+ + Front of torso: 18%
+ + Back of torso: 18%
+ + Perineum: 1%
 
 #### Children under 9 years old
 
 Due to the relatively larger head and smaller legs in infants and younger children, a modified distribution is used. For a newborn (0 years):
 
 * + Head: 18%
-  + Each arm: 9%
-  + Each leg: 14%
-  + Front of torso: 18%
-  + Back of torso: 18%
+ + Each arm: 9%
+ + Each leg: 14%
+ + Front of torso: 18%
+ + Back of torso: 18%
 
 For each year of age until 9 years old, 1% is subtracted from the head and distributed as +0.5% to each leg.
 
 For example:
 
 * + A **1-year-old** child has:
-    - Head: 17% (18 - 1)
-    - Each leg: 14.5% (14 + 0.5)
-  + A **6-year-old** child has:
-    - Head: 12% (18 - 6)
-    - Each leg: 17% (14 + 3.0)
+ - Head: 17% (18 - 1)
+ - Each leg: 14.5% (14 + 0.5)
+ + A **6-year-old** child has:
+ - Head: 12% (18 - 6)
+ - Each leg: 17% (14 + 3.0)
 
 From 9 years of age, the adult calculations apply, including 1% TBSA being allocated to the perineum.
 
@@ -568,8 +568,8 @@ The wound should be washed thoroughly with water and mild soap. In cases of majo
 * A non-adherent wound contact layer should be applied directly to the burn wound. This layer should be cut to fit the size and shape of the burn area only. Common options include **Mepilex Transfer** or **Jelonet** (two layers of vaseline-impregnated gauze; only to be used if Mepilex is not available).
 * On top of the contact layer, a thick layer of absorbent gauze is placed to manage the significant exudate often produced by burn wounds.
 * Compression is then applied:
-  + **Extremities:** Use elastic bandages to reduce edema and secure the dressing. The compressive gauze and bandages may extend beyond the wound onto healthy skin.
-  + **Torso/Thorax:** Use an elastic net shirt to hold the dressings in place
+ + **Extremities:** Use elastic bandages to reduce edema and secure the dressing. The compressive gauze and bandages may extend beyond the wound onto healthy skin.
+ + **Torso/Thorax:** Use an elastic net shirt to hold the dressings in place
 
 ## 4. Special areas
 
@@ -609,17 +609,17 @@ The extent of internal damage is often disproportionate to the external appearan
 
 * **Low-voltage injuries (under 1000 volts):** Usually domestic or workplace-related. These injuries typically cause localized full-thickness contact burns but rarely result in systemic effects. Standard wound care is usually sufficient. Cardiac monitoring is only required if there are electrocardiographic abnormalities or cardiac symptoms.
 * **High-voltage injuries (over 1000 volts):** These may result in full-thickness contact burns and extensive deep tissue injury. Two primary injury mechanisms include:
-  + **Current passing through the body:** Can cause profound deep tissue injury and internal organ damage, often disproportionate to the visible cutaneous burns.
+ + **Current passing through the body:** Can cause profound deep tissue injury and internal organ damage, often disproportionate to the visible cutaneous burns.
 
 Internal injuries may involve muscle, bone, and neurovascular structures, leading to severe complications.
 
 * + - Aggressive fluid resuscitation is essential regardless of the size of the external burns and a urinary catheterization is necessary to monitor the output. Because of the risk of myoglobinuria and potential kidney failure, the urine output target should be higher than in standard fluid resuscitation: 1 mL/kg/h in adults and 1–2 mL/kg/h in children
-    - When the injury cause damage from within, deep muscle layers may be non-viable even if outer layer of muscle looks intact. Early fasciotomy may be required to relieve pressure and prevent further tissue loss.
-    - ECG monitoring is required.
-    - Cutaneous wounds should be managed as for any thermal burn.
-  + **Flash burns from electrical arcs:** These may cause extensive superficial burns to the skin surface without current transmission through the body. Clothing ignition can further increase the affected surface area.
-    - Flash burns should be treated as thermal burns and do not carry the same risk for internal injury as direct current injuries.
-  + Keep in mind that a high-voltage injury may involve both mechanisms - flash burns and deep tissue damage caused by electrical current passing through the body.
+ - When the injury cause damage from within, deep muscle layers may be non-viable even if outer layer of muscle looks intact. Early fasciotomy may be required to relieve pressure and prevent further tissue loss.
+ - ECG monitoring is required.
+ - Cutaneous wounds should be managed as for any thermal burn.
+ + **Flash burns from electrical arcs:** These may cause extensive superficial burns to the skin surface without current transmission through the body. Clothing ignition can further increase the affected surface area.
+ - Flash burns should be treated as thermal burns and do not carry the same risk for internal injury as direct current injuries.
+ + Keep in mind that a high-voltage injury may involve both mechanisms - flash burns and deep tissue damage caused by electrical current passing through the body.
 * **Lightning injuries:** Extremely high-voltage but very short duration. Can result in superficial burns, cardiac arrest, tympanic membrane rupture, and neurological complications such as delayed brain atrophy. Lichtenberg figures may be observed.
 
 **Key considerations:**
@@ -725,18 +725,18 @@ Severity and risk of amputation may also be assessed using imaging modalities su
 #### Step 2: Classification
 
 * **Superficial frostbite (grade 1–2)**:
-  + Analgesia: Paracetamol and possibly opioids
-  + Remove clear fluid blisters
-  + Dress with Mepilex or alternatively two layers of Jelonet and absorbent gauze
-  + Elevate affected extremities
-  + Ibuprofen 400 mg orally twice daily
+ + Analgesia: Paracetamol and possibly opioids
+ + Remove clear fluid blisters
+ + Dress with Mepilex or alternatively two layers of Jelonet and absorbent gauze
+ + Elevate affected extremities
+ + Ibuprofen 400 mg orally twice daily
 * **Deep dermal frostbite (grade 3–4)**:
-  + If cyanosis or weak capillary response distal to PIP joint or weak peripheral pulse on Doppler:
-    - **Imaging**: Angiography or SPECT/CT if not contraindicated
-    - If reduced distal perfusion:
-      * If **no contraindication** and within 24 hours of rewarming: initiate **thrombolysis with alteplase (tPA)** for max 12 hours, **concurrent heparin infusion**, and repeat angiography daily until normalization or 48 hours without improvement
-      * If **contraindication** to thrombolysis: initiate **vasodilation with Iloprost** and repeat angiography daily until perfusion is normalized or after 48 hours without improvement
-    - If no signs of impaired perfusion: treat as superficial frostbite
+ + If cyanosis or weak capillary response distal to PIP joint or weak peripheral pulse on Doppler:
+ - **Imaging**: Angiography or SPECT/CT if not contraindicated
+ - If reduced distal perfusion:
+ * If **no contraindication** and within 24 hours of rewarming: initiate **thrombolysis with alteplase (tPA)** for max 12 hours, **concurrent heparin infusion**, and repeat angiography daily until normalization or 48 hours without improvement
+ * If **contraindication** to thrombolysis: initiate **vasodilation with Iloprost** and repeat angiography daily until perfusion is normalized or after 48 hours without improvement
+ - If no signs of impaired perfusion: treat as superficial frostbite
 
 #### Step 3: Aftercare
 
