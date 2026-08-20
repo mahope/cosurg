@@ -17,6 +17,8 @@ interface IntakeCardProps {
   onToggleMic: () => void;
   onSubmit: (text: string) => void;
   onSelectTree: (id: string) => void;
+  onGenerateNote: () => void;
+  noteBusy: boolean;
 }
 
 /**
@@ -39,6 +41,8 @@ export function IntakeCard({
   onToggleMic,
   onSubmit,
   onSelectTree,
+  onGenerateNote,
+  noteBusy,
 }: IntakeCardProps) {
   // Ved tvivl viser vi KUN de forløb der var i spil — at vise alle igen ville
   // være at kaste spørgsmålet tilbage uden at have hjulpet med noget.
@@ -85,6 +89,17 @@ export function IntakeCard({
             </button>
           ))}
         </div>
+      </div>
+
+      <div className="mt-6 flex justify-end">
+        <button
+          onClick={onGenerateNote}
+          disabled={noteBusy}
+          aria-busy={noteBusy}
+          className="rounded-lg bg-[var(--teal-deep)] px-4 py-2 text-sm font-semibold text-white transition-colors enabled:hover:bg-[var(--teal)] disabled:opacity-50"
+        >
+          {noteBusy ? tr("noteWorking", lang) : tr("intakeGenerateNote", lang)}
+        </button>
       </div>
     </div>
   );
