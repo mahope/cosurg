@@ -164,12 +164,19 @@ export function IntakeCard({
 
   return (
     <div className="motion-fade mx-auto max-w-3xl">
-      <div className="pt-6 text-center sm:pt-12">
-        <h2 className="font-[family-name:var(--font-display)] text-[32px] font-semibold leading-tight tracking-tight text-[var(--ink)] sm:text-[42px]">
+      {/*
+        Kortet fra det gamle layout: overskrift og hjælpetekst står i en
+        indrammet, hævet flade i stedet for frit på gradienten. Feltet og
+        mikrofonen bor i samme kort — det er ÉN samlet handling, og en ramme
+        om halvdelen af den ville dele den i to.
+      */}
+      <div className="rounded-2xl border bg-[var(--paper-raised)] p-6 shadow-[0_1px_2px_rgba(16,32,30,0.04)] sm:p-8">
+        <h2 className="font-[family-name:var(--font-display)] text-[28px] font-semibold leading-tight tracking-tight text-[var(--ink)] sm:text-[36px]">
           {tr("intakeQuestion", lang)}
         </h2>
-        <p className="mt-2.5 text-[15px] leading-relaxed text-[var(--ink-soft)]">{tr("intakeHelp", lang)}</p>
-      </div>
+        <p className="mt-2.5 max-w-2xl text-[15px] leading-relaxed text-[var(--ink-soft)]">
+          {tr("intakeHelp", lang)}
+        </p>
 
       {/* ---------------------------------------------------------------- *
           Feltet
@@ -181,7 +188,7 @@ export function IntakeCard({
         }}
         onDragLeave={() => setDragging(false)}
         onDrop={onDrop}
-        className={`mt-7 rounded-2xl border bg-[var(--paper-raised)] shadow-[0_2px_14px_rgba(0,83,85,0.07)] transition-colors focus-within:border-[var(--teal)] focus-within:shadow-[0_2px_22px_rgba(0,83,85,0.13)] ${
+        className={`mt-6 rounded-xl border bg-[var(--paper)] transition-colors focus-within:border-[var(--teal)] focus-within:shadow-[0_2px_16px_rgba(0,83,85,0.10)] ${
           dragging ? "border-[var(--teal)] bg-[var(--teal-tint)]" : "border-[var(--line-strong)]"
         }`}
       >
@@ -192,7 +199,7 @@ export function IntakeCard({
             det talte, så feltet allerede har gjort plads når ordene lander.
             Det ekstra linjeskift holder den sidste linje synlig.
           */}
-          <div aria-hidden="true" className={`invisible min-h-[10.5rem] ${fieldType}`}>
+          <div aria-hidden="true" className={`invisible min-h-[12rem] ${fieldType}`}>
             {draft + ghostGap + interim + "\n"}
           </div>
 
@@ -317,9 +324,9 @@ export function IntakeCard({
       </div>
 
       {/* ---------------------------------------------------------------- *
-          Mikrofonen
+          Mikrofonen — det visuelle omdrejningspunkt. Alt andet er sekundært.
        * ---------------------------------------------------------------- */}
-      <div className="mt-5 flex flex-col items-center">
+      <div className="mt-6 flex flex-col items-center">
         <button
           type="button"
           onClick={onToggleMic}
@@ -327,17 +334,17 @@ export function IntakeCard({
           aria-busy={starting}
           aria-label={tr(listening ? "micStop" : "micStart", lang)}
           /*
-            Tre tilstande, ét udseende hver — og samme størrelse i alle tre, så
-            knappen aldrig springer. "Åbner" er fyldt ligesom "lytter", fordi
-            det klikket lovede allerede er i gang; kun ringene mangler, og de
-            kommer når lyden faktisk løber.
+            Tre tilstande, samme størrelse i alle tre, så knappen aldrig
+            springer. Knappen er ALTID fyldt — den er skærmens omdrejningspunkt
+            og må ikke ligne en sekundær kontur-knap. "Åbner" lyser op med det
+            samme klikket lander; ringene kommer først når lyden faktisk løber.
           */
-          className={`relative flex h-[88px] w-[88px] items-center justify-center rounded-full transition-colors ${
+          className={`relative flex h-[116px] w-[116px] items-center justify-center rounded-full shadow-[0_4px_18px_rgba(0,83,85,0.18)] transition-colors ${
             listening
-              ? "bg-[var(--teal)] text-white"
+              ? "mic-breathe bg-[var(--teal)] text-white"
               : starting
-                ? "bg-[var(--teal-deep)] text-white"
-                : "border-2 border-[var(--teal)] bg-[var(--paper-raised)] text-[var(--teal-deep)] hover:bg-[var(--teal-tint)]"
+                ? "bg-[var(--teal)] text-white"
+                : "bg-[var(--teal-deep)] text-white hover:bg-[var(--teal)]"
           }`}
         >
           {listening && (
@@ -349,7 +356,7 @@ export function IntakeCard({
               />
             </>
           )}
-          <svg viewBox="0 0 24 24" width={38} height={38} fill="none" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width={50} height={50} fill="none" aria-hidden="true">
             <path
               d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3Z"
               stroke="currentColor"
@@ -376,6 +383,7 @@ export function IntakeCard({
               ? tr("intakeMicStarting", lang)
               : tr("intakeMicHint", lang)}
         </p>
+      </div>
       </div>
 
       {/*

@@ -209,6 +209,26 @@ body {
   animation: zone-pulse 2.2s cubic-bezier(0.2, 0.6, 0.4, 1) infinite;
 }
 
+/* Mikrofonens egen puls, mens den lytter. Ringene udenom kan overses fra en
+   armlængdes afstand — selve knappen skal trække vejret, så det kan ses fra
+   den anden side af et leje at appen hører efter. Rolig takt, lille udsving:
+   et åndedrag, ikke en alarm. */
+@keyframes mic-breathe {
+  0%,
+  100% {
+    transform: scale(1);
+    box-shadow: 0 4px 18px rgba(0, 83, 85, 0.18);
+  }
+  50% {
+    transform: scale(1.045);
+    box-shadow: 0 6px 26px rgba(0, 83, 85, 0.32);
+  }
+}
+
+.mic-breathe {
+  animation: mic-breathe 1.8s ease-in-out infinite;
+}
+
 /* ————————————————————————————————————————————————————————————————
  * BEVÆGELSESSPROG
  *
@@ -412,6 +432,10 @@ body {
   .zone-pulse-ring {
     animation: none !important;
     opacity: 0.35;
+  }
+
+  .mic-breathe {
+    animation: none !important;
   }
 
   .skeleton {
