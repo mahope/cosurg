@@ -12,13 +12,30 @@ Alle `.md`-filer her indlæses ved opstart og kan citeres ordret som kilde i et
 klinisk svar (`videnbase.ts` læser hele mappen; `Dockerfile` kopierer den til
 `/app/data/kilder`). Kun materiale fra navngivne fagfolk hører hjemme her.
 
-| Fil | Ophav |
-|---|---|
-| `brandsaar-dk.md` | brandsaar.dk — Dansk Brandsårsforening. Skrevet af holdmedlem Rami Mossad Ibrahim. 34 sider plus begge lommekort som tekst. |
-| `magnus-materiale.md` | Rigshospitalets brandsårsafdeling, Afsnit 6052, via holdmedlem Magnus Avnstorp: "Burns plast surgeon"-dokumentet og step-by-step-forbindingsguiden. |
+| Fil | Kildetype | Ophav |
+|---|---|---|
+| `brandsaar-dk.md` | retningslinje | brandsaar.dk — Dansk Brandsårsforening. Skrevet af holdmedlem Rami Mossad Ibrahim. 34 sider plus begge lommekort som tekst. |
+| `magnus-materiale.md` | retningslinje | Rigshospitalets brandsårsafdeling, Afsnit 6052, via holdmedlem Magnus Avnstorp: "Burns plast surgeon"-dokumentet og step-by-step-forbindingsguiden. |
+| `plastsurgeon-brandsaar.md` | retningslinje | beta.plastsurgeon.com — holdets egen håndbog, kapitlet Burn Surgery. Skrevet af Rami Mossad Ibrahim, Elisabeth Lauritzen, Magnus Balslev Avnstorp, Rikke Holmgaard m.fl. |
+| `jpbrs-cases.md` | **case** | beta.jpbrs.com — holdets eget tidsskrift, Journal of Plastic, Breast & Reconstructive Surgery. Peer-reviewede, open access brandsårscases med navngivne forfattere og institution. |
 
 Lægger man en fil her, påstår man samtidig at den er klinisk evidens. Gør det ikke
 med noget andet.
+
+## Retningslinje eller case — forskellen skal kunne ses på svaret
+
+En retningslinje siger *hvad der anbefales*. En klinisk case siger *hvad der blev
+gjort for én patient*. Blandes de sammen, kan et enkeltstående forløb komme til at
+lyde som en anbefaling — og det er præcis den fejl en læge ikke kan se på svaret.
+
+Derfor bærer hvert kildeafsnit en `kildetype` (`retningslinje` eller `case`), sat i
+`videnbase.ts` ud fra filnavnet. Hvert søgeresultat viser den, `list_kilder` mærker
+cases med `[CASE]`, og serverens `instructions` kræver at agenten siger det højt når
+den gengiver en case. Cases bærer desuden deres case-id, titel og forfatterliste.
+
+Et nyt casedokument skal derfor registreres i `SAMLINGER` i `videnbase.ts` med
+`kildetype: "case"` — ikke bare lægges i mappen. En ukendt fil regnes som
+retningslinje, og det ville være den forkerte antagelse for en case.
 
 ## `data/originaler/` — primærkilder, indlæses ikke
 
@@ -48,13 +65,30 @@ Every `.md` file here is loaded at startup and can be quoted verbatim as a sourc
 a clinical answer (`videnbase.ts` reads the whole directory; the `Dockerfile` copies
 it to `/app/data/kilder`). Only material from named clinicians belongs here.
 
-| File | Origin |
-|---|---|
-| `brandsaar-dk.md` | brandsaar.dk — the Danish Burn Association. Written by team member Rami Mossad Ibrahim. 34 pages plus both pocket cards as text. |
-| `magnus-materiale.md` | Rigshospitalet's burn unit, Section 6052, via team member Magnus Avnstorp: the "Burns plast surgeon" document and the step-by-step dressing guide. |
+| File | Source type | Origin |
+|---|---|---|
+| `brandsaar-dk.md` | guideline | brandsaar.dk — the Danish Burn Association. Written by team member Rami Mossad Ibrahim. 34 pages plus both pocket cards as text. |
+| `magnus-materiale.md` | guideline | Rigshospitalet's burn unit, Section 6052, via team member Magnus Avnstorp: the "Burns plast surgeon" document and the step-by-step dressing guide. |
+| `plastsurgeon-brandsaar.md` | guideline | beta.plastsurgeon.com — the team's own handbook, the Burn Surgery chapter. Written by Rami Mossad Ibrahim, Elisabeth Lauritzen, Magnus Balslev Avnstorp, Rikke Holmgaard and others. |
+| `jpbrs-cases.md` | **case** | beta.jpbrs.com — the team's own journal, the Journal of Plastic, Breast & Reconstructive Surgery. Peer-reviewed, open access burn cases with named authors and institution. |
 
 Placing a file here asserts that it is clinical evidence. Do not do that with
 anything else.
+
+## Guideline or case — the answer must show which
+
+A guideline says *what is recommended*. A clinical case says *what was done for one
+patient*. Conflate the two and a single case starts to sound like a recommendation —
+exactly the error a clinician cannot spot from the answer.
+
+Every source section therefore carries a `kildetype` (`retningslinje` or `case`), set
+in `videnbase.ts` from the filename. Every search hit shows it, `list_kilder` marks
+cases with `[CASE]`, and the server's `instructions` require the agent to say so out
+loud when it quotes a case. Cases also carry their case id, title and author list.
+
+A new case document must be registered in `SAMLINGER` in `videnbase.ts` with
+`kildetype: "case"` — not merely dropped into the directory. An unknown file counts
+as a guideline, which would be the wrong assumption for a case.
 
 ## `data/originaler/` — primary sources, not loaded
 
