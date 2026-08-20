@@ -36,6 +36,16 @@ export const t = {
     da: "Sig «næste», «gentag», «tilbage» — eller svar direkte.",
     en: "Say “next”, “repeat”, “back” — or just answer.",
   },
+  step: { da: "Trin", en: "Step" },
+  answerPlaceholder: {
+    da: "Skriv eller sig dit svar…",
+    en: "Type or say your answer…",
+  },
+  dictationPlaceholder: {
+    da: "Skriv eller diktér tillægget…",
+    en: "Type or dictate the addendum…",
+  },
+  orExit: { da: "Afslut OR-tilstand", en: "Exit OR mode" },
 } satisfies Record<string, Record<Lang, string>>;
 
 export function tr(key: keyof typeof t, lang: Lang): string {

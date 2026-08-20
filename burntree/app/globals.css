@@ -1,26 +1,137 @@
 @import "tailwindcss";
 
+/*
+ * BurnTree designtokens.
+ *
+ * To verdener, to paletter:
+ * - Standardtilstand: koldt, klinisk papir — læsbart under skadestuelys, rødt/gult/
+ *   grønt er reserveret til klinisk betydning (rødt flag, henvisning, hjemsendelse).
+ * - OR-tilstand: mørk, rolig, ét spørgsmål ad gangen — læsbar fra to meters afstand.
+ *   Den skifter IKKE med OS'ets mørk-tilstand; den er en bevidst, indtastet tilstand
+ *   kirurgen selv slår til, ikke en omgivelses-indstilling.
+ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --paper: #f2f6f5;
+  --paper-raised: #ffffff;
+  --ink: #10201e;
+  --ink-soft: #4b6360;
+  --ink-faint: #7c918e;
+  --line: #d7e2e0;
+  --line-strong: #b7c8c5;
+
+  --teal: #1f6f72;
+  --teal-deep: #123f42;
+  --teal-tint: #e3eeed;
+
+  --amber: #8a5510;
+  --amber-tint: #faf0dd;
+  --amber-line: #e3c07f;
+
+  --red: #a32519;
+  --red-tint: #fbeae7;
+  --red-line: #e2a49b;
+
+  --green: #276b46;
+  --green-tint: #e6f2ec;
+  --green-line: #a9cfba;
+
+  --or-bg: #0a1413;
+  --or-surface: #102120;
+  --or-surface-raised: #14302e;
+  --or-ink: #f1f6f4;
+  --or-ink-soft: #9fb9b4;
+  /* Neutral instrumentpanel-accent — IKKE klinisk. Rød/gul/grøn i OR-tilstand
+     er reserveret til --or-red/--or-amber/--or-green herunder. */
+  --or-accent: #57d6ce;
+  --or-accent-soft: rgba(87, 214, 206, 0.14);
+  --or-line: #234140;
+  --or-red: #ff6a58;
+  --or-amber: #e7a94c;
+  --or-amber-soft: rgba(231, 169, 76, 0.14);
+  --or-green: #6fcb8d;
+  --or-green-soft: rgba(111, 203, 141, 0.14);
+
+  --font-display: var(--font-display), "Space Grotesk", ui-sans-serif, sans-serif;
+  --font-body: var(--font-body), "IBM Plex Sans", ui-sans-serif, sans-serif;
+  --font-mono: var(--font-mono), "IBM Plex Mono", ui-monospace, monospace;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-background: var(--paper);
+  --color-foreground: var(--ink);
+  --font-sans: var(--font-body);
+  --font-mono: var(--font-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  border-color: var(--line);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+}
+
+::selection {
+  background: var(--teal);
+  color: var(--paper-raised);
+}
+
+/* Synlig, konsekvent fokusring — klinikeren styrer ofte med tastatur/scanner-enhed. */
+:focus-visible {
+  outline: 2px solid var(--teal);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+.or-scope :focus-visible {
+  outline-color: var(--or-accent);
+}
+
+/* Zone-ringe: motivet der bærer hele identiteten. Lånt fra "zones of burn"
+   (koagulation → stase → hyperæmi) og genbrugt som lytte-puls, fordi begge
+   fænomener er energi der stråler ud fra et centrum. */
+@keyframes zone-pulse {
+  0% {
+    transform: scale(0.85);
+    opacity: 0.55;
+  }
+  70% {
+    transform: scale(1.35);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1.35);
+    opacity: 0;
+  }
+}
+
+@keyframes flag-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.99);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.zone-pulse-ring {
+  animation: zone-pulse 2.2s cubic-bezier(0.2, 0.6, 0.4, 1) infinite;
+}
+
+.flag-in {
+  animation: flag-in 0.28s ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .zone-pulse-ring {
+    animation: none;
+    opacity: 0.35;
+  }
+  .flag-in {
+    animation: none;
+  }
 }

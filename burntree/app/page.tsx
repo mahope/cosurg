@@ -7,6 +7,14 @@ import type { DecisionTree, Lang, SessionState } from "@/lib/tree/types";
 import { useTranscribe } from "@/lib/audio/useTranscribe";
 import { prefetchSpeech, speak, stopSpeaking } from "@/lib/audio/speak";
 import { tr } from "@/lib/i18n";
+import { ControlRail } from "@/components/ControlRail";
+import { QuestionCard } from "@/components/QuestionCard";
+import { DispositionCard } from "@/components/DispositionCard";
+import { RedFlagBanner } from "@/components/RedFlagBanner";
+import { SidebarPath } from "@/components/SidebarPath";
+import { TranscriptPanel } from "@/components/TranscriptPanel";
+import { NotePanel } from "@/components/NotePanel";
+import { OrView } from "@/components/OrView";
 
 const tree = burnsTree as unknown as DecisionTree;
 
@@ -162,6 +170,31 @@ export default function Home() {
     if (!data.error) setNote(data);
   };
 
+  // Klik-svar (kort/valg) rykker direkte gennem træet — samme motorkald som
+  // stemme/tekst-svar, blot uden agent-fortolkning, fordi værdien allerede er
+  // entydig. Delt mellem standardtilstand og OR-tilstand.
+  const selectOption = useCallback(
+    (value: string, rawLabel: string) => {
+      const { state: next, redFlag } = advance(tree, state, value, rawLabel);
+      setState(next);
+      if (redFlag) {
+        setFlash(redFlag.message);
+        void speak(redFlag.message, lang);
+      } else if (next.dispositionId) {
+        const d = getDisposition(tree, next.dispositionId);
+        if (d && speakAll) void speak(`${d.title[lang]}. ${d.guidance[lang]}`, lang);
+      } else {
+        askCurrent(next);
+      }
+    },
+    [state, lang, speakAll, askCurrent],
+  );
+
+  const toggleMic = useCallback(() => {
+    if (listening) stop();
+    else void start();
+  }, [listening, start, stop]);
+
   const progress = useMemo(
     () => Math.round((state.path.length / Math.max(tree.nodes.length, 1)) * 100),
     [state.path.length],
@@ -179,306 +212,115 @@ export default function Home() {
     });
   }, [node, lang, orMode]);
 
-  const images = node?.images ?? disposition?.images ?? [];
+  if (orMode) {
+    return (
+      <OrView
+        lang={lang}
+        node={node}
+        questionText={node ? questionText(node, lang, orMode) : ""}
+        disposition={disposition}
+        flash={flash}
+        onAcknowledgeFlash={() => setFlash(null)}
+        stepNumber={state.path.length + 1}
+        totalNodes={tree.nodes.length}
+        listening={listening}
+        onSelectOption={selectOption}
+        onSubmitNumber={(v) => void handleUtterance(v)}
+        onExit={() => {
+          setOrMode(false);
+          stop();
+        }}
+        note={note}
+        lastHeard={transcript[transcript.length - 1] ?? null}
+      />
+    );
+  }
 
   return (
-    <main
-      className={
-        orMode
-          ? "min-h-screen bg-slate-950 text-slate-50 p-8"
-          : "min-h-screen bg-slate-50 text-slate-900 p-6"
-      }
-    >
+    <main className="min-h-screen bg-[var(--paper)] text-[var(--ink)] px-4 py-6 sm:px-6 sm:py-8">
       <div className="mx-auto max-w-5xl">
-        <header className="flex flex-wrap items-center justify-between gap-4 mb-8">
-          <div>
-            <h1 className={orMode ? "text-4xl font-bold" : "text-2xl font-bold"}>
-              {tr("title", lang)}
-              <span className={orMode ? "ml-3 text-amber-400" : "ml-3 text-sm font-normal text-slate-500"}>
-                {orMode ? tr("orModeOn", lang) : tr("tagline", lang)}
-              </span>
-            </h1>
-            <p className={orMode ? "text-lg text-slate-300 mt-1" : "text-sm text-slate-500"}>
-              {tree.name[lang]} · v{tree.version}
-            </p>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-2">
-            <button
-              onClick={() => {
-                const next: Lang = lang === "da" ? "en" : "da";
-                setLang(next);
-                setState((s) => ({ ...s, lang: next }));
-              }}
-              className="rounded-lg border px-3 py-2 text-sm font-medium"
-            >
-              {lang === "da" ? "🇩🇰 Dansk" : "🇬🇧 English"}
-            </button>
-
-            <button
-              onClick={() => setFullVoice((v) => !v)}
-              disabled={orMode}
-              className="rounded-lg border px-3 py-2 text-sm font-medium disabled:opacity-40"
-            >
-              {fullVoice ? `🔊 ${tr("voiceFull", lang)}` : `🔉 ${tr("voiceKey", lang)}`}
-            </button>
-
-            <button
-              onClick={() => {
-                setOrMode((v) => !v);
-                if (orMode) stop();
-              }}
-              className={
-                orMode
-                  ? "rounded-lg bg-amber-500 px-4 py-2 text-sm font-bold text-slate-950"
-                  : "rounded-lg bg-slate-900 px-4 py-2 text-sm font-bold text-white"
-              }
-            >
-              {tr("orMode", lang)}
-            </button>
-
-            <button
-              onClick={() => (listening ? stop() : start())}
-              className={
-                listening
-                  ? "rounded-lg bg-red-600 px-4 py-2 text-sm font-bold text-white"
-                  : "rounded-lg border px-4 py-2 text-sm font-medium"
-              }
-            >
-              {listening ? `● ${tr("listening", lang)}` : `○ ${tr("micOff", lang)}`}
-            </button>
-          </div>
-        </header>
+        <ControlRail
+          lang={lang}
+          treeName={tree.name[lang]}
+          treeVersion={tree.version}
+          fullVoice={fullVoice}
+          orMode={orMode}
+          onToggleLang={() => {
+            const next: Lang = lang === "da" ? "en" : "da";
+            setLang(next);
+            setState((s) => ({ ...s, lang: next }));
+          }}
+          onToggleVoiceMode={() => setFullVoice((v) => !v)}
+          onToggleOrMode={() => {
+            setOrMode((v) => !v);
+            if (orMode) stop();
+          }}
+        />
 
         {error && (
-          <div className="mb-4 rounded-lg bg-red-100 px-4 py-3 text-sm text-red-800">{error}</div>
+          <div className="mb-4 rounded-lg border border-[var(--red-line)] bg-[var(--red-tint)] px-4 py-3 text-sm text-[var(--red)]">
+            {error}
+          </div>
         )}
 
         {flash && (
-          <div
-            className={
-              orMode
-                ? "mb-6 rounded-xl border-4 border-red-500 bg-red-950 px-6 py-5"
-                : "mb-6 rounded-xl border-2 border-red-500 bg-red-50 px-5 py-4"
-            }
-          >
-            <p className={orMode ? "text-2xl font-bold text-red-400" : "text-sm font-bold text-red-700"}>
-              ⚠ {tr("redFlag", lang)}
-            </p>
-            <p className={orMode ? "mt-2 text-3xl leading-snug" : "mt-1 text-base"}>{flash}</p>
-            <button
-              onClick={() => setFlash(null)}
-              className="mt-4 rounded-lg border px-4 py-2 text-sm font-medium"
-            >
-              OK
-            </button>
+          <div className="mb-6">
+            <RedFlagBanner message={flash} lang={lang} orMode={false} onAcknowledge={() => setFlash(null)} />
           </div>
         )}
 
         <div className="grid gap-6 md:grid-cols-[1fr_320px]">
           <section>
             {node && !flash && (
-              <div
-                className={
-                  orMode
-                    ? "rounded-2xl border border-slate-700 bg-slate-900 p-8"
-                    : "rounded-2xl border bg-white p-6 shadow-sm"
-                }
-              >
-                <p className={orMode ? "text-sm uppercase tracking-widest text-amber-400" : "text-xs uppercase tracking-wide text-slate-400"}>
-                  {state.path.length + 1} / {tree.nodes.length}
-                </p>
-                <h2 className={orMode ? "mt-3 text-5xl font-bold leading-tight" : "mt-2 text-xl font-semibold"}>
-                  {questionText(node, lang, orMode)}
-                </h2>
-
-                {node.help && !orMode && (
-                  <p className="mt-3 text-sm text-slate-600">{node.help[lang]}</p>
-                )}
-
-                <div className="mt-6 flex flex-wrap gap-2">
-                  {node.answerType === "number" ? (
-                    <input
-                      type="number"
-                      min={node.min}
-                      max={node.max}
-                      placeholder={node.unit}
-                      className={
-                        orMode
-                          ? "w-48 rounded-lg bg-slate-800 px-4 py-3 text-2xl"
-                          : "w-40 rounded-lg border px-3 py-2"
-                      }
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter") {
-                          const v = (e.target as HTMLInputElement).value;
-                          if (v) void handleUtterance(v);
-                        }
-                      }}
-                    />
-                  ) : (
-                    node.options?.map((o) => (
-                      <button
-                        key={o.value}
-                        onClick={() => {
-                          const { state: next, redFlag } = advance(tree, state, o.value, o.label[lang]);
-                          setState(next);
-                          if (redFlag) {
-                            setFlash(redFlag.message);
-                            void speak(redFlag.message, lang);
-                          } else if (next.dispositionId) {
-                            const d = getDisposition(tree, next.dispositionId);
-                            if (d && speakAll) void speak(`${d.title[lang]}. ${d.guidance[lang]}`, lang);
-                          } else {
-                            askCurrent(next);
-                          }
-                        }}
-                        className={
-                          orMode
-                            ? "rounded-xl bg-slate-800 px-6 py-4 text-2xl font-medium hover:bg-slate-700"
-                            : "rounded-lg border px-4 py-2 text-sm font-medium hover:bg-slate-100"
-                        }
-                      >
-                        {o.label[lang]}
-                      </button>
-                    ))
-                  )}
-                </div>
-
-                {orMode && (
-                  <p className="mt-6 text-lg text-slate-400">{tr("orHint", lang)}</p>
-                )}
-              </div>
+              <QuestionCard
+                node={node}
+                questionText={questionText(node, lang, orMode)}
+                lang={lang}
+                stepNumber={state.path.length + 1}
+                totalNodes={tree.nodes.length}
+                onSelectOption={selectOption}
+                onSubmitNumber={(v) => void handleUtterance(v)}
+                onSubmitFreeText={(t) => void handleUtterance(t)}
+                listening={listening}
+                interim={interim}
+                onToggleMic={toggleMic}
+              />
             )}
 
             {disposition && (
-              <div
-                className={`rounded-2xl border-2 p-6 ${
-                  disposition.severity === "emergency"
-                    ? "border-red-500 bg-red-50"
-                    : disposition.severity === "refer"
-                      ? "border-amber-500 bg-amber-50"
-                      : "border-emerald-500 bg-emerald-50"
-                } ${orMode ? "text-slate-900" : ""}`}
-              >
-                <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
-                  {tr("recommendation", lang)}
-                </p>
-                <h2 className={orMode ? "mt-2 text-4xl font-bold" : "mt-1 text-2xl font-bold"}>
-                  {disposition.title[lang]}
-                </h2>
-                <p className={orMode ? "mt-4 text-2xl leading-relaxed" : "mt-3 leading-relaxed"}>
-                  {disposition.guidance[lang]}
-                </p>
-
-                {disposition.sources && (
-                  <p className="mt-4 text-xs text-slate-500">
-                    {tr("sources", lang)}: {disposition.sources.join(" · ")}
-                  </p>
-                )}
-                <p className="mt-2 text-xs font-medium text-slate-600">{tr("sourceNote", lang)}</p>
-
-                <div className="mt-5 flex flex-wrap gap-2">
-                  <button
-                    onClick={() => {
-                      setDictating((d) => !d);
-                      if (!listening) void start();
-                    }}
-                    className="rounded-lg border bg-white px-4 py-2 text-sm font-medium"
-                  >
-                    {dictating ? `■ ${tr("stopDictate", lang)}` : `🎙 ${tr("dictate", lang)}`}
-                  </button>
-                  <button
-                    onClick={generateNote}
-                    className="rounded-lg bg-slate-900 px-4 py-2 text-sm font-bold text-white"
-                  >
-                    {tr("generateNote", lang)}
-                  </button>
-                  <button onClick={restart} className="rounded-lg border bg-white px-4 py-2 text-sm">
-                    {tr("restart", lang)}
-                  </button>
-                </div>
-
-                {dictation && (
-                  <p className="mt-4 rounded-lg bg-white/70 p-3 text-sm italic">{dictation}</p>
-                )}
+              <div className={node && !flash ? "mt-6" : undefined}>
+                <DispositionCard
+                  disposition={disposition}
+                  lang={lang}
+                  dictating={dictating}
+                  dictation={dictation}
+                  listening={listening}
+                  interim={interim}
+                  onToggleDictate={() => {
+                    setDictating((d) => !d);
+                    if (!listening) void start();
+                  }}
+                  onToggleMic={toggleMic}
+                  onSubmitFreeText={(t) => void handleUtterance(t)}
+                  onGenerateNote={generateNote}
+                  onRestart={restart}
+                />
               </div>
             )}
 
-            {images.length > 0 && (
-              <div className="mt-6 grid gap-4 sm:grid-cols-2">
-                {images.map((img) => (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    key={img.src}
-                    src={img.src}
-                    alt={img.caption?.[lang] ?? ""}
-                    className="w-full rounded-xl border object-cover"
-                  />
-                ))}
-              </div>
-            )}
-
-            {note && (
-              <div className="mt-6 rounded-2xl border bg-white p-6">
-                <h3 className="text-lg font-semibold">{tr("note", lang)}</h3>
-                <pre className="mt-3 whitespace-pre-wrap font-sans text-sm leading-relaxed">
-                  {note.note}
-                </pre>
-                <h4 className="mt-6 text-sm font-semibold">{tr("codes", lang)}</h4>
-                <ul className="mt-2 space-y-1 text-sm">
-                  {note.codes.map((c) => (
-                    <li key={c.code}>
-                      <span className="font-mono font-semibold">{c.code}</span> — {c.description}
-                      {c.rationale && <span className="text-slate-500"> ({c.rationale})</span>}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
+            {note && <NotePanel note={note} lang={lang} />}
           </section>
 
           <aside className="space-y-4">
-            <div className={orMode ? "rounded-xl border border-slate-700 bg-slate-900 p-4" : "rounded-xl border bg-white p-4"}>
-              <div className="mb-3 h-1.5 w-full rounded-full bg-slate-200">
-                <div className="h-1.5 rounded-full bg-emerald-500" style={{ width: `${progress}%` }} />
-              </div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
-                {tr("path", lang)}
-              </p>
-              <ol className="mt-2 space-y-2 text-sm">
-                {state.path.map((s, i) => (
-                  <li key={`${s.nodeId}-${i}`} className="border-l-2 border-emerald-400 pl-3">
-                    <p className={orMode ? "text-slate-300" : "text-slate-500"}>{s.question}</p>
-                    <p className="font-medium">
-                      {s.value}
-                      {s.redFlagged && <span className="ml-2 text-red-500">⚠</span>}
-                    </p>
-                  </li>
-                ))}
-                {state.path.length === 0 && (
-                  <li className="text-slate-400">—</li>
-                )}
-              </ol>
-            </div>
+            <SidebarPath
+              path={state.path}
+              progress={progress}
+              stepLabel={`${state.path.length}/${tree.nodes.length}`}
+              lang={lang}
+            />
+            <TranscriptPanel lines={transcript} interim={interim} listening={listening} status={status} lang={lang} />
 
-            <div className={orMode ? "rounded-xl border border-slate-700 bg-slate-900 p-4" : "rounded-xl border bg-white p-4"}>
-              <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
-                {tr("transcript", lang)}
-              </p>
-              {interim && <p className="mt-2 text-sm italic text-slate-400">{interim}</p>}
-              <ul className="mt-2 space-y-1 text-sm">
-                {transcript.slice(-8).map((line, i) => (
-                  <li key={i}>{line}</li>
-                ))}
-              </ul>
-              {status && <p className="mt-3 text-xs font-medium text-amber-600">{status}</p>}
-            </div>
-
-            {tree.authors && (
-              <p className="text-xs text-slate-400">
-                {tree.authors.join(", ")}
-              </p>
-            )}
+            {tree.authors && <p className="text-xs text-[var(--ink-faint)]">{tree.authors.join(", ")}</p>}
           </aside>
         </div>
       </div>
