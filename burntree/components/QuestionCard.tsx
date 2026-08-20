@@ -12,6 +12,9 @@ interface QuestionCardProps {
   onSelectOption: (value: string, label: string) => void;
   onSubmitNumber: (value: string) => void;
   onSubmitFreeText: (text: string) => void;
+  /** Trin-node: instruktion uden svar — kvitteres med "næste". */
+  canAdvance: boolean;
+  onNext: () => void;
   listening: boolean;
   interim: string;
   onToggleMic: () => void;
@@ -31,6 +34,8 @@ export function QuestionCard({
   onSelectOption,
   onSubmitNumber,
   onSubmitFreeText,
+  canAdvance,
+  onNext,
   listening,
   interim,
   onToggleMic,
@@ -61,8 +66,8 @@ export function QuestionCard({
               }
             }}
           />
-        ) : (
-          node.options?.map((o) => (
+        ) : node.options && node.options.length > 0 ? (
+          node.options.map((o) => (
             <button
               key={o.value}
               onClick={() => onSelectOption(o.value, o.label[lang])}
@@ -71,13 +76,22 @@ export function QuestionCard({
               {o.label[lang]}
             </button>
           ))
-        )}
+        ) : canAdvance ? (
+          // Trin-noden har intet svar — den kvitteres. Samme vej gennem motoren
+          // som stemmekommandoen "næste", blot udløst med et klik.
+          <button
+            onClick={onNext}
+            className="rounded-lg bg-[var(--teal-deep)] px-4 py-2 text-sm font-semibold text-white hover:bg-[var(--teal)] transition-colors"
+          >
+            {tr("nextStep", lang)} →
+          </button>
+        ) : null}
       </div>
 
       <div className="mt-4">
         <ResponseBar
           lang={lang}
-          placeholder={tr("answerPlaceholder", lang)}
+          placeholder={tr(canAdvance ? "stepPlaceholder" : "answerPlaceholder", lang)}
           listening={listening}
           interim={interim}
           onToggleMic={onToggleMic}

@@ -111,40 +111,52 @@ export const INTERPRETER_SPEC: AgentSpec = {
   ],
 };
 
+/**
+ * Skribenten skriver notatet og BEGRUNDER koderne — men opfinder dem ikke.
+ * Koderne kommer fra Cortis Medical Coding-API (lib/corti/coding.ts) og gives til
+ * agenten som en fast liste. Navnet er versioneret, fordi et agent-navn er
+ * bundet til sit skema hos Corti: ændrer skemaet sig, skal navnet også ændre sig.
+ */
 export const SCRIBE_SPEC: AgentSpec = {
-  name: "burntree-scribe",
-  description: "Writes a clinical note and assigns codes from a completed decision path.",
+  name: "burntree-scribe-v2",
+  description: "Writes a clinical note and justifies pre-assigned medical codes.",
   systemPrompt: [
     "You write a concise clinical note from a completed decision-tree path and encounter transcript.",
     "Use ONLY facts present in the path and transcript. Never invent findings, never add clinical advice.",
     "The recommendation comes from the decision tree, not from you — restate it verbatim in the plan.",
-    "Write the note in the requested language. Assign ICD-10 codes for burns (T20-T32 range) plus mechanism codes where the path supports them.",
+    "Write the note in the requested language.",
+    "You are also given medical codes that were assigned by a dedicated coding system, not by you.",
+    "For each given code, state which decision-tree step or transcript finding supports it.",
+    "NEVER invent, alter, reformat or add a code. Echo each code string back exactly as given.",
+    "If a given code is not supported by the material, say so plainly in its rationale rather than inventing support.",
   ].join(" "),
   connectors: [
     {
       type: "schema",
       name: "submit_note",
-      description: "Submit the finished note and codes.",
+      description: "Submit the finished note and one rationale per given code.",
       transition: "complete",
       schema: {
         type: "object",
         properties: {
           note: { type: "string", description: "The clinical note in markdown." },
-          codes: {
+          codeRationales: {
             type: "array",
+            description: "One entry per code given in the prompt. Do not add codes of your own.",
             items: {
               type: "object",
               properties: {
-                code: { type: "string" },
-                system: { type: "string" },
-                description: { type: "string" },
-                rationale: { type: "string", description: "Which path step supports this code." },
+                code: { type: "string", description: "Exactly the code string as given." },
+                rationale: {
+                  type: "string",
+                  description: "Which decision-tree step or transcript finding supports this code.",
+                },
               },
-              required: ["code", "description"],
+              required: ["code", "rationale"],
             },
           },
         },
-        required: ["note", "codes"],
+        required: ["note", "codeRationales"],
       },
     },
   ],

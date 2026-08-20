@@ -1,24 +1,28 @@
 import type { Metadata } from "next";
-import { IBM_Plex_Mono, IBM_Plex_Sans, Space_Grotesk } from "next/font/google";
+import { Roboto, Roboto_Mono } from "next/font/google";
 import "./globals.css";
 
-// Display: brugt til spørgsmål og overskrifter — teknisk, instrumentagtig karakter.
-const display = Space_Grotesk({
+/*
+ * Roboto er PlastSurgeon-brandets skrift og bruges hele vejen igennem. Appen
+ * har tre typografiske roller, men kun én familie:
+ *   display — spørgsmål og overskrifter, Roboto i tunge vægte
+ *   body    — UI og brødtekst, læsbar under tidspres
+ *   mono    — Roboto Mono til data: koder, transskript, trin-tællere. Samme
+ *             konvention som et laboratoriesvar, uden at forlade brandet.
+ */
+const display = Roboto({
   variable: "--font-display",
   subsets: ["latin"],
-  weight: ["500", "600", "700"],
+  weight: ["500", "700"],
 });
 
-// Brødtekst/UI: optimeret til læsbarhed under tidspres.
-const body = IBM_Plex_Sans({
+const body = Roboto({
   variable: "--font-body",
   subsets: ["latin"],
-  weight: ["400", "500", "600"],
+  weight: ["400", "500", "700"],
 });
 
-// Data/mono: koder, tidsstempler, transskript, diagnosekoder — samme konvention
-// som et laboratoriesvar eller en monitor-udskrift.
-const mono = IBM_Plex_Mono({
+const mono = Roboto_Mono({
   variable: "--font-mono",
   subsets: ["latin"],
   weight: ["400", "500"],

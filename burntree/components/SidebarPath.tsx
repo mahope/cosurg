@@ -1,16 +1,30 @@
-import type { AnsweredStep, Lang } from "@/lib/tree/types";
+import type { AnsweredStep, DecisionTree, Lang } from "@/lib/tree/types";
+import { getNode } from "@/lib/tree/engine";
 import { tr } from "@/lib/i18n";
 import { ZoneMark } from "./ZoneMark";
 
 interface SidebarPathProps {
+  tree: DecisionTree;
   path: AnsweredStep[];
   progress: number;
   stepLabel: string;
   lang: Lang;
 }
 
-/** Beslutningsvejen: en klinisk spor, ikke en generisk stepper. */
-export function SidebarPath({ path, progress, stepLabel, lang }: SidebarPathProps) {
+/**
+ * Beslutningsvejen skal kunne læses højt til en kollega, så den viser lægens
+ * svar med klinikernes egne ord — ikke motorens maskinværdier ("electrical").
+ * Værdien slås op i nodens svarmuligheder; tal og trin-kvitteringer falder
+ * tilbage til værdien selv.
+ */
+function answerLabel(tree: DecisionTree, step: AnsweredStep, lang: Lang): string {
+  if (step.value === "done") return tr("stepDone", lang);
+  const option = getNode(tree, step.nodeId)?.options?.find((o) => o.value === step.value);
+  return option?.label[lang] ?? step.value;
+}
+
+/** Beslutningsvejen: et klinisk spor, ikke en generisk stepper. */
+export function SidebarPath({ tree, path, progress, stepLabel, lang }: SidebarPathProps) {
   return (
     <div className="rounded-xl border bg-[var(--paper-raised)] p-4">
       <div className="flex items-center gap-3">
@@ -25,7 +39,7 @@ export function SidebarPath({ path, progress, stepLabel, lang }: SidebarPathProp
           <li key={`${s.nodeId}-${i}`} className="border-l-2 border-[var(--teal)] pl-3">
             <p className="text-[var(--ink-faint)]">{s.question}</p>
             <p className="font-medium text-[var(--ink)]">
-              {s.value}
+              {answerLabel(tree, s, lang)}
               {s.redFlagged && (
                 <span className="ml-2 font-[family-name:var(--font-mono)] text-xs font-semibold text-[var(--red)]">
                   ⚠

@@ -1,59 +1,94 @@
 @import "tailwindcss";
 
 /*
- * BurnTree designtokens.
+ * BurnTree designtokens — PlastSurgeon-brandet.
+ *
+ * Appen hører til PlastSurgeon-familien og bruger brandets egen palette og
+ * typografi (Roboto). Men BurnTree er ikke en brochure: den skal bæres af en
+ * læge under tidspres, og derfor er paletten delt skarpt i to lag der ALDRIG
+ * blandes:
+ *
+ *   BRANDLAG (identitet, ingen betydning): SurgeonBlue, DarkGreen, Turquoise,
+ *     LightBlue, Nude, DarkCherry. Alt kromindhold — knapper, rammer, mærker,
+ *     "S"-motivet — lever her.
+ *
+ *   KLINISK LAG (betydning, aldrig dekoration): rød, gul og grøn. De tre farver
+ *     bruges KUN om rødt flag, henvisning og hjemsendelse/behandling.
+ *
+ * Spændingen mellem brand og alvor løses ved at reservere, ikke ved at gå på
+ * kompromis: cherry-tonerne er brandaccenter (og bruges derfor kun dekorativt,
+ * fx i "S"-motivet), mens det akutte signal har sin egen høj-kontrast røde, som
+ * ikke optræder andre steder i appen. Ser man rødt, betyder det noget.
  *
  * To verdener, to paletter:
- * - Standardtilstand: koldt, klinisk papir — læsbart under skadestuelys, rødt/gult/
- *   grønt er reserveret til klinisk betydning (rødt flag, henvisning, hjemsendelse).
- * - OR-tilstand: mørk, rolig, ét spørgsmål ad gangen — læsbar fra to meters afstand.
- *   Den skifter IKKE med OS'ets mørk-tilstand; den er en bevidst, indtastet tilstand
- *   kirurgen selv slår til, ikke en omgivelses-indstilling.
+ * - Standardtilstand: lyst brandpapir (Nude1), læsbart under skadestuelys.
+ * - OR-tilstand: SurgeonBlue kørt helt i bund til en mørk flade, ét trin ad
+ *   gangen, læsbar fra to meters afstand. Den skifter IKKE med OS'ets
+ *   mørk-tilstand; den er en bevidst, indtastet tilstand kirurgen slår til.
  */
 :root {
-  --paper: #f2f6f5;
+  /* — Brandlag: flader og tekst — */
+  --paper: #fcf7f3; /* Nude1 */
   --paper-raised: #ffffff;
-  --ink: #10201e;
-  --ink-soft: #4b6360;
-  --ink-faint: #7c918e;
-  --line: #d7e2e0;
-  --line-strong: #b7c8c5;
+  --ink: #10292b; /* SurgeonBlue kørt til tekstdybde */
+  --ink-soft: #407c82; /* DarkGreen */
+  --ink-faint: #6f8f92;
+  --line: #dbe9ea; /* LightBlue */
+  --line-strong: #b3d2d6;
 
-  --teal: #1f6f72;
-  --teal-deep: #123f42;
-  --teal-tint: #e3eeed;
+  /* — Brandlag: primær accent — */
+  --teal: #005355; /* SurgeonBlue */
+  --teal-deep: #003a3c;
+  --teal-tint: #e6f5f8; /* LightBlue */
+  --turquoise: #00bacd; /* Turquoise — energi, aldrig klinisk */
+  --turquoise-soft: #72c8c2;
 
+  /* — Brandlag: nude og cherry (dekoration, ingen klinisk betydning) — */
+  --nude: #f9e1cd;
+  --nude-tint: #faf0e6;
+  --nude-deep: #bc8577;
+  --cherry: #cc556e;
+  --cherry-deep: #54293c;
+
+  /* — Klinisk lag: må kun bruges om klinisk alvor — */
   --amber: #8a5510;
-  --amber-tint: #faf0dd;
-  --amber-line: #e3c07f;
+  --amber-tint: #faf0e6;
+  --amber-line: #e0b98a;
 
-  --red: #a32519;
-  --red-tint: #fbeae7;
-  --red-line: #e2a49b;
+  --red: #b3122c;
+  --red-tint: #fdeaed;
+  --red-line: #eaa1ac;
 
-  --green: #276b46;
-  --green-tint: #e6f2ec;
-  --green-line: #a9cfba;
+  --green: #2c6b4d;
+  --green-tint: #e4f0e9;
+  --green-line: #a6ccb6;
 
-  --or-bg: #0a1413;
-  --or-surface: #102120;
-  --or-surface-raised: #14302e;
-  --or-ink: #f1f6f4;
-  --or-ink-soft: #9fb9b4;
+  /* — OR-tilstand — */
+  --or-bg: #032325; /* SurgeonBlue i bund */
+  --or-surface: #06383a;
+  --or-surface-raised: #0a4a4c;
+  --or-ink: #e9f7fe; /* LightBlue */
+  --or-ink-soft: #9cc3c7;
   /* Neutral instrumentpanel-accent — IKKE klinisk. Rød/gul/grøn i OR-tilstand
      er reserveret til --or-red/--or-amber/--or-green herunder. */
-  --or-accent: #57d6ce;
-  --or-accent-soft: rgba(87, 214, 206, 0.14);
-  --or-line: #234140;
-  --or-red: #ff6a58;
-  --or-amber: #e7a94c;
-  --or-amber-soft: rgba(231, 169, 76, 0.14);
-  --or-green: #6fcb8d;
-  --or-green-soft: rgba(111, 203, 141, 0.14);
+  --or-accent: #00bacd; /* Turquoise */
+  --or-accent-soft: rgba(0, 186, 205, 0.16);
+  --or-line: #135254;
+  /* Alarmrød i den mørke verden: cherry-slægten skruet op til alarmstyrke.
+     Cherry optræder ikke som dekoration i OR-tilstand, så den kan ikke
+     forveksles med en brandaccent her. */
+  --or-red: #ff5568;
+  --or-amber: #f0b357;
+  --or-amber-soft: rgba(240, 179, 87, 0.16);
+  --or-green: #4fc98c;
+  --or-green-soft: rgba(79, 201, 140, 0.16);
 
-  --font-display: var(--font-display), "Space Grotesk", ui-sans-serif, sans-serif;
-  --font-body: var(--font-body), "IBM Plex Sans", ui-sans-serif, sans-serif;
-  --font-mono: var(--font-mono), "IBM Plex Mono", ui-monospace, monospace;
+  /* Roboto hele vejen — brandets skrift. Roboto Mono bærer data (koder,
+     transskript, tidsstempler), så monitorkonventionen holdes uden at forlade
+     familien. */
+  --font-display: var(--font-display), Roboto, ui-sans-serif, sans-serif;
+  --font-body: var(--font-body), Roboto, ui-sans-serif, sans-serif;
+  --font-mono: var(--font-mono), "Roboto Mono", ui-monospace, monospace;
 }
 
 @theme inline {
@@ -89,9 +124,35 @@ body {
   outline-color: var(--or-accent);
 }
 
-/* Zone-ringe: motivet der bærer hele identiteten. Lånt fra "zones of burn"
-   (koagulation → stase → hyperæmi) og genbrugt som lytte-puls, fordi begge
-   fænomener er energi der stråler ud fra et centrum. */
+/* Brandets "S" som grafisk element: et stort bogstav der giver dybde bag
+   indholdet. Det er ren identitet — derfor lav opacitet, ingen interaktion, og
+   aldrig oven på kliniske farver eller billeder. */
+.brand-watermark {
+  position: fixed;
+  top: -12vh;
+  right: -6vw;
+  z-index: 0;
+  pointer-events: none;
+  user-select: none;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 78vh;
+  line-height: 0.8;
+  color: var(--cherry-deep);
+  opacity: 0.04;
+}
+
+@media (max-width: 768px) {
+  .brand-watermark {
+    display: none;
+  }
+}
+
+/* Zone-ringe: appens tilstandssprog. Motivet er lånt fra brandsårsklinikken —
+   en forbrænding beskrives i koncentriske zoner (koagulation → stase →
+   hyperæmi), energi der taber sig udad fra et centrum. Samme figur passer på
+   lyd. Ringene betyder derfor TILSTAND (lytter appen, hvor langt er vi), mens
+   brandets "S" betyder IDENTITET. De to spiller sammen og overlapper ikke. */
 @keyframes zone-pulse {
   0% {
     transform: scale(0.85);

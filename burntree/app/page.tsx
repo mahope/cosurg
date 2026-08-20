@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import burnsTree from "@/content/trees/burns.json";
 import { advance, getDisposition, getNode, goBack, questionText, startSession } from "@/lib/tree/engine";
-import type { DecisionTree, Lang, SessionState } from "@/lib/tree/types";
+import type { DecisionTree, Lang, SessionState, TreeNode } from "@/lib/tree/types";
 import { useTranscribe } from "@/lib/audio/useTranscribe";
 import { prefetchSpeech, speak, stopSpeaking } from "@/lib/audio/speak";
 import { tr } from "@/lib/i18n";
@@ -15,19 +15,45 @@ import { SidebarPath } from "@/components/SidebarPath";
 import { TranscriptPanel } from "@/components/TranscriptPanel";
 import { NotePanel } from "@/components/NotePanel";
 import { OrView } from "@/components/OrView";
+import type { TreeSummary } from "@/components/TreePicker";
+import { BrandWatermark } from "@/components/BrandMark";
+import { isEcho, matchCommand, type VoiceCommand } from "@/components/voiceCommands";
 
-const tree = burnsTree as unknown as DecisionTree;
+/**
+ * Brandsårstræet er bundtet med, så første skærmbillede står med det samme —
+ * ingen loading-tilstand foran demoen. Alle andre træer hentes fra /api/tree.
+ */
+const initialTree = burnsTree as unknown as DecisionTree;
+
+/** Motorens kvitteringsværdi for en trin-node: kanten er "*", så alt matcher. */
+const STEP_VALUE = "done";
 
 interface NoteResult {
   note: string;
   codes: Array<{ code: string; system?: string; description: string; rationale?: string }>;
 }
 
+/**
+ * En trin-node er en instruktion uden svar — procedureguidens tolv trin. Den
+ * kvitteres med "næste" i stedet for at besvares. Vi behandler også en ren
+ * gennemgangsnode (ingen svarmuligheder, én "*"-kant) som et trin, så et træ
+ * kan lægge information ind uden at skulle erklære en ny svartype.
+ */
+function isStepLike(node: TreeNode): boolean {
+  if (node.answerType === "step") return true;
+  if (node.answerType === "number") return false;
+  if (node.options && node.options.length > 0) return false;
+  return node.edges.length === 1 && node.edges[0].when === "*";
+}
+
 export default function Home() {
   const [lang, setLang] = useState<Lang>("da");
   const [orMode, setOrMode] = useState(false);
   const [fullVoice, setFullVoice] = useState(true);
-  const [state, setState] = useState<SessionState>(() => startSession(tree, "da"));
+  const [tree, setTree] = useState<DecisionTree>(initialTree);
+  const [trees, setTrees] = useState<TreeSummary[]>([]);
+  const [treeBusy, setTreeBusy] = useState(false);
+  const [state, setState] = useState<SessionState>(() => startSession(initialTree, "da"));
   const [transcript, setTranscript] = useState<string[]>([]);
   const [status, setStatus] = useState<string | null>(null);
   const [flash, setFlash] = useState<string | null>(null);
@@ -39,14 +65,175 @@ export default function Home() {
   const node = state.currentNodeId ? getNode(tree, state.currentNodeId) : undefined;
   const disposition = state.dispositionId ? getDisposition(tree, state.dispositionId) : undefined;
   const speakAll = orMode || fullVoice;
+  const canAdvance = !!node && isStepLike(node);
+
+  /*
+   * Ekko-spærre. I OR-tilstand står mikrofonen altid åben, også mens appen selv
+   * taler — så TTS'ens ord kommer retur som transskript. Uden dette ville en
+   * kvittering kunne udløse den kommando den kvitterede for, i ring.
+   *
+   * Spærren er et TIDSSTEMPEL og ikke et flag: bliver en oplæsning afbrudt midt
+   * i (speak() stopper altid den forrige), kan et flag hænge fast for evigt og
+   * gøre appen døv. Et tidsstempel heler sig selv.
+   */
+  const quietUntilRef = useRef(0);
+  const spokenRef = useRef("");
+
+  const say = useCallback(
+    (text: string): Promise<void> => {
+      spokenRef.current = text;
+      // Grovt varighedsestimat; strammes ind når oplæsningen faktisk er slut.
+      const estimate = 1200 + text.length * 70;
+      quietUntilRef.current = Date.now() + estimate;
+
+      /*
+       * Oplæsningen kappes af et loft. speak() lover at resolve når lyden er
+       * slut, men en afbrudt <audio> eller en browserstemme uden onend kan lade
+       * løftet hænge for evigt — og alt der venter på kvitteringen ville så
+       * aldrig ske. Klinisk styring må ikke kunne dø af en lydfejl.
+       */
+      const capped = new Promise<void>((resolve) => setTimeout(resolve, estimate + 2000));
+      return Promise.race([speak(text, lang), capped]).then(() => {
+        quietUntilRef.current = Math.min(quietUntilRef.current, Date.now() + 700);
+      });
+    },
+    [lang],
+  );
+
+  /**
+   * Er ytringen vores egen stemme? Kommandoer spærres altid, mens svar kun
+   * spærres når de er lange nok til utvivlsomt at være ekko — et kort svar må
+   * aldrig tabes bare fordi ordet også stod i spørgsmålet.
+   */
+  const isSelfEcho = useCallback((text: string, isCommand: boolean) => {
+    if (Date.now() >= quietUntilRef.current) return false;
+    if (!isEcho(text, spokenRef.current)) return false;
+    return isCommand || text.trim().split(/\s+/).length >= 4;
+  }, []);
 
   const askCurrent = useCallback(
-    (s: SessionState) => {
-      const n = s.currentNodeId ? getNode(tree, s.currentNodeId) : undefined;
+    (s: SessionState, t: DecisionTree = tree) => {
+      const n = s.currentNodeId ? getNode(t, s.currentNodeId) : undefined;
       if (!n) return;
-      if (speakAll) void speak(questionText(n, s.lang, orMode), s.lang);
+      if (speakAll) void say(questionText(n, s.lang, orMode));
     },
-    [speakAll, orMode],
+    [speakAll, orMode, say, tree],
+  );
+
+  /**
+   * Kvittér og ryk. Rækkefølgen er bevidst: skærmen skifter FØRST (den visuelle
+   * kvittering må ikke vente på lyd), derefter siger agenten kort at den
+   * forstod, og først bagefter læses næste instruktion op. Kirurgen ved altså
+   * at "næste" landede, før han hører hvad det næste er.
+   */
+  const acknowledgeAndAdvance = useCallback(async () => {
+    const { state: next, redFlag } = advance(tree, state, STEP_VALUE, tr("stepDone", lang));
+    setState(next);
+    setStatus(null);
+
+    if (redFlag) {
+      setFlash(redFlag.message);
+      await say(redFlag.message); // røde flag læses ALTID op
+      return;
+    }
+
+    if (speakAll) await say(tr("ackNext", lang));
+
+    if (next.dispositionId) {
+      const d = getDisposition(tree, next.dispositionId);
+      if (d && speakAll) void say(`${d.title[lang]}. ${d.guidance[lang]}`);
+    } else {
+      askCurrent(next);
+    }
+  }, [tree, state, lang, speakAll, askCurrent, say]);
+
+  /**
+   * Kvittér et rødt flag og kør videre. Et flag der pegede på en disposition
+   * efterlod ellers anbefalingen på skærmen uden at nogen sagde den — og det er
+   * netop eskaleringen (cirkulær skade, inhalation) hvor lægen ikke kigger på
+   * skærmen. Derfor læses dispositionen op her, uanset stemmetilstand.
+   */
+  const acknowledgeFlash = useCallback(async () => {
+    setFlash(null);
+    await say(tr("ackFlag", lang));
+    if (state.dispositionId) {
+      const d = getDisposition(tree, state.dispositionId);
+      if (d) void say(`${d.title[lang]}. ${d.guidance[lang]}`);
+    } else {
+      askCurrent(state);
+    }
+  }, [state, tree, lang, askCurrent, say]);
+
+  /**
+   * Kommandoer spærres kun af en kort dublet-vagt, ALDRIG af oplæsningen.
+   * STT leverer af og til den samme ytring to gange, og to "næste" i samme
+   * øjeblik må ikke springe to trin — men kirurgen skal til gengæld kunne
+   * afbryde en lang instruktion med "næste" uden at vente på at den er læst
+   * færdig. Derfor et tidsstempel og ikke det busyRef der beskytter
+   * svarfortolkningen.
+   */
+  const lastCommandRef = useRef(0);
+
+  /**
+   * Løbenummer på svarfortolkninger. En kommando går FORUD for en igangværende
+   * fortolkning: siger nogen noget i baggrunden, sættes et agent-kald i gang, og
+   * uden dette ville kirurgens "næste" blive tabt i det sekund kaldet varer.
+   * Kommandoen bumper nummeret, og det forældede svar kasseres når det lander.
+   */
+  const interpretSeqRef = useRef(0);
+
+  const runCommand = useCallback(
+    async (cmd: VoiceCommand) => {
+      const now = Date.now();
+      if (now - lastCommandRef.current < 700) return;
+      lastCommandRef.current = now;
+
+      interpretSeqRef.current += 1;
+      busyRef.current = false;
+
+      if (cmd === "orMode") {
+        if (!orMode) {
+          setOrMode(true);
+          await say(tr("ackOrMode", lang));
+        }
+        return;
+      }
+
+      // Et rødt flag spærrer alt indtil det er kvitteret — og kirurgen kan
+      // ikke trykke OK sterilt, så enhver kommando tæller som kvittering.
+      if (flash) {
+        await acknowledgeFlash();
+        return;
+      }
+
+      if (cmd === "acknowledge") return; // betyder kun noget ved et rødt flag
+
+      if (cmd === "repeat") {
+        if (speakAll) await say(tr("ackRepeat", lang));
+        askCurrent(state);
+        return;
+      }
+
+      if (cmd === "back") {
+        const prev = goBack(state);
+        setState(prev);
+        if (speakAll) await say(tr("ackBack", lang));
+        askCurrent(prev);
+        return;
+      }
+
+      // "næste": kun en fremrykning på trin-noder. På en spørgsmålsnode ville
+      // det være at vælge en klinisk kant uden svar — og vi gætter aldrig.
+      const n = state.currentNodeId ? getNode(tree, state.currentNodeId) : undefined;
+      if (!n) return;
+      if (!isStepLike(n)) {
+        if (speakAll) await say(tr("needAnswer", lang));
+        askCurrent(state);
+        return;
+      }
+      await acknowledgeAndAdvance();
+    },
+    [orMode, flash, state, tree, lang, speakAll, askCurrent, acknowledgeAndAdvance, acknowledgeFlash, say],
   );
 
   const handleUtterance = useCallback(
@@ -57,24 +244,23 @@ export default function Home() {
         setDictation((prev) => `${prev} ${text}`.trim());
         return;
       }
-      if (!state.currentNodeId || busyRef.current) return;
 
-      // Håndfri kommandoer i OR-tilstand, før svarfortolkning.
-      const lower = text.toLowerCase().trim();
-      if (orMode) {
-        if (/^(næste|next)\b/.test(lower)) return;
-        if (/^(gentag|repeat)\b/.test(lower)) {
-          askCurrent(state);
-          return;
-        }
-        if (/^(tilbage|back)\b/.test(lower)) {
-          const prev = goBack(state);
-          setState(prev);
-          askCurrent(prev);
-          return;
-        }
+      // Håndfri kommandoer før svarfortolkning — de skal ikke koste et agent-kald.
+      const current = state.currentNodeId ? getNode(tree, state.currentNodeId) : undefined;
+      const cmd = matchCommand(text, {
+        softNext: !!current && isStepLike(current),
+        awaitingAcknowledge: !!flash,
+      });
+
+      if (isSelfEcho(text, !!cmd)) return;
+      if (cmd) {
+        await runCommand(cmd);
+        return;
       }
 
+      if (flash || !state.currentNodeId || busyRef.current) return;
+
+      const seq = ++interpretSeqRef.current;
       busyRef.current = true;
       setStatus(tr("thinking", lang));
       try {
@@ -95,6 +281,10 @@ export default function Home() {
           error?: string;
         };
 
+        // En kommando har overhalet dette kald — svaret er forældet og
+        // beskrives ikke i træet. Kassér det frem for at rykke to gange.
+        if (seq !== interpretSeqRef.current) return;
+
         if (data.error) {
           setStatus(data.error);
           return;
@@ -104,7 +294,7 @@ export default function Home() {
         if (data.needsClarification || !data.value) {
           setStatus(tr("unclear", lang));
           const q = data.clarificationQuestion ?? questionText(getNode(tree, state.currentNodeId)!, lang, orMode);
-          if (speakAll) void speak(q, lang);
+          if (speakAll) void say(q);
           return;
         }
 
@@ -115,21 +305,23 @@ export default function Home() {
         if (redFlag) {
           setFlash(redFlag.message);
           // Røde flag læses ALTID op, uanset stemmetilstand.
-          void speak(redFlag.message, lang);
+          void say(redFlag.message);
           return;
         }
 
         if (next.dispositionId) {
           const d = getDisposition(tree, next.dispositionId);
-          if (d && speakAll) void speak(`${d.title[lang]}. ${d.guidance[lang]}`, lang);
+          if (d && speakAll) void say(`${d.title[lang]}. ${d.guidance[lang]}`);
         } else {
           askCurrent(next);
         }
       } finally {
-        busyRef.current = false;
+        // Kun den nyeste fortolkning må frigive spærren — er den overhalet,
+        // ejes spærren af den kommando eller det kald der kom efter.
+        if (seq === interpretSeqRef.current) busyRef.current = false;
       }
     },
-    [state, lang, orMode, speakAll, askCurrent, dictating],
+    [state, tree, lang, orMode, speakAll, askCurrent, dictating, flash, runCommand, isSelfEcho, say],
   );
 
   const { listening, interim, error, start, stop } = useTranscribe({ lang, onFinal: handleUtterance });
@@ -139,17 +331,86 @@ export default function Home() {
     if (orMode && !listening) void start();
   }, [orMode, listening, start]);
 
+  /*
+   * Tastatur som stille reserve i OR-tilstand. Kirurgen bruger den aldrig, men
+   * en usteril assistent kan føre demoen videre hvis mikrofonen svigter på
+   * venue-wifi. Samme vej gennem motoren som stemmekommandoerne.
+   */
+  useEffect(() => {
+    if (!orMode) return;
+    const onKey = (e: KeyboardEvent) => {
+      const el = e.target as HTMLElement | null;
+      if (el && (el.tagName === "INPUT" || el.tagName === "TEXTAREA" || el.isContentEditable)) return;
+
+      let cmd: VoiceCommand | null = null;
+      if (e.key === " " || e.key === "ArrowRight") cmd = "next";
+      else if (e.key === "ArrowLeft") cmd = "back";
+      else if (e.key.toLowerCase() === "r") cmd = "repeat";
+      if (!cmd) return;
+
+      e.preventDefault();
+      void runCommand(cmd);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [orMode, runCommand]);
+
+  // Træ-listen er en bonus i UI'et; fejler den, kører brandsårstræet uforstyrret.
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/tree")
+      .then((r) => (r.ok ? r.json() : []))
+      .then((list: TreeSummary[]) => {
+        if (!cancelled && Array.isArray(list)) setTrees(list);
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const resetSession = useCallback(
+    (t: DecisionTree, nextLang: Lang) => {
+      stopSpeaking();
+      const fresh = startSession(t, nextLang);
+      setState(fresh);
+      setTranscript([]);
+      setNote(null);
+      setDictation("");
+      setDictating(false);
+      setFlash(null);
+      setStatus(null);
+      return fresh;
+    },
+    [],
+  );
+
   const restart = () => {
-    stopSpeaking();
-    const fresh = startSession(tree, lang);
-    setState(fresh);
-    setTranscript([]);
-    setNote(null);
-    setDictation("");
-    setFlash(null);
-    setStatus(null);
-    askCurrent(fresh);
+    askCurrent(resetSession(tree, lang));
   };
+
+  /**
+   * Skift af træ starter altid en frisk session: en halv beslutningsvej fra et
+   * andet træ ville være klinisk meningsløs.
+   */
+  const selectTree = useCallback(
+    async (id: string) => {
+      if (id === tree.id || treeBusy) return;
+      setTreeBusy(true);
+      try {
+        const res = await fetch(`/api/tree?id=${encodeURIComponent(id)}`);
+        if (!res.ok) throw new Error("tree");
+        const next = (await res.json()) as DecisionTree;
+        setTree(next);
+        askCurrent(resetSession(next, lang), next);
+      } catch {
+        setStatus(lang === "da" ? "Kunne ikke hente træet" : "Could not load the tree");
+      } finally {
+        setTreeBusy(false);
+      }
+    },
+    [tree.id, treeBusy, lang, askCurrent, resetSession],
+  );
 
   const generateNote = async () => {
     setStatus(tr("thinking", lang));
@@ -179,15 +440,15 @@ export default function Home() {
       setState(next);
       if (redFlag) {
         setFlash(redFlag.message);
-        void speak(redFlag.message, lang);
+        void say(redFlag.message);
       } else if (next.dispositionId) {
         const d = getDisposition(tree, next.dispositionId);
-        if (d && speakAll) void speak(`${d.title[lang]}. ${d.guidance[lang]}`, lang);
+        if (d && speakAll) void say(`${d.title[lang]}. ${d.guidance[lang]}`);
       } else {
         askCurrent(next);
       }
     },
-    [state, lang, speakAll, askCurrent],
+    [tree, state, lang, speakAll, askCurrent, say],
   );
 
   const toggleMic = useCallback(() => {
@@ -197,7 +458,7 @@ export default function Home() {
 
   const progress = useMemo(
     () => Math.round((state.path.length / Math.max(tree.nodes.length, 1)) * 100),
-    [state.path.length],
+    [state.path.length, tree.nodes.length],
   );
 
   // Forvarm oplæsningen af de mulige næste spørgsmål, så stemmen starter uden
@@ -210,20 +471,29 @@ export default function Home() {
       const nextNode = getNode(tree, id);
       if (nextNode) prefetchSpeech(questionText(nextNode, lang, orMode), lang);
     });
-  }, [node, lang, orMode]);
+    // Kvitteringerne er korte og gentages hele vejen gennem træet — de skal
+    // ligge klar, ellers koster hver "næste" en ekstra netværksrundtur.
+    [tr("ackNext", lang), tr("ackRepeat", lang), tr("ackBack", lang)].forEach((t) => prefetchSpeech(t, lang));
+  }, [node, tree, lang, orMode]);
 
   if (orMode) {
     return (
       <OrView
         lang={lang}
+        treeName={tree.name[lang]}
         node={node}
         questionText={node ? questionText(node, lang, orMode) : ""}
         disposition={disposition}
         flash={flash}
-        onAcknowledgeFlash={() => setFlash(null)}
+        onAcknowledgeFlash={() => void acknowledgeFlash()}
         stepNumber={state.path.length + 1}
         totalNodes={tree.nodes.length}
+        progress={progress}
         listening={listening}
+        status={status}
+        error={error}
+        canAdvance={canAdvance}
+        onNext={() => void runCommand("next")}
         onSelectOption={selectOption}
         onSubmitNumber={(v) => void handleUtterance(v)}
         onExit={() => {
@@ -237,12 +507,17 @@ export default function Home() {
   }
 
   return (
-    <main className="min-h-screen bg-[var(--paper)] text-[var(--ink)] px-4 py-6 sm:px-6 sm:py-8">
-      <div className="mx-auto max-w-5xl">
+    <main className="relative min-h-screen bg-[var(--paper)] px-4 py-6 text-[var(--ink)] sm:px-6 sm:py-8">
+      <BrandWatermark />
+      <div className="relative z-10 mx-auto max-w-5xl">
         <ControlRail
           lang={lang}
+          treeId={tree.id}
           treeName={tree.name[lang]}
           treeVersion={tree.version}
+          trees={trees}
+          treeBusy={treeBusy}
+          onSelectTree={(id) => void selectTree(id)}
           fullVoice={fullVoice}
           orMode={orMode}
           onToggleLang={() => {
@@ -265,7 +540,7 @@ export default function Home() {
 
         {flash && (
           <div className="mb-6">
-            <RedFlagBanner message={flash} lang={lang} orMode={false} onAcknowledge={() => setFlash(null)} />
+            <RedFlagBanner message={flash} lang={lang} orMode={false} onAcknowledge={() => void acknowledgeFlash()} />
           </div>
         )}
 
@@ -281,6 +556,8 @@ export default function Home() {
                 onSelectOption={selectOption}
                 onSubmitNumber={(v) => void handleUtterance(v)}
                 onSubmitFreeText={(t) => void handleUtterance(t)}
+                canAdvance={canAdvance}
+                onNext={() => void runCommand("next")}
                 listening={listening}
                 interim={interim}
                 onToggleMic={toggleMic}
@@ -313,6 +590,7 @@ export default function Home() {
 
           <aside className="space-y-4">
             <SidebarPath
+              tree={tree}
               path={state.path}
               progress={progress}
               stepLabel={`${state.path.length}/${tree.nodes.length}`}

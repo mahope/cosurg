@@ -64,7 +64,7 @@ export function cap(value: unknown, max: number): string {
  * (kommasepareret), fx til preview-udrulninger.
  */
 const DEFAULT_ORIGINS = [
-  "https://burntree.mahoje.dk",
+  "https://burntree.plastsurgeon.com",
   "http://localhost:3000",
   "http://127.0.0.1:3000",
 ];
@@ -77,6 +77,22 @@ function allowedOrigins(): string[] {
   return [...DEFAULT_ORIGINS, ...extra];
 }
 
+/**
+ * Kaldet kommer fra appen selv, uanset hvilket domæne den er udrullet på.
+ * Låsen skal stoppe FREMMEDE sider i at bruge vores credits — ikke vores egen
+ * side i at virke. Derfor sammenlignes med Host-headeren og ikke kun med en
+ * hardkodet liste: et domæneskift må aldrig kunne slå demoen ihjel.
+ */
+function isSameOrigin(req: Request, candidateOrigin: string): boolean {
+  const host = req.headers.get("x-forwarded-host") ?? req.headers.get("host");
+  if (!host) return false;
+  try {
+    return new URL(candidateOrigin).host === host;
+  } catch {
+    return false;
+  }
+}
+
 export function checkOrigin(req: Request): NextResponse | null {
   const origin = req.headers.get("origin");
   const referer = req.headers.get("referer");
@@ -85,9 +101,18 @@ export function checkOrigin(req: Request): NextResponse | null {
   // Vi afviser ikke — kvoten dækker det tilfælde.
   if (!origin && !referer) return null;
 
-  const allowed = allowedOrigins();
-  const candidate = origin ?? (referer ? new URL(referer).origin : null);
-  if (candidate && allowed.includes(candidate)) return null;
+  let candidate: string | null = origin;
+  if (!candidate && referer) {
+    try {
+      candidate = new URL(referer).origin;
+    } catch {
+      candidate = null;
+    }
+  }
+  if (!candidate) return null;
+
+  if (isSameOrigin(req, candidate)) return null;
+  if (allowedOrigins().includes(candidate)) return null;
 
   return NextResponse.json({ error: "Ikke tilladt oprindelse" }, { status: 403 });
 }

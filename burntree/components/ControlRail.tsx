@@ -2,12 +2,17 @@
 
 import type { Lang } from "@/lib/tree/types";
 import { tr } from "@/lib/i18n";
-import { ZoneMark } from "./ZoneMark";
+import { BrandMark } from "./BrandMark";
+import { TreePicker, type TreeSummary } from "./TreePicker";
 
 interface ControlRailProps {
   lang: Lang;
+  treeId: string;
   treeName: string;
   treeVersion: string;
+  trees: TreeSummary[];
+  treeBusy: boolean;
+  onSelectTree: (id: string) => void;
   fullVoice: boolean;
   orMode: boolean;
   onToggleLang: () => void;
@@ -22,8 +27,12 @@ interface ControlRailProps {
  */
 export function ControlRail({
   lang,
+  treeId,
   treeName,
   treeVersion,
+  trees,
+  treeBusy,
+  onSelectTree,
   fullVoice,
   orMode,
   onToggleLang,
@@ -34,14 +43,20 @@ export function ControlRail({
     <header className="mb-8">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div className="flex items-center gap-3">
-          <ZoneMark variant="mark" size={34} />
+          <BrandMark size={34} />
           <div>
             <h1 className="font-[family-name:var(--font-display)] text-[22px] font-semibold tracking-tight text-[var(--ink)]">
               {tr("title", lang)}
             </h1>
-            <p className="font-[family-name:var(--font-mono)] text-xs text-[var(--ink-faint)]">
-              {treeName} · v{treeVersion}
-            </p>
+            <TreePicker
+              lang={lang}
+              trees={trees}
+              activeId={treeId}
+              activeName={treeName}
+              activeVersion={treeVersion}
+              busy={treeBusy}
+              onSelect={onSelectTree}
+            />
           </div>
         </div>
 
@@ -80,8 +95,8 @@ export function ControlRail({
         </div>
       </div>
 
-      <div className="mt-4 inline-flex items-center gap-2 rounded-full border border-[var(--line)] bg-[var(--paper-raised)] px-3 py-1.5">
-        <ZoneMark variant="mark" size={14} />
+      <div className="mt-4 inline-flex items-center gap-2 rounded-full border border-[var(--line)] bg-[var(--nude-tint)] px-3 py-1.5">
+        <BrandMark size={14} />
         <p className="text-xs font-medium text-[var(--ink-soft)]">{tr("sourceNote", lang)}</p>
       </div>
     </header>

@@ -3,14 +3,26 @@ import type { NextConfig } from "next";
 /**
  * CSP: appen indlæser intet fra fremmede domæner. connect-src skal dog rumme
  * Cortis WebSocket til speech-to-text, som browseren forbinder direkte til.
+ *
+ * Værterne udledes af CORTI_ENVIRONMENT i stedet for at være hardkodet til "eu".
+ * Skifter nogen region fredag morgen, følger CSP'en med — ellers ville browseren
+ * blokere mikrofon-socket'en med en fejl ingen på scenen kan tyde.
+ * auth-værten er med, fordi SDK'et kan forsøge at forny tokenet undervejs.
  */
+const cortiEnv = process.env.CORTI_ENVIRONMENT ?? "eu";
+const cortiHosts = [
+  `https://api.${cortiEnv}.corti.app`,
+  `wss://api.${cortiEnv}.corti.app`,
+  `https://auth.${cortiEnv}.corti.app`,
+].join(" ");
+
 const csp = [
   "default-src 'self'",
   "script-src 'self' 'unsafe-inline'",
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob:",
   "media-src 'self' blob:",
-  "connect-src 'self' https://api.eu.corti.app wss://api.eu.corti.app",
+  `connect-src 'self' ${cortiHosts}`,
   "font-src 'self'",
   "object-src 'none'",
   "base-uri 'self'",

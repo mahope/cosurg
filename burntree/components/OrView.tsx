@@ -12,6 +12,7 @@ interface NoteResult {
 
 interface OrViewProps {
   lang: Lang;
+  treeName: string;
   node?: TreeNode;
   questionText: string;
   disposition?: Disposition;
@@ -19,7 +20,14 @@ interface OrViewProps {
   onAcknowledgeFlash: () => void;
   stepNumber: number;
   totalNodes: number;
+  progress: number;
   listening: boolean;
+  status: string | null;
+  /** Mikrofonfejl skal SES i OR-tilstand — ellers står kirurgen og taler til ingenting. */
+  error: string | null;
+  /** Trin-node: der er intet svar, kun en kvittering — så "næste" er hele svaret. */
+  canAdvance: boolean;
+  onNext: () => void;
   onSelectOption: (value: string, label: string) => void;
   onSubmitNumber: (value: string) => void;
   onExit: () => void;
@@ -37,11 +45,18 @@ const orSeverity: Record<Disposition["severity"], string> = {
 /**
  * OR-tilstand: en anden verden, ikke samme side i større skrift. Kirurgen
  * står sterilt, rører aldrig skærmen, og læser fra to meters afstand — så alt
- * andet end det ene aktive spørgsmål og dets billede er fjernet. Al
- * håndfri styring foregår med stemmen (næste/gentag/tilbage, se page.tsx).
+ * andet end det ene aktive trin og dets billede er fjernet. Al håndfri styring
+ * foregår med stemmen (næste/gentag/tilbage, se page.tsx).
+ *
+ * Skærmen er delt i tre faste bånd — status øverst, indhold i midten, hørt
+ * tale nederst — så kirurgen altid ved hvor han skal kigge. Midterbåndet er
+ * det eneste der ændrer sig, og når trinnet har billeder, er det billedet der
+ * får pladsen: instruktionsteksten er så kort at den kan stå over uden at
+ * stjæle højde.
  */
 export function OrView({
   lang,
+  treeName,
   node,
   questionText,
   disposition,
@@ -49,7 +64,12 @@ export function OrView({
   onAcknowledgeFlash,
   stepNumber,
   totalNodes,
+  progress,
   listening,
+  status,
+  error,
+  canAdvance,
+  onNext,
   onSelectOption,
   onSubmitNumber,
   onExit,
@@ -57,104 +77,153 @@ export function OrView({
   lastHeard,
 }: OrViewProps) {
   const images = node?.images ?? disposition?.images ?? [];
+  const hasImages = images.length > 0;
 
   return (
-    <main className="or-scope min-h-screen bg-[var(--or-bg)] px-6 py-6 sm:px-12 sm:py-8 text-[var(--or-ink)]">
-      <div className="mx-auto flex min-h-[calc(100vh-3rem)] max-w-4xl flex-col">
-        <div className="flex items-center justify-between">
+    <main className="or-scope flex h-screen flex-col overflow-hidden bg-[var(--or-bg)] px-6 py-5 sm:px-10 text-[var(--or-ink)]">
+      <header className="shrink-0">
+        <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <ZoneMark variant="listening" active={listening} tone="or" size={30} />
-            <div>
+            <div className="min-w-0">
               <p className="font-[family-name:var(--font-mono)] text-sm font-semibold uppercase tracking-[0.24em] text-[var(--or-accent)]">
                 {tr("orModeOn", lang)}
               </p>
-              {node && (
-                <p className="font-[family-name:var(--font-mono)] text-xs text-[var(--or-ink-soft)]">
-                  {tr("step", lang)} {stepNumber} / {totalNodes}
-                </p>
-              )}
+              <p className="truncate font-[family-name:var(--font-mono)] text-xs text-[var(--or-ink-soft)]">
+                {treeName}
+                {node && ` · ${tr("step", lang)} ${stepNumber}/${totalNodes}`}
+                {" · "}
+                {/* Lukket mikrofon er ikke en detalje i OR-tilstand: så virker
+                    stemmestyringen ikke, og det skal ses uden at kigge efter. */}
+                <span className={listening ? undefined : "font-semibold text-[var(--or-amber)]"}>
+                  {listening ? tr("micOpen", lang) : tr("micClosed", lang)}
+                </span>
+                {error && <span className="text-[var(--or-red)]"> · {error}</span>}
+              </p>
             </div>
           </div>
-          <button
-            onClick={onExit}
-            className="rounded-lg border border-[var(--or-line)] px-3 py-1.5 text-xs font-medium text-[var(--or-ink-soft)] hover:border-[var(--or-accent)] hover:text-[var(--or-accent)] transition-colors"
-          >
-            {tr("orExit", lang)}
-          </button>
-        </div>
 
-        <div className="mt-10 flex flex-1 flex-col justify-center">
-          {flash ? (
-            <RedFlagBanner message={flash} lang={lang} orMode onAcknowledge={onAcknowledgeFlash} />
-          ) : disposition ? (
-            <div
-              className="rounded-2xl border-2 p-8 sm:p-10"
-              style={{ borderColor: orSeverity[disposition.severity], background: "var(--or-surface)" }}
+          <div className="flex shrink-0 items-center gap-2">
+            {status && (
+              <span className="font-[family-name:var(--font-mono)] text-xs text-[var(--or-amber)]">{status}</span>
+            )}
+            <button
+              onClick={onExit}
+              className="rounded-lg border border-[var(--or-line)] px-3 py-1.5 text-xs font-medium text-[var(--or-ink-soft)] transition-colors hover:border-[var(--or-accent)] hover:text-[var(--or-accent)]"
             >
-              <p
-                className="font-[family-name:var(--font-mono)] text-sm font-semibold uppercase tracking-[0.2em]"
-                style={{ color: orSeverity[disposition.severity] }}
-              >
-                {tr("recommendation", lang)}
-              </p>
-              <h2 className="mt-3 font-[family-name:var(--font-display)] text-4xl sm:text-5xl font-semibold leading-tight">
-                {disposition.title[lang]}
-              </h2>
-              <p className="mt-5 text-xl sm:text-2xl leading-relaxed text-[var(--or-ink-soft)]">
-                {disposition.guidance[lang]}
-              </p>
-              <p className="mt-6 font-[family-name:var(--font-mono)] text-sm text-[var(--or-ink-soft)]">
-                {tr("sourceNote", lang)}
-              </p>
-              {note && <NotePanel note={note} lang={lang} orMode />}
-            </div>
-          ) : node ? (
-            <>
-              <h2 className="font-[family-name:var(--font-display)] text-[clamp(2.5rem,6vw,5.5rem)] font-semibold leading-[1.05] tracking-tight">
-                {questionText}
-              </h2>
-
-              {node.answerType === "number" ? (
-                <input
-                  type="number"
-                  min={node.min}
-                  max={node.max}
-                  placeholder={node.unit}
-                  className="mt-8 w-64 rounded-xl border border-[var(--or-line)] bg-[var(--or-surface)] px-5 py-4 text-3xl text-[var(--or-ink)] focus:border-[var(--or-accent)] focus:outline-none"
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      const v = (e.target as HTMLInputElement).value;
-                      if (v) onSubmitNumber(v);
-                    }
-                  }}
-                />
-              ) : (
-                node.options && node.options.length > 0 && (
-                  <div className="mt-8 flex flex-wrap gap-3">
-                    {node.options.map((o) => (
-                      <button
-                        key={o.value}
-                        onClick={() => onSelectOption(o.value, o.label[lang])}
-                        className="rounded-xl border border-[var(--or-line)] bg-[var(--or-surface)] px-7 py-5 text-2xl font-medium hover:border-[var(--or-accent)] hover:bg-[var(--or-surface-raised)] transition-colors"
-                      >
-                        {o.label[lang]}
-                      </button>
-                    ))}
-                  </div>
-                )
-              )}
-
-              <StepImages images={images} lang={lang} large />
-
-              <p className="mt-10 text-lg text-[var(--or-ink-soft)]">{tr("orHint", lang)}</p>
-            </>
-          ) : null}
+              {tr("orExit", lang)}
+            </button>
+          </div>
         </div>
 
-        <div className="mt-8 min-h-[1.5rem] font-[family-name:var(--font-mono)] text-sm text-[var(--or-ink-soft)]">
-          {lastHeard && <span>&ldquo;{lastHeard}&rdquo;</span>}
+        {/* Fremdrift som en tynd linje — aflæselig på afstand, uden at fylde. */}
+        <div className="mt-4 h-1 w-full overflow-hidden rounded-full bg-[var(--or-line)]">
+          <div
+            className="h-full rounded-full bg-[var(--or-accent)] transition-[width] duration-300"
+            style={{ width: `${Math.min(100, Math.max(0, progress))}%` }}
+          />
         </div>
+      </header>
+
+      <div className="flex min-h-0 flex-1 flex-col justify-center py-6">
+        {flash ? (
+          <RedFlagBanner message={flash} lang={lang} orMode onAcknowledge={onAcknowledgeFlash} />
+        ) : disposition ? (
+          <div
+            className="overflow-y-auto rounded-2xl border-2 p-8 sm:p-10"
+            style={{ borderColor: orSeverity[disposition.severity], background: "var(--or-surface)" }}
+          >
+            <p
+              className="font-[family-name:var(--font-mono)] text-sm font-semibold uppercase tracking-[0.2em]"
+              style={{ color: orSeverity[disposition.severity] }}
+            >
+              {tr("recommendation", lang)}
+            </p>
+            <h2 className="mt-3 font-[family-name:var(--font-display)] text-4xl font-semibold leading-tight sm:text-5xl">
+              {disposition.title[lang]}
+            </h2>
+            <p className="mt-5 text-xl leading-relaxed text-[var(--or-ink-soft)] sm:text-2xl">
+              {disposition.guidance[lang]}
+            </p>
+            <p className="mt-6 font-[family-name:var(--font-mono)] text-sm text-[var(--or-ink-soft)]">
+              {tr("sourceNote", lang)}
+            </p>
+            {note && <NotePanel note={note} lang={lang} orMode />}
+          </div>
+        ) : node ? (
+          <>
+            <h2
+              className={`shrink-0 font-[family-name:var(--font-display)] font-semibold tracking-tight ${
+                hasImages
+                  ? "text-[clamp(1.6rem,3.4vw,2.9rem)] leading-[1.15]"
+                  : "text-[clamp(2.5rem,6vw,5.5rem)] leading-[1.05]"
+              }`}
+            >
+              {questionText}
+            </h2>
+
+            {node.answerType === "number" ? (
+              <input
+                type="number"
+                min={node.min}
+                max={node.max}
+                placeholder={node.unit}
+                className="mt-8 w-64 shrink-0 rounded-xl border border-[var(--or-line)] bg-[var(--or-surface)] px-5 py-4 text-3xl text-[var(--or-ink)] focus:border-[var(--or-accent)] focus:outline-none"
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    const v = (e.target as HTMLInputElement).value;
+                    if (v) onSubmitNumber(v);
+                  }
+                }}
+              />
+            ) : node.options && node.options.length > 0 ? (
+              <div className="mt-8 flex shrink-0 flex-wrap gap-3">
+                {node.options.map((o) => (
+                  <button
+                    key={o.value}
+                    onClick={() => onSelectOption(o.value, o.label[lang])}
+                    className="rounded-xl border border-[var(--or-line)] bg-[var(--or-surface)] px-7 py-5 text-2xl font-medium transition-colors hover:border-[var(--or-accent)] hover:bg-[var(--or-surface-raised)]"
+                  >
+                    {o.label[lang]}
+                  </button>
+                ))}
+              </div>
+            ) : null}
+
+            <StepImages images={images} lang={lang} large priority />
+          </>
+        ) : null}
       </div>
+
+      {/*
+        Betjeningsbåndet. Kirurgen bruger kun stemmen — knappen her er for den
+        usterile assistent og appens forsikring hvis mikrofonen svigter under
+        demoen. Den ligger nederst hos de øvrige kontroller, ikke oppe i
+        instruktionen, så billedet får hele midterbåndet.
+      */}
+      <footer className="flex shrink-0 flex-wrap items-center justify-between gap-x-6 gap-y-2 border-t border-[var(--or-line)] pt-3">
+        <div className="flex min-w-0 items-center gap-4">
+          {canAdvance && (
+            <button
+              onClick={onNext}
+              className="shrink-0 rounded-lg border border-[var(--or-accent)] bg-[var(--or-accent-soft)] px-4 py-2 text-base font-semibold text-[var(--or-accent)] transition-colors hover:bg-[var(--or-surface-raised)]"
+            >
+              {tr("nextStep", lang)} →
+            </button>
+          )}
+          <p className="font-[family-name:var(--font-mono)] text-sm text-[var(--or-ink-soft)]">
+            <span className="text-[var(--or-accent)]">{tr("orCommands", lang)}:</span> {tr("orHint", lang)}
+          </p>
+        </div>
+        <p className="min-h-[1.25rem] font-[family-name:var(--font-mono)] text-sm text-[var(--or-ink)]">
+          {lastHeard && (
+            <>
+              <span className="text-[var(--or-ink-soft)]">{tr("heard", lang)}: </span>
+              &ldquo;{lastHeard}&rdquo;
+            </>
+          )}
+        </p>
+      </footer>
     </main>
   );
 }
