@@ -31,6 +31,7 @@ import {
   looksLikeQuestion,
   matchAffirmative,
   matchIntentChoice,
+  matchNoteRequest,
 } from "@/components/unified/intent";
 import { IntentChoiceCard, LookupCard, type LookupPayload } from "@/components/unified/LookupCard";
 import { ChatThread } from "@/components/unified/ChatThread";
@@ -169,7 +170,12 @@ export default function Home() {
    * sender tekst og læser SSE — så den ene lytter i `useTranscribe` kan dele
    * sin tekst mellem de to formål uden at nogen slås om `getUserMedia`.
    */
-  const { turns: lookupTurns, ask: askLookup, reset: resetLookup } = useClinicalChat(lang);
+  const {
+    turns: lookupTurns,
+    ask: askLookup,
+    reset: resetLookup,
+    currentWorkup,
+  } = useClinicalChat(lang);
   const [lookupOpen, setLookupOpen] = useState(false);
   const [lookupStatus, setLookupStatus] = useState<string | null>(null);
   /*
@@ -197,6 +203,14 @@ export default function Home() {
    */
   const [procedure, setProcedure] = useState<{ question: string; tree: DecisionTree } | null>(null);
   const lookupBusyRef = useRef(false);
+  /**
+   * Notatfunktionen, nået gennem et ref.
+   *
+   * `handleUtterance` skal kunne udløse den ("skriv notatet"), men står før
+   * den i filen. Reffet holder altid den nyeste udgave, så ordren aldrig
+   * kommer til at kalde en funktion der husker en forældet session.
+   */
+  const generateNoteRef = useRef<(fra?: { treeId: string; path: AnsweredStep[] }) => void>(() => {});
 
   const node = state.currentNodeId ? getNode(tree, state.currentNodeId) : undefined;
   const disposition = state.dispositionId ? getDisposition(tree, state.dispositionId) : undefined;
@@ -830,6 +844,29 @@ export default function Home() {
         return;
       }
 
+      /*
+       * "Skriv notatet."
+       *
+       * Agenten tilbyder selv notatet når udredningen er kørt til ende, men
+       * lægen skal kunne bede om det når som helst — også midtvejs, også
+       * efter at have afvist tilbuddet. Det er hans journal, ikke appens.
+       *
+       * Ordren står FØR indgangsruteringen, ellers ville "skriv notatet"
+       * blive læst som et fagligt spørgsmål og sendt til kilderne. Er der
+       * ingen udredning at skrive om, falder den igennem som en almindelig
+       * ytring — så svarer chatten, i stedet for at et klik på ingenting
+       * ser ud som om appen ignorerede en ordre.
+       */
+      if (!images?.length && matchNoteRequest(text)) {
+        const w = currentWorkup();
+        if (w) {
+          // Gennem et ref: notatfunktionen erklæres længere nede, og en
+          // direkte reference ville fryse den første udgave af den fast.
+          generateNoteRef.current({ treeId: w.treeId, path: w.path });
+          return;
+        }
+      }
+
       // Før et forløb er valgt, er ytringen enten en patient eller et spørgsmål.
       // Samme vej ind for tale og skrift.
       if (!started) {
@@ -937,6 +974,7 @@ export default function Home() {
       await interpretUtterance(text, verdict.intent === "unknown");
     },
     [
+      currentWorkup,
       offer,
       beginTree,
       started,
@@ -1118,6 +1156,12 @@ export default function Home() {
       setNoteBusy(false);
     }
   };
+
+  // Hold reffet på den nyeste udgave, så "skriv notatet" altid rammer den
+  // funktion der kender den aktuelle session.
+  useEffect(() => {
+    generateNoteRef.current = (fra) => void generateNote(fra);
+  });
 
   // Klik-svar (kort/valg) rykker direkte gennem træet — samme motorkald som
   // stemme/tekst-svar, blot uden agent-fortolkning, fordi værdien allerede er

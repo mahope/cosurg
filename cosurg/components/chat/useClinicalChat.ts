@@ -409,5 +409,14 @@ export function useClinicalChat(lang: Lang) {
     [buildRecap, lang, patch, write],
   );
 
-  return { turns, busy, ask, stop, reset };
+  /**
+   * Udredningens sti, som den står lige nu.
+   *
+   * Den findes så lægen kan bede om journalnotatet NÅR SOM HELST — ikke kun
+   * når agenten selv tilbyder det. Et ref og ikke en tilstand: den skal ikke
+   * gentegne noget, den skal bare kunne læses i det øjeblik der spørges.
+   */
+  const currentWorkup = useCallback(() => workupRef.current, []);
+
+  return { turns, busy, ask, stop, reset, currentWorkup };
 }
