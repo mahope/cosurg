@@ -7,6 +7,12 @@ export const t = {
     en: "Voice-driven clinical decision support",
   },
   start: { da: "Start vurdering", en: "Start assessment" },
+  aboutTeam: { da: "Om & Team", en: "About & Team" },
+  aboutTeamTagline: { da: "Om CoSurg og holdet bag", en: "About CoSurg and the team behind it" },
+  aboutTeamPlaceholder: {
+    da: "Indhold følger snart.",
+    en: "Content coming soon.",
+  },
   listening: { da: "Lytter", en: "Listening" },
   micOff: { da: "Mikrofon slukket", en: "Microphone off" },
   orMode: { da: "Håndfri tilstand", en: "Handsfree mode" },

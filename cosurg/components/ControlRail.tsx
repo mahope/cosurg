@@ -137,6 +137,13 @@ export function ControlRail({
           >
             {tr("orMode", lang)}
           </button>
+
+          <Link
+            href="/aboutandteam"
+            className="rounded-lg border bg-[var(--paper-raised)] px-4 py-2 text-sm font-medium text-[var(--ink)] transition-colors hover:border-[var(--teal)] hover:bg-[var(--teal-tint)]"
+          >
+            {tr("aboutTeam", lang)}
+          </Link>
         </div>
       </div>
 
