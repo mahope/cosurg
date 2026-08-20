@@ -20,6 +20,10 @@ export const t = {
   path: { da: "Beslutningsvej", en: "Decision path" },
   transcript: { da: "Transskript", en: "Transcript" },
   generateNote: { da: "Generér journalnotat", en: "Generate note" },
+  intakeGenerateNote: {
+    da: "Skriv notat og indsæt ICD-10 kode",
+    en: "Skriv notat og indsæt ICD-10 kode",
+  },
   note: { da: "Journalnotat", en: "Clinical note" },
   codes: { da: "Koder", en: "Codes" },
   codesSource: {

@@ -878,8 +878,12 @@ export default function Home() {
             onToggleMic={toggleMic}
             onSubmit={(t) => void handleUtterance(t)}
             onSelectTree={(id) => void beginTree(id)}
+            onGenerateNote={generateNote}
+            noteBusy={noteBusy}
           />
         )}
+
+        {note && <NotePanel note={note} lang={lang} />}
 
         {started && (
         <div className="grid gap-6 md:grid-cols-[1fr_320px]">
@@ -922,8 +926,6 @@ export default function Home() {
                 />
               </div>
             )}
-
-            {note && <NotePanel note={note} lang={lang} />}
           </section>
 
           <aside className="space-y-4">
