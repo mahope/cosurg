@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { CortiClient } from "@corti/sdk";
 import type { Lang } from "@/lib/tree/types";
 
@@ -35,10 +35,14 @@ export function useTranscribe({ lang, onFinal }: UseTranscribeOptions) {
   const recorderRef = useRef<MediaRecorder | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const onFinalRef = useRef(onFinal);
-  onFinalRef.current = onFinal;
+  useEffect(() => {
+    onFinalRef.current = onFinal;
+  }, [onFinal]);
 
   const stop = useCallback(() => {
-    recorderRef.current?.state !== "inactive" && recorderRef.current?.stop();
+    if (recorderRef.current && recorderRef.current.state !== "inactive") {
+      recorderRef.current.stop();
+    }
     streamRef.current?.getTracks().forEach((t) => t.stop());
     socketRef.current?.close();
     recorderRef.current = null;
