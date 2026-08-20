@@ -19,18 +19,33 @@ import { BrandMark, BrandWatermark } from "@/components/BrandMark";
  * går til når man vil VIDE noget, ikke når man står med patienten.
  */
 
-export type ToolId = "guide" | "pitfalls" | "interview";
+export type ToolId = "guide" | "pitfalls" | "interview" | "chat";
 
 interface Vaerktoej {
   id: ToolId;
   href: string;
-  key: "toolGuide" | "toolPitfalls" | "toolInterview";
+  key: "toolGuide" | "toolPitfalls" | "toolInterview" | "toolChat";
 }
 
+/**
+ * Chatten står med her, og forsiden har til gengæld INGEN værktøjslinje.
+ *
+ * Det er ét valg, ikke to. Forsiden afgør selv om en ytring er en patient, et
+ * behandlingsopslag eller et litteraturspørgsmål — og en fanebjælke dér ville
+ * bede lægen om at træffe præcis det valg vi lige har taget fra ham. Den ville
+ * også være usand: fanen "chat" ville pege væk fra den side der allerede
+ * svarer på spørgsmål.
+ *
+ * Men de fire flader må ikke være uopnåelige for den der VIL browse. Derfor
+ * bor listen her, på opslagssiderne, hvor man i forvejen er gået hen for at
+ * vide noget frem for at behandle nogen. Chatten hørte til i den liste og
+ * manglede kun fordi den engang var forsidens genvej.
+ */
 const VAERKTOEJER: Vaerktoej[] = [
   { id: "guide", href: "/guide", key: "toolGuide" },
   { id: "pitfalls", href: "/pitfalls", key: "toolPitfalls" },
   { id: "interview", href: "/interview", key: "toolInterview" },
+  { id: "chat", href: "/chat", key: "toolChat" },
 ];
 
 interface ToolShellProps {
