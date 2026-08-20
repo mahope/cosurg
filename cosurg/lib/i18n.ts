@@ -1,7 +1,7 @@
 import type { Lang } from "@/lib/tree/types";
 
 export const t = {
-  title: { da: "BurnTree", en: "BurnTree" },
+  title: { da: "CoSurg", en: "CoSurg" },
   tagline: {
     da: "Stemmestyret klinisk beslutningsstøtte",
     en: "Voice-driven clinical decision support",

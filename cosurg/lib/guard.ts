@@ -64,7 +64,7 @@ export function cap(value: unknown, max: number): string {
  * (kommasepareret), fx til preview-udrulninger.
  */
 const DEFAULT_ORIGINS = [
-  "https://burntree.mahoje.dk",
+  "https://cosurg.com",
   "http://localhost:3000",
   "http://127.0.0.1:3000",
 ];

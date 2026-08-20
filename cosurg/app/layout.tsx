@@ -25,7 +25,7 @@ const mono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "BurnTree — klinisk beslutningsstøtte",
+  title: "CoSurg — klinisk beslutningsstøtte",
   description: "Stemmestyret beslutningsstøtte til brandsår. Corti Hack for Health 2026.",
 };
 
