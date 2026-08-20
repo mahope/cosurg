@@ -1,0 +1,322 @@
+{
+  "id": "burns-dk",
+  "version": "0.1.0-draft",
+  "name": { "da": "Brandsår — akut vurdering", "en": "Burns — acute assessment" },
+  "description": {
+    "da": "Udkast baseret på brandsaar.dk (Dansk Brandsårsforening) og teamets eget materiale. SKAL gennemgås og godkendes af Magnus og Rami før demo.",
+    "en": "Draft based on brandsaar.dk (Danish Burn Society) and the team's own material. MUST be reviewed and approved by Magnus and Rami before the demo."
+  },
+  "authors": ["UDKAST — afventer godkendelse af Magnus Avnstorp og Rami Mossad Ibrahim"],
+  "rootNodeId": "mechanism",
+  "nodes": [
+    {
+      "id": "mechanism",
+      "question": {
+        "da": "Hvad er skadesmekanismen? Flamme, skoldning, kontakt, kemisk ætsning eller elektrisk?",
+        "en": "What is the injury mechanism? Flame, scald, contact, chemical or electrical?"
+      },
+      "orQuestion": { "da": "Skadesmekanisme?", "en": "Mechanism?" },
+      "answerType": "choice",
+      "options": [
+        {
+          "value": "flame",
+          "label": { "da": "Flamme", "en": "Flame" },
+          "synonyms": { "da": ["ild", "brand", "flammer"], "en": ["fire", "flames"] }
+        },
+        {
+          "value": "scald",
+          "label": { "da": "Skoldning", "en": "Scald" },
+          "synonyms": { "da": ["kogende vand", "damp", "varmt vand"], "en": ["hot water", "steam", "boiling"] }
+        },
+        {
+          "value": "contact",
+          "label": { "da": "Kontakt", "en": "Contact" },
+          "synonyms": { "da": ["kogeplade", "ovn", "varm flade"], "en": ["hotplate", "stove", "hot surface"] }
+        },
+        {
+          "value": "chemical",
+          "label": { "da": "Kemisk ætsning", "en": "Chemical" },
+          "synonyms": { "da": ["syre", "base", "ætsning", "lud"], "en": ["acid", "alkali", "caustic"] }
+        },
+        {
+          "value": "electrical",
+          "label": { "da": "Elektrisk", "en": "Electrical" },
+          "synonyms": { "da": ["strøm", "højspænding", "el"], "en": ["current", "high voltage", "electricity"] }
+        }
+      ],
+      "redFlags": [
+        {
+          "when": "electrical",
+          "message": {
+            "da": "Elektrisk skade: risiko for dybe vævsskader og arytmi. Hudlæsionen undervurderer altid skadens omfang. Konferér med vagthavende brandsårslæge, Rigshospitalet, 35 45 12 45.",
+            "en": "Electrical injury: risk of deep tissue damage and arrhythmia. The skin lesion always understates the true extent. Consult the burn unit."
+          },
+          "goto": "disp-emergency"
+        },
+        {
+          "when": "chemical",
+          "message": {
+            "da": "Kemisk ætsning: skyl straks og længe med rindende vand. Ætsninger fortsætter med at skade indtil stoffet er fjernet.",
+            "en": "Chemical burn: irrigate immediately and for a prolonged period. Chemical injury continues until the agent is removed."
+          }
+        }
+      ],
+      "edges": [{ "when": "*", "goto": "inhalation" }]
+    },
+    {
+      "id": "inhalation",
+      "question": {
+        "da": "Er der mistanke om inhalationsskade? Altså brand i lukket rum, sod i næse eller mund, hæshed, stridor eller svedne næsehår.",
+        "en": "Any suspicion of inhalation injury? Enclosed-space fire, soot in nose or mouth, hoarseness, stridor or singed nasal hair."
+      },
+      "orQuestion": { "da": "Inhalationsskade mistænkt?", "en": "Inhalation injury suspected?" },
+      "answerType": "boolean",
+      "help": {
+        "da": "Ved mindste mistanke: tidlig stillingtagen til intubation. Store brandskader gives 100 % ilt, 15 l/min.",
+        "en": "At the slightest suspicion: consider early intubation. Large burns receive 100% oxygen, 15 L/min."
+      },
+      "options": [
+        {
+          "value": "yes",
+          "label": { "da": "Ja", "en": "Yes" },
+          "synonyms": { "da": ["ja", "mistanke", "sod", "hæs"], "en": ["yes", "soot", "hoarse"] }
+        },
+        {
+          "value": "no",
+          "label": { "da": "Nej", "en": "No" },
+          "synonyms": { "da": ["nej", "ingen", "negativ"], "en": ["no", "none"] }
+        }
+      ],
+      "redFlags": [
+        {
+          "when": "yes",
+          "message": {
+            "da": "Mistanke om inhalationsskade. Sikr luftvej — tidlig intubation overvejes, da øvre luftvejsobstruktion kan udvikle sig under transport. Giv 100 % ilt. Kontakt vagthavende brandsårslæge, 35 45 12 45.",
+            "en": "Suspected inhalation injury. Secure the airway — consider early intubation, as upper airway obstruction can develop during transport. Give 100% oxygen. Contact the burn unit."
+          },
+          "goto": "disp-emergency"
+        }
+      ],
+      "edges": [{ "when": "*", "goto": "tbsa" }]
+    },
+    {
+      "id": "tbsa",
+      "question": {
+        "da": "Hvor stort er brandsårsarealet i procent af kroppens overflade? Husk at kun anden- og tredjegradslæsioner tælles med.",
+        "en": "What is the burn area as a percentage of total body surface? Remember that only second- and third-degree lesions count."
+      },
+      "orQuestion": { "da": "Areal i procent TBSA?", "en": "TBSA percentage?" },
+      "answerType": "number",
+      "unit": "% TBSA",
+      "min": 0,
+      "max": 100,
+      "help": {
+        "da": "Patientens egen håndflade inklusive alle fem fingre svarer til 1 %. Ni-procent-reglen gælder voksne; hos børn under 9 år flyttes 1 % fra hovedet til underekstremiteterne pr. leveår.",
+        "en": "The patient's own palm including all five fingers equals 1%. The rule of nines applies to adults; in children under 9, move 1% from the head to the lower limbs per year of age."
+      },
+      "edges": [
+        { "when": ">=20", "goto": "fluid" },
+        { "when": "*", "goto": "depth" }
+      ]
+    },
+    {
+      "id": "fluid",
+      "question": {
+        "da": "Areal på 20 procent eller derover. Er væskebehandling påbegyndt med to perifere venekatetre?",
+        "en": "Area of 20 percent or more. Has fluid resuscitation been started with two peripheral IV lines?"
+      },
+      "orQuestion": { "da": "Væskebehandling i gang? To PVK?", "en": "Fluids running? Two IV lines?" },
+      "answerType": "boolean",
+      "help": {
+        "da": "Anlæg to PVK og blærekateter med henblik på timediurese. Pak patienten varmt ind — hypotermi er en reel risiko. Se brandsaar.dk/væskebehandling for regimet.",
+        "en": "Place two IV lines and a urinary catheter to monitor hourly output. Keep the patient warm — hypothermia is a real risk."
+      },
+      "options": [
+        { "value": "yes", "label": { "da": "Ja", "en": "Yes" } },
+        { "value": "no", "label": { "da": "Nej", "en": "No" } }
+      ],
+      "redFlags": [
+        {
+          "when": "*",
+          "message": {
+            "da": "Stor brandskade på 20 procent eller mere. Kræver væskebehandling, opvarmning og kontakt til vagthavende brandsårslæge, Rigshospitalet, 35 45 12 45.",
+            "en": "Major burn of 20 percent or more. Requires fluid resuscitation, warming and contact with the burn unit."
+          },
+          "goto": "disp-emergency"
+        }
+      ],
+      "edges": [{ "when": "*", "goto": "disp-emergency" }]
+    },
+    {
+      "id": "depth",
+      "question": {
+        "da": "Hvor dyb vurderes forbrændingen? Epidermal, overfladisk dermal, dyb dermal eller fuldhud?",
+        "en": "How deep is the burn assessed to be? Epidermal, superficial dermal, deep dermal or full thickness?"
+      },
+      "orQuestion": { "da": "Dybde?", "en": "Depth?" },
+      "answerType": "choice",
+      "options": [
+        {
+          "value": "epidermal",
+          "label": { "da": "Epidermal (1. grad)", "en": "Epidermal (1st degree)" },
+          "synonyms": { "da": ["førstegrad", "rød", "solskoldning"], "en": ["first degree", "erythema"] }
+        },
+        {
+          "value": "superficial-dermal",
+          "label": { "da": "Overfladisk dermal", "en": "Superficial dermal" },
+          "synonyms": { "da": ["blærer", "vabler", "fugtig", "smertefuld"], "en": ["blisters", "moist", "painful"] }
+        },
+        {
+          "value": "deep-dermal",
+          "label": { "da": "Dyb dermal", "en": "Deep dermal" },
+          "synonyms": { "da": ["dyb", "plettet", "nedsat følesans"], "en": ["mottled", "reduced sensation"] }
+        },
+        {
+          "value": "full-thickness",
+          "label": { "da": "Fuldhud (3. grad)", "en": "Full thickness (3rd degree)" },
+          "synonyms": { "da": ["tredjegrad", "hvid", "læderagtig", "følelsesløs"], "en": ["white", "leathery", "insensate"] }
+        }
+      ],
+      "edges": [
+        { "when": "full-thickness", "goto": "circumferential" },
+        { "when": "deep-dermal", "goto": "circumferential" },
+        { "when": "*", "goto": "location" }
+      ]
+    },
+    {
+      "id": "circumferential",
+      "question": {
+        "da": "Er skaden cirkulær omkring en ekstremitet, hals eller thorax?",
+        "en": "Is the burn circumferential around a limb, the neck or the chest?"
+      },
+      "orQuestion": { "da": "Cirkulær skade?", "en": "Circumferential?" },
+      "answerType": "boolean",
+      "help": {
+        "da": "Ved dybe cirkulære skader kan aflastende incisioner (eskarotomier) blive nødvendige når ødemet tiltager. Kontakt Rigshospitalets brandsårsafdeling før anlæggelse.",
+        "en": "Deep circumferential burns may require escharotomy as oedema develops. Contact the burn unit before performing one."
+      },
+      "options": [
+        { "value": "yes", "label": { "da": "Ja", "en": "Yes" } },
+        { "value": "no", "label": { "da": "Nej", "en": "No" } }
+      ],
+      "redFlags": [
+        {
+          "when": "yes",
+          "message": {
+            "da": "Dyb cirkulær skade. Risiko for kompromitteret perifer cirkulation når ødemet tiltager — aflastende incision kan blive nødvendig. Ring til vagthavende brandsårslæge, 35 45 12 45, før du incidere.",
+            "en": "Deep circumferential burn. Risk of compromised distal circulation as oedema develops — escharotomy may be required. Call the burn unit before incising."
+          },
+          "goto": "disp-emergency"
+        }
+      ],
+      "edges": [{ "when": "*", "goto": "location" }]
+    },
+    {
+      "id": "location",
+      "question": {
+        "da": "Hvor sidder skaden? Ansigt, hænder, fødder, genitalier, led — eller andet område?",
+        "en": "Where is the burn located? Face, hands, feet, genitals, joints — or elsewhere?"
+      },
+      "orQuestion": { "da": "Lokalisation?", "en": "Location?" },
+      "answerType": "choice",
+      "options": [
+        {
+          "value": "face",
+          "label": { "da": "Ansigt eller hals", "en": "Face or neck" },
+          "synonyms": { "da": ["hoved", "øjne", "mund", "ansigtet"], "en": ["head", "eyes", "mouth"] }
+        },
+        {
+          "value": "hand",
+          "label": { "da": "Hånd eller fingre", "en": "Hand or fingers" },
+          "synonyms": { "da": ["hånden", "fingre", "håndflade"], "en": ["palm", "fingers"] }
+        },
+        {
+          "value": "foot",
+          "label": { "da": "Fod", "en": "Foot" },
+          "synonyms": { "da": ["fødder", "fodsål"], "en": ["feet", "sole"] }
+        },
+        {
+          "value": "genitals",
+          "label": { "da": "Genitalier eller perineum", "en": "Genitals or perineum" },
+          "synonyms": { "da": ["skridtet", "underliv"], "en": ["groin", "perineum"] }
+        },
+        {
+          "value": "joint",
+          "label": { "da": "Over et led", "en": "Across a joint" },
+          "synonyms": { "da": ["albue", "knæ", "aksel"], "en": ["elbow", "knee", "shoulder"] }
+        },
+        {
+          "value": "other",
+          "label": { "da": "Andet område", "en": "Other area" },
+          "synonyms": { "da": ["krop", "ryg", "arm", "ben"], "en": ["trunk", "back", "arm", "leg"] }
+        }
+      ],
+      "edges": [
+        { "when": "other", "goto": "cooled" },
+        { "when": "*", "goto": "disp-refer" }
+      ]
+    },
+    {
+      "id": "cooled",
+      "question": {
+        "da": "Er såret skyllet med koldt vand i tyve til tredive minutter?",
+        "en": "Has the wound been cooled with cold water for twenty to thirty minutes?"
+      },
+      "orQuestion": { "da": "Skyllet 20-30 minutter?", "en": "Cooled 20-30 minutes?" },
+      "answerType": "boolean",
+      "help": {
+        "da": "Skylning ud over 20-30 minutter er kun smertestillende og risikerer at gøre patienten hypoterm. Giv smertestillende i stedet.",
+        "en": "Cooling beyond 20-30 minutes is only analgesic and risks hypothermia. Give analgesia instead."
+      },
+      "options": [
+        { "value": "yes", "label": { "da": "Ja", "en": "Yes" } },
+        { "value": "no", "label": { "da": "Nej", "en": "No" } }
+      ],
+      "edges": [
+        { "when": "no", "goto": "disp-treat" },
+        { "when": "*", "goto": "disp-treat" }
+      ]
+    }
+  ],
+  "dispositions": [
+    {
+      "id": "disp-emergency",
+      "severity": "emergency",
+      "title": {
+        "da": "Akut: kontakt brandsårsafdelingen nu",
+        "en": "Emergency: contact the burn unit now"
+      },
+      "guidance": {
+        "da": "Ring til vagthavende brandsårslæge på Rigshospitalet, 35 45 12 45. Oplys skadesmekanisme, skadestidspunkt, vitale parametre, vurderet brandsårsareal og hvilken behandling der er iværksat. Sikr luftvej, giv ilt, anlæg to perifere venekatetre og blærekateter, og hold patienten varm under transport. Aftal fremsendelse af fotos — det gør vurderingen lettere og fejlvisitering mindre sandsynlig.",
+        "en": "Call the on-call burn surgeon at Rigshospitalet, +45 35 45 12 45. State mechanism, time of injury, vital signs, estimated burn area and treatment already given. Secure the airway, give oxygen, place two IV lines and a urinary catheter, and keep the patient warm during transport. Agree on sending photos — it makes assessment easier and mistriage less likely."
+      },
+      "sources": ["brandsaar.dk/overflytning-af-brandsårspatienter", "brandsaar.dk/vaeskebehandling"]
+    },
+    {
+      "id": "disp-refer",
+      "severity": "refer",
+      "title": {
+        "da": "Henvis: skade i specialområde",
+        "en": "Refer: burn in a special area"
+      },
+      "guidance": {
+        "da": "Skader i ansigt, på hænder, fødder, genitalier eller over led henvises til vurdering på brandsårsafdeling eller brandsårsambulatorium. Ved tvivl om behandling eller overflytning kan vagthavende altid konfereres på 35 45 12 45. Større håndskader skal indlægges. Ved håndskader placeres forbindingen så bevægeligheden begrænses mindst muligt — stive fingre er den væsentligste følgeskade.",
+        "en": "Burns to the face, hands, feet, genitals or across joints should be referred to the burn unit or burn outpatient clinic. When in doubt about treatment or transfer, consult the on-call burn surgeon. Larger hand burns require admission. For hand burns, dress so mobility is restricted as little as possible — stiff fingers are the main sequela."
+      },
+      "sources": ["brandsaar.dk/ambulant-behandling", "brandsaar.dk/håndforbrændinger-eller-skoldninger-2"]
+    },
+    {
+      "id": "disp-treat",
+      "severity": "treat",
+      "title": {
+        "da": "Ambulant behandling: pak ind og følg op",
+        "en": "Outpatient treatment: dress and follow up"
+      },
+      "guidance": {
+        "da": "Fjern løs hud og bullae. Sæbevask sårene i cirka ti minutter og skyl sæben af med postevand. Forbind med Mepilex Transfer, alternativt to lag Jelonet, dernæst sugende gaze og elastikbind. Forbindingen skal sidde urørt i ti dage medmindre der er gennemsivning eller infektionstegn. Patienten møder til udpakning efter ti til fjorten dage. Rådgiv patienten om at tage paracetamol ét gram og ibuprofen fire hundrede milligram før udpakning. Vær opmærksom på infektionstegn: rødme og pus.",
+        "en": "Remove loose skin and blisters. Wash the wounds with soap for about ten minutes and rinse with tap water. Dress with Mepilex Transfer, alternatively two layers of Jelonet, then absorbent gauze and an elastic bandage. Leave the dressing untouched for ten days unless there is strike-through or signs of infection. The patient returns for dressing removal after ten to fourteen days. Advise paracetamol one gram and ibuprofen four hundred milligrams before removal. Watch for signs of infection: redness and pus."
+      },
+      "sources": ["brandsaar.dk/ambulant-behandling"]
+    }
+  ]
+}
