@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test:intent": "node components/unified/intent.test.mjs"
   },
   "dependencies": {
     "@corti/sdk": "^5.0.0",

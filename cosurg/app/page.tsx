@@ -20,8 +20,14 @@ import type { TreeSummary } from "@/components/TreePicker";
 import { BrandWatermark } from "@/components/BrandMark";
 import { isEcho, matchCommand, type VoiceCommand } from "@/components/voiceCommands";
 import { IntakeCard } from "@/components/IntakeCard";
-import { followUpTreeId, routeUtterance } from "@/components/treeRouting";
+import { followUpTreeId, routeUtterance, suggestTreeId } from "@/components/treeRouting";
 import type { SessionUsage } from "@/components/UsagePanel";
+import { useClinicalChat } from "@/components/chat/useClinicalChat";
+import type { ChatAnswer } from "@/lib/corti/chat";
+import { classifyUtterance, looksLikeQuestion, matchAffirmative, matchIntentChoice } from "@/components/unified/intent";
+import { IntentChoiceCard, LookupCard } from "@/components/unified/LookupCard";
+import { spokenText } from "@/components/unified/spoken";
+import { ut } from "@/components/unified/text";
 
 /**
  * Brandsårstræet er bundtet med, så første skærmbillede står med det samme —
@@ -125,6 +131,29 @@ export default function Home() {
   });
   const busyRef = useRef(false);
 
+  /*
+   * OPSLAGET — det der før var en selvstændig chatside.
+   *
+   * Lægen skal ikke vide at vi internt har "træer" og "chat". Han taler, og
+   * appen finder ud af om ytringen er et svar i forløbet eller et fagligt
+   * spørgsmål. Samtalen er den samme hook som chatsiden bruger; den er blot
+   * flyttet ind i forløbet i stedet for at ligge ved siden af det.
+   *
+   * Der er stadig kun ÉN mikrofon. `useClinicalChat` rører ikke lyd — den
+   * sender tekst og læser SSE — så den ene lytter i `useTranscribe` kan dele
+   * sin tekst mellem de to formål uden at nogen slås om `getUserMedia`.
+   */
+  const { turns: lookupTurns, ask: askLookup, reset: resetLookup } = useClinicalChat(lang);
+  const [lookupOpen, setLookupOpen] = useState(false);
+  const [lookupStatus, setLookupStatus] = useState<string | null>(null);
+  const [speakingTurn, setSpeakingTurn] = useState<string | null>(null);
+  /** Ytringen vi ikke turde afgøre — vist som et valg frem for et gæt. */
+  const [ambiguity, setAmbiguity] = useState<{ text: string; reasons: string[] } | null>(null);
+  /** Tilbuddet om at gå fra opslag til forløb, når svaret er landet. */
+  const [offer, setOffer] = useState<{ treeId: string; name: string } | null>(null);
+  const [intakeBusy, setIntakeBusy] = useState(false);
+  const lookupBusyRef = useRef(false);
+
   const node = state.currentNodeId ? getNode(tree, state.currentNodeId) : undefined;
   const disposition = state.dispositionId ? getDisposition(tree, state.dispositionId) : undefined;
   const speakAll = orMode || fullVoice;
@@ -202,6 +231,76 @@ export default function Home() {
     [speakAll, orMode, say, tree],
   );
 
+  /*
+   * Et opslag varer målt 35-70 sekunder, og imens kan lægen have svaret på
+   * noden, være rykket videre eller have skiftet forløb. Den asynkrone
+   * afslutning må derfor ikke lukke op i den tilstand den startede med — den
+   * skal se på hvor vi ER, når svaret lander.
+   */
+  const stateRef = useRef(state);
+  useEffect(() => {
+    stateRef.current = state;
+  }, [state]);
+
+  /**
+   * Slå spørgsmålet op, og vend tilbage til præcis samme sted i forløbet.
+   *
+   * "Vend tilbage" er et lidt for stort ord for hvad der faktisk sker, og det er
+   * med vilje: vi forlader ALDRIG noden. Beslutningsvejen røres ikke, det aktive
+   * spørgsmål bliver stående på skærmen, og opslaget lægger sig under det. Der
+   * er derfor ingen tilstand at gemme og hente frem igen — og dermed intet der
+   * kan gå tabt undervejs. Det eneste vi gør bagefter er at stille spørgsmålet
+   * højt igen, så den der ikke kigger på skærmen ved hvor han er.
+   */
+  const runLookup = useCallback(
+    async (question: string, suggestTreeId?: string | null) => {
+      if (lookupBusyRef.current) return;
+      lookupBusyRef.current = true;
+
+      /*
+       * Ytringen er et spørgsmål, ikke en oplysning om patienten. Nåede den
+       * transskriptet — fordi vi først var i tvivl og spurgte — tages den ud
+       * igen her. Ét sted, så det gælder uanset hvilken vej opslaget kom i
+       * gang. Transskriptet fodrer både journalnotatet og kodningen, og et
+       * spørgsmål derinde kan blive til en påstand om patienten.
+       */
+      setTranscript((prev) => {
+        const i = prev.lastIndexOf(question);
+        return i === -1 ? prev : [...prev.slice(0, i), ...prev.slice(i + 1)];
+      });
+
+      setAmbiguity(null);
+      setOffer(null);
+      setLookupOpen(true);
+      setLookupStatus(ut("lookupWorking", lang));
+      if (speakAll) void say(ut("lookupAck", lang));
+
+      try {
+        const { answer } = await askLookup(question);
+        if (!answer) return;
+
+        if (suggestTreeId) {
+          const t = trees.find((x) => x.id === suggestTreeId);
+          if (t) setOffer({ treeId: t.id, name: t.name[lang] });
+        }
+
+        if (speakAll) {
+          await say(spokenText(answer, lang));
+          if (suggestTreeId) {
+            void say(ut("offerSpoken", lang));
+          } else if (stateRef.current.currentNodeId) {
+            await say(ut("lookupSpokenResume", lang));
+            askCurrent(stateRef.current);
+          }
+        }
+      } finally {
+        lookupBusyRef.current = false;
+        setLookupStatus(null);
+      }
+    },
+    [lang, speakAll, say, askCurrent, askLookup, trees],
+  );
+
   const resetSession = useCallback(
     (t: DecisionTree, nextLang: Lang) => {
       stopSpeaking();
@@ -214,9 +313,19 @@ export default function Home() {
       setAddendumOpen(false);
       setFlash(null);
       setStatus(null);
+      /*
+       * Et nyt forløb er en ny patient. Opslaget fra den forrige — og Cortis
+       * tråd bag det — hører ikke med over: "og hvis han er et barn?" må ikke
+       * kunne henvise til en anden patients spørgsmål.
+       */
+      resetLookup();
+      setLookupOpen(false);
+      setLookupStatus(null);
+      setAmbiguity(null);
+      setOffer(null);
       return fresh;
     },
-    [stopDictation],
+    [stopDictation, resetLookup],
   );
 
   /**
@@ -263,22 +372,78 @@ export default function Home() {
   );
 
   /**
-   * Indgangen: lægen beskriver patienten, appen finder forløbet.
+   * Indgangen: lægen siger hvad det drejer sig om, og appen finder ud af resten.
    *
-   * Genkendelsen er konservativ med vilje. Rammer ytringen to forløb lige godt
-   * — "forbinding på en hånd med brandsår" gør — så spørger vi. At starte det
-   * forkerte forløb er værre end at bruge to sekunder på at spørge.
+   * Der er to slags ytringer her, og de ligner hinanden mere end man skulle tro.
+   * "En mand har fået kogende vand over hånden" er en PATIENT — den skal starte
+   * et forløb. "Hvornår skal en brandsårspatient overflyttes?" er et
+   * SPØRGSMÅL — og det rammer præcis de samme ord i forløbets ordliste. Uden
+   * spørgsmålsprøven ville appen starte en vurdering af en patient der ikke
+   * findes, og lægen ville stå med "Hvad er skadesmekanismen?" på et opslag.
+   *
+   * Forløbsgenkendelsen er konservativ med vilje. Rammer ytringen to forløb
+   * lige godt — "forbinding på en hånd med brandsår" gør — så spørger vi. At
+   * starte det forkerte forløb er værre end at bruge to sekunder på at spørge.
    */
   const handleIntake = useCallback(
-    (text: string) => {
+    async (text: string) => {
       const { match, ranked } = routeUtterance(text, trees, lang);
+      /*
+       * Det forløb vi vil TILBYDE bagefter, hvis ytringen viser sig at være et
+       * spørgsmål. Her bruges den LØSE genkendelse med vilje: et tilbud kan
+       * afvises med ét klik, mens et forkert startet forløb sender lægen ned ad
+       * et klinisk spor han ikke bad om. Uden den ville "hvornår skal en
+       * brandsårspatient overflyttes?" ende uden tilbud, fordi den stramme regel
+       * ikke kan se "brandsår" inde i "brandsårspatient".
+       */
+      const suggestion = match?.treeId ?? ranked[0]?.treeId ?? suggestTreeId(text, trees, lang);
+
+      if (looksLikeQuestion(text)) {
+        setIntakeMiss(null);
+        void runLookup(text, suggestion);
+        return;
+      }
+
       if (match) {
         void beginTree(match.treeId, text);
         return;
       }
+
+      /*
+       * Hverken et forløb eller et tydeligt spørgsmål. Før stoppede appen her
+       * med "det kunne jeg ikke henføre til et forløb" — en blindgyde. Nu
+       * spørger vi agenten hvad det var. Kaldet koster tid og credits, men KUN
+       * på den vej der i forvejen ikke førte nogen steder hen.
+       */
+      setIntakeBusy(true);
+      try {
+        const res = await fetch("/api/route", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            context: "intake",
+            lang,
+            utterance: text,
+            pathways: trees.map((t) => t.name[lang]),
+          }),
+          signal: AbortSignal.timeout(TIMEOUT_INTERPRET),
+        });
+        const data = (await res.json()) as { intent?: string };
+        if (data.intent === "question") {
+          setIntakeMiss(null);
+          void runLookup(text, suggestion);
+          return;
+        }
+      } catch {
+        // Nettet svigtede. Så falder vi tilbage på det vi selv kunne se — og
+        // det er stadig bedre end at gætte på et forløb.
+      } finally {
+        setIntakeBusy(false);
+      }
+
       setIntakeMiss({ text, candidates: ranked.map((r) => r.treeId) });
     },
-    [trees, lang, beginTree],
+    [trees, lang, beginTree, runLookup],
   );
 
   /**
@@ -397,45 +562,42 @@ export default function Home() {
     [orMode, flash, state, tree, lang, speakAll, askCurrent, acknowledgeAndAdvance, acknowledgeFlash, say],
   );
 
-  const handleUtterance = useCallback(
-    async (text: string) => {
-      // Før et forløb er valgt, er enhver ytring en beskrivelse af patienten —
-      // ikke et svar. Samme vej ind for tale og skrift.
-      if (!started) {
-        handleIntake(text);
-        return;
+  /**
+   * Spørg agenten hvad lægen havde gang i. Sikkerhedsnet, ikke hovedvej — se
+   * app/api/route/agent.ts. Fejler kaldet, er svaret "unclear", og så gør vi
+   * det vi altid gør ved tvivl: spørger lægen i stedet for at gætte.
+   */
+  const routeIntent = useCallback(
+    async (text: string, nodeId: string): Promise<string> => {
+      try {
+        const res = await fetch("/api/route", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ context: "node", lang, utterance: text, treeId: tree.id, nodeId }),
+          signal: AbortSignal.timeout(TIMEOUT_INTERPRET),
+        });
+        const data = (await res.json()) as { intent?: string };
+        return typeof data.intent === "string" ? data.intent : "unclear";
+      } catch {
+        return "unclear";
       }
+    },
+    [lang, tree.id],
+  );
 
-      /*
-       * Er tillægsfeltet åbent, hører alt hvad der skrives eller siges til
-       * journaltillægget — ikke til svarfortolkningen, og ikke til
-       * transskriptet: transskriptet er hvad der blev sagt i rummet, tillægget
-       * er lægens egen formulering til journalen, og notatet får dem hver for
-       * sig. Vi ser på FELTET og ikke på om diktatet kører, ellers ville et
-       * skrevet tillæg blive tolket som et svar i det øjeblik mikrofonen
-       * svigtede.
-       */
-      if (addendumOpen) {
-        appendDictation(text);
-        return;
-      }
-
-      setTranscript((prev) => [...prev, text]);
-
-      // Håndfri kommandoer før svarfortolkning — de skal ikke koste et agent-kald.
-      const current = state.currentNodeId ? getNode(tree, state.currentNodeId) : undefined;
-      const cmd = matchCommand(text, {
-        softNext: !!current && isStepLike(current),
-        awaitingAcknowledge: !!flash,
-      });
-
-      if (isSelfEcho(text, !!cmd)) return;
-      if (cmd) {
-        await runCommand(cmd);
-        return;
-      }
-
-      if (flash || !state.currentNodeId || busyRef.current) return;
+  /**
+   * Send ytringen til svarfortolkeren og ryk træet hvis den kan afgøres.
+   *
+   * `escalate` sættes når det deterministiske lag ikke kunne se hvad ytringen
+   * var. Melder fortolkeren så også tvivl, er der to muligheder tilbage: enten
+   * var det et dårligt formuleret svar, eller også var det slet ikke et svar.
+   * Før spurgte vi bare det samme spørgsmål igen — også når lægen havde stillet
+   * sit eget. Nu spørger vi agenten, og slår op hvis det var et spørgsmål.
+   */
+  const interpretUtterance = useCallback(
+    async (text: string, escalate: boolean) => {
+      const currentNodeId = stateRef.current.currentNodeId;
+      if (!currentNodeId || busyRef.current) return;
 
       const seq = ++interpretSeqRef.current;
       busyRef.current = true;
@@ -446,7 +608,7 @@ export default function Home() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             treeId: tree.id,
-            nodeId: state.currentNodeId,
+            nodeId: currentNodeId,
             lang,
             utterance: text,
           }),
@@ -467,6 +629,14 @@ export default function Home() {
         // beskrives ikke i træet. Kassér det frem for at rykke to gange.
         if (seq !== interpretSeqRef.current) return;
 
+        /*
+         * Er vi rykket videre imens — nogen klikkede et svar, eller et rødt
+         * flag sprang — så hører fortolkningen til en node vi ikke står på
+         * længere. Den ville lande som svar på et andet spørgsmål end det den
+         * blev givet til. Kassér den.
+         */
+        if (stateRef.current.currentNodeId !== currentNodeId) return;
+
         if (data.error) {
           setStatus(data.error);
           return;
@@ -474,13 +644,24 @@ export default function Home() {
 
         // Aldrig gæt: uklart svar → spørg igen i stedet for at rykke videre.
         if (data.needsClarification || !data.value) {
+          /*
+           * Måske var det slet ikke et svar. Det deterministiske lag kunne
+           * ikke se det, og fortolkeren tør ikke afgøre det — så er agenten
+           * det sidste vi har, før vi ender med at stille det samme spørgsmål
+           * for tredje gang til en læge der spurgte om noget andet.
+           */
+          if (escalate && (await routeIntent(text, currentNodeId)) === "question") {
+            setStatus(null);
+            void runLookup(text);
+            return;
+          }
           setStatus(tr("unclear", lang));
-          const q = data.clarificationQuestion ?? questionText(getNode(tree, state.currentNodeId)!, lang, orMode);
+          const q = data.clarificationQuestion ?? questionText(getNode(tree, currentNodeId)!, lang, orMode);
           if (speakAll) void say(q);
           return;
         }
 
-        const { state: next, redFlag } = advance(tree, state, data.value, text);
+        const { state: next, redFlag } = advance(tree, stateRef.current, data.value, text);
         setState(next);
         setStatus(null);
 
@@ -524,20 +705,160 @@ export default function Home() {
         if (seq === interpretSeqRef.current) busyRef.current = false;
       }
     },
+    [tree, lang, orMode, speakAll, askCurrent, say, routeIntent, runLookup],
+  );
+
+  /**
+   * Én indgang for alt lægen siger og skriver.
+   *
+   * Det er hele sammenkoblingen samlet på ét sted. Lægen skal ikke vælge mellem
+   * "forløb" og "opslag" — han taler, og rækkefølgen herunder finder ud af hvad
+   * han ville. Rækkefølgen er ikke tilfældig; hvert trin er billigere og mere
+   * sikkert end det næste:
+   *
+   *   1. Et tilbud eller et valg vi selv har stillet — svaret hører til DET.
+   *   2. Journaltillæg, hvis feltet er åbent.
+   *   3. Håndfri kommandoer ("næste", "tilbage") — de skal ikke koste et kald.
+   *   4. Spørgsmål eller svar, afgjort deterministisk (unified/intent.ts).
+   *   5. Svarfortolkning hos Corti, med agent-klassificering som sidste net.
+   */
+  const handleUtterance = useCallback(
+    async (text: string) => {
+      /*
+       * Tog lægen imod tilbuddet om at blive ført gennem forløbet? Det ligger
+       * FØRST, fordi tilbuddet står på indgangsskærmen, hvor enhver anden
+       * ytring ville blive læst som en ny patientbeskrivelse.
+       */
+      if (offer && matchAffirmative(text)) {
+        const id = offer.treeId;
+        setOffer(null);
+        void beginTree(id);
+        return;
+      }
+
+      // Før et forløb er valgt, er ytringen enten en patient eller et spørgsmål.
+      // Samme vej ind for tale og skrift.
+      if (!started) {
+        void handleIntake(text);
+        return;
+      }
+
+      /*
+       * Er tillægsfeltet åbent, hører alt hvad der skrives eller siges til
+       * journaltillægget — ikke til svarfortolkningen, og ikke til
+       * transskriptet: transskriptet er hvad der blev sagt i rummet, tillægget
+       * er lægens egen formulering til journalen, og notatet får dem hver for
+       * sig. Vi ser på FELTET og ikke på om diktatet kører, ellers ville et
+       * skrevet tillæg blive tolket som et svar i det øjeblik mikrofonen
+       * svigtede.
+       */
+      if (addendumOpen) {
+        appendDictation(text);
+        return;
+      }
+
+      /*
+       * Transskriptet er de kliniske oplysninger om DENNE patient. Det sendes
+       * videre til både journalnotatet og kodningen, og derfor må et
+       * litteraturspørgsmål ikke lande i det: "hvordan beregner jeg TBSA på et
+       * barn?" ville ellers kunne læses som at patienten er et barn, og den
+       * fejl ville se fuldstændig troværdig ud i en færdig kode. Vi skriver
+       * derfor først ned, når vi ved hvad ytringen var.
+       */
+      const record = () => setTranscript((prev) => [...prev, text]);
+
+      /*
+       * Har vi spurgt "var det et svar eller et spørgsmål?", så er det DET vi
+       * hører svaret på nu. Kun korte, entydige ytringer tæller — siger lægen
+       * i stedet noget helt nyt, falder valget bort, og den nye ytring
+       * behandles forfra.
+       */
+      if (ambiguity) {
+        const choice = matchIntentChoice(text);
+        const held = ambiguity.text;
+        setAmbiguity(null);
+        if (choice === "question") {
+          void runLookup(held);
+          return;
+        }
+        if (choice === "answer") {
+          await interpretUtterance(held, false);
+          return;
+        }
+      }
+
+      // Håndfri kommandoer før alt andet — de skal ikke koste et agent-kald.
+      const current = state.currentNodeId ? getNode(tree, state.currentNodeId) : undefined;
+      const cmd = matchCommand(text, {
+        softNext: !!current && isStepLike(current),
+        awaitingAcknowledge: !!flash,
+      });
+
+      if (isSelfEcho(text, !!cmd)) return;
+      if (cmd) {
+        record();
+        await runCommand(cmd);
+        return;
+      }
+
+      if (flash) {
+        record();
+        return;
+      }
+
+      /*
+       * Ingen aktiv node: forløbet er kørt til ende. Der er intet at svare på —
+       * men et fagligt spørgsmål skal stadig kunne stilles, og anbefalingen
+       * bliver stående på skærmen imens.
+       */
+      if (!current) {
+        if (looksLikeQuestion(text)) {
+          void runLookup(text);
+          return;
+        }
+        record();
+        return;
+      }
+
+      const verdict = classifyUtterance(text, current, lang);
+
+      if (verdict.intent === "question") {
+        void runLookup(text);
+        return;
+      }
+
+      record();
+
+      /*
+       * Tvetydig. "Er det dybt?" på dybde-noden kan både være svaret "dyb" og
+       * et spørgsmål om hvordan man vurderer dybde. Vi gætter ikke på noget der
+       * ender i en journal — vi spørger.
+       */
+      if (verdict.intent === "ambiguous") {
+        setAmbiguity({ text, reasons: verdict.reasons });
+        if (speakAll) void say(ut("ambiguousSpoken", lang));
+        return;
+      }
+
+      await interpretUtterance(text, verdict.intent === "unknown");
+    },
     [
-      state,
-      tree,
-      lang,
-      orMode,
-      speakAll,
-      askCurrent,
+      offer,
+      beginTree,
       started,
       handleIntake,
       addendumOpen,
       appendDictation,
+      ambiguity,
+      runLookup,
+      interpretUtterance,
+      state,
+      tree,
       flash,
-      runCommand,
       isSelfEcho,
+      runCommand,
+      lang,
+      speakAll,
       say,
     ],
   );
@@ -692,6 +1013,42 @@ export default function Home() {
     else void start();
   }, [listening, start, stop]);
 
+  /** Det opslag der vises. Kun det seneste — tidligere svar er allerede læst. */
+  const activeTurn = lookupTurns.length > 0 ? lookupTurns[lookupTurns.length - 1] : null;
+
+  const toggleSpeakAnswer = useCallback(
+    (answer: ChatAnswer, turnId: string) => {
+      if (speakingTurn === turnId) {
+        stopSpeaking();
+        setSpeakingTurn(null);
+        return;
+      }
+      setSpeakingTurn(turnId);
+      void say(spokenText(answer, lang)).finally(() => setSpeakingTurn(null));
+    },
+    [speakingTurn, say, lang],
+  );
+
+  /**
+   * Luk opslaget og vend tilbage til spørgsmålet. Der er intet at genskabe —
+   * noden har stået der hele tiden — så det eneste der sker er at vi stiller
+   * spørgsmålet højt igen for den der ikke kigger på skærmen.
+   */
+  const closeLookup = useCallback(() => {
+    stopSpeaking();
+    setSpeakingTurn(null);
+    setLookupOpen(false);
+    setOffer(null);
+    if (started && stateRef.current.currentNodeId) askCurrent(stateRef.current);
+  }, [started, askCurrent]);
+
+  /*
+   * Én statuslinje. Svarfortolkning og opslag kan køre samtidig — lægen kan
+   * spørge mens agenten stadig tygger på hans forrige svar — og fortolkningen
+   * vejer tungest, fordi den er den der flytter beslutningen.
+   */
+  const liveStatus = status ?? lookupStatus;
+
   /**
    * Diktat og ambient lytning deler den fysiske mikrofon og må derfor aldrig
    * køre samtidig: to optagere på samme enhed ville sende det samme diktat ind
@@ -793,6 +1150,53 @@ export default function Home() {
   const followUpId = followUpTreeId(tree.id, state.dispositionId);
   const followUp = followUpId ? (trees.find((t) => t.id === followUpId) ?? null) : null;
 
+  /*
+   * Opslaget og tvivlsspørgsmålet deler plads. De kan aldrig optræde samtidig:
+   * tvivlen ER spørgsmålet om hvorvidt der skal slås op, så det ene afløser
+   * altid det andet. Begge lægger sig UNDER det aktive spørgsmål og skubber
+   * derfor aldrig til det lægen er ved at svare på.
+   */
+  const lookupSlot = ambiguity ? (
+    <IntentChoiceCard
+      lang={lang}
+      utterance={ambiguity.text}
+      reasons={ambiguity.reasons}
+      onAnswer={() => {
+        const held = ambiguity.text;
+        setAmbiguity(null);
+        void interpretUtterance(held, false);
+      }}
+      onLookUp={() => {
+        const held = ambiguity.text;
+        setAmbiguity(null);
+        void runLookup(held);
+      }}
+    />
+  ) : lookupOpen && activeTurn ? (
+    <LookupCard
+      lang={lang}
+      turn={activeTurn}
+      held={started && state.currentNodeId ? { step: state.path.length + 1, total: tree.nodes.length } : null}
+      heldDone={started && !!state.dispositionId}
+      speaking={speakingTurn === activeTurn.id}
+      onSpeak={(answer) => toggleSpeakAnswer(answer, activeTurn.id)}
+      onClose={closeLookup}
+      offer={
+        offer
+          ? {
+              name: offer.name,
+              onAccept: () => {
+                const id = offer.treeId;
+                setOffer(null);
+                void beginTree(id);
+              },
+              onDismiss: () => setOffer(null),
+            }
+          : null
+      }
+    />
+  ) : null;
+
   // OR-tilstand forudsætter et valgt forløb — der er intet at føre kirurgen
   // igennem før da, og indgangsspørgsmålet hører hjemme på den lyse skærm.
   if (orMode && started) {
@@ -809,7 +1213,12 @@ export default function Home() {
         totalNodes={tree.nodes.length}
         progress={progress}
         listening={listening}
-        status={status}
+        /*
+         * I OR-tilstand er kirurgen steril og kigger ikke på skærmen. Et opslag
+         * har derfor ingen visuel plads her — det leveres som tale, og linjen
+         * her er blot livstegnet mens agenten henter kilderne.
+         */
+        status={liveStatus}
         canAdvance={canAdvance}
         notice={notice}
         onNext={() => void runCommand("next")}
@@ -876,19 +1285,35 @@ export default function Home() {
         )}
 
         {!started && (
-          <IntakeCard
-            lang={lang}
-            trees={trees}
-            ambiguous={intakeMiss?.candidates ?? []}
-            unresolved={intakeMiss?.text ?? null}
-            listening={listening}
-            interim={interim}
-            onToggleMic={toggleMic}
-            onSubmit={(t) => void handleUtterance(t)}
-            onSelectTree={(id) => void beginTree(id)}
-            onGenerateNote={generateNote}
-            noteBusy={noteBusy}
-          />
+          <>
+            <IntakeCard
+              lang={lang}
+              trees={trees}
+              ambiguous={intakeMiss?.candidates ?? []}
+              unresolved={intakeMiss?.text ?? null}
+              listening={listening}
+              interim={interim}
+              onToggleMic={toggleMic}
+              onSubmit={(t) => void handleUtterance(t)}
+              onSelectTree={(id) => void beginTree(id)}
+              onGenerateNote={generateNote}
+              noteBusy={noteBusy}
+            />
+
+            {/* Kun mens agenten afgør om ytringen var et spørgsmål. Linjen
+                erstatter intet og skubber intet — den lægger sig under kortet. */}
+            {intakeBusy && (
+              <p
+                role="status"
+                aria-live="polite"
+                className="mt-4 text-sm leading-relaxed text-[var(--ink-soft)]"
+              >
+                {ut("intakeThinking", lang)}
+              </p>
+            )}
+
+            {lookupSlot && <div className="mt-6">{lookupSlot}</div>}
+          </>
         )}
 
         {note && <NotePanel note={note} lang={lang} />}
@@ -934,6 +1359,14 @@ export default function Home() {
                 />
               </div>
             )}
+
+            {/*
+              Opslaget lægger sig UNDER spørgsmålet, aldrig i stedet for det.
+              Lægen kan se hele vejen igennem at forløbet er intakt — og fordi
+              kortet har fast højde, rykker siden sig ikke når svaret skifter
+              fra fremdrift til kilder undervejs.
+            */}
+            {lookupSlot && <div className="mt-6">{lookupSlot}</div>}
           </section>
 
           <aside className="space-y-4">
@@ -944,7 +1377,7 @@ export default function Home() {
               stepLabel={`${state.path.length}/${tree.nodes.length}`}
               lang={lang}
             />
-            <TranscriptPanel lines={transcript} interim={interim} listening={listening} status={status} lang={lang} />
+            <TranscriptPanel lines={transcript} interim={interim} listening={listening} status={liveStatus} lang={lang} />
 
             {tree.authors && <p className="text-xs text-[var(--ink-faint)]">{tree.authors.join(", ")}</p>}
           </aside>

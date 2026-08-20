@@ -179,6 +179,34 @@ export function routeUtterance(utterance: string, trees: TreeSummary[], lang: La
 }
 
 /**
+ * Hvilket forløb kunne ytringen HANDLE om — til et tilbud, ikke til en start.
+ *
+ * Forskellen på denne og `routeUtterance` er hvad fejlen koster. `routeUtterance`
+ * STARTER et forløb, og et forkert startet forløb sender lægen ned ad et klinisk
+ * spor han ikke bad om — derfor kræver den ordgrænser, et absolut minimum og et
+ * klart forspring. Her handler det om at kunne sige "skal jeg føre dig gennem
+ * vurderingen?" efter et opslag. Svarer lægen nej, er der intet sket.
+ *
+ * Derfor må matchningen være løs: ren indeholdelse, ingen ordgrænser. Det er
+ * netop hvad der skal til for at fange de lange danske sammensætninger —
+ * "brandsårspatient", "brandsårscenter" — som den stramme regel med vilje lader
+ * gå. Funktionen må ALDRIG bruges til at starte et forløb.
+ */
+export function suggestTreeId(utterance: string, trees: TreeSummary[], lang: Lang): string | null {
+  const text = utterance.toLowerCase();
+  let best: { treeId: string; score: number } | null = null;
+
+  for (const tree of trees) {
+    const stems = KEYWORDS[tree.id] ?? nameStems(tree, lang);
+    let score = stems.reduce((n, stem) => (text.includes(stem) ? n + 1 : n), 0);
+    if (score > 0 && (REGION_HINTS[tree.id] ?? []).some((h) => text.includes(h))) score += 1;
+    if (score > 0 && (!best || score > best.score)) best = { treeId: tree.id, score };
+  }
+
+  return best?.treeId ?? null;
+}
+
+/**
  * Det oplagte næste forløb når et træ er kørt til ende.
  *
  * Holdt som en eksplicit tabel og ikke som en regel: hvilket forløb der følger

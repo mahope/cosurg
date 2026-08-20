@@ -8,6 +8,7 @@ import { useTranscribe } from "@/lib/audio/useTranscribe";
 import { micMessage, tr } from "@/lib/i18n";
 import type { ChatAnswer } from "@/lib/corti/chat";
 import type { Lang } from "@/lib/tree/types";
+import { spokenText } from "@/components/unified/spoken";
 import { AnswerCard } from "./AnswerCard";
 import { ChatComposer } from "./ChatComposer";
 import { ProgressTrail } from "./ProgressTrail";
@@ -26,9 +27,6 @@ import { useClinicalChat } from "./useClinicalChat";
  * går TIL og kommer tilbage fra, ikke en notifikation der afbryder.
  */
 
-/** TTS afregnes pr. tegn og /api/tts klipper ved 500 — vi klipper selv, ved en sætning. */
-const SPOKEN_LIMIT = 380;
-
 /** Hvor længe efter egen tale vi ignorerer mikrofonen, så appen ikke hører sig selv. */
 const ECHO_TAIL_MS = 900;
 
@@ -37,27 +35,6 @@ const ACK_DEAF_MS = 6_000;
 
 /** Kortere end dette er ikke et spørgsmål — det er en rømmen sig. */
 const MIN_UTTERANCE = 5;
-
-function clipToSentence(text: string, limit: number): string {
-  if (text.length <= limit) return text;
-  const cut = text.slice(0, limit);
-  const stop = Math.max(cut.lastIndexOf("."), cut.lastIndexOf("!"), cut.lastIndexOf("?"));
-  return stop > limit * 0.5 ? cut.slice(0, stop + 1) : `${cut.trimEnd()}…`;
-}
-
-/** Hvad der læses op: det korte resumé, og hvor mange kilder det hviler på. */
-function spokenText(answer: ChatAnswer, lang: Lang): string {
-  const base = answer.spokenSummary ?? answer.answer.replace(/[*#`]/g, "");
-  const body = clipToSentence(base.trim(), SPOKEN_LIMIT);
-  if (answer.sources.length === 0) {
-    return `${body} ${tr("chatUnsupportedNote", lang)}`;
-  }
-  const tail =
-    lang === "da"
-      ? `Baseret på ${answer.sources.length} ${answer.sources.length === 1 ? "kilde" : "kilder"}.`
-      : `Based on ${answer.sources.length} ${answer.sources.length === 1 ? "source" : "sources"}.`;
-  return `${body} ${tail}`;
-}
 
 export function ChatView() {
   const [lang, setLang] = useState<Lang>("da");
