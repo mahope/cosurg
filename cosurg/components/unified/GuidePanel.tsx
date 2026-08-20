@@ -41,7 +41,7 @@ export function GuidePanel({ guide, lang, topic, onAskInstead }: GuidePanelProps
   if (guide.offTopic || daekkede.length === 0) {
     return (
       <div className="space-y-3">
-        <p className="rounded-2xl border border-dashed border-[var(--nude-deep)] bg-[var(--nude-tint)] px-4 py-3 text-sm leading-relaxed text-[var(--nude-deep)]">
+        <p className="rounded-2xl border border-dashed border-[var(--nude-deep)] bg-[var(--nude-tint)] px-4 py-3 text-sm leading-relaxed text-[var(--nude-ink)]">
           {tr("guideEmpty", lang)}
         </p>
         <button

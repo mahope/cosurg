@@ -109,7 +109,7 @@ export function LookupCard({
           payload.guide ? (
             <GuidePanel guide={payload.guide} lang={lang} topic={payload.question} onAskInstead={onSwitch} />
           ) : payload.error ? (
-            <p className="rounded-2xl border border-dashed border-[var(--nude-deep)] bg-[var(--nude-tint)] px-4 py-3 text-sm leading-relaxed text-[var(--nude-deep)]">
+            <p className="rounded-2xl border border-dashed border-[var(--nude-deep)] bg-[var(--nude-tint)] px-4 py-3 text-sm leading-relaxed text-[var(--nude-ink)]">
               {payload.error}
             </p>
           ) : (
@@ -184,7 +184,7 @@ export function LookupCard({
             )}
           </>
         ) : payload.turn.error ? (
-          <p className="rounded-2xl border border-dashed border-[var(--nude-deep)] bg-[var(--nude-tint)] px-4 py-3 text-sm leading-relaxed text-[var(--nude-deep)]">
+          <p className="rounded-2xl border border-dashed border-[var(--nude-deep)] bg-[var(--nude-tint)] px-4 py-3 text-sm leading-relaxed text-[var(--nude-ink)]">
             {payload.turn.error}
           </p>
         ) : (

@@ -89,10 +89,25 @@
      en typografisk markør, ikke en accent. */
   --turquoise-soft: #a3aeaa;
 
-  /* — Brandlag: nude og cherry (dekoration, ingen klinisk betydning) — */
+  /*
+   * — Brandlag: nude og cherry (dekoration, ingen klinisk betydning) —
+   *
+   * Nude-familien bærer det appen siger om SIG SELV: opslaget mislykkedes,
+   * svaret er tyndt, forløbet kunne ikke afgøres. Det er driftsbeskeder, og de
+   * hører netop derfor til her og ikke i det kliniske lag — ser man rødt, skal
+   * det handle om patienten, ikke om nettet.
+   *
+   * --nude-deep er brandets tone og bliver stående som kant og vandmærke, hvor
+   * den skal være let. Men den blev også brugt som TEKST på --nude-tint, og
+   * dér giver den 2,76:1 — under grænsen ti steder i appen, netop på de
+   * beskeder der forklarer hvorfor noget ikke virkede. Teksten har derfor sin
+   * egen tone, samme kulør ført dybere:
+   *   --nude-ink #8a5a4c på --nude-tint = 5,12:1, på hvidt = 5,76:1
+   */
   --nude: #f9e1cd;
   --nude-tint: #faf0e6;
   --nude-deep: #bc8577;
+  --nude-ink: #8a5a4c;
   --cherry: #cc556e;
   --cherry-deep: #54293c;
 
@@ -371,6 +386,24 @@ body {
    * har figurerne indbygget, så skriften er uændret — kun cifrenes bredde.
    */
   font-variant-numeric: tabular-nums;
+}
+
+/*
+ * Safari zoomer ind på et felt hvis dets skrift er under 16 px — og zoomer
+ * ikke ud igen. Ét tryk i svarfeltet efterlader altså hele skærmen forstørret
+ * og forskubbet, midt i en vurdering.
+ *
+ * Felterne sætter selv `text-base sm:text-[15px]`, så skalaen er uændret fra
+ * sm og op. Denne regel er sikkerhedsnettet for de felter der ikke har fået en
+ * størrelse: den er en elementvælger og taber derfor til enhver
+ * Tailwind-klasse, så den kan aldrig overskrive et bevidst valg.
+ */
+@media (max-width: 639px) {
+  input:not([type="checkbox"]):not([type="radio"]),
+  textarea,
+  select {
+    font-size: 16px;
+  }
 }
 
 /* Zone-ringe: appens tilstandssprog. Motivet er lånt fra brandsårsklinikken —

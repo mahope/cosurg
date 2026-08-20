@@ -34,7 +34,7 @@ function EvidenceBadge({ evidence, lang }: { evidence: Evidence; lang: Lang }) {
       ? "border-[var(--teal)] bg-[var(--teal-tint)] text-[var(--teal-deep)]"
       : evidence === "partial"
         ? "border-[var(--line-strong)] bg-[var(--paper)] text-[var(--ink-soft)]"
-        : "border-dashed border-[var(--nude-deep)] bg-[var(--nude-tint)] text-[var(--nude-deep)]";
+        : "border-dashed border-[var(--nude-deep)] bg-[var(--nude-tint)] text-[var(--nude-ink)]";
 
   return (
     <span
@@ -188,7 +188,7 @@ export function AnswerCard({ answer, lang, speaking, onSpeak }: AnswerCardProps)
       )}
 
       {answer.evidence === "unsupported" && (
-        <p className="mt-4 rounded-lg border border-dashed border-[var(--nude-deep)] bg-[var(--nude-tint)] px-3 py-2 text-[13px] leading-relaxed text-[var(--nude-deep)]">
+        <p className="mt-4 rounded-lg border border-dashed border-[var(--nude-deep)] bg-[var(--nude-tint)] px-3 py-2 text-[13px] leading-relaxed text-[var(--nude-ink)]">
           {tr("chatUnsupportedNote", lang)}
         </p>
       )}
