@@ -209,7 +209,55 @@
       },
       "sources": [
         "VIP Rigshospitalet: PBB - 20 Hyperbar Oxygen Behandling af kulmonooxidforgiftede (version 8)"
-      ]
+      ],
+      "lookup": {
+        "label": {
+          "da": "Hvad siger kilderne om hyperbar iltbehandling?",
+          "en": "What do the sources say about hyperbaric oxygen?"
+        },
+        "question": {
+          "da": "Hvad siger kilderne om hyperbar iltbehandling ved kulilteforgiftning — indikation, tidsvindue og behandling indtil trykkammeret?",
+          "en": "What do the sources say about hyperbaric oxygen in carbon monoxide poisoning — indication, time window and treatment until the chamber?"
+        }
+      },
+      "escalation": {
+        "calling": {
+          "da": "Ringer du op: traumelederen kontakter vagthavende brandsårslæge på Rigshospitalet, som har landsfunktionen for trykkammerbehandling. Trinnene herunder er dem der skal i gang imens.",
+          "en": "If you are calling: the trauma team leader contacts the on-call burn surgeon at Rigshospitalet, which holds the national function for hyperbaric treatment. The steps below are what should be under way meanwhile."
+        },
+        "receiving": {
+          "da": "Er du selv vagthavende brandsårslæge, er der ingen at ringe til — det er dig der visiterer til trykkammeret. Trinnene herunder er dem instruksen angiver, hver med sit ordrette belæg.",
+          "en": "If you are the on-call burn surgeon yourself, there is nobody to call — you are the one who triages to the chamber. The steps below are what the instruction specifies, each with its verbatim backing."
+        },
+        "actions": [
+          {
+            "id": "hbo-window",
+            "title": {
+              "da": "Tidsvinduet: hurtigst muligt, og overflytning inden for 24 timer",
+              "en": "The time window: as fast as possible, transfer within 24 hours"
+            },
+            "detail": {
+              "da": "Hyperbar iltbehandling gives hurtigst muligt, og overflytning bør ske inden for 24 timer efter eksponeringsophør. Gravide behandles på samme indikation som ikke-gravide; tegn til føtalt stress vurderet ved obstetriker skærper indikationen. Hovedpine som enkeltsymptom er ikke indikation for overflytning.",
+              "en": "Hyperbaric oxygen is given as soon as possible, and transfer should occur within 24 hours of the exposure ending. Pregnant patients are treated on the same indication as non-pregnant; signs of foetal stress assessed by an obstetrician strengthen the indication. Headache as an isolated symptom is not an indication for transfer."
+            },
+            "source": "VIP-instruks: PBB - 20 Hyperbar Oxygen Behandling af kulmonooxidforgiftede",
+            "query": "hyperbar oxygenbehandling kulmonooxidforgiftning indikation trykkammer 24 timer"
+          },
+          {
+            "id": "hbo-oxygen",
+            "title": {
+              "da": "Indtil trykkammeret: 100 % ilt på maske",
+              "en": "Until the chamber: 100% oxygen by mask"
+            },
+            "detail": {
+              "da": "Systemisk forgiftning behandles med 100 % ilt på maske til COHb er normal. Intubation kan blive nødvendig hvis patienten er bevidstløs eller har andre inhalationsskader end systemisk forgiftning. Væsketerapi er vigtigere end HBO og må ikke afbrydes under behandlingen.",
+              "en": "Systemic poisoning is treated with 100% oxygen by mask until COHb is normal. Intubation may be necessary if the patient is unconscious or has inhalation injury beyond systemic poisoning. Fluid therapy matters more than HBO and must not be interrupted during treatment."
+            },
+            "source": "VIP-instruks: PBB — Inhalationsskader · brandsaar.dk/inhalationsskader-2",
+            "query": "systemisk forgiftning 100 procent ilt paa maske COHb udvaskning intubation"
+          }
+        ]
+      }
     },
     {
       "id": "disp-confer",
@@ -224,7 +272,42 @@
       },
       "sources": [
         "VIP Rigshospitalet: PBB - 20 Hyperbar Oxygen Behandling af kulmonooxidforgiftede (version 8)"
-      ]
+      ],
+      "lookup": {
+        "label": {
+          "da": "Hvad siger kilderne om tidsvinduet for HBO?",
+          "en": "What do the sources say about the HBO time window?"
+        },
+        "question": {
+          "da": "Hvad siger kilderne om hyperbar iltbehandling når der er gået mere end 24 timer siden eksponeringsophør?",
+          "en": "What do the sources say about hyperbaric oxygen when more than 24 hours have passed since the exposure ended?"
+        }
+      },
+      "escalation": {
+        "calling": {
+          "da": "Ringer du op: konferér med vagthavende brandsårslæge på Rigshospitalet om det videre forløb. Fortsæt ilt på maske efter behov imens.",
+          "en": "If you are calling: confer with the on-call burn surgeon at Rigshospitalet about the further course. Continue mask oxygen as needed meanwhile."
+        },
+        "receiving": {
+          "da": "Er du selv vagthavende brandsårslæge, er vurderingen din. Det instruksen angiver om tidsvinduet og om iltbehandlingen står herunder.",
+          "en": "If you are the on-call burn surgeon yourself, the assessment is yours. What the instruction specifies about the time window and about oxygen therapy is below."
+        },
+        "actions": [
+          {
+            "id": "hbo-window-late",
+            "title": {
+              "da": "Tidsvinduet er passeret — men iltbehandlingen fortsætter",
+              "en": "The window has passed — but oxygen therapy continues"
+            },
+            "detail": {
+              "da": "Instruksen angiver at hyperbar iltbehandling gives hurtigst muligt og at overflytning bør ske inden for 24 timer efter eksponeringsophør. Halveringstiden for COHb falder fra cirka fem timer i atmosfærisk luft til cirka 74 minutter med 100 % ilt — så normobar ilt er ikke ingenting.",
+              "en": "The instruction states that hyperbaric oxygen is given as soon as possible and that transfer should occur within 24 hours of the exposure ending. The half-life of COHb falls from about five hours in atmospheric air to about 74 minutes on 100% oxygen — so normobaric oxygen is not nothing."
+            },
+            "source": "VIP-instruks: PBB - 20 Hyperbar Oxygen Behandling af kulmonooxidforgiftede",
+            "query": "halveringstid COHgb atmosfaerisk luft 100 procent ilt hyperbar 24 timer"
+          }
+        ]
+      }
     },
     {
       "id": "disp-observe",
