@@ -82,9 +82,11 @@ export function ResponseBar({
   return (
     <div className="w-full">
       <div
-        className={`relative flex items-center gap-1 rounded-xl border bg-[var(--paper-raised)] transition-colors focus-within:border-[var(--teal)] ${
+        /* Samme fokussprog som komposeren: hårfin ramme, blød ring. Se
+           .field-shell i globals.css. */
+        className={`field-shell relative flex items-center gap-1 rounded-xl bg-[var(--paper-raised)] ${
           hero
-            ? "border-[var(--line-strong)] py-2.5 pl-2 pr-1.5 shadow-[0_2px_10px_rgba(0,83,85,0.07)] focus-within:shadow-[0_2px_16px_rgba(0,83,85,0.13)]"
+            ? "py-2.5 pl-2 pr-1.5 [--field-shadow:0_2px_10px_rgba(0,83,85,0.07)]"
             : "py-1.5 pl-1.5 pr-1"
         }`}
       >
@@ -94,7 +96,7 @@ export function ResponseBar({
           aria-pressed={listening}
           aria-label={tr(listening ? "micStop" : "micStart", lang)}
           className={`relative flex shrink-0 items-center justify-center rounded-lg transition-colors ${
-            hero ? "h-10 w-10" : "h-8 w-8"
+            hero ? "h-11 w-11" : "h-10 w-10 sm:h-8 sm:w-8"
           } ${
             listening
               ? "text-[var(--teal)]"
@@ -142,8 +144,8 @@ export function ResponseBar({
           }}
           autoFocus={autoFocus}
           placeholder={interim ? interim : placeholder}
-          className={`min-w-0 flex-1 bg-transparent py-1 text-[var(--ink)] placeholder:text-[var(--ink-faint)] placeholder:italic focus:outline-none ${
-            hero ? "px-2 text-lg leading-snug" : "px-1.5 text-[15px] leading-tight"
+          className={`min-w-0 flex-1 self-stretch bg-transparent py-1 text-[var(--ink)] placeholder:text-[var(--ink-faint)] placeholder:italic focus:outline-none ${
+            hero ? "px-2 text-lg leading-snug" : "px-1.5 text-base leading-tight sm:text-[15px]"
           }`}
         />
 
@@ -156,7 +158,7 @@ export function ResponseBar({
         <span
           aria-hidden={!sent}
           className={`pointer-events-none absolute top-1/2 -translate-y-1/2 bg-[var(--paper-raised)] pl-2 font-[family-name:var(--font-mono)] text-[11px] font-medium uppercase tracking-[0.14em] text-[var(--teal-deep)] transition-opacity duration-200 ${
-            hero ? "right-14" : "right-11"
+            hero ? "right-14" : "right-12 sm:right-11"
           } ${sent ? "opacity-100" : "opacity-0"}`}
         >
           {tr("sent", lang)}
@@ -168,7 +170,7 @@ export function ResponseBar({
           disabled={!value.trim()}
           aria-label={tr("sendAnswer", lang)}
           className={`flex shrink-0 items-center justify-center rounded-lg bg-[var(--teal)] text-white transition-opacity disabled:opacity-25 ${
-            hero ? "h-10 w-10" : "h-8 w-8"
+            hero ? "h-11 w-11" : "h-10 w-10 sm:h-8 sm:w-8"
           }`}
         >
           <svg viewBox="0 0 20 20" width={hero ? 18 : 15} height={hero ? 18 : 15} fill="none" aria-hidden="true">

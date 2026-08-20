@@ -49,13 +49,15 @@ export function ChatComposer({
   };
 
   return (
-    <div className="flex items-end gap-1 rounded-2xl border bg-[var(--paper-raised)] px-1.5 py-1.5 shadow-[0_1px_2px_rgba(16,32,30,0.04)] transition-colors focus-within:border-[var(--teal)]">
+    /* Samme fokussprog som forsidens komposer: hårfin ramme, blød turkis ring
+       udenom. Se .field-shell i globals.css. */
+    <div className="field-shell flex items-end gap-1 rounded-2xl bg-[var(--paper-raised)] px-1.5 py-1.5 [--field-shadow:0_1px_2px_rgba(16,32,30,0.04)]">
       <button
         type="button"
         onClick={onToggleMic}
         aria-pressed={listening}
         aria-label={tr(listening ? "chatMicStop" : "chatMicStart", lang)}
-        className={`relative mb-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl transition-colors ${
+        className={`relative mb-0.5 flex h-11 w-11 shrink-0 items-center justify-center rounded-xl transition-colors ${
           listening
             ? "text-[var(--teal)]"
             : "text-[var(--ink-soft)] hover:bg-[var(--teal-tint)] hover:text-[var(--teal-deep)]"
@@ -104,7 +106,7 @@ export function ChatComposer({
           }
         }}
         placeholder={interim || tr("chatPlaceholder", lang)}
-        className="min-w-0 flex-1 resize-none bg-transparent px-2 py-2 text-[15px] leading-snug text-[var(--ink)] placeholder:text-[var(--ink-faint)] placeholder:italic focus:outline-none"
+        className="min-w-0 flex-1 resize-none bg-transparent px-2 py-2 text-base leading-snug sm:text-[15px] text-[var(--ink)] placeholder:text-[var(--ink-faint)] placeholder:italic focus:outline-none"
       />
 
       {busy ? (
@@ -112,7 +114,7 @@ export function ChatComposer({
           type="button"
           onClick={onStop}
           aria-label={tr("chatStop", lang)}
-          className="mb-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border text-[var(--ink-soft)] transition-colors hover:border-[var(--teal)] hover:text-[var(--teal-deep)]"
+          className="mb-0.5 flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border text-[var(--ink-soft)] transition-colors hover:border-[var(--teal)] hover:text-[var(--teal-deep)]"
         >
           <svg viewBox="0 0 20 20" width="13" height="13" aria-hidden="true">
             <rect x="5" y="5" width="10" height="10" rx="1.5" fill="currentColor" />
@@ -124,7 +126,7 @@ export function ChatComposer({
           onClick={submit}
           disabled={!value.trim()}
           aria-label={tr("chatSend", lang)}
-          className="mb-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[var(--teal)] text-white transition-opacity disabled:opacity-25"
+          className="mb-0.5 flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[var(--teal)] text-white transition-opacity disabled:opacity-25"
         >
           <svg viewBox="0 0 20 20" width="16" height="16" fill="none" aria-hidden="true">
             <path

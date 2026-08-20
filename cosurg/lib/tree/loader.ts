@@ -3,6 +3,12 @@ import burns from "@/content/trees/burns.json";
 import dressingHandArm from "@/content/trees/dressing-hand-arm.json";
 import frostbite from "@/content/trees/frostbite.json";
 import bites from "@/content/trees/bites.json";
+import chemical from "@/content/trees/chemical.json";
+import coPoisoning from "@/content/trees/co-poisoning.json";
+import ten from "@/content/trees/ten.json";
+import melanoma from "@/content/trees/melanoma.json";
+import breastSeroma from "@/content/trees/breast-seroma.json";
+import mastitis from "@/content/trees/mastitis.json";
 
 /**
  * Træ-kilde. I dag: JSON i repoet. På sigt: teamets egen MCP-server koblet på Cortis
@@ -28,6 +34,12 @@ class LocalTreeSource implements TreeSource {
     dressingHandArm as unknown as DecisionTree,
     frostbite as unknown as DecisionTree,
     bites as unknown as DecisionTree,
+    chemical as unknown as DecisionTree,
+    coPoisoning as unknown as DecisionTree,
+    ten as unknown as DecisionTree,
+    melanoma as unknown as DecisionTree,
+    breastSeroma as unknown as DecisionTree,
+    mastitis as unknown as DecisionTree,
   ];
 
   async list(): Promise<TreeSummary[]> {

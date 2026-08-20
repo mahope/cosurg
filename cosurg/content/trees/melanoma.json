@@ -1,0 +1,183 @@
+{
+  "id": "melanoma-dk",
+  "version": "0.1.0",
+  "name": {
+    "da": "Malignt melanom — udredning og behandlingsvalg",
+    "en": "Malignant melanoma — workup and treatment choice"
+  },
+  "description": {
+    "da": "Klinisk beslutningstræ for kutant malignt melanom: primær excision, re-excisionsafstande efter Breslow-tykkelse, sentinel node-biopsi og recidiv. Bygget på Rigshospitalets VIP-vejledning PBB - Malignt Melanom, en forkortet version af de nationale DMCG-retningslinjer.",
+    "en": "Clinical decision tree for cutaneous malignant melanoma: primary excision, re-excision margins by Breslow thickness, sentinel node biopsy and recurrence. Built on the Rigshospitalet guideline PBB - Malignant Melanoma, an abridged version of the national DMCG guidelines."
+  },
+  "authors": [
+    "Klinisk grundlag: VIP-vejledning PBB - Malignt Melanom v14, onkologisk sektion, Rigshospitalet",
+    "Udkast samlet af CoSurg — afventer klinisk godkendelse"
+  ],
+  "rootNodeId": "presentation",
+  "nodes": [
+    {
+      "id": "presentation",
+      "question": {
+        "da": "Hvad drejer det sig om? Mistænkt primær tumor, foreliggende histologisvar, palpabel lymfeknude — eller recidiv eller metastase?",
+        "en": "What is the situation? A suspected primary tumour, a histology result in hand, a palpable lymph node — or recurrence or metastasis?"
+      },
+      "orQuestion": {
+        "da": "Mistanke, histologi, lymfeknude eller recidiv?",
+        "en": "Suspicion, histology, node or recurrence?"
+      },
+      "answerType": "choice",
+      "options": [
+        {
+          "value": "suspicion",
+          "label": {
+            "da": "Mistænkt primær tumor",
+            "en": "Suspected primary tumour"
+          },
+          "synonyms": {
+            "da": ["mistanke", "modermærke", "nyt mærke", "ændret modermærke"],
+            "en": ["suspicion", "new mole", "changing mole"]
+          }
+        },
+        {
+          "value": "histology",
+          "label": {
+            "da": "Histologisvar foreligger",
+            "en": "Histology result in hand"
+          },
+          "synonyms": {
+            "da": ["histologi", "svar", "breslow"],
+            "en": ["histology", "result", "breslow"]
+          }
+        },
+        {
+          "value": "node",
+          "label": {
+            "da": "Palpabel lymfeknude",
+            "en": "Palpable lymph node"
+          },
+          "synonyms": {
+            "da": ["lymfeknude", "hævelse i aksil", "knude på hals"],
+            "en": ["lymph node", "axillary swelling", "neck lump"]
+          }
+        },
+        {
+          "value": "recurrence",
+          "label": {
+            "da": "Recidiv eller metastase",
+            "en": "Recurrence or metastasis"
+          },
+          "synonyms": {
+            "da": ["recidiv", "metastase", "in transit"],
+            "en": ["recurrence", "metastasis", "in transit"]
+          }
+        }
+      ],
+      "edges": [
+        { "when": "suspicion", "goto": "disp-excision" },
+        { "when": "histology", "goto": "breslow" },
+        { "when": "node", "goto": "disp-node" },
+        { "when": "recurrence", "goto": "disp-mdt" }
+      ]
+    },
+    {
+      "id": "breslow",
+      "question": {
+        "da": "Hvad er tumortykkelsen efter Breslow, i millimeter?",
+        "en": "What is the Breslow tumour thickness, in millimetres?"
+      },
+      "orQuestion": {
+        "da": "Breslow i millimeter?",
+        "en": "Breslow in millimetres?"
+      },
+      "answerType": "number",
+      "unit": "mm",
+      "min": 0,
+      "max": 50,
+      "help": {
+        "da": "Sentinel node-biopsi anbefales ved melanom på 1,1 mm eller derover, ved melanom med (mikro)satellitter, når tumortykkelsen ikke kan måles, ved melanocytær tumor med uvist malignitetspotentiale, og ved melanom hvor det er uvist om det er primærtumor eller metastase uden samtidig spredning på PET-CT.",
+        "en": "Sentinel node biopsy is recommended for melanoma 1.1 mm or thicker, melanoma with (micro)satellites, when tumour thickness cannot be measured, for melanocytic tumours of uncertain malignant potential, and where it is unclear whether the lesion is primary or metastatic without spread on PET-CT."
+      },
+      "edges": [
+        { "when": "<=1", "goto": "disp-t1" },
+        { "when": "*", "goto": "disp-t2" }
+      ]
+    }
+  ],
+  "dispositions": [
+    {
+      "id": "disp-excision",
+      "severity": "treat",
+      "title": {
+        "da": "Excidér i 5 mm og sæt til kræftpakkesvar",
+        "en": "Excise with a 5 mm margin and book the cancer-pathway result"
+      },
+      "guidance": {
+        "da": "Udredning foregår som udgangspunkt i FU & EXC-ambulatoriet: der optages journal, og læsionen excideres som udgangspunkt i 5 mm. Patienten sættes til svar i kræftpakkeambulatoriet 10 hverdage — 13 til 14 kalenderdage — efter excisionen.",
+        "en": "Workup takes place in the excision clinic: a record is taken and the lesion is excised with a 5 mm margin as standard. The patient is booked for the result in the cancer-pathway clinic 10 working days — 13 to 14 calendar days — after the excision."
+      },
+      "sources": [
+        "VIP Rigshospitalet: PBB - Malignt Melanom (version 14)"
+      ]
+    },
+    {
+      "id": "disp-t1",
+      "severity": "treat",
+      "title": {
+        "da": "T1: re-excidér i 1 cm til fascien",
+        "en": "T1: re-excise with a 1 cm margin to the fascia"
+      },
+      "guidance": {
+        "da": "T1a og T1b re-excideres i 1 cm til fascien, idet betydende nervestrukturer forsøges skånet. Sentinel node-biopsi overvejes ved (mikro)satellitter, når tumortykkelsen ikke kan måles, eller ved melanocytær tumor med uvist malignitetspotentiale. Alle melanompatienter tilbydes 3-måneders-samtale med behovsvurdering og instruktion i selv at undersøge huden, og ved kliniske kontroller tilbydes fuld hudundersøgelse — nye melanomer findes ikke helt sjældent ved den.",
+        "en": "T1a and T1b are re-excised with a 1 cm margin to the fascia, sparing significant nerve structures where possible. Sentinel node biopsy is considered with (micro)satellites, unmeasurable tumour thickness, or a melanocytic tumour of uncertain malignant potential. All melanoma patients are offered a 3-month consultation with needs assessment and instruction in self-examination, and a full skin examination at clinical follow-ups — new melanomas are not rarely found at these."
+      },
+      "sources": [
+        "VIP Rigshospitalet: PBB - Malignt Melanom (version 14)"
+      ]
+    },
+    {
+      "id": "disp-t2",
+      "severity": "refer",
+      "title": {
+        "da": "T2-T4: re-excidér i 2 cm og tilbyd sentinel node",
+        "en": "T2-T4: re-excise with a 2 cm margin and offer sentinel node biopsy"
+      },
+      "guidance": {
+        "da": "T2a til T4b re-excideres i 2 cm, idet betydende nervestrukturer forsøges skånet; anden excisionsafstand kan være indiceret afhængigt af anatomisk lokalitet. Sentinel node-biopsi anbefales ved 1,1 mm eller derover — formålet er primært stadieinddeling og stratificering til eventuel adjuverende behandling. Fravælger patienten sentinel node, tilbydes behandling og opfølgning som ved efterladt sentinel node: risikostratificering på T-stadie, en ekstra ultralyd efter 6 uger, og opfølgning efter T-stadie og klinisk N-stadie.",
+        "en": "T2a to T4b are re-excised with a 2 cm margin, sparing significant nerve structures where possible; a different margin may be indicated by anatomical site. Sentinel node biopsy is recommended at 1.1 mm or more — primarily for staging and stratification to possible adjuvant treatment. If the patient declines the sentinel node, they are offered treatment and follow-up as with a retained sentinel node: risk stratification by T stage, an extra ultrasound at 6 weeks, and follow-up by T stage and clinical N stage."
+      },
+      "sources": [
+        "VIP Rigshospitalet: PBB - Malignt Melanom (version 14)"
+      ]
+    },
+    {
+      "id": "disp-node",
+      "severity": "refer",
+      "title": {
+        "da": "Udred: ultralyd med biopsi og PET-CT",
+        "en": "Work up: ultrasound with biopsy and PET-CT"
+      },
+      "guidance": {
+        "da": "Ved palpabel lymfeknudehævelse med mistanke om recidiv henvises til ultralyd med biopsi — optimalt grovnålsbiopsi, alternativt finnålsbiopsi. Ved oplagt recidiv bestilles samtidig diagnostisk PET-CT for at udelukke yderligere metastasering. Patienten drøftes på melanom-MDT med henblik på eventuel neoadjuverende behandling. Terapeutisk exairese kan tilbydes ved påvist metastasering til en lymfeknuderegion, når der ikke er tegn på yderligere disseminering, og efter endt neoadjuverende behandling skal PET-CT og onkologisk indikation bekræfte at exairese fortsat er relevant.",
+        "en": "With palpable lymph node swelling and suspected recurrence, refer for ultrasound with biopsy — optimally core needle, alternatively fine needle. With obvious recurrence, order a diagnostic PET-CT at the same time to exclude further metastasis. The patient is discussed at the melanoma MDT regarding possible neoadjuvant treatment. Therapeutic node dissection can be offered with proven regional metastasis and no sign of further dissemination; after neoadjuvant treatment, PET-CT and an oncological indication must confirm that dissection is still relevant."
+      },
+      "sources": [
+        "VIP Rigshospitalet: PBB - Malignt Melanom (version 14)"
+      ]
+    },
+    {
+      "id": "disp-mdt",
+      "severity": "refer",
+      "title": {
+        "da": "Drøft på MDT: recidiv og metastaser",
+        "en": "Discuss at MDT: recurrence and metastases"
+      },
+      "guidance": {
+        "da": "Lokalrecidiv — inden for en radius af 2 cm fra primærtumor — excideres til sikkert frie rande hvis muligt. In transit-metastaser ligger mere end 2 cm fra excisionsområdet frem mod den drænerende lymfeknudestation; begge kan ligge i eller under huden. Ved multiple metastaser isoleret på en ekstremitet kan elektrokemoterapi overvejes. Den mest effektive behandling af solitære organmetastaser er radikal excision hvis teknisk muligt; der skal ikke foretages undersøgelser uden behandlingsmæssig eller livskvalitetsmæssig konsekvens. Patienten drøftes på MDT — ved metastaserende sygdom uden kurativ kirurgisk mulighed med henblik på medicinsk behandling i onkologisk regi.",
+        "en": "Local recurrence — within a 2 cm radius of the primary tumour — is excised to clear margins if possible. In-transit metastases lie more than 2 cm from the excision area towards the draining node station; both can sit in or under the skin. With multiple metastases isolated to a limb, electrochemotherapy can be considered. The most effective treatment of solitary organ metastases is radical excision if technically possible; do not order investigations with no treatment or quality-of-life consequence. The patient is discussed at the MDT — with metastatic disease and no curative surgical option, regarding medical treatment in oncology."
+      },
+      "sources": [
+        "VIP Rigshospitalet: PBB - Malignt Melanom (version 14)"
+      ]
+    }
+  ]
+}

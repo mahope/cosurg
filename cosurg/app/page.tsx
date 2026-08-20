@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { ChatImage } from "@/components/attachments";
 import burnsTree from "@/content/trees/burns.json";
 import { advance, getDisposition, getNode, goBack, questionText, startSession } from "@/lib/tree/engine";
-import type { DecisionTree, Lang, SessionState, TreeNode } from "@/lib/tree/types";
+import type { AnsweredStep, DecisionTree, Lang, SessionState, TreeNode } from "@/lib/tree/types";
 import { useTranscribe } from "@/lib/audio/useTranscribe";
 import { useDictation } from "@/lib/audio/useDictation";
 import { prefetchSpeech, speak, stopSpeaking } from "@/lib/audio/speak";
@@ -20,8 +20,9 @@ import { OrView } from "@/components/OrView";
 import type { TreeSummary } from "@/components/TreePicker";
 import { BrandWatermark } from "@/components/BrandMark";
 import { isEcho, matchCommand, type VoiceCommand } from "@/components/voiceCommands";
+import { stedetsOpslag } from "@/components/escalation/lookup";
 import { IntakeCard } from "@/components/IntakeCard";
-import { followUpTreeId, routeUtterance, suggestTreeId } from "@/components/treeRouting";
+import { followUpTreeId } from "@/components/treeRouting";
 import type { SessionUsage } from "@/components/UsagePanel";
 import { useClinicalChat } from "@/components/chat/useClinicalChat";
 import type { ChatAnswer } from "@/lib/corti/chat";
@@ -31,7 +32,7 @@ import {
   looksLikeQuestion,
   matchAffirmative,
   matchIntentChoice,
-  startsWithTreatmentIntent,
+  matchNoteRequest,
 } from "@/components/unified/intent";
 import { IntentChoiceCard, LookupCard, type LookupPayload } from "@/components/unified/LookupCard";
 import { ChatThread } from "@/components/unified/ChatThread";
@@ -170,7 +171,12 @@ export default function Home() {
    * sender tekst og læser SSE — så den ene lytter i `useTranscribe` kan dele
    * sin tekst mellem de to formål uden at nogen slås om `getUserMedia`.
    */
-  const { turns: lookupTurns, ask: askLookup, reset: resetLookup } = useClinicalChat(lang);
+  const {
+    turns: lookupTurns,
+    ask: askLookup,
+    reset: resetLookup,
+    currentWorkup,
+  } = useClinicalChat(lang);
   const [lookupOpen, setLookupOpen] = useState(false);
   const [lookupStatus, setLookupStatus] = useState<string | null>(null);
   /*
@@ -189,8 +195,23 @@ export default function Home() {
   const [ambiguity, setAmbiguity] = useState<{ text: string; reasons: string[] } | null>(null);
   /** Tilbuddet om at gå fra opslag til forløb, når svaret er landet. */
   const [offer, setOffer] = useState<{ treeId: string; name: string } | null>(null);
-  const [intakeBusy, setIntakeBusy] = useState(false);
+  /**
+   * Proceduren vist i tråden — alle trin med Rigshospitalets fotos.
+   *
+   * Den bor her og ikke i samtalen, fordi den ikke ER en samtale: det er et
+   * opslagsværk lægen bad om at få vist. Kun ét ad gangen; en ny anmodning
+   * afløser den forrige.
+   */
+  const [procedure, setProcedure] = useState<{ question: string; tree: DecisionTree } | null>(null);
   const lookupBusyRef = useRef(false);
+  /**
+   * Notatfunktionen, nået gennem et ref.
+   *
+   * `handleUtterance` skal kunne udløse den ("skriv notatet"), men står før
+   * den i filen. Reffet holder altid den nyeste udgave, så ordren aldrig
+   * kommer til at kalde en funktion der husker en forældet session.
+   */
+  const generateNoteRef = useRef<(fra?: { treeId: string; path: AnsweredStep[] }) => void>(() => {});
 
   const node = state.currentNodeId ? getNode(tree, state.currentNodeId) : undefined;
   const disposition = state.dispositionId ? getDisposition(tree, state.dispositionId) : undefined;
@@ -426,6 +447,7 @@ export default function Home() {
        */
       resetLookup();
       setGuideLookup(null);
+      setProcedure(null);
       setLookupOpen(false);
       setLookupStatus(null);
       setAmbiguity(null);
@@ -509,68 +531,26 @@ export default function Home() {
         return;
       }
 
-      const { match, ranked } = routeUtterance(text, trees, lang);
       /*
-       * Det forløb vi vil TILBYDE bagefter, hvis ytringen viser sig at være et
-       * spørgsmål. Her bruges den LØSE genkendelse med vilje: et tilbud kan
-       * afvises med ét klik, mens et forkert startet forløb sender lægen ned ad
-       * et klinisk spor han ikke bad om. Uden den ville "hvornår skal en
-       * brandsårspatient overflyttes?" ende uden tilbud, fordi den stramme regel
-       * ikke kan se "brandsår" inde i "brandsårspatient".
+       * ALT går i chatten. Der er ikke længere en anden skærm at komme til.
+       *
+       * Beslutningstræerne er ikke afskaffet — de har skiftet rolle. Før var
+       * en patientbeskrivelse en kommando der skiftede til trævisningen med
+       * ét spørgsmål ad gangen og sit eget sidepanel. Nu er træet det agenten
+       * UDREDER med: den stiller de manglende spørgsmål som chatbeskeder
+       * (`workup`-begivenheden) og springer alt over som lægen allerede har
+       * fortalt. Derfor findes der ikke længere en ytring der "hører til" et
+       * andet sted end tråden.
+       *
+       * Det gør indgangen så enkel som forsiden lover: lægen taler eller
+       * skriver, og samtalen fortsætter. Ingen vej herfra kan ende blindt —
+       * chatten kan altid svare, spørge videre, eller ærligt sige at kilderne
+       * er tavse.
        */
-      const suggestion = match?.treeId ?? ranked[0]?.treeId ?? suggestTreeId(text, trees, lang);
-
-      /*
-       * Et spørgsmål — eller et rent behandlingsopslag — er ikke en patient.
-       * Begge slags ville ellers ramme forløbets ordliste og starte en
-       * vurdering af en patient der ikke findes.
-       */
-      if (looksLikeQuestion(text) || startsWithTreatmentIntent(text)) {
-        setIntakeMiss(null);
-        void runLookup(text, suggestion);
-        return;
-      }
-
-      if (match) {
-        void beginTree(match.treeId, text);
-        return;
-      }
-
-      /*
-       * Hverken et forløb eller et tydeligt spørgsmål. Før stoppede appen her
-       * med "det kunne jeg ikke henføre til et forløb" — en blindgyde. Nu
-       * spørger vi agenten hvad det var. Kaldet koster tid og credits, men KUN
-       * på den vej der i forvejen ikke førte nogen steder hen.
-       */
-      setIntakeBusy(true);
-      try {
-        const res = await fetch("/api/route", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            context: "intake",
-            lang,
-            utterance: text,
-            pathways: trees.map((t) => t.name[lang]),
-          }),
-          signal: AbortSignal.timeout(TIMEOUT_INTERPRET),
-        });
-        const data = (await res.json()) as { intent?: string };
-        if (data.intent === "question") {
-          setIntakeMiss(null);
-          void runLookup(text, suggestion);
-          return;
-        }
-      } catch {
-        // Nettet svigtede. Så falder vi tilbage på det vi selv kunne se — og
-        // det er stadig bedre end at gætte på et forløb.
-      } finally {
-        setIntakeBusy(false);
-      }
-
-      setIntakeMiss({ text, candidates: ranked.map((r) => r.treeId) });
+      setIntakeMiss(null);
+      void runLookup(text, null);
     },
-    [trees, lang, beginTree, runLookup],
+    [runLookup],
   );
 
   /**
@@ -652,6 +632,30 @@ export default function Home() {
         return;
       }
 
+      /*
+       * "Uddyb" — grebet ud i kilderne, sagt i stedet for trykket.
+       *
+       * Den står FØR kvitteringen af det røde flag, fordi den ellers ville
+       * blive slugt af den: enhver kommando tæller som kvittering, og "uddyb"
+       * ville dermed lukke flaget uden at slå noget op. Rækkefølgen her gør
+       * begge dele — flaget kvitteres, og flagets EGET emne slås op.
+       *
+       * Hvad der slås op bestemmes af hvor i træet man står, ikke af hvad der
+       * blev sagt. Kommandoen kan derfor ikke bruges til at stille et frit
+       * spørgsmål, og ordlyden kommer fra træet som alt andet klinisk indhold.
+       */
+      if (cmd === "elaborate") {
+        const opslag = stedetsOpslag(tree, state, lang, !!flash);
+        if (flash) await acknowledgeFlash();
+        if (!opslag) {
+          if (speakAll) await say(tr("elaborateNothing", lang));
+          return;
+        }
+        if (speakAll) void say(tr("ackElaborate", lang));
+        void runLookup(opslag.question, null, "chat");
+        return;
+      }
+
       // Et rødt flag spærrer alt indtil det er kvitteret — og kirurgen kan
       // ikke trykke OK sterilt, så enhver kommando tæller som kvittering.
       if (flash) {
@@ -686,7 +690,19 @@ export default function Home() {
       }
       await acknowledgeAndAdvance();
     },
-    [orMode, flash, state, tree, lang, speakAll, askCurrent, acknowledgeAndAdvance, acknowledgeFlash, say],
+    [
+      orMode,
+      flash,
+      state,
+      tree,
+      lang,
+      speakAll,
+      askCurrent,
+      acknowledgeAndAdvance,
+      acknowledgeFlash,
+      runLookup,
+      say,
+    ],
   );
 
   /**
@@ -865,6 +881,29 @@ export default function Home() {
         return;
       }
 
+      /*
+       * "Skriv notatet."
+       *
+       * Agenten tilbyder selv notatet når udredningen er kørt til ende, men
+       * lægen skal kunne bede om det når som helst — også midtvejs, også
+       * efter at have afvist tilbuddet. Det er hans journal, ikke appens.
+       *
+       * Ordren står FØR indgangsruteringen, ellers ville "skriv notatet"
+       * blive læst som et fagligt spørgsmål og sendt til kilderne. Er der
+       * ingen udredning at skrive om, falder den igennem som en almindelig
+       * ytring — så svarer chatten, i stedet for at et klik på ingenting
+       * ser ud som om appen ignorerede en ordre.
+       */
+      if (!images?.length && matchNoteRequest(text)) {
+        const w = currentWorkup();
+        if (w) {
+          // Gennem et ref: notatfunktionen erklæres længere nede, og en
+          // direkte reference ville fryse den første udgave af den fast.
+          generateNoteRef.current({ treeId: w.treeId, path: w.path });
+          return;
+        }
+      }
+
       // Før et forløb er valgt, er ytringen enten en patient eller et spørgsmål.
       // Samme vej ind for tale og skrift.
       if (!started) {
@@ -972,6 +1011,7 @@ export default function Home() {
       await interpretUtterance(text, verdict.intent === "unknown");
     },
     [
+      currentWorkup,
       offer,
       beginTree,
       started,
@@ -1092,7 +1132,7 @@ export default function Home() {
    * længere frist end de øvrige kald — en generøs frist er ikke det samme som
    * ingen frist — og en spærre så et utålmodigt klik ikke sender kaldet igen.
    */
-  const generateNote = async () => {
+  const generateNote = async (fraUdredning?: { treeId: string; path: AnsweredStep[] }) => {
     if (noteBusy) return;
     setNoteBusy(true);
     setStatus(tr("noteWorking", lang));
@@ -1100,14 +1140,31 @@ export default function Home() {
       const res = await fetch("/api/note", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          treeId: tree.id,
-          lang,
-          path: state.path,
-          dispositionId: state.dispositionId,
-          transcript: transcript.join("\n"),
-          dictation,
-        }),
+        /*
+         * Notatet kan komme to steder fra, og de har hver sin sandhed om
+         * hvad der blev afklaret. Kom tilbuddet fra en udredning i chatten,
+         * er DENS sti den kanoniske — den er genafspillet på serveren og
+         * indeholder de svar agenten trak ud af lægens egen beskrivelse.
+         * `state.path` hører til den gamle trævisning og ved intet om dem.
+         */
+        body: JSON.stringify(
+          fraUdredning
+            ? {
+                treeId: fraUdredning.treeId,
+                lang,
+                path: fraUdredning.path,
+                transcript: transcript.join("\n"),
+                dictation,
+              }
+            : {
+                treeId: tree.id,
+                lang,
+                path: state.path,
+                dispositionId: state.dispositionId,
+                transcript: transcript.join("\n"),
+                dictation,
+              },
+        ),
         signal: AbortSignal.timeout(TIMEOUT_NOTE),
       });
       const data = (await res.json()) as NoteResult & { error?: string };
@@ -1136,6 +1193,12 @@ export default function Home() {
       setNoteBusy(false);
     }
   };
+
+  // Hold reffet på den nyeste udgave, så "skriv notatet" altid rammer den
+  // funktion der kender den aktuelle session.
+  useEffect(() => {
+    generateNoteRef.current = (fra) => void generateNote(fra);
+  });
 
   // Klik-svar (kort/valg) rykker direkte gennem træet — samme motorkald som
   // stemme/tekst-svar, blot uden agent-fortolkning, fordi værdien allerede er
@@ -1196,7 +1259,77 @@ export default function Home() {
    * — også mens svaret stadig arbejder — så skiftet sker i samme sekund der
    * trykkes send, ikke først når svaret lander.
    */
-  const hasThread = !started && (lookupTurns.length > 0 || guideLookup !== null);
+  const hasThread = !started && (lookupTurns.length > 0 || guideLookup !== null || procedure !== null);
+
+  /**
+   * Vis forbindingsproceduren — samme to veje som når der spørges om den.
+   *
+   * Håndfri får den store skærm med ét trin ad gangen; alle andre får den i
+   * tråden. Kaldes fra anbefalingens tilbud, hvor træet selv siger at
+   * proceduren følger efter.
+   */
+  const showProcedure = useCallback(async () => {
+    const id = followUpTreeId("burns-dk", "disp-treat");
+    if (!id) return;
+    if (orMode) {
+      void beginTree(id);
+      return;
+    }
+    try {
+      const t = await loadTree(id);
+      setProcedure({ question: tr("procedureShow", lang), tree: t });
+    } catch (err) {
+      setStatus(failureMessage(err, "tree", lang));
+    }
+  }, [orMode, beginTree, loadTree, lang]);
+
+  /*
+   * UDREDNINGEN LÆST OP.
+   *
+   * I håndfri tilstand kigger klinikeren ikke på skærmen — han har hænderne
+   * i et sår. Landede udredningens spørgsmål kun som tekst, ville hele
+   * forløbet stå stille i tavshed, og han ville tro at appen var holdt op med
+   * at lytte. Svaret på et opslag læses allerede op af `runLookup`; det her
+   * er den anden halvdel: træets spørgsmål, dets røde flag og dets
+   * anbefaling.
+   *
+   * Røde flag læses op UANSET stemmetilstand. De afbryder i forvejen hele
+   * skærmen, og en eskalering er det ene sted hvor det er værre at tie end at
+   * tale mod en slukket højttaler.
+   *
+   * Vagten er et ref med det sidst oplæste — uden den ville hver eneste
+   * render af tråden (og der er mange, fremdriften tikker) sige det samme
+   * højt igen.
+   */
+  const spokenWorkupRef = useRef<string>("");
+  useEffect(() => {
+    const turn = lookupTurns[lookupTurns.length - 1];
+    if (!turn) return;
+
+    const flag = turn.redflags?.[turn.redflags.length - 1];
+    const dispo = turn.disposition;
+    const workupQ = turn.workup?.question;
+
+    // Rækkefølgen er klinisk: flaget først, så anbefalingen, så spørgsmålet.
+    const [nøgle, tekst, altidHøjt] = flag
+      ? [`flag:${turn.id}:${flag.nodeId}`, flag.message, true]
+      : dispo
+        ? [
+            `disp:${turn.id}:${dispo.disposition.dispositionId}`,
+            `${dispo.disposition.title}. ${dispo.disposition.guidance}`,
+            false,
+          ]
+        : workupQ
+          ? [`q:${turn.id}:${workupQ.nodeId}:${turn.workup?.phase}`, workupQ.question, false]
+          : ["", "", false];
+
+    if (!nøgle || !tekst) return;
+    if (spokenWorkupRef.current === nøgle) return;
+    if (!altidHøjt && !speakAll) return;
+
+    spokenWorkupRef.current = nøgle;
+    void say(tekst);
+  }, [lookupTurns, speakAll, say]);
   const lookupPayload: LookupPayload | null = guideLookup
     ? { kind: "guide", ...guideLookup }
     : activeTurn
@@ -1396,6 +1529,7 @@ export default function Home() {
         questionText={node ? questionText(node, lang, orMode) : ""}
         disposition={disposition}
         flash={flash}
+        flashLookup={flash ? stedetsOpslag(tree, state, lang, true) : null}
         onAcknowledgeFlash={() => void acknowledgeFlash()}
         stepNumber={state.path.length + 1}
         totalNodes={tree.nodes.length}
@@ -1423,7 +1557,9 @@ export default function Home() {
   }
 
   return (
-    <main className="app-gradient-bg relative min-h-screen px-4 pb-6 pt-4 text-[var(--ink)] sm:px-6 sm:pb-8 sm:pt-5">
+    /* `dvh` og ikke `vh`: på iOS regner `100vh` med at browserlinjen er væk,
+       og siden bliver derfor højere end skærmen. */
+    <main className="app-gradient-bg relative min-h-[100dvh] px-4 pb-6 pt-4 text-[var(--ink)] sm:px-6 sm:pb-8 sm:pt-5">
       <BrandWatermark />
       <div className="relative z-10 mx-auto max-w-5xl">
         <ControlRail
@@ -1473,7 +1609,12 @@ export default function Home() {
           {notice && (
             <div
               role="status"
-              className="rounded-lg border border-[var(--nude-deep)] bg-[var(--nude-tint)] px-4 py-3 text-sm font-medium leading-relaxed text-[var(--ink)]"
+              /* Beskeden er driftsmæssig — "klik for at slå lyd til", ikke
+                 klinisk. Den bar en terrakottaramme og råbte derfor lige så
+                 højt som et rødt flag. Nu bærer den kun sin varme flade og en
+                 hårfin kant: den kan ses, men den kan ikke forveksles med
+                 noget der handler om patienten. */
+              className="rounded-lg border border-[var(--line-strong)] bg-[var(--nude-tint)] px-4 py-3 text-sm font-medium leading-relaxed text-[var(--ink)]"
             >
               {notice}
             </div>
@@ -1489,7 +1630,14 @@ export default function Home() {
         */}
         {flash && !started && (
           <div className="mb-6">
-            <RedFlagBanner message={flash} lang={lang} orMode={false} onAcknowledge={() => void acknowledgeFlash()} />
+            <RedFlagBanner
+              message={flash}
+              lang={lang}
+              orMode={false}
+              onAcknowledge={() => void acknowledgeFlash()}
+              lookup={stedetsOpslag(tree, state, lang, true)}
+              onElaborate={(q) => void runLookup(q, null, "chat")}
+            />
           </div>
         )}
 
@@ -1510,6 +1658,7 @@ export default function Home() {
                   lang={lang}
                   turns={lookupTurns}
                   guide={guideLookup}
+                  procedure={procedure}
                   speakingTurn={speakingTurn}
                   onSpeak={toggleSpeakAnswer}
                   onSwitch={switchLookup}
@@ -1526,9 +1675,26 @@ export default function Home() {
                         }
                       : null
                   }
+                  /* Et hurtig-svar ER lægens næste besked — samme vej ind som
+                     hvis han havde skrevet eller sagt ordet selv. */
+                  onQuickReply={(t) => void handleUtterance(t)}
+                  onWriteNote={(treeId, path) => void generateNote({ treeId, path })}
+                  noteBusy={noteBusy}
+                  onShowProcedure={() => void showProcedure()}
                 />
               </div>
-              <div className="sticky bottom-4 z-20">
+              {/*
+                Komposeren klæber til bunden — og skal blive dér OVEN PÅ
+                telefonens tastatur. `--kb-inset` er den højde tastaturet
+                dækker (se KeyboardInset); uden den lander komposeren bag
+                tastaturet i præcis det sekund feltet får fokus.
+                `env(safe-area-inset-bottom)` holder den fri af iPhones
+                hjemmeindikator når intet tastatur er fremme.
+              */}
+              <div
+                className="sticky z-20"
+                style={{ bottom: "calc(var(--kb-inset) + max(1rem, env(safe-area-inset-bottom)))" }}
+              >
                 <IntakeCard
                   lang={lang}
                   trees={trees}
@@ -1563,14 +1729,6 @@ export default function Home() {
             />
           ))}
 
-        {/* Kun mens agenten afgør om ytringen var et spørgsmål. Linjen
-            erstatter intet og skubber intet — den lægger sig under kortet. */}
-        {!started && intakeBusy && (
-          <p role="status" aria-live="polite" className="mt-4 text-sm leading-relaxed text-[var(--ink-soft)]">
-            {tr("intakeThinking", lang)}
-          </p>
-        )}
-
         {/*
           Skelettet står præcis dér hvor notatet lander. Lå det et andet sted —
           eller manglede det — ville siden hoppe når de målte 14-16 sekunders
@@ -1592,6 +1750,10 @@ export default function Home() {
                 lang={lang}
                 orMode={false}
                 onAcknowledge={() => void acknowledgeFlash()}
+                /* Flaget siger hvad der er galt. Det næste spørgsmål er altid
+                   "og hvad gør jeg så?" — så det står der, formuleret. */
+                lookup={stedetsOpslag(tree, state, lang, true)}
+                onElaborate={(q) => void runLookup(q, null, "chat")}
               />
             ) : node ? (
               <QuestionCard
@@ -1616,6 +1778,12 @@ export default function Home() {
                 <DispositionCard
                   disposition={disposition}
                   lang={lang}
+                  /* Eskalationen skal kunne læses af BEGGE roller — også af
+                     den vagthavende brandsårslæge, som ikke kan ringe til
+                     sig selv. Stien afgør hvilke trin der gælder patienten. */
+                  treeId={tree.id}
+                  path={state.path}
+                  onElaborate={(q) => void runLookup(q, null, "chat")}
                   addendumOpen={addendumOpen}
                   dictating={dictating}
                   dictation={dictation}

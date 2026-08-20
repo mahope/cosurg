@@ -69,8 +69,10 @@ export const t = {
     en: "Build on validated expert content",
   },
   orHint: {
-    da: "Sig «næste», «gentag», «tilbage» — eller svar direkte.",
-    en: "Say “next”, “repeat”, “back” — or just answer.",
+    // «uddyb» står med: den viden der ligger et sekund væk, er ubrugelig hvis
+    // man skal kunne kommandoen udenad for at få fat i den.
+    da: "Sig «næste», «gentag», «tilbage», «uddyb» — eller svar direkte.",
+    en: "Say “next”, “repeat”, “back”, “elaborate” — or just answer.",
   },
   step: { da: "Trin", en: "Step" },
   answerPlaceholder: {
@@ -362,6 +364,41 @@ export const t = {
     en: "The sources are Danish and shown verbatim. Headings and explanations are translated.",
   },
 
+  /* ------------------------------------------------------------------ *
+   * Eskalationen — set fra begge sider
+   *
+   * "Ring til vagthavende brandsårslæge" er rigtigt for den yngre læge og
+   * cirkulært for specialisten, der selv ER den vagthavende. Mærkaterne her
+   * er det der gør de to roller entydige på et halvt sekund; teksterne selv
+   * står i træet, sammen med det øvrige kliniske indhold.
+   * ------------------------------------------------------------------ */
+  escalationTitle: { da: "Eskalation — og hvad der gøres imens", en: "Escalation — and what is done meanwhile" },
+  escalationCalling: { da: "Ringer du op", en: "If you are calling" },
+  escalationReceiving: { da: "Er du selv vagthavende", en: "If you are the on-call surgeon" },
+  escalationActions: { da: "Konkrete trin for denne patient", en: "Concrete steps for this patient" },
+  escalationActionsNote: {
+    da: "Trinnene kommer fra beslutningstræet og gælder begge roller — det er hvem der beslutter, der er forskellen. Hvert trin bærer sin instruks og kan foldes ud ordret.",
+    en: "The steps come from the decision tree and apply to both roles — who decides is the difference. Each step carries its instruction and can be expanded verbatim.",
+  },
+  escalationSource: { da: "Instruks", en: "Instruction" },
+  escalationLoading: {
+    da: "Henter handlingstrinnene og deres belæg fra vidensbasen …",
+    en: "Fetching the action steps and their backing from the knowledge base …",
+  },
+  escalationFailed: {
+    da: "Handlingstrinnene kunne ikke hentes. Anbefalingen og dens kilder ovenfor står ved magt.",
+    en: "The action steps could not be fetched. The recommendation and its sources above still stand.",
+  },
+  elaborateFromSources: { da: "Uddyb fra kilderne", en: "Elaborate from the sources" },
+  elaboratePitfall: { da: "Hvad siger kilderne om", en: "What do the sources say about" },
+  /* Håndfri: kirurgen er steril og kan ikke trykke. Så står grebet som et ord. */
+  elaborateSay: { da: "Sig «uddyb»", en: "Say “elaborate”" },
+  ackElaborate: { da: "Slår det op i kilderne.", en: "Looking it up in the sources." },
+  elaborateNothing: {
+    da: "Der er ikke et opslag knyttet til det her sted.",
+    en: "There is no lookup attached to this point.",
+  },
+
   // Behandlingsguide
   guideTitle: { da: "Behandlingsguide", en: "Treatment guide" },
   guideTagline: {
@@ -510,7 +547,7 @@ export const t = {
     da: "Slå oplæsning til eller fra",
     en: "Turn spoken guidance on or off",
   },
-  orSwitch: { da: "Slå OR-tilstand til eller fra", en: "Turn OR mode on or off" },
+  orSwitch: { da: "Slå håndfri tilstand til eller fra", en: "Turn handsfree mode on or off" },
   statusRegion: { da: "Status", en: "Status" },
   /** Læses op når et rødt flag tager skærmen. Skærmlæseren skal sige alvoren først. */
   redFlagAnnounce: { da: "Rødt flag", en: "Red flag" },
@@ -645,8 +682,6 @@ export const t = {
    * invitationen til «beskriv en patient»; alle tre veje skal nævnes hver gang.
    * ================================================================== */
 
-  intakeThinking: { da: "Et øjeblik — jeg finder ud af hvad du mener…", en: "One moment — working out what you mean…" },
-
   intakeQuestion: { da: "Sig hvad du står med.", en: "Say what you are looking at." },
   intakeHelp: {
     da: "Tal eller skriv. Jeg finder selv ud af resten.",
@@ -665,8 +700,11 @@ export const t = {
    * kan, og ingen eksempler der demonstrerer det.
    * ------------------------------------------------------------------ */
   intakeMicHint: { da: "Tryk og tal — ordene kommer med det samme", en: "Tap and talk — the words appear straight away" },
-  intakeMicListening: { da: "Jeg lytter", en: "Listening" },
+  intakeMicListening: { da: "Jeg lytter — tryk igen for at sende", en: "Listening — tap again to send" },
   intakeMicStarting: { da: "Åbner mikrofonen…", en: "Opening the microphone…" },
+  /* Dikteringens stilheds-varsel. Nedtællingen står i selve knappen. */
+  intakeMicCountdown: { da: "Sender om", en: "Sending in" },
+  intakeMicCancel: { da: "Annullér (Esc)", en: "Cancel (Esc)" },
   intakeSend: { da: "Send", en: "Send" },
   intakeAddImage: { da: "Vedhæft billede", en: "Attach image" },
   intakeRemoveImage: { da: "Fjern billede", en: "Remove image" },
@@ -697,6 +735,36 @@ export const t = {
 
   /* Faldgruberne der følger med et chatsvar. Rutens egne, med ordret belæg. */
   answerPitfalls: { da: "Faldgruber ved dette emne", en: "Pitfalls on this topic" },
+
+  /* ------------------------------------------------------------------ *
+   * Udredningen i chatten
+   *
+   * Beslutningstræet er ikke længere en skærm man skifter til — det er det
+   * agenten udreder med, inde i samtalen. Teksterne skal derfor lyde som en
+   * kollega der spørger videre, ikke som en formular der skal udfyldes.
+   * ------------------------------------------------------------------ */
+  workupLabel: { da: "Udredning", en: "Work-up" },
+  workupProgress: { da: "afklaret", en: "settled" },
+  workupOf: { da: "af", en: "of" },
+  workupAnswerHint: { da: "Svar med et klik — eller skriv det selv", en: "Answer with a tap — or write it yourself" },
+  workupPrefilled: { da: "Taget fra din beskrivelse", en: "Taken from your description" },
+  workupRedflag: { da: "Rødt flag", en: "Red flag" },
+  workupDisposition: { da: "Anbefaling", en: "Recommendation" },
+  workupDispositionSources: { da: "Anbefalingen hviler på", en: "The recommendation rests on" },
+  workupNoteOffer: {
+    da: "Der er nok til et journalnotat nu.",
+    en: "There is enough for a clinical note now.",
+  },
+  workupNoteWrite: { da: "Skriv notatet", en: "Write the note" },
+  workupNoteLater: { da: "Ikke nu", en: "Not now" },
+
+  /* Proceduren vist i tråden — Rigshospitalets trin med fotos. */
+  procedureLabel: { da: "Procedure", en: "Procedure" },
+  procedureFollowUp: {
+    da: "Såret skal forbindes. Skal jeg vise proceduren?",
+    en: "The wound needs dressing. Shall I show you the procedure?",
+  },
+  procedureShow: { da: "Vis proceduren", en: "Show the procedure" },
 
   /*
    * Her lå genkendelsens tekster («Jeg læser det som …»), de tre eksempel-

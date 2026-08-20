@@ -73,8 +73,58 @@ export function SourceText({ text }: { text: string }) {
   const lines = text.split("\n");
   const blocks: ReactNode[] = [];
   let bullets: string[] = [];
+  let nummereret: Array<{ nr: string; tekst: string }> = [];
   let tabel: string[][] = [];
+  /*
+   * Prosa-bufferen er hele forskellen på et citat og en mur af linjer.
+   *
+   * Kilderne er trukket ud af PDF'er, og PDF-udtræk sætter et hårdt linjeskift
+   * for enden af hver LAYOUT-linje — midt i sætninger. Renderede vi hver linje
+   * som sit eget afsnit (som før), stod et VIP-uddrag som tyve enlinjes
+   * afsnit. Nu samles fortløbende prosalinjer og flyder som ét afsnit; kun en
+   * TOM linje — et ægte afsnitsskifte — deler dem. Det er standard
+   * markdown-ombrydning, og den ændrer ombrydningen alene: hvert ord står
+   * ordret som i kilden.
+   */
+  let prosa: string[] = [];
+  let citat: string[] = [];
   let key = 0;
+
+  const flushProsa = () => {
+    if (prosa.length === 0) return;
+    const samlet = prosa.join(" ");
+    /*
+     * VIP-instrukserne bærer deres struktur som korte kolon-linjer —
+     * "Væsketerapi:", "Voksne:", "Børn:" — ikke som markdown-overskrifter.
+     * Et alenestående, kort kolon-afsnit får derfor rubrik-typografi: samme
+     * ord, ordret, men med den vægt kilden mente. Grænsen på længden holder
+     * almindelige sætninger der tilfældigvis ender med kolon (fx før en
+     * liste) ude af reglen.
+     */
+    const rubrik = prosa.length === 1 && samlet.length <= 60 && /:$/.test(samlet) && !/[.!?]/.test(samlet.slice(0, -1));
+    blocks.push(
+      rubrik ? (
+        <p key={`r-${key++}`} className="mt-3 mb-1 font-semibold first:mt-0">
+          {inline(samlet, `r-${key}`)}
+        </p>
+      ) : (
+        <p key={`p-${key++}`} className="my-2 first:mt-0 last:mb-0">
+          {inline(samlet, `p-${key}`)}
+        </p>
+      ),
+    );
+    prosa = [];
+  };
+
+  const flushCitat = () => {
+    if (citat.length === 0) return;
+    blocks.push(
+      <p key={`q-${key++}`} className="my-2 border-l-2 border-[var(--line-strong)] pl-3 text-[var(--ink-soft)]">
+        {inline(citat.join(" "), `q-${key}`)}
+      </p>,
+    );
+    citat = [];
+  };
 
   const flushBullets = () => {
     if (bullets.length === 0) return;
@@ -91,13 +141,45 @@ export function SourceText({ text }: { text: string }) {
     bullets = [];
   };
 
+  /*
+   * Nummererede trin renderes som listen de er. Uden dette ville
+   * prosa-sammenlægningen smelte "1. Køl området" og "2. Dæk med plast"
+   * sammen til én sætning — det modsatte af klinisk rækkefølge. Kildens EGNE
+   * numre vises, ikke en tællers: uddraget kan starte ved punkt 3.
+   */
+  const flushNummereret = () => {
+    if (nummereret.length === 0) return;
+    blocks.push(
+      <ol key={`ol-${key++}`} className="my-2 space-y-1.5 pl-1">
+        {nummereret.map((punkt, i) => (
+          <li key={i} className="flex gap-2.5">
+            <span className="min-w-[1.4em] shrink-0 text-right font-[family-name:var(--font-mono)] text-[13px] font-semibold leading-relaxed text-[var(--teal-deep)]">
+              {punkt.nr}.
+            </span>
+            <span>{inline(punkt.tekst, `oli-${key}-${i}`)}</span>
+          </li>
+        ))}
+      </ol>,
+    );
+    nummereret = [];
+  };
+
   const flushTabel = () => {
     if (tabel.length === 0) return;
     const [hoved, ...krop] = tabel;
     // Kilderne har af og til en tom første række; så er der ingen hovedrække.
     const harHoved = hoved.some((c) => c.length > 0) && krop.length > 0;
     blocks.push(
-      <div key={`t-${key++}`} className="my-3 overflow-x-auto">
+      /*
+        Tabellen scroller i SIN EGEN beholder — aldrig siden.
+        `overscroll-x-contain` er ikke pynt: uden den fortsætter et swipe forbi
+        tabellens kant som browserens "gå tilbage", og lægen mister kortet
+        midt i en overflytningstabel. Beholderen er en grid-celle med
+        `minWidth: 0`, så en bred tabel ikke kan presse kortet ud over
+        skærmkanten i stedet for at rulle.
+      */
+      <div key={`t-${key++}`} className="my-3 grid">
+        <div className="min-w-0 overflow-x-auto overscroll-x-contain">
         <table className="w-full min-w-[420px] border-collapse text-[13px]">
           {harHoved && (
             <thead>
@@ -125,21 +207,34 @@ export function SourceText({ text }: { text: string }) {
             ))}
           </tbody>
         </table>
+        </div>
       </div>,
     );
     tabel = [];
   };
 
   const flushAlt = () => {
+    flushProsa();
+    flushCitat();
     flushBullets();
+    flushNummereret();
     flushTabel();
   };
 
   for (const raw of lines) {
     const line = raw.trimEnd();
 
+    // Tom linje: et ÆGTE afsnitsskifte. Alt der er samlet op, afsluttes.
+    if (!line.trim()) {
+      flushAlt();
+      continue;
+    }
+
     if (erTabelLinje(line)) {
+      flushProsa();
+      flushCitat();
       flushBullets();
+      flushNummereret();
       if (!erSkillelinje(line)) tabel.push(celler(line));
       continue;
     }
@@ -147,16 +242,34 @@ export function SourceText({ text }: { text: string }) {
 
     const bullet = /^\s*[-*•]\s+(.*)$/.exec(line);
     if (bullet) {
+      flushProsa();
+      flushCitat();
+      flushNummereret();
       bullets.push(bullet[1]);
       continue;
     }
-    flushBullets();
 
-    // Kodehegn fra skrabningen bærer intet indhold.
-    if (/^\s*```/.test(line)) continue;
+    const punkt = /^\s*(\d+)[.)]\s+(.*)$/.exec(line);
+    if (punkt) {
+      flushProsa();
+      flushCitat();
+      flushBullets();
+      nummereret.push({ nr: punkt[1], tekst: punkt[2] });
+      continue;
+    }
+
+    flushBullets();
+    flushNummereret();
+
+    // Kodehegn fra skrabningen bærer intet indhold — men det ER en grænse.
+    if (/^\s*```/.test(line)) {
+      flushAlt();
+      continue;
+    }
 
     const overskrift = /^#{1,6}\s+(.*)$/.exec(line);
     if (overskrift) {
+      flushAlt();
       blocks.push(
         <p key={`h-${key++}`} className="mt-3 mb-1 font-semibold first:mt-0">
           {inline(overskrift[1], `h-${key}`)}
@@ -165,26 +278,22 @@ export function SourceText({ text }: { text: string }) {
       continue;
     }
 
-    const citat = /^>\s?(.*)$/.exec(line);
-    const brød = (citat ? citat[1] : line).replace(/!\[[^\]]*\]\([^)]*\)/g, "").trim();
-    if (!brød) continue;
+    const citatLinje = /^>\s?(.*)$/.exec(line);
+    if (citatLinje) {
+      flushProsa();
+      const inde = citatLinje[1].replace(/!\[[^\]]*\]\([^)]*\)/g, "").trim();
+      // ">" alene er citatets eget afsnitsskifte.
+      if (!inde) flushCitat();
+      else citat.push(inde);
+      continue;
+    }
+    flushCitat();
 
-    blocks.push(
-      citat ? (
-        <p
-          key={`q-${key++}`}
-          className="my-2 border-l-2 border-[var(--line-strong)] pl-3 text-[var(--ink-soft)]"
-        >
-          {inline(brød, `q-${key}`)}
-        </p>
-      ) : (
-        <p key={`p-${key++}`} className="my-2 first:mt-0 last:mb-0">
-          {inline(brød, `p-${key}`)}
-        </p>
-      ),
-    );
+    const brød = line.replace(/!\[[^\]]*\]\([^)]*\)/g, "").trim();
+    if (!brød) continue;
+    prosa.push(brød);
   }
   flushAlt();
 
-  return <div className="text-[15px] leading-relaxed text-[var(--ink)]">{blocks}</div>;
+  return <div className="prose-source min-w-0 text-[15px] leading-relaxed text-[var(--ink)]">{blocks}</div>;
 }

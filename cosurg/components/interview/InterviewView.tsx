@@ -124,7 +124,7 @@ export function InterviewView() {
       title={tr("interviewTitle", lang)}
       tagline={tr("interviewTagline", lang)}
     >
-      <div className="rounded-2xl border bg-[var(--paper-raised)] p-5 shadow-[0_1px_2px_rgba(16,32,30,0.04)] sm:p-6">
+      <div className="rounded-2xl border bg-[var(--paper-raised)] p-5 shadow-[var(--shadow-raised)] sm:p-6">
         <ResponseBar
           lang={lang}
           placeholder={tr("interviewPlaceholder", lang)}
@@ -172,7 +172,7 @@ export function InterviewView() {
         {naesteFelt ? (
           <button
             onClick={() => laesOp(naesteFelt.id)}
-            className="rounded-lg bg-[var(--teal-deep)] px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-[var(--teal)]"
+            className="flex min-h-11 items-center rounded-lg bg-[var(--teal-deep)] px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-[var(--teal)]"
           >
             {tr("interviewAskNext", lang)}: {naesteFelt.label[lang]}
           </button>
@@ -187,7 +187,7 @@ export function InterviewView() {
             setSidsteYtring(null);
             setIngenTraef(false);
           }}
-          className="rounded-lg border px-3 py-2 text-sm font-medium text-[var(--ink-soft)] transition-colors hover:border-[var(--teal)] hover:text-[var(--ink)]"
+          className="flex min-h-11 items-center rounded-lg border px-3 py-2 text-sm font-medium text-[var(--ink-soft)] transition-colors hover:border-[var(--teal)] hover:text-[var(--ink)]"
         >
           {tr("interviewReset", lang)}
         </button>
@@ -225,12 +225,16 @@ export function InterviewView() {
                 </h2>
                 <button
                   onClick={() => void kopier()}
-                  className="rounded-lg border px-3 py-1.5 text-sm font-medium text-[var(--ink)] transition-colors hover:border-[var(--teal)] hover:bg-[var(--teal-tint)]"
+                  className="flex min-h-11 items-center rounded-lg border px-3 py-1.5 text-sm font-medium text-[var(--ink)] transition-colors hover:border-[var(--teal)] hover:bg-[var(--teal-tint)]"
                 >
                   {tr(kopieret ? "interviewCopied" : "interviewCopy", lang)}
                 </button>
               </div>
-              <pre className="overflow-x-auto whitespace-pre-wrap rounded-xl border border-[var(--line)] bg-[var(--paper-raised)] p-4 font-[family-name:var(--font-mono)] text-[13px] leading-relaxed text-[var(--ink)]">
+              {/* Maskinens egen udskrift. Den stod hvid på hvidt kort og
+                  lignede derfor almindelig brødtekst med en ramme om. Nu er
+                  fladen sænket et hak — det ældste tegn i tryksager på "her
+                  citeres noget ordret", og den eneste forskel man behøver. */}
+              <pre className="overflow-x-auto whitespace-pre-wrap rounded-xl border border-[var(--line)] bg-[var(--paper-sunken)] p-4 font-[family-name:var(--font-mono)] text-[13px] leading-relaxed text-[var(--ink)]">
                 {resume}
               </pre>
             </section>

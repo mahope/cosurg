@@ -675,6 +675,55 @@ export function startsWithTreatmentIntent(text: string): boolean {
  */
 
 /* ------------------------------------------------------------------ *
+ * "Skriv notatet"
+ * ------------------------------------------------------------------ */
+
+/**
+ * Beder ytringen om journalnotatet?
+ *
+ * Agenten tilbyder selv notatet når udredningen er kørt til ende, men lægen
+ * skal kunne bede om det når som helst — også midtvejs, også efter at have
+ * afvist tilbuddet. Det er hans journal, ikke appens.
+ *
+ * Reglen er streng: ytringen skal i praksis BESTÅ af anmodningen. "Skriv
+ * notatet" er en ordre; "hvad skal der stå i notatet?" er et spørgsmål til
+ * kilderne, og at forveksle de to ville skrive i journalen på et spørgsmål.
+ */
+const NOTE_REQUEST = [
+  "skriv notat",
+  "skriv notatet",
+  "skriv journalnotat",
+  "skriv journalnotatet",
+  "lav notat",
+  "lav notatet",
+  "lav journalnotat",
+  "lav et notat",
+  "journalnotat",
+  "skriv journalen",
+  "write the note",
+  "write note",
+  "write the clinical note",
+  "make the note",
+  "create the note",
+  "clinical note",
+];
+
+/** Længste ytring vi overhovedet læser som en notat-ordre. */
+const NOTE_MAX_WORDS = 6;
+
+export function matchNoteRequest(text: string): boolean {
+  const normalized = normalize(text);
+  if (!normalized) return false;
+  if (normalized.split(" ").length > NOTE_MAX_WORDS) return false;
+  // Et spørgsmålstegn gør det til et spørgsmål OM notatet, ikke til en ordre.
+  if (text.includes("?")) return false;
+  return NOTE_REQUEST.some((raw) => {
+    const p = normalize(raw);
+    return normalized === p || normalized.startsWith(`${p} `) || normalized.endsWith(` ${p}`);
+  });
+}
+
+/* ------------------------------------------------------------------ *
  * Talte valg
  * ------------------------------------------------------------------ */
 

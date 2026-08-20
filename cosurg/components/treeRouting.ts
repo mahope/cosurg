@@ -91,6 +91,63 @@ const KEYWORDS: Record<string, string[]> = {
     "bite",
     "bitten",
   ],
+  /**
+   * Bevidste overlap med burns-dk ("ætsning", "syre", "kemisk") og med
+   * røgforgiftning: rammer en ytring begge lister, er der ingen klar vinder,
+   * og appen spørger — det er den ønskede adfærd, for en ætsning KAN vurderes
+   * både som brandsår og i det dedikerede ætsningsforløb.
+   */
+  "chemical-dk": [
+    "ætsning",
+    "ætset",
+    "syre",
+    "kemisk",
+    "flussyre",
+    "fenol",
+    "cement",
+    "kaustisk",
+    "afløbsrens",
+    "chemical",
+    "caustic",
+    "alkali",
+    "hydrofluoric",
+  ],
+  "co-poisoning-dk": [
+    "kulilte",
+    "kulilteforgiftning",
+    "kulmonooxid",
+    "carbonmonoxid",
+    "røgforgiftning",
+    "hyperbar",
+    "trykkammer",
+    "cohb",
+    "carbon monoxide",
+  ],
+  "ten-dk": [
+    "nekrolyse",
+    "lyell",
+    "stevens",
+    "nikolsky",
+    "necrolysis",
+  ],
+  "melanoma-dk": [
+    "melanom",
+    "modermærke",
+    "breslow",
+    "sentinel",
+  ],
+  "breast-seroma-dk": [
+    "implantat",
+    "serom",
+    "væskeansamling",
+    "alcl",
+    "breast implant",
+  ],
+  "mastitis-dk": [
+    "mastit",
+    "brystbetændelse",
+    "brystabsces",
+  ],
 };
 
 /**
@@ -227,6 +284,72 @@ export function suggestTreeId(utterance: string, trees: TreeSummary[], lang: Lan
   return best?.treeId ?? null;
 }
 
+/* ------------------------------------------------------------------ *
+ * "Vis mig proceduren"
+ * ------------------------------------------------------------------ */
+
+/**
+ * Ord der beder om at BLIVE VIST noget — ikke om at få det forklaret.
+ *
+ * Forskellen er hele pointen. "Hvordan forbinder man en hånd?" er et
+ * spørgsmål der skal besvares med kilder. "Vis mig forbindingsproceduren" er
+ * en anmodning om selve trin-for-trin-guiden med Rigshospitalets fotos. De
+ * ligner hinanden i ordvalg og adskiller sig i hensigt, så vi kræver et
+ * eksplicit vis-ord.
+ */
+const PROCEDURE_REQUEST = [
+  "vis",
+  "vis mig",
+  "gennemgå",
+  "gennemgang",
+  "procedure",
+  "proceduren",
+  "trin for trin",
+  "step by step",
+  "step-by-step",
+  "guide mig",
+  "før mig",
+  "show",
+  "show me",
+  "walk me through",
+  "take me through",
+];
+
+/** Forløb der ER en procedure — en linje af trin, ikke en vurdering. */
+const PROCEDURE_TREES = new Set(["dressing-hand-arm"]);
+
+/**
+ * Beder ytringen om at få en procedure vist?
+ *
+ * Reglen er bevidst streng i BEGGE ender: der skal både være et vis-ord og
+ * et ord der peger på et procedureforløb. Uden vis-ordet ville "forbinding
+ * på en hånd med brandsår" — en patient — åbne guiden i stedet for at blive
+ * udredt. Uden forløbsordet ville "vis mig" alene åbne noget tilfældigt.
+ */
+export function matchProcedureRequest(utterance: string, trees: TreeSummary[], lang: Lang): string | null {
+  const text = utterance.toLowerCase().replace(/\s+/g, " ").trim();
+  if (!text) return null;
+  if (!PROCEDURE_REQUEST.some((ord) => hasStem(text, ord))) return null;
+
+  for (const tree of trees) {
+    if (!PROCEDURE_TREES.has(tree.id)) continue;
+    const stems = KEYWORDS[tree.id] ?? nameStems(tree, lang);
+    if (stems.some((stem) => hasStem(text, stem))) return tree.id;
+    if ((REGION_HINTS[tree.id] ?? []).some((h) => hasStem(text, h))) return tree.id;
+  }
+
+  /*
+   * "Vis mig proceduren" uden at sige hvilken. Der findes præcis ét
+   * procedureforløb, så der er intet at gætte imellem — og at spørge
+   * "hvilken procedure?" når svaret er entydigt ville være at lade som om
+   * vi ikke vidste det.
+   */
+  const eneste = trees.filter((t) => PROCEDURE_TREES.has(t.id));
+  if (eneste.length === 1 && /procedur|guide|step|trin/.test(text)) return eneste[0].id;
+
+  return null;
+}
+
 /**
  * Det oplagte næste forløb når et træ er kørt til ende.
  *
@@ -237,6 +360,11 @@ export function suggestTreeId(utterance: string, trees: TreeSummary[], lang: Lan
  */
 const FOLLOW_UPS: Record<string, Record<string, string>> = {
   "burns-dk": {
+    "disp-treat": "dressing-hand-arm",
+  },
+  // Kilden siger det selv: "Bandagering efter endt skylning følger samme
+  // standard som forbrændingerne" (VIP PBB - Ætsninger).
+  "chemical-dk": {
     "disp-treat": "dressing-hand-arm",
   },
 };

@@ -28,7 +28,7 @@
  * agent det rigtige værktøj — men så er det et sprog, ikke en knap.
  */
 
-export type VoiceCommand = "next" | "repeat" | "back" | "acknowledge" | "orMode";
+export type VoiceCommand = "next" | "repeat" | "back" | "acknowledge" | "orMode" | "elaborate";
 
 export interface CommandContext {
   /**
@@ -113,6 +113,29 @@ register("back", [
   "previous",
   "previous step",
   "step back",
+]);
+
+/*
+ * "Uddyb" — grebet ud i kilderne, sagt i stedet for trykket.
+ *
+ * Kirurgen er steril og kan ikke trykke på et kort. Ordene er valgt så de ikke
+ * kan forveksles med et svar i et beslutningstræ: ingen node har "uddyb" eller
+ * "kilder" blandt sine værdier eller synonymer, og de tre lag i matchCommand
+ * (længde, eksakt match, kontekst) gælder som for alle andre kommandoer. Hvad
+ * der SLÅS OP bestemmes ikke af ordet, men af hvor i træet man står — så
+ * kommandoen kan ikke bruges til at stille et frit spørgsmål.
+ */
+register("elaborate", [
+  "uddyb",
+  "uddyb det",
+  "uddyb fra kilderne",
+  "hvad siger kilderne",
+  "kilderne",
+  "kilde",
+  "elaborate",
+  "what do the sources say",
+  "the sources",
+  "sources",
 ]);
 
 register("orMode", [

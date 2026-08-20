@@ -1,0 +1,191 @@
+{
+  "id": "mastitis-dk",
+  "version": "0.1.0",
+  "name": {
+    "da": "Mastitis — udredning og behandling",
+    "en": "Mastitis — workup and treatment"
+  },
+  "description": {
+    "da": "Klinisk beslutningstræ for mastitis: puerperal mod non-puerperal infektion, abscesvurdering og valg mellem antibiotika, punkturbehandling, dræn og kirurgi. Bygget på Region Hovedstadens vejledning Mastitis (SFR Plastik- og Mammakirurgi).",
+    "en": "Clinical decision tree for mastitis: puerperal versus non-puerperal infection, abscess assessment and the choice between antibiotics, needle aspiration, drainage and surgery. Built on the Capital Region guideline Mastitis (plastic and breast surgery specialty council)."
+  },
+  "authors": [
+    "Klinisk grundlag: Region Hovedstaden, vejledning Mastitis v7, arbejdsgruppe under SFR Plastik- og Mammakirurgi",
+    "Udkast samlet af CoSurg — afventer klinisk godkendelse"
+  ],
+  "rootNodeId": "abscess",
+  "nodes": [
+    {
+      "id": "abscess",
+      "question": {
+        "da": "Er der mistanke om abscesdannelse?",
+        "en": "Is an abscess suspected?"
+      },
+      "orQuestion": {
+        "da": "Abscesmistanke?",
+        "en": "Abscess suspected?"
+      },
+      "answerType": "boolean",
+      "help": {
+        "da": "Ved brystbetændelse uden tegn på absces kan den praktiserende læge varetage behandlingen. Puerperale infektioner udgør 10 til 15 procent, og agens er Staphylococcus aureus. Non-puerperale opdeles i periareolære abscesser — der ofte recidiverer med fisteldannelse og overvejende rammer yngre rygere — og perifere, som ses hos reumatikere, diabetikere, immunsvækkede og steroidbehandlede.",
+        "en": "Mastitis without signs of abscess can be managed by the general practitioner. Puerperal infections make up 10 to 15 percent, with Staphylococcus aureus as the agent. Non-puerperal infections divide into periareolar abscesses — which often recur with fistula formation and mainly affect younger smokers — and peripheral ones, seen in patients with rheumatic disease, diabetes, immunosuppression or steroid treatment."
+      },
+      "options": [
+        { "value": "yes", "label": { "da": "Ja", "en": "Yes" } },
+        { "value": "no", "label": { "da": "Nej", "en": "No" } }
+      ],
+      "edges": [
+        { "when": "no", "goto": "disp-antibiotics" },
+        { "when": "*", "goto": "puerperal" }
+      ]
+    },
+    {
+      "id": "puerperal",
+      "question": {
+        "da": "Ammer patienten — er det en puerperal infektion?",
+        "en": "Is the patient breastfeeding — is this a puerperal infection?"
+      },
+      "orQuestion": {
+        "da": "Ammende?",
+        "en": "Breastfeeding?"
+      },
+      "answerType": "boolean",
+      "options": [
+        {
+          "value": "yes",
+          "label": { "da": "Ja", "en": "Yes" },
+          "synonyms": {
+            "da": ["ja", "ammer", "barsel"],
+            "en": ["yes", "breastfeeding", "nursing"]
+          }
+        },
+        { "value": "no", "label": { "da": "Nej", "en": "No" } }
+      ],
+      "edges": [
+        { "when": "yes", "goto": "disp-obstetric" },
+        { "when": "*", "goto": "thin-skin" }
+      ]
+    },
+    {
+      "id": "thin-skin",
+      "question": {
+        "da": "Ligger der kun et tyndt hudlåg over abscessen?",
+        "en": "Is only a thin layer of skin covering the abscess?"
+      },
+      "orQuestion": {
+        "da": "Tyndt hudlåg?",
+        "en": "Thin skin cover?"
+      },
+      "answerType": "boolean",
+      "options": [
+        { "value": "yes", "label": { "da": "Ja", "en": "Yes" } },
+        { "value": "no", "label": { "da": "Nej", "en": "No" } }
+      ],
+      "edges": [
+        { "when": "yes", "goto": "disp-excise" },
+        { "when": "*", "goto": "complex" }
+      ]
+    },
+    {
+      "id": "complex",
+      "question": {
+        "da": "Er abscessen kompleks — består den af flere separate kamre?",
+        "en": "Is the abscess complex — made up of several separate chambers?"
+      },
+      "orQuestion": {
+        "da": "Flere kamre?",
+        "en": "Several chambers?"
+      },
+      "answerType": "boolean",
+      "help": {
+        "da": "Ved mistanke om kompleks absces er der indikation for ultralyd og ultralydsvejledt punktur, eventuelt drænanlæggelse.",
+        "en": "With a suspected complex abscess there is an indication for ultrasound and ultrasound-guided puncture, possibly drain placement."
+      },
+      "options": [
+        { "value": "yes", "label": { "da": "Ja", "en": "Yes" } },
+        { "value": "no", "label": { "da": "Nej", "en": "No" } }
+      ],
+      "edges": [
+        { "when": "yes", "goto": "disp-drain" },
+        { "when": "*", "goto": "disp-puncture" }
+      ]
+    }
+  ],
+  "dispositions": [
+    {
+      "id": "disp-antibiotics",
+      "severity": "treat",
+      "title": {
+        "da": "Behandl: antibiotika uden absces",
+        "en": "Treat: antibiotics without an abscess"
+      },
+      "guidance": {
+        "da": "Uden tegn på absces kan den praktiserende læge varetage behandlingen. Førstevalg indtil dyrkningssvar er dicloxacillin 1 g fire gange dagligt, eventuelt suppleret med fucidin 500 mg tre gange dagligt; præparatet skiftes eller suppleres efter dyrkningssvaret, og ved non-puerperale infektioner kan blandingsflora kræve supplerende metronidazol 0,5 g tre gange dagligt. Ved penicillinallergi erstattes dicloxacillin med makrolid, klindamycin eller cefuroxim. Varigheden er 10 til 14 dage, og behovet er ofte mere end en uge. Rygeophør anbefales, og rygestopguide udleveres.",
+        "en": "Without signs of an abscess, the general practitioner can manage treatment. First choice until culture results is dicloxacillin 1 g four times daily, possibly supplemented with fusidic acid 500 mg three times daily; the drug is changed or supplemented per the culture result, and in non-puerperal infections mixed flora may require added metronidazole 0.5 g three times daily. With penicillin allergy, dicloxacillin is replaced by a macrolide, clindamycin or cefuroxime. Duration is 10 to 14 days, and the need is often more than a week. Smoking cessation is recommended, with a quit guide provided."
+      },
+      "sources": [
+        "Region Hovedstaden: Mastitis (version 7)"
+      ]
+    },
+    {
+      "id": "disp-obstetric",
+      "severity": "refer",
+      "title": {
+        "da": "Henvis: gynækologisk-obstetrisk afdeling",
+        "en": "Refer: obstetric department"
+      },
+      "guidance": {
+        "da": "Patienter med puerperale infektioner henvises ved abscesmistanke eller ønske om hospitalsvurdering til behandling i den gynækologisk-obstetriske afdeling hvor patienten har født — det gælder så længe patienten ammer. Antibiotisk førstevalg er dicloxacillin 1 g fire gange dagligt indtil dyrkningssvar; varighed 10 til 14 dage.",
+        "en": "Patients with puerperal infections are referred, on suspicion of abscess or a wish for hospital assessment, to the obstetric department where the patient gave birth — for as long as the patient is breastfeeding. First-line antibiotics are dicloxacillin 1 g four times daily until culture results; duration 10 to 14 days."
+      },
+      "sources": [
+        "Region Hovedstaden: Mastitis (version 7)"
+      ]
+    },
+    {
+      "id": "disp-puncture",
+      "severity": "treat",
+      "title": {
+        "da": "Behandl: punktur og antibiotika",
+        "en": "Treat: needle aspiration and antibiotics"
+      },
+      "guidance": {
+        "da": "Punkturbehandling kombineret med antibiotika er lige så effektiv som og mere skånsom end kirurgisk incision. Aspirér abscesindholdet med lyserød venepunkturkanyle og send aspiratet til dyrkning og resistens; skyl eventuelt gentagne gange med isotonisk natriumklorid via kanylen indtil skyllevandet er rent. Gentag punkturen med 1 til 2 dages mellemrum afhængigt af kavitetens volumen og den samlede klinik. Antibiotika: dicloxacillin 1 g fire gange dagligt indtil dyrkningssvar, i 10 til 14 dage. Non-puerperale patienter henvises til brystkirurgisk afdeling, og rygeophør anbefales.",
+        "en": "Aspiration combined with antibiotics is as effective as, and gentler than, surgical incision. Aspirate the abscess contents with a pink venepuncture cannula and send the aspirate for culture and sensitivity; optionally irrigate repeatedly with isotonic saline through the cannula until the return is clear. Repeat the aspiration at 1 to 2 day intervals depending on cavity volume and the overall picture. Antibiotics: dicloxacillin 1 g four times daily until culture results, for 10 to 14 days. Non-puerperal patients are referred to the breast surgery department, and smoking cessation is recommended."
+      },
+      "sources": [
+        "Region Hovedstaden: Mastitis (version 7)"
+      ]
+    },
+    {
+      "id": "disp-drain",
+      "severity": "treat",
+      "title": {
+        "da": "Behandl: ultralydsvejledt punktur og dræn",
+        "en": "Treat: ultrasound-guided puncture and drain"
+      },
+      "guidance": {
+        "da": "Ved kompleks absces med flere separate kamre er der indikation for ultralyd og ultralydsvejledt punktur. Der kan være behov for drænanlæggelse og skylning via drænet — regimet indebærer skylning fire til seks gange med natriumklorid via lukket posesystem med trevejshane. Antibiotika efter regimet, og aspirat til dyrkning og resistens. Efter afsluttet behandling foretages billeddiagnostisk kontrol når genesen er uklar — inflammation og neoplasi kan give samme mammografiske billede, og biopsitagning er derfor vigtig.",
+        "en": "With a complex abscess of several separate chambers there is an indication for ultrasound and ultrasound-guided puncture. Drain placement and irrigation via the drain may be needed — the regimen involves rinsing four to six times with saline through a closed bag system with a three-way tap. Antibiotics per the regimen, and aspirate for culture and sensitivity. After treatment, imaging follow-up is performed when the cause is unclear — inflammation and neoplasia can look identical on mammography, so biopsy matters."
+      },
+      "sources": [
+        "Region Hovedstaden: Mastitis (version 7)"
+      ]
+    },
+    {
+      "id": "disp-excise",
+      "severity": "treat",
+      "title": {
+        "da": "Operér: excision af tyndt hudlåg",
+        "en": "Operate: excise the thin skin cover"
+      },
+      "guidance": {
+        "da": "Ligger der kun et tyndt hudlåg over abscessen, excideres dette kirurgisk — ofte muligt med Emla på huden og eventuel lokalbedøvelse. Kaviteten kan lukkes primært under antibiotikadække, eller såret lades åbentstående til opheling fra bunden med skiftninger, for eksempel med Kaltostat-meche. Pus sendes til dyrkning og resistens, og excideret væv til mikroskopi — samt til TB-undersøgelse ved klinisk mistanke. Fisteldannelse behandles med periareolær incision og excision af det relevante ductus- og fistelkompleks. Rygeophør anbefales.",
+        "en": "If only a thin skin cover lies over the abscess, it is excised surgically — often possible with Emla on the skin and local anaesthetic if needed. The cavity can be closed primarily under antibiotic cover, or the wound left open to heal from the base with dressings, for example a Kaltostat wick. Pus is sent for culture and sensitivity, and excised tissue for microscopy — plus TB testing on clinical suspicion. Fistula formation is treated with periareolar incision and excision of the relevant duct and fistula complex. Smoking cessation is recommended."
+      },
+      "sources": [
+        "Region Hovedstaden: Mastitis (version 7)"
+      ]
+    }
+  ]
+}

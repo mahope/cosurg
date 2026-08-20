@@ -12,6 +12,26 @@ import {
   validerBilleder,
   type BilledObservationer,
 } from "@/lib/corti/vision";
+import {
+  fortolkAktuelNode,
+  fremskridt,
+  genafspil,
+  restSvar,
+  rykFrem,
+  somDisposition,
+  somPatientKontekst,
+  somSpoergsmaal,
+  traeKilde,
+  udtraekSvar,
+  vaelgTrae,
+  validerWorkup,
+  type DispositionUd,
+  type UdtrukketSvar,
+  type WorkupSpoergsmaal,
+} from "@/lib/corti/workup";
+import { getDisposition, getNode, startSession } from "@/lib/tree/engine";
+import { treeSource } from "@/lib/tree/loader";
+import type { AnsweredStep, DecisionTree, SessionState } from "@/lib/tree/types";
 import type { LoestFaldgrube } from "@/components/pitfalls/types";
 
 export const dynamic = "force-dynamic";
@@ -59,6 +79,13 @@ interface Body {
   fastPath?: unknown;
   /** Sårfotos: [{mediaType, data (ren base64), name?}]. Valideres i validerBilleder. */
   images?: unknown;
+  /**
+   * Igangværende udredning: {treeId, path:[{nodeId, value, rawAnswer?}]}.
+   * Klienten bærer tilstanden; serveren GENAFSPILLER den gennem træmotoren og
+   * afviser stier motoren ikke selv ville have gået. Feltet udelades helt når
+   * ingen udredning er i gang.
+   */
+  workup?: unknown;
 }
 
 /**
@@ -69,7 +96,7 @@ interface Body {
 type UdgaaendeEvent =
   | ChatEvent
   /** Hvad lægen ville, hvilket spor der køres, og hvorfor. Kommer efter ~1 sekund. */
-  | { kind: "triage"; triage: Triage; mode: "fast" | "deep" }
+  | { kind: "triage"; triage: Triage; mode: "fast" | "deep" | "workup" }
   /** Faldgruberne med deres ORDRETTE belæg, uafhængigt af hvad modellen skriver. */
   | { kind: "pitfalls"; pitfalls: LoestFaldgrube[] }
   /**
@@ -77,7 +104,46 @@ type UdgaaendeEvent =
    * det skal siges højt i UI'et frem for at fotoet stille bliver ignoreret.
    */
   | { kind: "vision"; ok: true; observations: BilledObservationer }
-  | { kind: "vision"; ok: false; message: string };
+  | { kind: "vision"; ok: false; message: string }
+  /**
+   * Udredningen i samtalen. `path` er den kanoniske sti og `pending` de svar
+   * lægen har givet som gennemløbet endnu ikke er nået til — klienten gemmer
+   * begge og sender {treeId, path, pending} tilbage som `workup` på næste tur.
+   * `progress.total` er et skøn ad førstevalgs-kanter; træet forgrener, så det
+   * kan ændre sig.
+   *
+   * phase: "started" = en patientbeskrivelse åbnede udredningen (prefilled
+   * viser hvad beskrivelsen allerede besvarede). "question" = svaret er
+   * registreret, her er næste spørgsmål. "held" = ytringen var et opslag;
+   * svaret på det følger som almindelige begivenheder, og udredningen står
+   * ved `question`. "clarify" = svaret kunne ikke afgøres; spørg igen.
+   */
+  | {
+      kind: "workup";
+      phase: "started" | "question" | "held" | "clarify";
+      treeId: string;
+      treeName: string;
+      path: AnsweredStep[];
+      progress: { answered: number; total: number };
+      question?: WorkupSpoergsmaal;
+      prefilled?: AnsweredStep[];
+      pending?: UdtrukketSvar[];
+      clarification?: string;
+    }
+  /** Et rødt flag fra træet — afbryder med besked, kilde og telefonnummer hvor træet har det. */
+  | { kind: "redflag"; treeId: string; nodeId: string; message: string; source: string }
+  /** Træet nåede en disposition. Anbefalingen kommer fra kanterne, aldrig fra en model. */
+  | {
+      kind: "disposition";
+      treeId: string;
+      treeName: string;
+      disposition: DispositionUd;
+      path: AnsweredStep[];
+      redFlags: string[];
+      source: string;
+    }
+  /** Tilbud om journalnotat: klienten kalder POST /api/note med {treeId, path, lang}. */
+  | { kind: "noteOffer"; treeId: string; path: AnsweredStep[] };
 
 /** Hvilke eksperter chatten faktisk har koblet på. Bruges til at være ærlig i UI'et. */
 export async function GET(req: Request) {
@@ -123,6 +189,33 @@ export async function POST(req: Request) {
       { error: "Billedanalyse er ikke tilgængelig (CORTI_MODELS_KEY mangler)" },
       { status: 503 },
     );
+  }
+
+  /*
+   * Udredningstilstanden valideres FØR strømmen åbnes — og genafspilles
+   * gennem træmotoren. En sti motoren ikke selv ville have gået (forkert
+   * rækkefølge, ugyldig værdi, skridt forbi en disposition) er en 400, ikke
+   * en tilstand vi arbejder videre på. Det er dét der gør klient-båret
+   * tilstand forsvarlig: serveren stoler på motoren, aldrig på klienten.
+   */
+  let workupTree: DecisionTree | null = null;
+  let workupState: SessionState | null = null;
+  let workupPending: UdtrukketSvar[] = [];
+  if (body.workup !== undefined && body.workup !== null) {
+    const kw = validerWorkup(body.workup);
+    if (!kw) return NextResponse.json({ error: "Ugyldig udredningstilstand" }, { status: 400 });
+    const tree = await treeSource.get(kw.treeId);
+    if (!tree) return NextResponse.json({ error: "Ukendt træ" }, { status: 404 });
+    const state = genafspil(tree, kw, lang);
+    if (!state) {
+      return NextResponse.json(
+        { error: "Udredningsstien kan ikke genafspilles gennem træet" },
+        { status: 400 },
+      );
+    }
+    workupTree = tree;
+    workupState = state;
+    workupPending = kw.pending ?? [];
   }
 
   const encoder = new TextEncoder();
@@ -181,16 +274,189 @@ export async function POST(req: Request) {
         }
 
         /*
+         * Fremdrift i en udredning meldes ét sted: røde flag først (de afbryder,
+         * som i træ-visningen), så enten dispositionen med notat-tilbud — eller
+         * det næste spørgsmål. Dispositionen kommer fra motorens kanter; denne
+         * funktion FORMIDLER kun.
+         */
+        const sendFremdrift = (
+          tree: DecisionTree,
+          frem: ReturnType<typeof rykFrem>,
+          phase: "started" | "question",
+          alleSvar: UdtrukketSvar[],
+        ) => {
+          for (const flag of frem.redFlags) {
+            send({
+              kind: "redflag",
+              treeId: tree.id,
+              nodeId: flag.nodeId,
+              message: flag.message,
+              source: traeKilde(tree),
+            });
+          }
+          if (frem.state.dispositionId) {
+            const disp = getDisposition(tree, frem.state.dispositionId);
+            if (disp) {
+              send({
+                kind: "disposition",
+                treeId: tree.id,
+                treeName: tree.name[lang],
+                disposition: somDisposition(disp, lang),
+                path: frem.state.path,
+                redFlags: frem.state.redFlags,
+                source: traeKilde(tree),
+              });
+              send({ kind: "noteOffer", treeId: tree.id, path: frem.state.path });
+            }
+            return;
+          }
+          const node = frem.state.currentNodeId ? getNode(tree, frem.state.currentNodeId) : undefined;
+          if (!node) return;
+          // Svar der endnu ikke kunne bruges, huskes — de forbruges automatisk
+          // når gennemløbet når frem, så lægen aldrig spørges om dem igen.
+          const pending = restSvar(tree, frem.state, alleSvar);
+          send({
+            kind: "workup",
+            phase,
+            treeId: tree.id,
+            treeName: tree.name[lang],
+            path: frem.state.path,
+            progress: fremskridt(tree, frem.state),
+            question: somSpoergsmaal(node, lang),
+            prefilled: frem.taget.length > 0 ? frem.taget : undefined,
+            pending: pending.length > 0 ? pending : undefined,
+          });
+        };
+
+        /*
+         * UDREDNINGSTUR: en udredning er i gang, så ytringen er formodentlig et
+         * svar på spørgsmålet der står. Modellen må kun oversætte ordene til en
+         * værdi nodens skema tillader — hvor gennemløbet lander, afgør motoren.
+         *
+         * Er ytringen i stedet et opslag ("hvor meget væske?"), meldes "held",
+         * og resten af ruten svarer som den plejer: udredningen står stille ved
+         * sit spørgsmål, og opslaget får patientkonteksten fra stien med.
+         */
+        let forudTriage: Triage | null = null;
+        let effektivKontekst = patientContext;
+
+        if (workupTree && workupState) {
+          const tree = workupTree;
+          const state = workupState;
+          effektivKontekst = somPatientKontekst(tree, state, lang) || patientContext;
+          const node = state.currentNodeId ? getNode(tree, state.currentNodeId) : undefined;
+
+          if (node) {
+            // Den aktuelle node først; resten er med fordi ét svar tit dækker
+            // flere — "dyb dermal, og den er cirkulær" er to noder i én mundfuld.
+            const aabne = tree.nodes.filter(
+              (n) => n.id === node.id || !state.path.some((p) => p.nodeId === n.id),
+            );
+            const nye = await udtraekSvar(
+              question,
+              [node, ...aabne.filter((n) => n.id !== node.id)],
+              lang,
+              req.signal,
+            );
+
+            /*
+             * De huskede svar fra tidligere ture lægges under de nye: et nyere
+             * udsagn om samme node vinder altid — lægen kan have rettet sig selv.
+             */
+            const mergedMap = new Map(workupPending.map((s) => [s.nodeId, s]));
+            for (const s of nye) mergedMap.set(s.nodeId, s);
+            let svar = [...mergedMap.values()];
+
+            if (!nye.some((s) => s.nodeId === node.id) && !mergedMap.has(node.id)) {
+              // Ikke et svar på det stående spørgsmål. Et opslag? Spørg triagen
+              // — og gem den, så hovedflowet ikke betaler for den igen.
+              forudTriage = await triagér({
+                utterance: question,
+                lang,
+                patientContext: effektivKontekst,
+                signal: req.signal,
+              });
+              if (
+                forudTriage.routedBy === "corti-models" &&
+                (forudTriage.kind === "fact" || forudTriage.kind === "treatment")
+              ) {
+                send({
+                  kind: "workup",
+                  phase: "held",
+                  treeId: tree.id,
+                  treeName: tree.name[lang],
+                  path: state.path,
+                  progress: fremskridt(tree, state),
+                  question: somSpoergsmaal(node, lang),
+                  pending: workupPending.length > 0 ? workupPending : undefined,
+                });
+                // Falder igennem til det almindelige svar-flow nedenfor.
+              } else {
+                // Formodentlig et svar Models ikke kunne afgøre. Agent-
+                // fortolkeren er reserven — præcis som i /api/interpret.
+                const f = await fortolkAktuelNode(node, question, lang);
+                if (f.svar) {
+                  svar = [f.svar, ...svar.filter((s) => s.nodeId !== f.svar!.nodeId)];
+                } else {
+                  send({
+                    kind: "workup",
+                    phase: "clarify",
+                    treeId: tree.id,
+                    treeName: tree.name[lang],
+                    path: state.path,
+                    progress: fremskridt(tree, state),
+                    question: somSpoergsmaal(node, lang),
+                    pending: workupPending.length > 0 ? workupPending : undefined,
+                    clarification: f.clarification,
+                  });
+                  return;
+                }
+              }
+            }
+
+            if (svar.some((s) => s.nodeId === node.id)) {
+              sendFremdrift(tree, rykFrem(tree, state, svar, question), "question", svar);
+              return;
+            }
+          }
+          // Enten er dispositionen allerede nået, eller ytringen var et opslag:
+          // videre til svar-flowet med patientkonteksten fra stien.
+        }
+
+        /*
          * Trin 1: hvad ville lægen? Ét Models-kald, målt 0,7-2,0 s. Det er den
          * eneste ventetid vi lægger til, og den betaler sig selv hjem: den
          * afgør om vi kan spare de 35-72 sekunder agentturen koster.
          */
-        const triage = await triagér({
-          utterance: syn ? `${question}\n[Billedobservationer: ${syn.observations.slice(0, 500)}]` : question,
-          lang,
-          patientContext,
-          signal: req.signal,
-        });
+        const triage =
+          forudTriage ??
+          (await triagér({
+            utterance: syn ? `${question}\n[Billedobservationer: ${syn.observations.slice(0, 500)}]` : question,
+            lang,
+            patientContext: effektivKontekst,
+            signal: req.signal,
+          }));
+
+        /*
+         * NY UDREDNING: en patientbeskrivelse skifter aldrig skærm — den åbner
+         * udredningen her i samtalen. Alt lægen allerede har sagt, er besvaret
+         * FØR første spørgsmål stilles: at spørge om lokalisationen igen, når
+         * beskrivelsen lige har nævnt armen, er forskellen på en formular og en
+         * kollega. Vælger Models intet træ, bliver det en almindelig samtale.
+         */
+        if (!workupTree && triage.kind === "patient" && triage.routedBy === "corti-models") {
+          const tree = await vaelgTrae(question, lang, req.signal);
+          if (tree) {
+            send({ kind: "triage", triage, mode: "workup" });
+            if (mcpKonfigureret()) {
+              const fg = await faldgruberTilEmne(`${triage.pitfallContext} ${triage.topic} ${question}`);
+              if (fg.length > 0) send({ kind: "pitfalls", pitfalls: fg });
+            }
+            const svar = await udtraekSvar(question, tree.nodes, lang, req.signal);
+            sendFremdrift(tree, rykFrem(tree, startSession(tree, lang), svar, question), "started", svar);
+            return;
+          }
+        }
 
         /*
          * Trin 2: hent grundlaget selv. Faldgruberne svarer på 40-60 ms,
@@ -254,7 +520,7 @@ export async function POST(req: Request) {
               lang,
               grounding: promptBlok,
               uddrag: grundlag.uddrag,
-              patientContext,
+              patientContext: effektivKontekst,
               recap,
               // Synthesemodellen kan selv se — den får fotoene oveni
               // observationerne, og reglen om mærkning står i dens systemprompt.
@@ -277,7 +543,7 @@ export async function POST(req: Request) {
           lang,
           contextId,
           recap,
-          patientContext,
+          patientContext: effektivKontekst,
           // Det agentiske framework kan ikke modtage billeder — det får
           // observationsblokken i stedet, med sin mærkningsregel intakt.
           grounding: promptBlok || undefined,

@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Roboto, Roboto_Mono } from "next/font/google";
 import "./globals.css";
 import { SkipLink } from "@/components/ui/SkipLink";
+import { KeyboardInset } from "@/components/ui/KeyboardInset";
 
 /*
  * Roboto er PlastSurgeon-brandets skrift og bruges hele vejen igennem. Appen
@@ -109,6 +110,21 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   themeColor: "#005355",
   colorScheme: "light",
+  /*
+   * Telefonen er det mest realistiske device: appen ligger i kittellommen.
+   * `width=device-width, initial-scale=1` er Next's standard og bevares.
+   *
+   * `viewportFit: "cover"` lader appen fylde HELE skærmen, også bag iPhones
+   * afrundede hjørner — ellers står der to grå bjælker i landskab. Prisen er
+   * at indholdet skal holdes fri af notch og hjemmeindikator selv; det gør
+   * `body` (sidernes indryk) og de elementer der er fastgjort i bunden.
+   *
+   * Zoom spærres IKKE. En skadestuelæge skal kunne knibe et kildeuddrag op,
+   * og `maximumScale: 1` ville tage den mulighed fra ham.
+   */
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -119,6 +135,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     >
       <body className="min-h-full flex flex-col">
         <SkipLink />
+        {/* Måler telefonens tastatur ind i --kb-inset. Tegner intet. */}
+        <KeyboardInset />
         {/*
           Tastaturvejen ind i indholdet. `tabIndex={-1}` gør beholderen til et
           gyldigt fokusmål uden at lægge den i tabuleringsrækken — springet

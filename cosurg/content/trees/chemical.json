@@ -1,0 +1,250 @@
+{
+  "id": "chemical-dk",
+  "version": "0.1.0",
+  "name": {
+    "da": "Ætsninger — akut vurdering",
+    "en": "Chemical burns — acute assessment"
+  },
+  "description": {
+    "da": "Klinisk beslutningstræ for akut vurdering af ætsninger (kemiske skader). Bygget på Rigshospitalets VIP-vejledning PBB - Ætsninger og Dansk Brandsårsforening (brandsaar.dk/aetsninger).",
+    "en": "Clinical decision tree for acute assessment of chemical burns. Built on the Rigshospitalet clinical guideline PBB - Chemical burns and the Danish Burn Society (brandsaar.dk/aetsninger)."
+  },
+  "authors": [
+    "Klinisk grundlag: VIP-vejledning PBB - Ætsninger v5, Rikke Holmgaard, Rigshospitalet",
+    "Klinisk grundlag: Dansk Brandsårsforening (brandsaar.dk/aetsninger)",
+    "Udkast samlet af CoSurg — afventer klinisk godkendelse"
+  ],
+  "rootNodeId": "rinse",
+  "nodes": [
+    {
+      "id": "rinse",
+      "question": {
+        "da": "Er skylning påbegyndt? Børst eventuelt tørstof af, fjern gennemvædet tøj, og skyl med vand — eller endnu bedre Diphoterine.",
+        "en": "Has irrigation been started? Brush off any dry agent, remove soaked clothing, and rinse with water — or better, Diphoterine."
+      },
+      "orQuestion": {
+        "da": "Skylning i gang?",
+        "en": "Irrigation running?"
+      },
+      "answerType": "boolean",
+      "help": {
+        "da": "I modsætning til termiske skader skal vævet ikke køles — det ætsende stof skal fortyndes, og det skal ske så hurtigt som overhovedet muligt. Vandet skal løbe væk fra patienten, så stoffet ikke rammer andre steder på kroppen. Diphoterine neutraliserer både syre og base, kan anvendes over hele kroppen inklusive øjne, øregang og mundhule, og har effekt ved brug inden for 24 timer ved baseskader.",
+        "en": "Unlike thermal injury the tissue does not need cooling — the corrosive agent must be diluted, and as quickly as at all possible. The water must run off away from the patient so the agent does not reach other parts of the body. Diphoterine neutralises both acid and alkali, can be used on the whole body including eyes, ear canal and mouth, and is effective within 24 hours for alkali injuries."
+      },
+      "options": [
+        { "value": "yes", "label": { "da": "Ja", "en": "Yes" } },
+        { "value": "no", "label": { "da": "Nej", "en": "No" } }
+      ],
+      "redFlags": [
+        {
+          "when": "no",
+          "message": {
+            "da": "Start skylning nu. Ætsningen fortsætter indtil stoffet er fjernet, inaktiveret eller tilstrækkeligt fortyndet — hurtig skylning er det vigtigste enkelttiltag.",
+            "en": "Start irrigation now. The chemical injury continues until the agent is removed, inactivated or sufficiently diluted — prompt irrigation is the single most important measure."
+          }
+        }
+      ],
+      "edges": [
+        { "when": "*", "goto": "agent" }
+      ]
+    },
+    {
+      "id": "agent",
+      "question": {
+        "da": "Hvilket stof drejer det sig om? Syre, base, flussyre, fenol, cement, benzin, fosfor — eller ukendt?",
+        "en": "What is the agent? Acid, alkali, hydrofluoric acid, phenol, cement, petrol, phosphorus — or unknown?"
+      },
+      "orQuestion": {
+        "da": "Hvilket stof?",
+        "en": "Which agent?"
+      },
+      "answerType": "choice",
+      "help": {
+        "da": "Anamnestisk er det vigtigt at vide hvilket kemikalie — form, koncentration og pH — samt hvor og hvordan, hvor længe og hvor store mængder patienten var eksponeret for. Syrer giver koagulativ nekrose der begrænser penetrationen; baser giver kolliquativ nekrose og trænger dybere ind — de gør mindre skade umiddelbart men er mere destruktive på sigt. Kontakt eventuelt Giftlinjen, Bispebjerg Hospital: 35 31 35 31.",
+        "en": "The history must establish which chemical — form, concentration and pH — and where, how, for how long and to what quantity the patient was exposed. Acids cause coagulative necrosis that limits penetration; alkalis cause liquefactive necrosis and penetrate deeper — less immediate damage but more destructive over time. Consider contacting the poison control line."
+      },
+      "options": [
+        {
+          "value": "acid",
+          "label": { "da": "Syre", "en": "Acid" },
+          "synonyms": {
+            "da": ["svovlsyre", "saltsyre", "toiletrens", "batterisyre"],
+            "en": ["sulphuric", "hydrochloric", "battery acid"]
+          }
+        },
+        {
+          "value": "alkali",
+          "label": { "da": "Base", "en": "Alkali" },
+          "synonyms": {
+            "da": ["lud", "natriumhydroxid", "afløbsrens", "ovnrens", "blegemiddel", "kalk"],
+            "en": ["lye", "sodium hydroxide", "drain cleaner", "oven cleaner", "bleach", "lime"]
+          }
+        },
+        {
+          "value": "hydrofluoric",
+          "label": { "da": "Flussyre", "en": "Hydrofluoric acid" },
+          "synonyms": {
+            "da": ["rustfjerner", "fluorid"],
+            "en": ["rust remover", "fluoride", "HF"]
+          }
+        },
+        {
+          "value": "phenol",
+          "label": { "da": "Fenol", "en": "Phenol" },
+          "synonyms": {
+            "da": ["desinfektionsmiddel"],
+            "en": ["carbolic", "disinfectant"]
+          }
+        },
+        {
+          "value": "cement",
+          "label": { "da": "Cement", "en": "Cement" },
+          "synonyms": {
+            "da": ["beton", "mørtel", "læsket kalk"],
+            "en": ["concrete", "mortar", "slaked lime"]
+          }
+        },
+        {
+          "value": "petrol",
+          "label": { "da": "Benzin", "en": "Petrol" },
+          "synonyms": {
+            "da": ["brændstof", "diesel"],
+            "en": ["gasoline", "fuel"]
+          }
+        },
+        {
+          "value": "phosphorus",
+          "label": { "da": "Fosfor", "en": "Phosphorus" },
+          "synonyms": {
+            "da": ["hvid fosfor"],
+            "en": ["white phosphorus"]
+          }
+        },
+        {
+          "value": "unknown",
+          "label": { "da": "Ukendt stof", "en": "Unknown agent" },
+          "synonyms": {
+            "da": ["ved ikke", "ukendt"],
+            "en": ["unknown", "not known"]
+          }
+        }
+      ],
+      "redFlags": [
+        {
+          "when": "hydrofluoric",
+          "message": {
+            "da": "Flussyre er ekstremt ætsende: selv en hudskade på 2 procent kan i høj koncentration give livstruende hypocalcæmi, og hypocalcæmi og hypomagnesæmi kan medføre arytmier. Skyl med Hexafluorine hvis det haves, ellers vand i mindst 30 minutter, og inaktivér fluorid med calciumgluconat. Kontakt Giftlinjen, 35 31 35 31.",
+            "en": "Hydrofluoric acid is extremely corrosive: even a 2 percent skin injury at high concentration can cause life-threatening hypocalcaemia, and hypocalcaemia and hypomagnesaemia can cause arrhythmias. Rinse with Hexafluorine if available, otherwise water for at least 30 minutes, and inactivate fluoride with calcium gluconate. Contact poison control."
+          },
+          "goto": "disp-systemic"
+        },
+        {
+          "when": "cement",
+          "message": {
+            "da": "Våd cement er en kaustisk base med pH op til 12,9. Virkningen er lumsk — smerte og forbrænding kommer sent, efter flere timer. Skyl i mindst 30 minutter, gerne længere, som ved andre baser.",
+            "en": "Wet cement is a caustic alkali with a pH of up to 12.9. Its effect is insidious — pain and burning appear late, after several hours. Rinse for at least 30 minutes, preferably longer, as with other alkalis."
+          }
+        },
+        {
+          "when": "phosphorus",
+          "message": {
+            "da": "Hvid fosfor antændes spontant i luft, og partikler indlejret i huden fortsætter med at brænde når de tages op af vandet. Skyl, og debridér eller fjern synlige partikler manuelt.",
+            "en": "White phosphorus ignites spontaneously in air, and particles embedded in the skin continue to burn when taken out of water. Rinse, and debride or manually remove visible particles."
+          }
+        }
+      ],
+      "edges": [
+        { "when": "*", "goto": "systemic" }
+      ]
+    },
+    {
+      "id": "systemic",
+      "question": {
+        "da": "Er der tegn på systemisk påvirkning — eller er stoffet et med kendt systemisk effekt, som oxalsyre, fosforsyre, garvesyre, myresyre, fosfor, benzin eller ammoniak?",
+        "en": "Any signs of systemic effects — or is the agent one with known systemic toxicity, such as oxalic, phosphoric, tannic or formic acid, phosphorus, petrol or ammonia?"
+      },
+      "orQuestion": {
+        "da": "Systemisk påvirkning?",
+        "en": "Systemic effects?"
+      },
+      "answerType": "boolean",
+      "help": {
+        "da": "Oxalsyre, flussyre og fosforsyre kan give hypocalcæmi; garvesyre, myresyre, pikrinsyre, fosfor og benzin kan give lever- og nyreskader; stærke syrer og ammoniak kan give inhalationsskade. Benzin med omfattende hudkontakt kan give fuldhudsskader og systemiske skader — skyl med koldt rindende vand i mindst 30 minutter.",
+        "en": "Oxalic, hydrofluoric and phosphoric acid can cause hypocalcaemia; tannic, formic and picric acid, phosphorus and petrol can damage liver and kidneys; strong acids and ammonia can cause inhalation injury. Petrol with extensive skin contact can cause full-thickness and systemic injury — rinse with cold running water for at least 30 minutes."
+      },
+      "options": [
+        { "value": "yes", "label": { "da": "Ja", "en": "Yes" } },
+        { "value": "no", "label": { "da": "Nej", "en": "No" } }
+      ],
+      "redFlags": [
+        {
+          "when": "yes",
+          "message": {
+            "da": "Risiko for systemisk toksicitet. Kontakt Giftlinjen, Bispebjerg Hospital, 35 31 35 31, og monitorér — hypocalcæmi og hypomagnesæmi kan give arytmier.",
+            "en": "Risk of systemic toxicity. Contact poison control and monitor — hypocalcaemia and hypomagnesaemia can cause arrhythmias."
+          },
+          "goto": "disp-systemic"
+        }
+      ],
+      "edges": [
+        { "when": "*", "goto": "duration" }
+      ]
+    },
+    {
+      "id": "duration",
+      "question": {
+        "da": "Hvor længe er der skyllet, i minutter?",
+        "en": "For how long has the wound been rinsed, in minutes?"
+      },
+      "orQuestion": {
+        "da": "Skyllet hvor mange minutter?",
+        "en": "Rinsed for how many minutes?"
+      },
+      "answerType": "number",
+      "unit": "minutter",
+      "min": 0,
+      "max": 600,
+      "help": {
+        "da": "Skylningen tjener primært til at fjerne stof på huden. Der anbefales sjældent mere end én times skylning ved andet end stærke baser; ved baser og cement mindst 30 minutter, gerne længere. Med Diphoterine eller Hexafluorine er skylletiden 15 minutter. Pas på hypotermi ved langvarig skylning, og husk at patienten har behov for smertestillende.",
+        "en": "Irrigation primarily removes agent present on the skin. More than one hour of rinsing is rarely recommended except for strong alkalis; for alkalis and cement at least 30 minutes, preferably longer. With Diphoterine or Hexafluorine the rinse time is 15 minutes. Beware of hypothermia with prolonged rinsing, and remember analgesia."
+      },
+      "edges": [
+        { "when": "*", "goto": "disp-treat" }
+      ]
+    }
+  ],
+  "dispositions": [
+    {
+      "id": "disp-systemic",
+      "severity": "emergency",
+      "title": {
+        "da": "Akut: systemisk risiko — konferér nu",
+        "en": "Emergency: systemic risk — confer now"
+      },
+      "guidance": {
+        "da": "Kontakt Giftlinjen, Bispebjerg Hospital, 35 31 35 31. Fortsæt skylningen — ved flussyre med Hexafluorine, ellers vand i mindst 30 minutter, og inaktivér fluorid med topikal calciumgluconat-gel 10 procent (ikke i øjnene) og lokale injektioner af 10 procent calciumgluconat, 0,1 til 0,2 ml i såret, styret af smerteresponset. Ved systemisk påvirkning gives intraarteriel infusion af calciumgluconat, og tidlig excision af det forurenede væv overvejes. Monitorér for arytmier. Overflytning til Rigshospitalet tilbydes altid — skylningen skal fortsættes under transporten.",
+        "en": "Contact poison control. Continue irrigation — for hydrofluoric acid with Hexafluorine, otherwise water for at least 30 minutes, and inactivate fluoride with topical 10 percent calcium gluconate gel (not in the eyes) and local injections of 10 percent calcium gluconate, 0.1 to 0.2 ml into the wound, guided by the pain response. With systemic effects give an intra-arterial calcium gluconate infusion, and consider early excision of the contaminated tissue. Monitor for arrhythmias. Transfer to the burn centre is always offered — irrigation must continue during transport."
+      },
+      "sources": [
+        "VIP Rigshospitalet: PBB - Ætsninger (version 5)",
+        "brandsaar.dk/aetsninger"
+      ]
+    },
+    {
+      "id": "disp-treat",
+      "severity": "treat",
+      "title": {
+        "da": "Behandl: skyl færdig og forbind som forbrænding",
+        "en": "Treat: complete irrigation and dress as a burn"
+      },
+      "guidance": {
+        "da": "Fortsæt skylningen til stoffet er tilstrækkeligt fortyndet — sjældent mere end én time, undtagen ved stærke baser. Giv smertestillende. Efter endt skylning bandageres efter samme standard som forbrændinger: Mepilex Transfer som kontaktlag, sugende gaze over og brandsårsbind — alternativt to lag Jelonet som sårkontaktlag. Notér kemikaliet med form, koncentration og pH samt hvordan, hvor længe og hvor meget patienten var eksponeret. Ved tvivl kontaktes Giftlinjen, 35 31 35 31.",
+        "en": "Continue irrigation until the agent is sufficiently diluted — rarely more than one hour, except for strong alkalis. Give analgesia. After irrigation, dress to the same standard as burns: Mepilex Transfer as the contact layer, absorbent gauze and a burn bandage — alternatively two layers of Jelonet as the contact layer. Record the chemical with form, concentration and pH, and how, for how long and to what quantity the patient was exposed. When in doubt, contact poison control."
+      },
+      "sources": [
+        "VIP Rigshospitalet: PBB - Ætsninger (version 5)",
+        "brandsaar.dk/aetsninger"
+      ]
+    }
+  ]
+}

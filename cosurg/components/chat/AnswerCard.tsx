@@ -34,7 +34,7 @@ function EvidenceBadge({ evidence, lang }: { evidence: Evidence; lang: Lang }) {
       ? "border-[var(--teal)] bg-[var(--teal-tint)] text-[var(--teal-deep)]"
       : evidence === "partial"
         ? "border-[var(--line-strong)] bg-[var(--paper)] text-[var(--ink-soft)]"
-        : "border-dashed border-[var(--nude-deep)] bg-[var(--nude-tint)] text-[var(--nude-deep)]";
+        : "border-dashed border-[var(--nude-deep)] bg-[var(--nude-tint)] text-[var(--nude-ink)]";
 
   return (
     <span
@@ -130,7 +130,7 @@ interface AnswerCardProps {
 
 export function AnswerCard({ answer, lang, speaking, onSpeak }: AnswerCardProps) {
   return (
-    <div className="rounded-2xl border bg-[var(--paper-raised)] p-5 sm:p-6 shadow-[0_1px_2px_rgba(16,32,30,0.04)]">
+    <div className="rounded-2xl border bg-[var(--paper-raised)] p-5 sm:p-6 shadow-[var(--shadow-raised)]">
       <div className="mb-3 flex flex-wrap items-center gap-2">
         <EvidenceBadge evidence={answer.evidence} lang={lang} />
         <button
@@ -188,7 +188,7 @@ export function AnswerCard({ answer, lang, speaking, onSpeak }: AnswerCardProps)
       )}
 
       {answer.evidence === "unsupported" && (
-        <p className="mt-4 rounded-lg border border-dashed border-[var(--nude-deep)] bg-[var(--nude-tint)] px-3 py-2 text-[13px] leading-relaxed text-[var(--nude-deep)]">
+        <p className="mt-4 rounded-lg border border-dashed border-[var(--nude-deep)] bg-[var(--nude-tint)] px-3 py-2 text-[13px] leading-relaxed text-[var(--nude-ink)]">
           {tr("chatUnsupportedNote", lang)}
         </p>
       )}

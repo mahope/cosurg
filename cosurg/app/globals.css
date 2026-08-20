@@ -28,40 +28,102 @@
  */
 :root {
   /* — Brandlag: flader og tekst — */
-  --paper: #fcf7f3; /* Nude1 */
+  /*
+   * Grundfladen er papir, ikke farve. Nude1 (#fcf7f3) er trukket næsten helt
+   * ind til hvid: varmen er stadig brandets, men den skal man kigge efter for
+   * at se. Prøven er at man ikke kan beskrive baggrundens farve efter to
+   * sekunder på skærmen.
+   */
+  --paper: #fbf9f6;
   --paper-raised: #ffffff;
+  /* En anelse dybere end papiret — til indlejrede flader (kildeuddrag,
+     transskript) der skal ligge et hak UNDER kortet uden en ramme. */
+  --paper-sunken: #f6f3ef;
   --ink: #10292b; /* SurgeonBlue kørt til tekstdybde */
   /*
-   * DarkGreen og dens lyse søster bærer brødtekst og etiketter. Begge er kørt
-   * ét trin dybere end designguidens rene værdier, fordi guidens toner kun
-   * klarer 4,5:1 mod Nude-papiret hvis man runder ned. Under skadestuelys —
-   * skrå skærm, høj omgivende lysstyrke — er den margin ikke teoretisk.
-   * Brandets kulør er uændret; kun lysheden er trukket ned.
-   *   --ink-soft  #3b757b på --paper = 4,97:1  (var #407c82 = 4,46:1)
-   *   --ink-faint #55757a på --paper = 4,74:1  (var #6f8f92 = 3,27:1)
+   * Sekundær tekst og etiketter. De bar DarkGreen i fuld kulør, og fordi de
+   * bærer det MESTE af appens ord — underrubrikker, metadata, hjælpetekst —
+   * var det dem der farvede helheden blågrøn. En brandfarve der ligger under
+   * hver eneste sætning er ikke længere en accent; den er baggrunden.
+   *
+   * Tonerne er derfor afmættet ned til varm trækul med brandets kulør kun som
+   * undertone: man kan se at de ikke er neutralt grå, men man kan ikke sætte
+   * navn på farven. Afmætningen gav samtidig kontrast i gave, og den er brugt
+   * på læsbarhed frem for på at komme længere ned i lyshed.
+   * Margenen er målt mod den MØRKESTE flade de kan lande på (--paper-sunken
+   * og de blege tints), ikke kun mod hvidt papir:
+   *   --ink-soft  #4f5a58: 6,47–7,15:1  (var #3b757b = 4,98:1 mod papir)
+   *   --ink-faint #666d69: 4,73–5,31:1  (var #55757a faldt under 4,5:1 på
+   *               indlejrede flader)
    */
-  --ink-soft: #3b757b; /* DarkGreen, tekstdyb */
-  --ink-faint: #55757a;
-  --line: #dbe9ea; /* LightBlue */
-  --line-strong: #b3d2d6;
+  --ink-soft: #4f5a58;
+  --ink-faint: #666d69;
+  /*
+   * Rammerne bar tidligere LightBlue. På et papirhvidt underlag blev hver
+   * eneste kasse dermed tegnet med en blå streg, og appen fik sit blå skær
+   * fra rammerne alene. Linjerne er nu varmt neutrale — de adskiller uden at
+   * farve. Kulør er ikke det der skal fortælle at noget er en kant.
+   */
+  --line: #e7e2db;
+  --line-strong: #d3ccc2;
 
-  /* — Brandlag: primær accent — */
+  /*
+   * — Brandlag: primær accent —
+   *
+   * SurgeonBlue står i fuld styrke, men står nu FÅ steder: primærknappen,
+   * mikrofonen, fokusringen, det valgte. En farve der markerer det vigtige
+   * kan ikke også være fladen under alt det uvigtige.
+   *
+   * --teal-tint var LightBlue i fuld styrke og blev brugt som både hover- og
+   * valgt-flade i hele appen — 40+ steder. Den er nu trukket ned til et
+   * strejf: fladen siger "her er du", mens rammen (--teal) og teksten
+   * (--teal-deep) på kaldstedet siger "dette er valgt". Adskillelsen ligger i
+   * blæk og kant, ikke i en fyldt flade.
+   */
   --teal: #005355; /* SurgeonBlue */
   --teal-deep: #003a3c;
-  --teal-tint: #e6f5f8; /* LightBlue */
+  --teal-tint: #edf3f2;
   --turquoise: #00bacd; /* Turquoise — energi, aldrig klinisk */
-  --turquoise-soft: #72c8c2;
+  /* Prikken foran hvert punkt i kildeprosa. Den stod i mintgrøn og satte
+     dermed farve på hver eneste linje i et citat. Nu er den blæk, dæmpet:
+     en typografisk markør, ikke en accent. */
+  --turquoise-soft: #a3aeaa;
 
-  /* — Brandlag: nude og cherry (dekoration, ingen klinisk betydning) — */
+  /*
+   * — Brandlag: nude og cherry (dekoration, ingen klinisk betydning) —
+   *
+   * Nude-familien bærer det appen siger om SIG SELV: opslaget mislykkedes,
+   * svaret er tyndt, forløbet kunne ikke afgøres. Det er driftsbeskeder, og de
+   * hører netop derfor til her og ikke i det kliniske lag — ser man rødt, skal
+   * det handle om patienten, ikke om nettet.
+   *
+   * --nude-deep er brandets tone og bliver stående som kant og vandmærke, hvor
+   * den skal være let. Men den blev også brugt som TEKST på --nude-tint, og
+   * dér giver den 2,76:1 — under grænsen ti steder i appen, netop på de
+   * beskeder der forklarer hvorfor noget ikke virkede. Teksten har derfor sin
+   * egen tone, samme kulør ført dybere:
+   *   --nude-ink #8a5a4c på --nude-tint = 5,12:1, på hvidt = 5,76:1
+   */
   --nude: #f9e1cd;
   --nude-tint: #faf0e6;
   --nude-deep: #bc8577;
+  --nude-ink: #8a5a4c;
   --cherry: #cc556e;
   --cherry-deep: #54293c;
 
-  /* — Klinisk lag: må kun bruges om klinisk alvor — */
+  /*
+   * — Klinisk lag: må kun bruges om klinisk alvor —
+   *
+   * Det kliniske signal er ikke skruet op; alt andet er skruet ned. Rødt, gult
+   * og grønt er nu de eneste mættede flader i appen, og de står derfor
+   * stærkere end da de konkurrerede med LightBlue om opmærksomheden.
+   *
+   * --amber-tint var identisk med --nude-tint. Den gule advarselsflade og en
+   * ren brandaccent kunne dermed ikke skelnes, og to-lags-reglen var brudt i
+   * praksis. Ambertonen er kørt mod gul, så den kan aflæses som gul.
+   */
   --amber: #8a5510;
-  --amber-tint: #faf0e6;
+  --amber-tint: #fcf1de;
   --amber-line: #e0b98a;
 
   --red: #b3122c;
@@ -71,6 +133,12 @@
   --green: #2c6b4d;
   --green-tint: #e4f0e9;
   --green-line: #a6ccb6;
+
+  /* Fokusringen om skrivefelter. Den var Turquoise og lyste feltet op som en
+     lampe. Nu er den SurgeonBlue ved lav styrke: samme oplysning, en fjerdedel
+     af stemmeføringen. Brandlag — den betyder "her skriver du", ikke noget
+     klinisk. Se .field-shell. */
+  --field-ring: rgba(0, 83, 85, 0.13);
 
   /* — OR-tilstand — */
   --or-bg: #032325; /* SurgeonBlue i bund */
@@ -135,6 +203,25 @@
   --font-mono: var(--font-mono);
 }
 
+/*
+ * AFRUNDING — én skala, sat ét sted.
+ *
+ * Tailwinds egne værdier (8/12/16 px) er tegnet til produktsider. På et
+ * klinisk instrument læses de som blødhed: jo rundere hjørne, jo mindre
+ * præcist virker det der står i kassen. Skalaen er strammet til 4/6/10/12 px
+ * og defineret i temaet, så hver eneste `rounded-lg`/`rounded-xl`/`rounded-2xl`
+ * i appen retter sig efter den — ingen komponent skal ændres, og ingen kan
+ * komme til at afvige.
+ *
+ * `rounded-full` er urørt: cirklen er en form, ikke et hjørne.
+ */
+@theme {
+  --radius-md: 4px;
+  --radius-lg: 6px;
+  --radius-xl: 10px;
+  --radius-2xl: 12px;
+}
+
 * {
   border-color: var(--line);
 }
@@ -143,6 +230,41 @@ body {
   background: var(--app-gradient) fixed;
   color: var(--ink);
   font-family: var(--font-body);
+
+  /*
+   * Notch og hjemmeindikator. Viewportet er sat til `viewport-fit=cover`, så
+   * appen fylder hele skærmen — også bag iPhones afrundede hjørner. Indrykket
+   * i siderne bor derfor HER, ét sted, i stedet for i hver eneste `main`:
+   * ingen side kan glemme det, og på alt uden notch er værdien nul.
+   *
+   * Bunden ligger ikke her. Den hører til de elementer der faktisk er
+   * fastgjort i bunden (komposeren, OR-tilstandens betjeningsbånd) — et
+   * generelt bundindryk ville blot lægge luft under en side der ruller.
+   */
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+
+  /*
+   * Siden ruller ALDRIG vandret. Bredt indhold — tabeller, lange kilde-URL'er
+   * — scroller i sin egen beholder; det er sat dér hvor indholdet er. Dette er
+   * sidste værn, så en enkelt for bred klods aldrig kan gøre HELE siden
+   * skæv på en telefon. `clip` og ikke `hidden`: `hidden` ville gøre body til
+   * en rullebeholder og slå `position: sticky` ihjel i komposeren.
+   */
+  overflow-x: clip;
+}
+
+/*
+ * Tastaturet på telefonen.
+ *
+ * Når feltet får fokus, dækker tastaturet den nederste halvdel af skærmen —
+ * men LAYOUT-viewportet bliver lige så højt som før. En komposer der klæber
+ * til bunden ville derfor lægge sig bag tastaturet, præcis når den skal
+ * bruges. `--kb-inset` er den højde tastaturet dækker (målt af
+ * KeyboardInset via visualViewport) og er nul når intet tastatur er fremme.
+ */
+:root {
+  --kb-inset: 0px;
 }
 
 /* Sidernes fulde baggrund. `fixed` låser gradienten til viewportet, så
@@ -170,7 +292,11 @@ body {
 
 /* Brandets "S" som grafisk element: et stort bogstav der giver dybde bag
    indholdet. Det er ren identitet — derfor lav opacitet, ingen interaktion, og
-   aldrig oven på kliniske farver eller billeder. */
+   aldrig oven på kliniske farver eller billeder.
+
+   Det stod i cherry og blev på det papirhvide underlag til en gråviolet plet.
+   Nu står det i nude-familien: samme lave styrke, men varmen hører til papiret,
+   så mærket læses som prægning i arket frem for som en farve lagt ovenpå. */
 .brand-watermark {
   position: fixed;
   top: -12vh;
@@ -182,13 +308,110 @@ body {
   font-weight: 700;
   font-size: 78vh;
   line-height: 0.8;
-  color: var(--cherry-deep);
-  opacity: 0.04;
+  color: var(--nude-deep);
+  opacity: 0.06;
 }
 
 @media (max-width: 768px) {
   .brand-watermark {
     display: none;
+  }
+}
+
+/*
+ * SKRIVEFELTETS FOKUS
+ *
+ * Feltet er den flade lægen kigger på hele tiden, og fokus må derfor markeres
+ * uden at råbe. En 2 px SurgeonBlue-ramme gjorde netop det: den tegnede en
+ * hård streg om det sted man skulle føle sig tilpas ved at skrive.
+ *
+ * I stedet: en hårfin ramme der bliver en tand mørkere, og en blød turkis ring
+ * udenom. Ringen er en `box-shadow` og fylder derfor ingenting i layoutet, og
+ * rammen er 1 px i BEGGE tilstande — feltet kan ikke skifte størrelse når man
+ * klikker i det.
+ *
+ * Fokusfarven er --ink-soft (DarkGreen, tekstdyb, 5,2:1 mod hvid) og ikke en
+ * lys accent alene: en tastaturbruger skal stadig kunne se hvor han er.
+ *
+ * `--field-shadow` er feltets EGEN skygge (indvendig fordybning på
+ * indgangsfeltet, elevation på komposerkortet). Den sættes pr. felt og
+ * komponeres med ringen, så de to aldrig overskriver hinanden.
+ */
+.field-shell {
+  --field-shadow: 0 0 rgba(0, 0, 0, 0);
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--line-strong);
+  box-shadow: var(--field-shadow);
+  transition:
+    border-color var(--motion-fast) var(--ease-swap),
+    box-shadow var(--motion-fast) var(--ease-swap);
+}
+
+.field-shell:focus-within {
+  border-color: var(--ink-soft);
+  box-shadow: var(--field-shadow), 0 0 0 3px var(--field-ring);
+}
+
+/* Et billede trækkes hen over feltet. Her ER SurgeonBlue rigtig: det er en
+   kortvarig tilstand med et mål, ikke en flade man skriver i. */
+.field-shell.is-dragging {
+  border-color: var(--teal);
+}
+
+/*
+ * DEN DOBBELTE FOKUSRAMME.
+ *
+ * Den globale `:focus-visible` tegner en 2 px SurgeonBlue outline med 2 px
+ * afstand. Den er skrevet uden for et cascade layer, og i Tailwind v4 slår
+ * ulagdelt CSS ALTID utilities — så `focus:outline-none` på selve feltet
+ * havde ingen virkning, og der stod en hård mørk ramme om textarea'en INDE i
+ * komposerens egen ramme. Det var netop den ramme der skulle væk.
+ *
+ * Undtagelsen gælder kun selve skrivekontrollen, ikke knapperne i
+ * værktøjslinjen: de har ingen anden fokusmarkering og beholder ringen. Og
+ * fokus forsvinder ikke — beholderen skifter kant og får sin egen bløde ring,
+ * som er hele pointen med .field-shell.
+ */
+.field-shell :is(input, textarea):focus-visible {
+  outline: none;
+}
+
+/*
+ * Kildetekst på en telefon.
+ *
+ * Uddragene er ordret klinisk tekst, og de indeholder ting der ikke kan
+ * brydes af sig selv: DOI'er, lange URL'er, præparatnavne med bindestreger,
+ * "T20.2/T30.2". På 360 px skubber ét sådant ord hele kortet ud over kanten.
+ * `anywhere` (og ikke `break-word`) bryder også dér hvor browseren ellers
+ * ville lade ordet stikke ud — teksten står stadig ordret, den ombrydes bare.
+ */
+.prose-source {
+  overflow-wrap: anywhere;
+  /*
+   * Tal i klinisk prosa er data, ikke ord: TBSA-procenter, doser, timer,
+   * kodenumre. Med tabelcifre får de alle samme bredde, så to tal under
+   * hinanden kan sammenlignes med øjet i stedet for at skulle læses. Roboto
+   * har figurerne indbygget, så skriften er uændret — kun cifrenes bredde.
+   */
+  font-variant-numeric: tabular-nums;
+}
+
+/*
+ * Safari zoomer ind på et felt hvis dets skrift er under 16 px — og zoomer
+ * ikke ud igen. Ét tryk i svarfeltet efterlader altså hele skærmen forstørret
+ * og forskubbet, midt i en vurdering.
+ *
+ * Felterne sætter selv `text-base sm:text-[15px]`, så skalaen er uændret fra
+ * sm og op. Denne regel er sikkerhedsnettet for de felter der ikke har fået en
+ * størrelse: den er en elementvælger og taber derfor til enhver
+ * Tailwind-klasse, så den kan aldrig overskrive et bevidst valg.
+ */
+@media (max-width: 639px) {
+  input:not([type="checkbox"]):not([type="radio"]),
+  textarea,
+  select {
+    font-size: 16px;
   }
 }
 
@@ -219,16 +442,19 @@ body {
 /* Mikrofonens egen puls, mens den lytter. Ringene udenom kan overses fra en
    armlængdes afstand — selve knappen skal trække vejret, så det kan ses fra
    den anden side af et leje at appen hører efter. Rolig takt, lille udsving:
-   et åndedrag, ikke en alarm. */
+   et åndedrag, ikke en alarm.
+
+   Haloen var en tyk teal sky om knappen og lagde farve ud over det papir den
+   stod på. Den er halveret: bevægelsen bærer signalet, ikke farven. */
 @keyframes mic-breathe {
   0%,
   100% {
     transform: scale(1);
-    box-shadow: 0 4px 18px rgba(0, 83, 85, 0.18);
+    box-shadow: 0 3px 12px rgba(0, 83, 85, 0.1);
   }
   50% {
     transform: scale(1.045);
-    box-shadow: 0 6px 26px rgba(0, 83, 85, 0.32);
+    box-shadow: 0 5px 20px rgba(0, 83, 85, 0.18);
   }
 }
 

@@ -109,6 +109,38 @@ stiffen the hand, that oedema threatens perfusion in a circumferential injury,
 and that depth is only settled at the follow-up — `evidence: "sourced"` with
 seven knowledge-base citations, in 20 seconds instead of 56.
 
+### The workup runs in the conversation
+
+The decision trees stopped being a screen and became the agent's protocol
+(`lib/corti/workup.ts`). A patient description — *"50-årig mand med brandsår på
+hele armen"* — never switches views. Instead:
+
+1. **Everything already said is read out first.** One Models call maps the
+   description onto the tree's answer schemas — only what is stated explicitly,
+   never inferred: "brandsår" is not a mechanism, "hele armen" is not a TBSA
+   percentage, and absence of a mention is never a "no". Verified: that
+   utterance prefills only the location, and the first question asked is the
+   mechanism — not the age, not the arm.
+2. **The missing questions are asked one at a time in the chat**, in the tree's
+   clinical order. Answers given early ("hele armen") that the walk has not
+   reached yet are carried as `pending` and consumed automatically when it gets
+   there — the clinician is never asked about something already said.
+3. **Where the walk lands is decided by the tree engine alone.** The model only
+   translates words into a value the node's schema already permits; the value is
+   validated against the schema before the engine sees it, and the client-held
+   state is replayed through the engine on every turn, so a tampered path is
+   rejected. Red flags interrupt in the stream with the tree's own message,
+   source and phone number; the disposition comes from the edges, never from
+   the model, and arrives with the path and an offer to write the note
+   (`/api/note`, codes from Corti's coding API as before).
+4. **Lookups still work mid-workup.** A question pauses the walk (`phase:
+   "held"`), gets the full grounded answer with the patient context built from
+   the replayed path, and the workup stands at its question.
+
+Measured: tree choice 1.2 s, each turn 0.5–0.6 s, the whole eight-node burns
+workup conversationally to a deterministic disposition with no question asked
+twice.
+
 ### Caveats we are not hiding
 
 - **SKS (Danish ICD-10) is not available to us.** Corti documents SKS
@@ -233,7 +265,7 @@ was meant.
 | `/api/triage` | POST | What does the clinician want, does this need the literature, and what are the Danish search terms — one Corti Models call, 0.7–2.0 s. The same triage `/api/chat` runs internally, exposed so the UI can show the topic while the heavy answer is still being fetched |
 | `/api/note` | POST | Clinical note + codes |
 | `/api/coding` | GET/POST | Standalone coding of clinical text |
-| `/api/chat` | GET/POST | The question lookup. POST triages with Corti Models, retrieves the applicable pitfalls and the guide's sections itself, and then either writes the answer from those excerpts (fast track) or hands them to the agentic framework along with the question. Accepts `images` (≤ 4 × 8 MB, plain base64, jpeg/png/webp/heic) — described before triage, observations marked as reasoning, never as a source. Each answer carries an evidence label and its sources, marked as knowledge base or literature. Three additive SSE events, `triage`, `pitfalls` and `vision`, are emitted before the answer; a client may ignore them. Pass `fastPath: false` to force the agentic track. GET reports which Corti experts are actually attached, so the UI can be honest about it. |
+| `/api/chat` | GET/POST | The question lookup — and the conversational workup. POST triages with Corti Models, retrieves the applicable pitfalls and the guide's sections itself, and then either writes the answer from those excerpts (fast track) or hands them to the agentic framework along with the question. Accepts `images` (≤ 4 × 8 MB, plain base64, jpeg/png/webp/heic) — described before triage, observations marked as reasoning, never as a source. A patient description starts a workup instead (see below); an ongoing workup is carried by the client as `workup: {treeId, path, pending}`. Each answer carries an evidence label and its sources. Additive SSE events: `triage`, `pitfalls`, `vision`, `workup`, `redflag`, `disposition`, `noteOffer`. Pass `fastPath: false` to force the agentic track. GET reports which Corti experts are actually attached. |
 | `/api/guide` | POST | The treatment lookup, assembled from the MCP knowledge base. A topic agent first normalises the clinician's question into Danish clinical search terms; if that call fails, the route falls back to the clinician's own words — worse, but never wrong. |
 | `/api/pitfalls` | GET/POST | Pitfalls, each carrying a verbatim excerpt from the MCP knowledge base as backing. POST matches pitfalls to the current context (tree, node, disposition or topic); GET returns the whole catalogue. |
 | `/api/tts` | POST | Danish speech output (Syv.ai) |

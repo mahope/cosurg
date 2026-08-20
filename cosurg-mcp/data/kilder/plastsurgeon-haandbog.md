@@ -29,7 +29,6 @@
 
 ---
 
-
 ## KILDE: https://beta.plastsurgeon.com/handbook/breast-reconstruction/nipple-areola-complex-reconstruction
 TITEL: Nipple-areola complex reconstruction
 
@@ -385,7 +384,7 @@ FORFATTERE: Dominika Miklisova, med. student, Ema Sutakova, med. student, Mirosl
 
 ## Introduction
 
-A 53-year old woman presenting with venter pendulus and diastasis of the rectus abdominis muscles was admitted to the Department of Burns and Plastic surgery for fleur-de-lis abdominoplasty.  The patient underwent bariatric surgery in June 2021, resulting in significant weight loss causing extensive laxity of the abdominal skin. She decided to have the consultation at our clinic to assess the problematic excessive tissue and seek surgical resolution for the unsatisfactory appearance, which has caused her mental and physical distress. In terms of further anamnesis, the patient is being treated for hypertension, depressive disorder and osteoporosis. She is also diagnosed with nephrolithiasis, hypothyreosis sleep apnoea, polytopic vertebrogenic algic syndrome and has an anterolisthesis of lumbosacral spine. Apart from bariatric surgery she underwent an urethral stent placement and the total endoprosthesis of the right knee joint. In terms of gynecological history, the patient has three children, one delivered vaginally and two by cesarean section. Concerning family history, her mother has an ischemic disease of the lower limbs and her father died of myocardial infarction. The patient is on disability pension, formerly a saleswoman. No allergies reported.
+A 53-year old woman presenting with venter pendulus and diastasis of the rectus abdominis muscles was admitted to the Department of Burns and Plastic surgery for fleur-de-lis abdominoplasty. The patient underwent bariatric surgery in June 2021, resulting in significant weight loss causing extensive laxity of the abdominal skin. She decided to have the consultation at our clinic to assess the problematic excessive tissue and seek surgical resolution for the unsatisfactory appearance, which has caused her mental and physical distress. In terms of further anamnesis, the patient is being treated for hypertension, depressive disorder and osteoporosis. She is also diagnosed with nephrolithiasis, hypothyreosis sleep apnoea, polytopic vertebrogenic algic syndrome and has an anterolisthesis of lumbosacral spine. Apart from bariatric surgery she underwent an urethral stent placement and the total endoprosthesis of the right knee joint. In terms of gynecological history, the patient has three children, one delivered vaginally and two by cesarean section. Concerning family history, her mother has an ischemic disease of the lower limbs and her father died of myocardial infarction. The patient is on disability pension, formerly a saleswoman. No allergies reported.
 
 ![](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2023/08/My-project-1-kopi.png?resize=1170%2C1449&ssl=1)
 
@@ -441,7 +440,7 @@ The umbilicus was then set directly into the vertical incision. A total of 2050 
 
 ## Postoperative plan
 
-Post operatively, the patient was kept in bed in the modified Fowler’s position. An abdominal pressure garment and antithrombotic pneumatic compression stockings were placed in the operation theatre. The stockings are kept until the patient is discharged and the abdominal binder is instructed to be worn for a period of 3 to 6 weeks. The drains are routinely removed when less than 20 mL drainage is observed in a 24h period. The Foley catheter is removed the next day after surgery.  The patient came for  follow ups regularly for wound assessment, 15 days and 3 weeks and 5 weeks post operatively. At the first visit, a hematoma was visible near the umbilicus, a 20 mL puncture was therefore performed. The stitches were consequently removed around the umbilicus and a betadine cream was prescribed to prevent infections. The patient came back for a 3 weeks follow up, the scar was without other complications, a small persistent hematoma was seen on the left side of the umbilicus but signs of resorption were present. An additional 5 mL puncture was done. During the last follow up (5 weeks after the surgery), the haematoma was fully resorbed and the scars healed by primary intention without secretion or dehiscence of the wound. The relocated umbilicus appeared to be vital. The patient is highly satisfied with the aesthetic results and reports experiencing mental and physical relief.
+Post operatively, the patient was kept in bed in the modified Fowler’s position. An abdominal pressure garment and antithrombotic pneumatic compression stockings were placed in the operation theatre. The stockings are kept until the patient is discharged and the abdominal binder is instructed to be worn for a period of 3 to 6 weeks. The drains are routinely removed when less than 20 mL drainage is observed in a 24h period. The Foley catheter is removed the next day after surgery. The patient came for follow ups regularly for wound assessment, 15 days and 3 weeks and 5 weeks post operatively. At the first visit, a hematoma was visible near the umbilicus, a 20 mL puncture was therefore performed. The stitches were consequently removed around the umbilicus and a betadine cream was prescribed to prevent infections. The patient came back for a 3 weeks follow up, the scar was without other complications, a small persistent hematoma was seen on the left side of the umbilicus but signs of resorption were present. An additional 5 mL puncture was done. During the last follow up (5 weeks after the surgery), the haematoma was fully resorbed and the scars healed by primary intention without secretion or dehiscence of the wound. The relocated umbilicus appeared to be vital. The patient is highly satisfied with the aesthetic results and reports experiencing mental and physical relief.
 
 ## Pearls
 
@@ -507,62 +506,62 @@ FORFATTERE: Anne Herman Mosebo, MD, Julie Tastesen, MD, Magnus Balslev Avnstorp,
 
 ## Step 1: Preoperative markings
 
-The patient is laying faced down. The preoperative markings are shown. Reexamine the preoperative markings by performing pinch test both digital and using instruments. 
+The patient is laying faced down. The preoperative markings are shown. Reexamine the preoperative markings by performing pinch test both digital and using instruments.
 
 ![](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2023/08/2-1.jpg?resize=1170%2C1584&ssl=1)2
 
 ## Step 2: Incisions
 
-Use a knife to cut through the dermis of all markings. A monopolar electro dissector is used for dissection of excess skin starting medially going lateral in the scarpas fascia plane. A bipolar diathermy is used meanwhile to ensure hemostasis. 
+Use a knife to cut through the dermis of all markings. A monopolar electro dissector is used for dissection of excess skin starting medially going lateral in the scarpas fascia plane. A bipolar diathermy is used meanwhile to ensure hemostasis.
 
 ![](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2023/08/3-1.jpg?resize=1170%2C1432&ssl=1)3
 
 ## Step 3: Dissection
 
-Continue dissecting in the lateral direction in the scarpas plane. 
+Continue dissecting in the lateral direction in the scarpas plane.
 
 ![](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2023/08/4-2.jpg?resize=1170%2C1528&ssl=1)4
 
 ## Step 4: Dissection continued
 
-Continue the dissection to the vertical marking in the midaxillary line (line B) and remove the excessive skin corresponding to the vertical line.  
+Continue the dissection to the vertical marking in the midaxillary line (line B) and remove the excessive skin corresponding to the vertical line.
 
 ![](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2023/08/5-1.jpg?resize=1170%2C1484&ssl=1)5
 
 ## Step 5: Dissection continued
 
-Use the same technique to remove excessive skin on the other site of the back. 
+Use the same technique to remove excessive skin on the other site of the back.
 
 ![](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2023/08/6-1.jpg?resize=1170%2C1470&ssl=1)6
 
 ## Step 6: Place first suture
 
-The first suture is placed centrally in order to suture the skin. Ensure hemostasis before closure of the skin.  
+The first suture is placed centrally in order to suture the skin. Ensure hemostasis before closure of the skin.
 
 ![](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2023/08/7-1.jpg?resize=1170%2C1464&ssl=1)7
 
 ## Step 7: Place sutures
 
-Place sutures in three layers using absorbable sutures; 0 size-sutures in Scarpa’s fascia, 2/3-0 inverted dermal sutures and 3-0 intracutaneous running sutures. 
+Place sutures in three layers using absorbable sutures; 0 size-sutures in Scarpa’s fascia, 2/3-0 inverted dermal sutures and 3-0 intracutaneous running sutures.
 
 ![](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2023/08/8-1.jpg?resize=1170%2C1560&ssl=1)8
 
 ## Step 8: Superficial sutures
 
-Place the superficial sutures in the intracutaneous layer of the skin. 
+Place the superficial sutures in the intracutaneous layer of the skin.
 
 ![](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2023/08/9-1.jpg?resize=1170%2C1560&ssl=1)9
 
 ## Step 9: Sutures in three layers
 
-The skin is sutured in three layers.  
+The skin is sutured in three layers.
 
 ![](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2023/08/10-1.jpg?resize=1170%2C1548&ssl=1)10
 
 ## Step 10: Cover with micropore tape
 
-Micropore tape is used to cover the incision lines and on top dressing is placed. 
-When the procedure of the back is finished, the patient is turned to lay faced up.  
+Micropore tape is used to cover the incision lines and on top dressing is placed.
+When the procedure of the back is finished, the patient is turned to lay faced up.
 
 ## Procedure on the abdomen of the patient
 
@@ -570,55 +569,55 @@ When the procedure of the back is finished, the patient is turned to lay faced u
 
 ## Step 11: Incisions
 
-Make an incision through the skin according to the markings, starting from the xiphoid process. 
+Make an incision through the skin according to the markings, starting from the xiphoid process.
 
 ![](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2023/08/12-1.jpg?resize=1170%2C1498&ssl=1)12
 
 ## Step 12: Incision of the umbilicus
 
-The umbilicus is incised and dissected from the abdominal tissue. Carefully cut through the skin while stretching the umbilicus. Pay special attention to the blood supply of the umbilicus. 
+The umbilicus is incised and dissected from the abdominal tissue. Carefully cut through the skin while stretching the umbilicus. Pay special attention to the blood supply of the umbilicus.
 
 ![](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2023/08/13-1.jpg?resize=1170%2C1560&ssl=1)13
 
 ## Step 13: Dissection
 
-Starting from the xiphoid process gradually excise the abdominal skin flap using a monopolar electro dissector. Starting from the xiphoid process the desired level to reach is superficial to the rectus fascia. Stay just above Scarpa’s fascia the last 5-7 cm above the lower incision. Use a bipolar diathermy to ensure hemostasis. 
+Starting from the xiphoid process gradually excise the abdominal skin flap using a monopolar electro dissector. Starting from the xiphoid process the desired level to reach is superficial to the rectus fascia. Stay just above Scarpa’s fascia the last 5-7 cm above the lower incision. Use a bipolar diathermy to ensure hemostasis.
 
 ![](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2023/08/14-1.jpg?resize=1170%2C1560&ssl=1)14
 
 ## Step 14: The umbilicus is freed
 
-When the umbilicus is freed from the abdominal flap, two forceps can be used to hold the umbilicus in place. Continue to ensure hemostasis. 
+When the umbilicus is freed from the abdominal flap, two forceps can be used to hold the umbilicus in place. Continue to ensure hemostasis.
 
 ![](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2023/08/15-1.jpg?resize=1170%2C1483&ssl=1)15
 
 ## Step 15: Horizontal incision
 
-Make an incision in the horizontal line approximately 7 cm above labia majora. 
+Make an incision in the horizontal line approximately 7 cm above labia majora.
 
 ![](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2023/08/16.jpg?resize=1170%2C1560&ssl=1)16
 
 ## Step 16: Excess skin
 
-Pull the abdominal skin flap in the caudal direction to estimate the amount of excess skin. This will create a triangle flap of excessive tissue on both sides of the abdomen. 
+Pull the abdominal skin flap in the caudal direction to estimate the amount of excess skin. This will create a triangle flap of excessive tissue on both sides of the abdomen.
 
 ![](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2023/08/17-1.jpg?resize=1170%2C1537&ssl=1)17
 
 ## Step 17: Line A
 
-Mark the predicted line of incision (line A). Do this bilaterally. 
+Mark the predicted line of incision (line A). Do this bilaterally.
 
 ![](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2023/08/18.jpg?resize=1170%2C1426&ssl=1)18
 
 ## Step 18: Sutures in three layers
 
-Place sutures in three layers. Place the deepest sutures trough Scarpa’s Fascia starting from the xiphoid process following the vertical scar. 
+Place sutures in three layers. Place the deepest sutures trough Scarpa’s Fascia starting from the xiphoid process following the vertical scar.
 
 ![](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2023/08/19.jpg?resize=1170%2C1445&ssl=1)19
 
 ## Step 19: Examination
 
-After placing the sutures in the deepest layer, examine the need of removing further skin before resecting the two skin flaps. Make an incision following the horizontal line A (See Figure 17). Excise the abdominal flaps bilaterally in the sub Scarpa’s fascia level.  
+After placing the sutures in the deepest layer, examine the need of removing further skin before resecting the two skin flaps. Make an incision following the horizontal line A (See Figure 17). Excise the abdominal flaps bilaterally in the sub Scarpa’s fascia level.
 
 ![](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2023/08/21.jpg?resize=1170%2C1488&ssl=1)20
 
@@ -630,19 +629,19 @@ After removing the two skin flaps, place two drains bilaterally.
 
 ## Step 21: Sutures
 
-Place dermal and intracutaneous sutures.  
+Place dermal and intracutaneous sutures.
 
 ![](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2023/08/23.jpg?resize=1170%2C1460&ssl=1)22
 
 ## Step 22: Sutures continued
 
-The umbilicus is sutured as well with dermal and intracutaneous sutures in the desired position.  
+The umbilicus is sutured as well with dermal and intracutaneous sutures in the desired position.
 
 ![](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2023/08/24.jpg?resize=1170%2C1491&ssl=1)23
 
 ## Step 23: Cover with micropore tape
 
-Cover the sutured incisions with micropore tape.  
+Cover the sutured incisions with micropore tape.
 
 ## Pearls and pitfalls
 
@@ -806,7 +805,7 @@ The general indications and contraindications when performing MWL-surgery will b
 
 A criterion for MWL surgery in the Danish healthcare system is MWL characterized as second (moderate) or third (severe) degree. In general, third-degree patients are candidates to belt lipectomy. Regarding belt lipectomy the classifications are as follows1:
 
-**Third degree (severe)**           |
+**Third degree (severe)** |
 **Abdomen** | Pannus extending posterior to the mid axillary line1
 **Upper back** | Upper back: Folds with skin-to-skin contact1
 
@@ -862,15 +861,15 @@ The blood supply of the skin, soft tissue and musculature of the gluteal area co
 
 ## Nerve supply
 
-The iliohypogastric and ilioinguinal nerve are sensory nerves innervating the area of the groin and medioventral part of the thigh. These nerves are located approximately 2 fingerbreadths below ASIS (anterior superior iliac spine). Disruption of these nerves will result in loss of sensation in this area.1
+The iliohypogastric and ilioinguinal nerve are sensory nerves innervating the area of the groin and medioventral part of the thigh. These nerves are located approximately 2 fingerbreadths below ASIS (anterior superior iliac spine). Disruption of these nerves will result in loss of sensation in this area.1
 
 ### Acknowledgements
 
-**Illustrators:*** *Emma Tubæk Nielsen, Med. Stud.** and *Anne Herman Mosebo, MD*
+**Illustrators:*** *Emma Tubæk Nielsen, Med. Stud.** and *Anne Herman Mosebo, MD*
 
 ## References
 
-- Richter, DF, Schwaiger, N. Abdominoplasty procedures. In: Rubin JP, Neligan, PC. Plastic Surgery: Volume 2: Aesthetic Surgery, Fourth Edition. Elsevier, 2018, p. 576. 
+- Richter, DF, Schwaiger, N. Abdominoplasty procedures. In: Rubin JP, Neligan, PC. Plastic Surgery: Volume 2: Aesthetic Surgery, Fourth Edition. Elsevier, 2018, p. 576.
 - Howard, MA, Dickie, SR, Comprehensive trunck anatomy. In: Song, DH. Plastic Surgery: Volume 4: Lower Extremity, Trunk, and Burns, Fourth Edition. Elsevier, 2018, p. 218.
 
 ---
@@ -919,15 +918,15 @@ The blood supply of the skin, soft tissue and musculature of the gluteal area co
 
 ## Nerve supply
 
-The iliohypogastric and ilioinguinal nerve are sensory nerves innervating the area of the groin and medioventral part of the thigh. These nerves are located approximately 2 fingerbreadths below ASIS (anterior superior iliac spine). Disruption of these nerves will result in loss of sensation in this area.1
+The iliohypogastric and ilioinguinal nerve are sensory nerves innervating the area of the groin and medioventral part of the thigh. These nerves are located approximately 2 fingerbreadths below ASIS (anterior superior iliac spine). Disruption of these nerves will result in loss of sensation in this area.1
 
 ### Acknowledgements
 
-**Illustrators:*** *Emma Tubæk Nielsen, Med. Stud.** and *Anne Herman Mosebo, MD*
+**Illustrators:*** *Emma Tubæk Nielsen, Med. Stud.** and *Anne Herman Mosebo, MD*
 
 ## References
 
-- Richter, DF, Schwaiger, N. Abdominoplasty procedures. In: Rubin JP, Neligan, PC. Plastic Surgery: Volume 2: Aesthetic Surgery, Fourth Edition. Elsevier, 2018, p. 576. 
+- Richter, DF, Schwaiger, N. Abdominoplasty procedures. In: Rubin JP, Neligan, PC. Plastic Surgery: Volume 2: Aesthetic Surgery, Fourth Edition. Elsevier, 2018, p. 576.
 - Howard, MA, Dickie, SR, Comprehensive trunck anatomy. In: Song, DH. Plastic Surgery: Volume 4: Lower Extremity, Trunk, and Burns, Fourth Edition. Elsevier, 2018, p. 218.
 
 ## Indications
@@ -942,7 +941,7 @@ The general indications and contraindications when performing MWL-surgery will b
 
 A criterion for MWL surgery in the Danish healthcare system is MWL characterized as second (moderate) or third (severe) degree. In general, third-degree patients are candidates to belt lipectomy. Regarding belt lipectomy the classifications are as follows1:
 
-**Third degree (severe)**           |
+**Third degree (severe)** |
 **Abdomen** | Pannus extending posterior to the mid axillary line1
 **Upper back** | Upper back: Folds with skin-to-skin contact1
 
@@ -1092,62 +1091,62 @@ Risk of seroma
 
 ## Step 1: Preoperative markings
 
-The patient is laying faced down. The preoperative markings are shown. Reexamine the preoperative markings by performing pinch test both digital and using instruments. 
+The patient is laying faced down. The preoperative markings are shown. Reexamine the preoperative markings by performing pinch test both digital and using instruments.
 
 ![](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2023/08/2-1.jpg?resize=1170%2C1584&ssl=1)2
 
 ## Step 2: Incisions
 
-Use a knife to cut through the dermis of all markings. A monopolar electro dissector is used for dissection of excess skin starting medially going lateral in the scarpas fascia plane. A bipolar diathermy is used meanwhile to ensure hemostasis. 
+Use a knife to cut through the dermis of all markings. A monopolar electro dissector is used for dissection of excess skin starting medially going lateral in the scarpas fascia plane. A bipolar diathermy is used meanwhile to ensure hemostasis.
 
 ![](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2023/08/3-1.jpg?resize=1170%2C1432&ssl=1)3
 
 ## Step 3: Dissection
 
-Continue dissecting in the lateral direction in the scarpas plane. 
+Continue dissecting in the lateral direction in the scarpas plane.
 
 ![](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2023/08/4-2.jpg?resize=1170%2C1528&ssl=1)4
 
 ## Step 4: Dissection continued
 
-Continue the dissection to the vertical marking in the midaxillary line (line B) and remove the excessive skin corresponding to the vertical line.  
+Continue the dissection to the vertical marking in the midaxillary line (line B) and remove the excessive skin corresponding to the vertical line.
 
 ![](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2023/08/5-1.jpg?resize=1170%2C1484&ssl=1)5
 
 ## Step 5: Dissection continued
 
-Use the same technique to remove excessive skin on the other site of the back. 
+Use the same technique to remove excessive skin on the other site of the back.
 
 ![](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2023/08/6-1.jpg?resize=1170%2C1470&ssl=1)6
 
 ## Step 6: Place first suture
 
-The first suture is placed centrally in order to suture the skin. Ensure hemostasis before closure of the skin.  
+The first suture is placed centrally in order to suture the skin. Ensure hemostasis before closure of the skin.
 
 ![](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2023/08/7-1.jpg?resize=1170%2C1464&ssl=1)7
 
 ## Step 7: Place sutures
 
-Place sutures in three layers using absorbable sutures; 0 size-sutures in Scarpa’s fascia, 2/3-0 inverted dermal sutures and 3-0 intracutaneous running sutures. 
+Place sutures in three layers using absorbable sutures; 0 size-sutures in Scarpa’s fascia, 2/3-0 inverted dermal sutures and 3-0 intracutaneous running sutures.
 
 ![](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2023/08/8-1.jpg?resize=1170%2C1560&ssl=1)8
 
 ## Step 8: Superficial sutures
 
-Place the superficial sutures in the intracutaneous layer of the skin. 
+Place the superficial sutures in the intracutaneous layer of the skin.
 
 ![](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2023/08/9-1.jpg?resize=1170%2C1560&ssl=1)9
 
 ## Step 9: Sutures in three layers
 
-The skin is sutured in three layers.  
+The skin is sutured in three layers.
 
 ![](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2023/08/10-1.jpg?resize=1170%2C1548&ssl=1)10
 
 ## Step 10: Cover with micropore tape
 
-Micropore tape is used to cover the incision lines and on top dressing is placed. 
-When the procedure of the back is finished, the patient is turned to lay faced up.  
+Micropore tape is used to cover the incision lines and on top dressing is placed.
+When the procedure of the back is finished, the patient is turned to lay faced up.
 
 ## Procedure on the abdomen of the patient
 
@@ -1155,55 +1154,55 @@ When the procedure of the back is finished, the patient is turned to lay faced u
 
 ## Step 11: Incisions
 
-Make an incision through the skin according to the markings, starting from the xiphoid process. 
+Make an incision through the skin according to the markings, starting from the xiphoid process.
 
 ![](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2023/08/12-1.jpg?resize=1170%2C1498&ssl=1)12
 
 ## Step 12: Incision of the umbilicus
 
-The umbilicus is incised and dissected from the abdominal tissue. Carefully cut through the skin while stretching the umbilicus. Pay special attention to the blood supply of the umbilicus. 
+The umbilicus is incised and dissected from the abdominal tissue. Carefully cut through the skin while stretching the umbilicus. Pay special attention to the blood supply of the umbilicus.
 
 ![](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2023/08/13-1.jpg?resize=1170%2C1560&ssl=1)13
 
 ## Step 13: Dissection
 
-Starting from the xiphoid process gradually excise the abdominal skin flap using a monopolar electro dissector. Starting from the xiphoid process the desired level to reach is superficial to the rectus fascia. Stay just above Scarpa’s fascia the last 5-7 cm above the lower incision. Use a bipolar diathermy to ensure hemostasis. 
+Starting from the xiphoid process gradually excise the abdominal skin flap using a monopolar electro dissector. Starting from the xiphoid process the desired level to reach is superficial to the rectus fascia. Stay just above Scarpa’s fascia the last 5-7 cm above the lower incision. Use a bipolar diathermy to ensure hemostasis.
 
 ![](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2023/08/14-1.jpg?resize=1170%2C1560&ssl=1)14
 
 ## Step 14: The umbilicus is freed
 
-When the umbilicus is freed from the abdominal flap, two forceps can be used to hold the umbilicus in place. Continue to ensure hemostasis. 
+When the umbilicus is freed from the abdominal flap, two forceps can be used to hold the umbilicus in place. Continue to ensure hemostasis.
 
 ![](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2023/08/15-1.jpg?resize=1170%2C1483&ssl=1)15
 
 ## Step 15: Horizontal incision
 
-Make an incision in the horizontal line approximately 7 cm above labia majora. 
+Make an incision in the horizontal line approximately 7 cm above labia majora.
 
 ![](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2023/08/16.jpg?resize=1170%2C1560&ssl=1)16
 
 ## Step 16: Excess skin
 
-Pull the abdominal skin flap in the caudal direction to estimate the amount of excess skin. This will create a triangle flap of excessive tissue on both sides of the abdomen. 
+Pull the abdominal skin flap in the caudal direction to estimate the amount of excess skin. This will create a triangle flap of excessive tissue on both sides of the abdomen.
 
 ![](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2023/08/17-1.jpg?resize=1170%2C1537&ssl=1)17
 
 ## Step 17: Line A
 
-Mark the predicted line of incision (line A). Do this bilaterally. 
+Mark the predicted line of incision (line A). Do this bilaterally.
 
 ![](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2023/08/18.jpg?resize=1170%2C1426&ssl=1)18
 
 ## Step 18: Sutures in three layers
 
-Place sutures in three layers. Place the deepest sutures trough Scarpa’s Fascia starting from the xiphoid process following the vertical scar. 
+Place sutures in three layers. Place the deepest sutures trough Scarpa’s Fascia starting from the xiphoid process following the vertical scar.
 
 ![](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2023/08/19.jpg?resize=1170%2C1445&ssl=1)19
 
 ## Step 19: Examination
 
-After placing the sutures in the deepest layer, examine the need of removing further skin before resecting the two skin flaps. Make an incision following the horizontal line A (See Figure 17). Excise the abdominal flaps bilaterally in the sub Scarpa’s fascia level.  
+After placing the sutures in the deepest layer, examine the need of removing further skin before resecting the two skin flaps. Make an incision following the horizontal line A (See Figure 17). Excise the abdominal flaps bilaterally in the sub Scarpa’s fascia level.
 
 ![](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2023/08/21.jpg?resize=1170%2C1488&ssl=1)20
 
@@ -1215,19 +1214,19 @@ After removing the two skin flaps, place two drains bilaterally.
 
 ## Step 21: Sutures
 
-Place dermal and intracutaneous sutures.  
+Place dermal and intracutaneous sutures.
 
 ![](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2023/08/23.jpg?resize=1170%2C1460&ssl=1)22
 
 ## Step 22: Sutures continued
 
-The umbilicus is sutured as well with dermal and intracutaneous sutures in the desired position.  
+The umbilicus is sutured as well with dermal and intracutaneous sutures in the desired position.
 
 ![](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2023/08/24.jpg?resize=1170%2C1491&ssl=1)23
 
 ## Step 23: Cover with micropore tape
 
-Cover the sutured incisions with micropore tape.  
+Cover the sutured incisions with micropore tape.
 
 ## Pearls and pitfalls
 
@@ -2114,7 +2113,7 @@ TITEL: Introduction and theory
 *Kapitelsti: wound-management › surgical-debridement. Indholdstype: handbook.*
 # Introduction and theory
 
-Authors: * Christian Kaare Paaskesen Stud. Med., and Hasan Gökcer Tekin MD.*
+Authors: * Christian Kaare Paaskesen Stud. Med., and Hasan Gökcer Tekin MD.*
 
 ## Introduction
 
@@ -2160,14 +2159,14 @@ Nonetheless, it is also important to apply the oncoplastic principles to mastect
 
 ## Methods and indications
 
-Oncoplastic breast-conserving surgical techniques fall into four main categories (1): 
+Oncoplastic breast-conserving surgical techniques fall into four main categories (1):
 
 - Simple wide local excision (with thoughtful incision planning)
 - Therapeutic breast reduction (bilateral breast reduction can be offered to women with large breasts, especially with morbidity associated with breast size)
 - Therapeutic mastopexy (for women with ptosis who do not necessarily ask for a breast reduction – the only breast volume reduction is the wide local excision itself, and a variable reduction in the skin envelope, makes the procedure more akin to a mastopexy than a reduction)
 - Volume replacement (for women with small and/or non-ptotic breasts, the breast shape is usually best maintained by combining wide local excision with volume replacement – e.g. perforator flaps, advancement flaps, fat grafting, and free flaps)
 
-Therapeutic breast reduction and therapeutic mastopexy are collectively termed therapeutic mammaplasty. In general, when different options are available, the simplest is preferred. 
+Therapeutic breast reduction and therapeutic mastopexy are collectively termed therapeutic mammaplasty. In general, when different options are available, the simplest is preferred.
 
 ## References
 
@@ -2295,7 +2294,7 @@ Free abdominal flaps are currently the most frequently used technique for breast
 - Bjarkam CR, Daugaard H, Houlind KC, Hölmich LR, Borgwardt A, Steinmetz J, et al. Kirurgi. FADL; 2020.
 - Schmauss D, Machens H-G, Harder Y. Breast Reconstruction after Mastectomy. Front Surg [Internet]. 2016 Jan 19 [cited 2021 Feb 17];2. Available from: [https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4717291/](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4717291/)
 - Hoppe DL, Ueberreiter K, Surlemont Y, Peltoniemi H, Stabile M, Kauhanen S. Breast reconstruction de novo by water-jet assisted autologous fat grafting – a retrospective study. GMS Ger Med Sci 11Doc17 ISSN 1612-3174 [Internet]. 2013 [cited 2021 Mar 13]; Available from: [http://www.egms.de/en/journals/gms/2013-11/000185.shtml](http://www.egms.de/en/journals/gms/2013-11/000185.shtml)
-- Coleman SR. Structural Fat Grafting: More Than a Permanent Filler: Plast Reconstr Surg. 2006 Sep;118(Suppl):108S-120S. 
+- Coleman SR. Structural Fat Grafting: More Than a Permanent Filler: Plast Reconstr Surg. 2006 Sep;118(Suppl):108S-120S.
 - Schoeller T, Huemer GM, Wechselberger G. The transverse musculocutaneous gracilis flap for breast reconstruction: guidelines for flap and patient selection. Plast Reconstr Surg. 2008 Jul;122(1):29–38.
 
 ---
@@ -2519,11 +2518,11 @@ FORFATTERE: Hasan Gökcer Tekin, MD, Christian Kaare Paaskesen, Med. Stud, Magnu
 
 **Authors:***Hasan Gökcer Tekin, MD, Christian Kaare Paaskesen, Med. Stud, Magnus Avnstorp, MD, Bjørn Thomas Crewe, MD and Consultant wound specialist*
 
-**Definition: **Wounds  extending to subdermal underlying layers and structures such as fascia, tendon, muscle or bone.
+**Definition: **Wounds extending to subdermal underlying layers and structures such as fascia, tendon, muscle or bone.
 
-**Description:** All types of wound tissue may be present in cavity wounds. Additional features in cavity wounds are non-visible wound bed complications such as sinus formation, fistulas and undermining.  ****
+**Description:** All types of wound tissue may be present in cavity wounds. Additional features in cavity wounds are non-visible wound bed complications such as sinus formation, fistulas and undermining. ****
 
-**Treatment aim:  **Promote granulation tissue from base up and manage bacterial colonization. Debridement of non-vital tissue and deep infections such as osteomyelitis. Facilitate drainage and consider delayed reconstructive surgery to fill out dead space.
+**Treatment aim: **Promote granulation tissue from base up and manage bacterial colonization. Debridement of non-vital tissue and deep infections such as osteomyelitis. Facilitate drainage and consider delayed reconstructive surgery to fill out dead space.
 
 **Wound dressing (dry wounds): ** N/A
 
@@ -2555,7 +2554,7 @@ FORFATTERE: Hasan Gökcer Tekin, MD, Christian Kaare Paaskesen, Med. Stud, Magnu
 
 **Description: ** Usually black or brown in color but can also be white. May present as dry, thick, mummified tissue (eschar) or as wet (liquefied) necrotic tissue. Dry necrosis has often a clear demarcation and a punched out appearance. Transition from dry necrosis to wet necrosis should be given special attention, as it may cause severe infections. Dry necrosis usually separates after a period from the normal wound bed due to elasticity and mechanical resistance. Fissures between the dry necrosis and underlying layers create folds where bacteria can proliferate and cause severe infection and further liquefying the necrosis (wet necrosis). ****
 
-**Treatment aim:  **Debridement of necrotic tissue. Avoid infection during the spontaneous evolvement from dry to wet necrosis. Vascular assessment is mandatory before debridement.
+**Treatment aim: **Debridement of necrotic tissue. Avoid infection during the spontaneous evolvement from dry to wet necrosis. Vascular assessment is mandatory before debridement.
 
 **Wound dressing (dry wounds): **N/A (Simple gauze dressing to prevent moistening while awaiting surgical removal and reconstruction)
 
@@ -2577,7 +2576,7 @@ FORFATTERE: Hasan Gökcer Tekin, MD, Christian Kaare Paaskesen, Med. Stud, Magnu
 
 ## Dry necrosis of the Achilles tendon
 
-![](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2021/01/Skaermbillede-2021-01-16-kl.-22.40.02-1024x882.png?resize=1024%2C882&ssl=1)Medial and posterior view of leg ulcer with dry necrosis of the Achilles tendon. The tendon has still partial adherence to underlying structures and may be salvaged after surgical debridement. Vascular assessment is mandatory before debridement.  
+![](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2021/01/Skaermbillede-2021-01-16-kl.-22.40.02-1024x882.png?resize=1024%2C882&ssl=1)Medial and posterior view of leg ulcer with dry necrosis of the Achilles tendon. The tendon has still partial adherence to underlying structures and may be salvaged after surgical debridement. Vascular assessment is mandatory before debridement.
 
 ## Dry necrosis of toes
 
@@ -2603,7 +2602,7 @@ FORFATTERE: Hasan Gökcer Tekin, MD, Christian Kaare Paaskesen, Med. Stud, Magnu
 
 **Description:** Malodor. Yellow/green slough or thick exudate that can be wiped off wound bed. Breakdown of vital and non-vital tissue. Periwound skin with swelling, pain and spreading erythema. ****
 
-**Treatment aim:  **Manage bacterial colonization and reduce bacterial load. Debridement of infected tissue and consider systemic antibiotic treatment according to the microbial strains.
+**Treatment aim: **Manage bacterial colonization and reduce bacterial load. Debridement of infected tissue and consider systemic antibiotic treatment according to the microbial strains.
 
 **Wound dressing (dry wounds):** Hypotonic-moistened gauzes, antimicrobial ointments/crèmes, impregnanted tulles
 
@@ -2639,7 +2638,7 @@ FORFATTERE: Christian Kaare Paaskesen Stud. Med, Magnus Balslev Avnstorp, MD, & 
 *Kapitelsti: wound-management › negative-pressure-wound-therapy. Indholdstype: handbook.*
 # Products and systems
 
-**Authors:*** Christian Kaare Paaskesen Stud. Med, Magnus Balslev Avnstorp, MD, & Hasan Gökcer Tekin MD.*
+**Authors:*** Christian Kaare Paaskesen Stud. Med, Magnus Balslev Avnstorp, MD, & Hasan Gökcer Tekin MD.*
 
 Multiple systems have been developed to preformed NPWT, in this chapter V.A.C and PICO V.A.C will be described.
 
@@ -2655,7 +2654,7 @@ The function of foam dressings in NPWT is to distribute an even negative pressur
 
 To prevent the foam from sticking to the wound, a silicone dressing (Cuticerin®) can be used as a primary dressing.
 
-When the foam dressing is applied, a fenestrated evacuation tube is applied, and the site is covered with an adhesive drape. To ensure a water- and airtight site, secure the drape in a 3-5 cm peri wound distance on healthy tissue. The V.A.C. system provides the therapist with a selection of modes to choose from, either a continuous or intermittent (2 – 5 minutes) negative pressure ranging from 50 mmHg to 125 mmHg.  Large and heavily exudating wounds may require a higher pressure(>150mmHg) (1, 2). Intermittent mode is recommended as it generates more blood flow in periods where the vacuum is off. Studies suggest that wound contraction and the formation rate of granulation tissue is improved using intermittent pressure settings on NPWT systems (3).
+When the foam dressing is applied, a fenestrated evacuation tube is applied, and the site is covered with an adhesive drape. To ensure a water- and airtight site, secure the drape in a 3-5 cm peri wound distance on healthy tissue. The V.A.C. system provides the therapist with a selection of modes to choose from, either a continuous or intermittent (2 – 5 minutes) negative pressure ranging from 50 mmHg to 125 mmHg. Large and heavily exudating wounds may require a higher pressure(>150mmHg) (1, 2). Intermittent mode is recommended as it generates more blood flow in periods where the vacuum is off. Studies suggest that wound contraction and the formation rate of granulation tissue is improved using intermittent pressure settings on NPWT systems (3).
 
 ## Moisture assessment
 
@@ -2669,7 +2668,7 @@ Some V.A.C. systems also have the ability to perform NPWTi-d and should be used 
 
 ## Disadvantages
 
-Air leak in the dressing can result in an air flow over the wound, desiccating the wound and forming eschar. Eschar seals the wound with retained exudate and leads to worsening of the wound. Once started, NPWT should not be terminated abruptly after one session, as it may result in what is called “rebound phenomenon” which leads to worsening of the wound. 2-3 sessions should always be planned. V.A.C. requires health-care professionals to ensure right and optimal treatment without technical failures. After 2-3 weeks, the formation of granulation tissue will stop, this is an indication to pause the treatment. 
+Air leak in the dressing can result in an air flow over the wound, desiccating the wound and forming eschar. Eschar seals the wound with retained exudate and leads to worsening of the wound. Once started, NPWT should not be terminated abruptly after one session, as it may result in what is called “rebound phenomenon” which leads to worsening of the wound. 2-3 sessions should always be planned. V.A.C. requires health-care professionals to ensure right and optimal treatment without technical failures. After 2-3 weeks, the formation of granulation tissue will stop, this is an indication to pause the treatment.
 
 ## Available products
 
@@ -2742,7 +2741,7 @@ FORFATTERE: Christian Kaare Paaskesen Stud. Med, Magnus Balslev Avnstorp, MD, & 
 *Kapitelsti: wound-management › negative-pressure-wound-therapy. Indholdstype: handbook.*
 # Indications and contra-indications
 
-**Authors:*** Christian Kaare Paaskesen Stud. Med, Magnus Balslev Avnstorp, MD, & Hasan Gökcer Tekin MD.*
+**Authors:*** Christian Kaare Paaskesen Stud. Med, Magnus Balslev Avnstorp, MD, & Hasan Gökcer Tekin MD.*
 
 ## Indications
 
@@ -2821,7 +2820,7 @@ FORFATTERE: Christian Kaare Paaskesen Stud. Med., Magnus Balslev Avnstorp, MD, &
 *Kapitelsti: wound-management › negative-pressure-wound-therapy. Indholdstype: handbook.*
 # Theory
 
-**Authors:*** Christian Kaare Paaskesen Stud. Med., Magnus Balslev Avnstorp, MD, & Hasan Gökcer Tekin MD.*
+**Authors:*** Christian Kaare Paaskesen Stud. Med., Magnus Balslev Avnstorp, MD, & Hasan Gökcer Tekin MD.*
 
 Delayed wound healing is a major concern for patient and socioeconomic burden burden.
 
@@ -2848,7 +2847,7 @@ FORFATTERE: Christian Kaare Paaskesen Stud. Med, Magnus Balslev Avnstorp, MD, Ha
 *Kapitelsti: wound-management › negative-pressure-wound-therapy. Indholdstype: handbook.*
 # Introduction and background
 
-**Authors:*** *Christian Kaare Paaskesen Stud. Med, Magnus Balslev Avnstorp, MD,  Hasan G. Tekin MD.**
+**Authors:*** *Christian Kaare Paaskesen Stud. Med, Magnus Balslev Avnstorp, MD, Hasan G. Tekin MD.**
 
 In this chapter you will learn about the theory behind negative pressure wound therapy and products used in negative pressure wound therapy.
 
@@ -2878,7 +2877,7 @@ FORFATTERE: Hasan Gökcer Tekin, MD, Christian Kaare Paaskesen, Med. Stud, Magnu
 
 **Description: **Slough is often yellow/white in color and can be spongy or creamy in texture. Varying amount of slough may be present in granulating wounds (0-100% slough of a granulating wound bed). ****
 
-**Treatment aim:  **Desloughing. Provide a clean base for granulation tissue
+**Treatment aim: **Desloughing. Provide a clean base for granulation tissue
 
 **Wound dressing (dry wounds):** Hydrogel, hydrocolloids, hypotonic-moistened gauzes
 
@@ -2918,7 +2917,7 @@ FORFATTERE: Hasan Gökcer Tekin, MD, Christian Kaare Paaskesen, Med. Stud, Magnu
 
 **Description: **Clean. Often bulgy, beefy and red/deep pink colored lumps over the surface. No slough present.****
 
-**Treatment aim:  **Promote granulation tissue and remove slough and excessive exudate to provide a healthy base for epithelialization.
+**Treatment aim: **Promote granulation tissue and remove slough and excessive exudate to provide a healthy base for epithelialization.
 
 **Wound dressing (dry wounds): **Hydrocolloids, tulles, silicone dressings
 
@@ -2946,7 +2945,7 @@ FORFATTERE: Hasan Gökcer Tekin, MD, Christian Kaare Paaskesen, Med. Stud, Magnu
 
 **Definition: **Epithelial cell migration from wound edges, which creates a new epidermis and protective barrier between the wound bed and environment.
 
-**Description:  **Pink/pale tissue color. No exudate. No avascular tissue. No infection.
+**Description: **Pink/pale tissue color. No exudate. No avascular tissue. No infection.
 
 **Treatment aim: **Promote wound maturation and prevent damage to the new epidermis
 
@@ -2999,7 +2998,7 @@ FORFATTERE: Hasan Gökcer Tekin MD., Christian Kaare Paaskesen Med.Stud., Dorte 
 
 ## Phase 1:
 
-Hemostasis/Coagulation (Day 1): Injury inflicts the wound and bleeding from vessels occurs. Initial vasoconstriction happens for 10 minutes to reduce blood flow, followed by histamine release and vasodilatation. Damaged collagen fibers and endothelial cells activate the coagulation cascade. Platelets bind to damaged collagen and form a stable fibrin blood clot by further aggregation. This forms a reservoir of cytokines and chemokines, which initiates the next phase.  
+Hemostasis/Coagulation (Day 1): Injury inflicts the wound and bleeding from vessels occurs. Initial vasoconstriction happens for 10 minutes to reduce blood flow, followed by histamine release and vasodilatation. Damaged collagen fibers and endothelial cells activate the coagulation cascade. Platelets bind to damaged collagen and form a stable fibrin blood clot by further aggregation. This forms a reservoir of cytokines and chemokines, which initiates the next phase.
 
 ![](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2021/01/Skaermbillede-2021-01-27-kl.-17.08.19-1024x1020.png?resize=1024%2C1020&ssl=1)
 
@@ -3242,7 +3241,7 @@ FORFATTERE: Christian Kaare Paaskesen, Med. Stud., Hasan Gökcer Tekin, MD
 
 ### Advantages
 
-Hypertonic and hypotonic solutions cleanse the wound with osmosis. In combination with both hyper- and hypotonic solutions, super-oxidized components are added to enhance membrane permeability. A woven gauze is soaked in hypertonic or hypotonic solution and folded out to cover the wound bed.  The gauze adheres and mechanical debridement is obtained when removing the gauze.
+Hypertonic and hypotonic solutions cleanse the wound with osmosis. In combination with both hyper- and hypotonic solutions, super-oxidized components are added to enhance membrane permeability. A woven gauze is soaked in hypertonic or hypotonic solution and folded out to cover the wound bed. The gauze adheres and mechanical debridement is obtained when removing the gauze.
 
 ### Available products:
 
@@ -3324,7 +3323,7 @@ FORFATTERE: Christian Kaare Paaskesen, Med. Stud., Hasan Gökcer Tekin, MD
 
 ### Advantages
 
-Hydrocolloids are only used on spontaneously moist wounds and will not disrupt the bacterial cycle of slough, as they protect from bacterial contamination. A moist and warm environment is secured, favoring all stages of healing, from cleansing to epimerization. Patients can shower, and dressing changes are painless as hydrocolloids do not adhere to the wound bed. 
+Hydrocolloids are only used on spontaneously moist wounds and will not disrupt the bacterial cycle of slough, as they protect from bacterial contamination. A moist and warm environment is secured, favoring all stages of healing, from cleansing to epimerization. Patients can shower, and dressing changes are painless as hydrocolloids do not adhere to the wound bed.
 
 ### Disadvantages
 
@@ -3415,7 +3414,7 @@ Interacts with exudate to create a cohesive gel that creates a moist environment
 
 ### Disadvantages
 
-Can only be used as primary dressing and needs a secondary dressing as cover.  Hydrofibre can adhere to the wound bed if used on low exuding wounds and caution is advised.
+Can only be used as primary dressing and needs a secondary dressing as cover. Hydrofibre can adhere to the wound bed if used on low exuding wounds and caution is advised.
 
 ### Available products:
 
@@ -3650,11 +3649,11 @@ FORFATTERE: Christian Kaare Paaskesen, Med. Stud., Hasan Gökcer Tekin, MD
 
 ### Advantages
 
-Foam dressings maintain a moist wound by absorbing excessive exudate and preventing bacterial contamination, thus respecting the wound eco-system. Well suited for the cleansing and granulation stages up until epithelialization occurs.  Foam dressings prevent odor and do not disintegrate. Foam dressings do not adhere to the wound bed and can be used as a primary or as a secondary dressing in combination with other wound dressings. Foam dressings are often manufactured as composite dressings with multiple layers and functions (see **composite dressing**).
+Foam dressings maintain a moist wound by absorbing excessive exudate and preventing bacterial contamination, thus respecting the wound eco-system. Well suited for the cleansing and granulation stages up until epithelialization occurs. Foam dressings prevent odor and do not disintegrate. Foam dressings do not adhere to the wound bed and can be used as a primary or as a secondary dressing in combination with other wound dressings. Foam dressings are often manufactured as composite dressings with multiple layers and functions (see **composite dressing**).
 
 ### Disadvantages
 
-The absorption of foam is insufficient in heavily exuding wounds and maceration of surrounding skin might occur.  Foam dressings also need a secondary dressing to keep them in situ (if the foam dressing is not combined with adhesive silicone borders). Foam dressing provide little antiseptic and cleansing effect but, excel at simple moisture control.
+The absorption of foam is insufficient in heavily exuding wounds and maceration of surrounding skin might occur. Foam dressings also need a secondary dressing to keep them in situ (if the foam dressing is not combined with adhesive silicone borders). Foam dressing provide little antiseptic and cleansing effect but, excel at simple moisture control.
 
 ### Available Products
 
@@ -3734,11 +3733,11 @@ FORFATTERE: Hasan Gökcer Tekin, MD. And Christian Kaare Paaskesen, Med. Stud.
 *Kapitelsti: wound-management. Indholdstype: handbook.*
 # Introduction
 
-**Authors:*** Hasan Gökcer Tekin, MD. And Christian Kaare Paaskesen, Med. Stud.*
+**Authors:*** Hasan Gökcer Tekin, MD. And Christian Kaare Paaskesen, Med. Stud.*
 
 ### Introduction
 
-In this chapter you will learn how to approach chronic wound treatment. All plastic surgeon should have an understanding of wound bed preparation and when to operate, and when **not** to operate, before mastering advanced reconstructive techniques. 
+In this chapter you will learn how to approach chronic wound treatment. All plastic surgeon should have an understanding of wound bed preparation and when to operate, and when **not** to operate, before mastering advanced reconstructive techniques.
 
 ### Background
 
@@ -3754,11 +3753,11 @@ FORFATTERE: Hasan Gökcer Tekin, MD. And Christian Kaare Paaskesen, Med. Stud.
 
 ## Introduction
 
-**Authors:*** Hasan Gökcer Tekin, MD. And Christian Kaare Paaskesen, Med. Stud.*
+**Authors:*** Hasan Gökcer Tekin, MD. And Christian Kaare Paaskesen, Med. Stud.*
 
 ### Introduction
 
-In this chapter you will learn how to approach chronic wound treatment. All plastic surgeon should have an understanding of wound bed preparation and when to operate, and when **not** to operate, before mastering advanced reconstructive techniques. 
+In this chapter you will learn how to approach chronic wound treatment. All plastic surgeon should have an understanding of wound bed preparation and when to operate, and when **not** to operate, before mastering advanced reconstructive techniques.
 
 ### Background
 
@@ -3882,11 +3881,11 @@ Throughout the wound dressing chapter, the following references will be used.
 
 ### Advantages
 
-Foam dressings maintain a moist wound by absorbing excessive exudate and preventing bacterial contamination, thus respecting the wound eco-system. Well suited for the cleansing and granulation stages up until epithelialization occurs.  Foam dressings prevent odor and do not disintegrate. Foam dressings do not adhere to the wound bed and can be used as a primary or as a secondary dressing in combination with other wound dressings. Foam dressings are often manufactured as composite dressings with multiple layers and functions (see **composite dressing**).
+Foam dressings maintain a moist wound by absorbing excessive exudate and preventing bacterial contamination, thus respecting the wound eco-system. Well suited for the cleansing and granulation stages up until epithelialization occurs. Foam dressings prevent odor and do not disintegrate. Foam dressings do not adhere to the wound bed and can be used as a primary or as a secondary dressing in combination with other wound dressings. Foam dressings are often manufactured as composite dressings with multiple layers and functions (see **composite dressing**).
 
 ### Disadvantages
 
-The absorption of foam is insufficient in heavily exuding wounds and maceration of surrounding skin might occur.  Foam dressings also need a secondary dressing to keep them in situ (if the foam dressing is not combined with adhesive silicone borders). Foam dressing provide little antiseptic and cleansing effect but, excel at simple moisture control.
+The absorption of foam is insufficient in heavily exuding wounds and maceration of surrounding skin might occur. Foam dressings also need a secondary dressing to keep them in situ (if the foam dressing is not combined with adhesive silicone borders). Foam dressing provide little antiseptic and cleansing effect but, excel at simple moisture control.
 
 ### Available Products
 
@@ -4049,7 +4048,7 @@ Interacts with exudate to create a cohesive gel that creates a moist environment
 
 ### Disadvantages
 
-Can only be used as primary dressing and needs a secondary dressing as cover.  Hydrofibre can adhere to the wound bed if used on low exuding wounds and caution is advised.
+Can only be used as primary dressing and needs a secondary dressing as cover. Hydrofibre can adhere to the wound bed if used on low exuding wounds and caution is advised.
 
 ### Available products:
 
@@ -4159,7 +4158,7 @@ The superabsorbent nature of these dressings will over time make them heavy and 
 
 ### Advantages
 
-Hydrocolloids are only used on spontaneously moist wounds and will not disrupt the bacterial cycle of slough, as they protect from bacterial contamination. A moist and warm environment is secured, favoring all stages of healing, from cleansing to epimerization. Patients can shower, and dressing changes are painless as hydrocolloids do not adhere to the wound bed. 
+Hydrocolloids are only used on spontaneously moist wounds and will not disrupt the bacterial cycle of slough, as they protect from bacterial contamination. A moist and warm environment is secured, favoring all stages of healing, from cleansing to epimerization. Patients can shower, and dressing changes are painless as hydrocolloids do not adhere to the wound bed.
 
 ### Disadvantages
 
@@ -4235,7 +4234,7 @@ Wounds may change color when treated with silver dressings into a brown/black co
 
 ### Advantages
 
-Hypertonic and hypotonic solutions cleanse the wound with osmosis. In combination with both hyper- and hypotonic solutions, super-oxidized components are added to enhance membrane permeability. A woven gauze is soaked in hypertonic or hypotonic solution and folded out to cover the wound bed.  The gauze adheres and mechanical debridement is obtained when removing the gauze.
+Hypertonic and hypotonic solutions cleanse the wound with osmosis. In combination with both hyper- and hypotonic solutions, super-oxidized components are added to enhance membrane permeability. A woven gauze is soaked in hypertonic or hypotonic solution and folded out to cover the wound bed. The gauze adheres and mechanical debridement is obtained when removing the gauze.
 
 ### Available products:
 
@@ -4660,8 +4659,8 @@ If the tumor depth is over 1 mm or if it is not possible to measure tumor depth,
 **Final distance of excision **
 is always defined by tumour depth
 MM in situ: total excision distance 5 mm
-MM  **≤** 1 mm: total excision distance 10 mm
-MM  **≥** 1 mm: total excision distance 20 mm
+MM **≤** 1 mm: total excision distance 10 mm
+MM **≥** 1 mm: total excision distance 20 mm
 
 If the melanoma was removed by a doctor outside the specialty of plastic surgery, the primary excision distance is unknown. Therefore the primary excision is 0 mm.
 
@@ -4813,7 +4812,7 @@ Physical examination and patient history are crucial in ruling out pseudo-gyneco
 
 Most commonly, GM presents bilaterally, but unilateral may be seen as well. When palpating the affected breast(s), you feel an elastic, rounded and discoid process, located centrally beneath the NAC. The glandular tissue is tender and only in 2 percent, nipple discharge occurs (6).
 
-When assessing the level of GM, the Tanner Scale (grade 1-5)  is often used (6):
+When assessing the level of GM, the Tanner Scale (grade 1-5) is often used (6):
 
 ![This image has an empty alt attribute; its file name is tanner_MarieHelles.jpg](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2020/12/tanner_MarieHelles.jpg?ssl=1)**Figure 2** | Level of gynecomastia.
 
@@ -4882,8 +4881,8 @@ FORFATTERE: Frederik Gulmark Hansen, med.stud. and Magnus Balslev Avnstorp, MD
 
 # Indications
 
-Suspicion of malignancy is the most common indication for facial excision.
-Facial skin tumors are most frequently found by dermatologists and general practitioners. 
+Suspicion of malignancy is the most common indication for facial excision.
+Facial skin tumors are most frequently found by dermatologists and general practitioners.
 
 ## High risk factors
 
@@ -5598,7 +5597,7 @@ Excision of two basocellular carcinomas on the nose
 
 ## Step 1: Excision
 
-BCC on the side of the nose excised 
+BCC on the side of the nose excised
 
 ![](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2020/12/Exc-Nose-Patient-2_2.jpg?resize=1170%2C1560&ssl=1)2
 
@@ -6144,7 +6143,7 @@ Consist of both the entire epidermis and dermis and sometimes a small amount of 
 
 ## Introduction
 
-Full-thickness skin grafts is the most cosmetically satisfying skin graft.  It is less contracting compared to split-thickness skin grafting. This include less secondary contration, meaning movement isn’t compromised.
+Full-thickness skin grafts is the most cosmetically satisfying skin graft. It is less contracting compared to split-thickness skin grafting. This include less secondary contration, meaning movement isn’t compromised.
 
 Color match, skin thickness and hair/no-hair areas must be taken into consideration.
 
@@ -6194,7 +6193,7 @@ Be aware of the following to get the best cosmetic result:
 *Choosing the donor site in facial defects:*
 
 **Skin type** | **Example of recipient site** | **Example of donor site******
-**Thick skin** | Forehead. Nasolabial groove (medial cheek). Caudal nose. Chin.   | Contralateral facial donor sites. Periauricular. Supraclavicular areas.
+**Thick skin** | Forehead. Nasolabial groove (medial cheek). Caudal nose. Chin. | Contralateral facial donor sites. Periauricular. Supraclavicular areas.
 **Thin skin** | Eyelid. Cranial two thirds of the nose. | Contralateral eyelid Periauricular areas, after a proper thinning.
 **Males** | More hairy areas | Postauricular area, hairless and better solar aging.
 **Females** | Less hairy areas | Preauricular area
@@ -6210,7 +6209,7 @@ Be aware of the following to get the best cosmetic result:
 
 ## Acknowledgments
 
-**Illustrations**: *Christian Kaare Paaskesen Med. Stud.*
+**Illustrations**: *Christian Kaare Paaskesen Med. Stud.*
 
 ---
 ## KILDE: https://beta.plastsurgeon.com/handbook/skin-transplantation/pre-operative-considerations
@@ -6314,7 +6313,7 @@ The skin is a natural barrier that prevents unwanted microorganisms from enterin
 
 ## Acknowledgments
 
-**Illustrations**: *Christian Kaare Paaskesen Med. Stud.*
+**Illustrations**: *Christian Kaare Paaskesen Med. Stud.*
 
 ---
 ## KILDE: https://beta.plastsurgeon.com/handbook/skin-transplantation/introduction
@@ -6338,7 +6337,7 @@ A cutaneous free tissue transfer, that is intentionally separated from a donor s
 
 ## Background
 
-Skin transplants where performed for the first time in India 600 BC, to treat mutilations of ear, nose and lips.  Modern use of skin grafting where performed by surgeon Jaques-Louis Reverdin in 1869, with his use of pinch grafting – a type of split-thickness skin grafting. Three years later, Louis Léopold Ollier described the first split-thickness skin graft. Skin grafting have since then been perfected, and is a widely used technique in plastic surgery, orthopedic surgery and dermatology (1, 2).
+Skin transplants where performed for the first time in India 600 BC, to treat mutilations of ear, nose and lips. Modern use of skin grafting where performed by surgeon Jaques-Louis Reverdin in 1869, with his use of pinch grafting – a type of split-thickness skin grafting. Three years later, Louis Léopold Ollier described the first split-thickness skin graft. Skin grafting have since then been perfected, and is a widely used technique in plastic surgery, orthopedic surgery and dermatology (1, 2).
 
 ## References
 
@@ -6369,7 +6368,7 @@ A cutaneous free tissue transfer, that is intentionally separated from a donor s
 
 ## Background
 
-Skin transplants where performed for the first time in India 600 BC, to treat mutilations of ear, nose and lips.  Modern use of skin grafting where performed by surgeon Jaques-Louis Reverdin in 1869, with his use of pinch grafting – a type of split-thickness skin grafting. Three years later, Louis Léopold Ollier described the first split-thickness skin graft. Skin grafting have since then been perfected, and is a widely used technique in plastic surgery, orthopedic surgery and dermatology (1, 2).
+Skin transplants where performed for the first time in India 600 BC, to treat mutilations of ear, nose and lips. Modern use of skin grafting where performed by surgeon Jaques-Louis Reverdin in 1869, with his use of pinch grafting – a type of split-thickness skin grafting. Three years later, Louis Léopold Ollier described the first split-thickness skin graft. Skin grafting have since then been perfected, and is a widely used technique in plastic surgery, orthopedic surgery and dermatology (1, 2).
 
 ## References
 
@@ -6392,7 +6391,7 @@ The skin is a natural barrier that prevents unwanted microorganisms from enterin
 
 ## Acknowledgments
 
-**Illustrations**: *Christian Kaare Paaskesen Med. Stud.*
+**Illustrations**: *Christian Kaare Paaskesen Med. Stud.*
 
 ## Pre-operative considerations
 
@@ -6478,7 +6477,7 @@ FORFATTERE: Thomas Givskov Sørensen, Magnus Balslev Avstorp MD, Ahmad Makki MD 
 *Kapitelsti: microsurgery. Indholdstype: handbook.*
 # Ergonomics and tremor control
 
-**Authors:*** Thomas Givskov Sørensen, Magnus Balslev Avstorp MD, Ahmad Makki  MD and Gete Toft*
+**Authors:*** Thomas Givskov Sørensen, Magnus Balslev Avstorp MD, Ahmad Makki MD and Gete Toft*
 
 Ergonomics is highly important in all surgical fields in order to optimize working conditions by minimizing tremor as well as to ensure the longevity of the surgeon by reducing the incidence of musculoskeletal injuries.
 
@@ -6543,7 +6542,7 @@ Mons ptosis
 Distinct skin issues: Moisture, maceration, wounds
 Limitations in daily activities | Skin overhang crossing the midaxillary line in the back
 Excess skin on the back
-**Choice of procedure** | Simple procedure  | Circumferential or combined procedure
+**Choice of procedure** | Simple procedure | Circumferential or combined procedure
 
 ---
 ## KILDE: https://beta.plastsurgeon.com/handbook/massive-weight-loss/brachioplasty/indications-3
@@ -6563,7 +6562,7 @@ The general indications and contraindications when performing MWL-surgery will b
 
 A criterion for MWL surgery in the Danish health care system is MWL characterized as second (moderate) or third (severe) degree in accordance with the Danish scale. Regarding brachioplasty the classifications are as follows:
 
-**Second degree (moderate)**             | Excess skin makes up >50% of the muscular part of the upper arm (from the lower definition of the muscle)
+**Second degree (moderate)** | Excess skin makes up >50% of the muscular part of the upper arm (from the lower definition of the muscle)
 **Third degree (severe) ** | Excess skin makes up >100% of the muscular part of the upper arm
 
 Bat-Wing deformity: Extended brachioplasty (Richter) or extended mastopexy
@@ -6625,7 +6624,7 @@ Reconstruction could be performed using different types of flaps, dependent on t
 
 ## Acknowledgments
 
-**Illustrations**: *Marie Nolsøe Helles Med. Stud*. *Caroline Lilja Med. Stud. and Emma Tubæk Med. Stud.*
+**Illustrations**: *Marie Nolsøe Helles Med. Stud*. *Caroline Lilja Med. Stud. and Emma Tubæk Med. Stud.*
 
 ---
 ## KILDE: https://beta.plastsurgeon.com/handbook/massive-weight-loss/brachioplasty/procedure
@@ -6753,7 +6752,7 @@ FORFATTERE: Liv Schöllhammer, MD, Frederik Gulmark Hansen
 *Kapitelsti: facial-flaps › bilobar-flap. Indholdstype: handbook.*
 # Design
 
-**Authors:**** Liv Schöllhammer, MD, Frederik Gulmark Hansen*,* *med.stud.* and Magnus Balslev Avnstorp, MD**
+**Authors:**** Liv Schöllhammer, MD, Frederik Gulmark Hansen*,* *med.stud.* and Magnus Balslev Avnstorp, MD**
 
 # Bilobe flap
 
@@ -6803,7 +6802,7 @@ A second arc is drawn from the same point equal to 3xradius. This arc marks the 
 
 ## Step 5: Drawing of first lobe
 
-The first lobe is drawn (1). Width equals width of primary defect. Angle at base point should be approximately 45° from center of primary defect to center of first lobe.
+The first lobe is drawn (1). Width equals width of primary defect. Angle at base point should be approximately 45° from center of primary defect to center of first lobe.
 
 7
 
@@ -6815,7 +6814,7 @@ Second lobe is drawn (2). Height of second lobe is twice the height of first lob
 
 ## Step 8: Flap elevation and undermining
 
-The flap is elevated in the plane between the nasal muscle fibers and perichondrium/periosteum. The entire flap and adjacent skin is undermined. 
+The flap is elevated in the plane between the nasal muscle fibers and perichondrium/periosteum. The entire flap and adjacent skin is undermined.
 
 9
 
@@ -6835,7 +6834,7 @@ FORFATTERE: Liv Schöllhammer, MD, Christian Kaare Paaskesen, MD, Frederik Gulma
 *Kapitelsti: facial-flaps › z-plasty. Indholdstype: handbook.*
 # Design
 
-**Authors:*** Liv Schöllhammer, MD, Christian Kaare Paaskesen, MD, Frederik Gulmark Hansen*,* MD, and Magnus Balslev Avnstorp, MD*
+**Authors:*** Liv Schöllhammer, MD, Christian Kaare Paaskesen, MD, Frederik Gulmark Hansen*,* MD, and Magnus Balslev Avnstorp, MD*
 
 On this page you will find the design of a Z-plasty facial flap.
 
@@ -6915,7 +6914,7 @@ FORFATTERE: Liv Schöllhammer, MD, Christian Kaare Paaskesen, MD, Frederik Gulma
 *Kapitelsti: facial-flaps › indications-2. Indholdstype: handbook.*
 # Evaluation and Preparation for Local Skin Flap Surgery
 
-**Authors:*** Liv Schöllhammer, MD, Christian Kaare Paaskesen, MD, Frederik Gulmark Hansen*,* med.stud. and Magnus Balslev Avnstorp, MD*
+**Authors:*** Liv Schöllhammer, MD, Christian Kaare Paaskesen, MD, Frederik Gulmark Hansen*,* med.stud. and Magnus Balslev Avnstorp, MD*
 
 A thorough physical examination is essential when evaluating the use of a local skin flap. The following key steps outline the most important considerations for patient assessment.
 
@@ -7263,7 +7262,7 @@ FORFATTERE: Frederik Gulmark Hansen, med.stud. and Magnus Balslev Avnstorp, MD
 
 **Authors:*** Frederik Gulmark Hansen, med.stud. and Magnus Balslev Avnstorp, MD*
 
-Incisions should be placed parallel to the langers lines when performing an excision of a facial tumor. This leads to the most aesthetic result.
+Incisions should be placed parallel to the langers lines when performing an excision of a facial tumor. This leads to the most aesthetic result.
 
 # Langers lines
 
@@ -7879,7 +7878,7 @@ TITEL: Anatomy
 *Kapitelsti: oncologic-treatment. Indholdstype: handbook.*
 # Anatomy
 
-**Authors**: *Sarah Gierahn Nielsen, med. student & Hanne Melgaard Nielsen, MD*
+**Authors**: *Sarah Gierahn Nielsen, med. student & Hanne Melgaard Nielsen, MD*
 
 A clinical breast exam is important in the diagnosis and surveillance of both benign and malignant breast diseases emphasizing the importance of basic knowledge of the anatomy and physiology of the breast.
 
@@ -7891,7 +7890,7 @@ A clinical breast exam is important in the diagnosis and surveillance of both be
 
 ## Acknowledgments
 
-Illustrators: *Anders Kaa, MD, Anne Mosebo*,* med. student*
+Illustrators: *Anders Kaa, MD, Anne Mosebo*,* med. student*
 
 ## References
 
@@ -8098,7 +8097,7 @@ Post-operative clinical control and photos after 3 months.
 
 ## Acknowledgments
 
-**Illustrators**: *Caroline Lilja,* *med.stud.*
+**Illustrators**: *Caroline Lilja,* *med.stud.*
 
 ---
 ## KILDE: https://beta.plastsurgeon.com/handbook/breast-surgery/breast-augmentation-with-implants/introduction
@@ -8154,7 +8153,7 @@ If the patient is more than 35-40 years old, she should have a mammogram done be
 ### Benefits and drawbacks of incision sites
 
 | Benefits | Drawbacks
-**IMF incision** | The best exposition of the pectoralis muscle  | Thicker, slightly more visible scar
+**IMF incision** | The best exposition of the pectoralis muscle | Thicker, slightly more visible scar
 **Periareolar incision** | Less visible scars than IMF incision | Difficult implant emplacement due to short access-incision
 **Transaxillary incision** | No visible scars on the breast proper | Greater risk of inferior asymmetry of the implant position
 
@@ -8296,7 +8295,7 @@ The breast ducts are divided while retracting the areolar flap.
 
 ## Step 3: Klein’s solution
 
-Prior to the liposuction procedure, Klein’s solution is introduced into the fat. Klein’s solution contains lignocaine, epinephrine, and large amounts of saline. The saline balloons the fat tissue, epinephrine causes vasoconstriction, thus, decreasing bleeding, and lignocaine induces local anaesthesia.  
+Prior to the liposuction procedure, Klein’s solution is introduced into the fat. Klein’s solution contains lignocaine, epinephrine, and large amounts of saline. The saline balloons the fat tissue, epinephrine causes vasoconstriction, thus, decreasing bleeding, and lignocaine induces local anaesthesia.
 
 ![](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2020/12/OL924VCQ.png?resize=1170%2C663&ssl=1)4
 
@@ -8320,7 +8319,7 @@ The initial incisions for liposuction is 5-7-mm scalpel stabs made through the I
 
 ## Acknowledgments
 
-**Illustrators**: *Christian Paaskesen,* *med.stud.*
+**Illustrators**: *Christian Paaskesen,* *med.stud.*
 
 ---
 ## KILDE: https://beta.plastsurgeon.com/handbook/breast-surgery/the-abnormal-breast/breast-ptosis
@@ -8350,7 +8349,7 @@ Medical term for drooping breast tissue. The degree is categorized by evaluating
 
 ## Acknowledgments
 
-**Illustrators:** *Christian Paaskesen, med.stud.*
+**Illustrators:** *Christian Paaskesen, med.stud.*
 
 ## References
 
@@ -8540,7 +8539,7 @@ During a lifetime, the size and shape of all breasts will be influenced by many 
 
 ## Acknowledgments
 
-**Illustrators**: *Christian Paaskesen, med.stud.*
+**Illustrators**: *Christian Paaskesen, med.stud.*
 
 ---
 ## KILDE: https://beta.plastsurgeon.com/handbook/breast-surgery/the-abnormal-breast/breast-atrophy
@@ -9471,8 +9470,8 @@ The patient should remain tracheostomized postoperatively as there is a risk of 
 
 ## Pitfalls
 
-- The venae commitans around the peroneal artery often have complex venous interconnections between the two veins. The microsurgeon should be mindful of this difference when preparing the vessels for microvascular anastomosis. 
-- The use of surgical drains requires caution. A suction drain in the neck might cause impingement on the vessels, causing pedicle thrombosis. Drains should always be sutured in position to avoid drain migration and vessel compression. 
+- The venae commitans around the peroneal artery often have complex venous interconnections between the two veins. The microsurgeon should be mindful of this difference when preparing the vessels for microvascular anastomosis.
+- The use of surgical drains requires caution. A suction drain in the neck might cause impingement on the vessels, causing pedicle thrombosis. Drains should always be sutured in position to avoid drain migration and vessel compression.
 - 5-7 % will experience inadequate vascularity, and flap salvage surgery will be needed – worst case the transplant will be lost.
 
 ---
@@ -9645,7 +9644,7 @@ FORFATTERE: Stig Steinfurth, med.student, Christoffer Bing Madsen, med. student,
 
 ## Skin hooks (Gillies)
 
-**Skin hooks (Gillies)** for holding the edges of delicate skin during dissection procedures.  Pull the skin hook up to present the tissue for the surgeon.
+**Skin hooks (Gillies)** for holding the edges of delicate skin during dissection procedures. Pull the skin hook up to present the tissue for the surgeon.
 
 ![](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2020/12/skin-hooks.jpg?resize=350%2C466&ssl=1)
 
@@ -9755,7 +9754,7 @@ FORFATTERE: Stig Steinfurth, med.student, Christoffer Bing Madsen, med. student,
 
 ## How to hold a scalpel:
 
-**How to hold a scalpel: **The scalpel can be held in a couple of different ways. In the pencil grip the scalpel is held between your first and second finger, resting in the anatomical ‘snuff box’. This is well-suited for short and precise incisions. An alternative is the overhand/fingertip grip. Here the scalpel is held between your first and third finger using the second finger to apply pressure when cutting. This grip is better for longer incisions that do not necessarily require the same exact precision as when using the pencil grip.  
+**How to hold a scalpel: **The scalpel can be held in a couple of different ways. In the pencil grip the scalpel is held between your first and second finger, resting in the anatomical ‘snuff box’. This is well-suited for short and precise incisions. An alternative is the overhand/fingertip grip. Here the scalpel is held between your first and third finger using the second finger to apply pressure when cutting. This grip is better for longer incisions that do not necessarily require the same exact precision as when using the pencil grip.
 
 ![](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2020/12/how-to-hold-scalple-1-vm.png?resize=350%2C466&ssl=1)The scalpel held in a classic pencil grip
 
@@ -10005,7 +10004,7 @@ Clinical control 3 months after surgery.
 
 ## Acknowledgments
 
-**Illustrators**: *Christian Paaskesen,* *med.stud.*
+**Illustrators**: *Christian Paaskesen,* *med.stud.*
 
 ## References
 
@@ -10207,12 +10206,12 @@ The location and size of the lesion play an important role when deciding on type
 # Types of lip excisions
 
 **Type of excision** | **Upper lip** | **Lower lip**
-**W-excision** |  | x
-**Pentagonal-wedge resection** |  | x
+**W-excision** | | x
+**Pentagonal-wedge resection** | | x
 **V-excision** | x | x
 **Shield excision** | x | x
-**Rectangular excision** | x  | x
-**T-excision**  | x (near philtrum) |
+**Rectangular excision** | x | x
+**T-excision** | x (near philtrum) |
 
 Table 1 |** **Types of lip excisions
 
@@ -10252,12 +10251,12 @@ The location and size of the lesion play an important role when deciding on type
 # Types of lip excisions
 
 **Type of excision** | **Upper lip** | **Lower lip**
-**W-excision** |  | x
-**Pentagonal-wedge resection** |  | x
+**W-excision** | | x
+**Pentagonal-wedge resection** | | x
 **V-excision** | x | x
 **Shield excision** | x | x
-**Rectangular excision** | x  | x
-**T-excision**  | x (near philtrum) |
+**Rectangular excision** | x | x
+**T-excision** | x (near philtrum) |
 
 Table 1 |** **Types of lip excisions
 
@@ -10409,7 +10408,7 @@ Excision of two basocellular carcinomas on the nose
 
 ## Step 1: Excision
 
-BCC on the side of the nose excised 
+BCC on the side of the nose excised
 
 ![](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2020/12/Exc-Nose-Patient-2_2.jpg?resize=1170%2C1560&ssl=1)2
 
@@ -10635,8 +10634,8 @@ Preoerative information should always include:
 
 # Indications
 
-Suspicion of malignancy is the most common indication for facial excision.
-Facial skin tumors are most frequently found by dermatologists and general practitioners. 
+Suspicion of malignancy is the most common indication for facial excision.
+Facial skin tumors are most frequently found by dermatologists and general practitioners.
 
 ## High risk factors
 
@@ -10715,14 +10714,14 @@ Excision of facial tumors are, as most other skin excisions, most often performe
 
 ## References
 
-- 1 – Bhishagratna Kaviraj KL (1907). An English translation of the Sushruta Samhita in three volumes , (volume 1, 2 and 3, archived by University of Toronto) 1907. 
+- 1 – Bhishagratna Kaviraj KL (1907). An English translation of the Sushruta Samhita in three volumes , (volume 1, 2 and 3, archived by University of Toronto) 1907.
 - 2 – Breuninger H, Dietz K. Prediction of subclinical tumor infiltration in basal cell carcinoma. J Dermatol Surg Oncol 1991;17:574-8.
 
 ## Relevant anatomy
 
 **Authors:*** Frederik Gulmark Hansen, med.stud. and Magnus Balslev Avnstorp, MD*
 
-Incisions should be placed parallel to the langers lines when performing an excision of a facial tumor. This leads to the most aesthetic result.
+Incisions should be placed parallel to the langers lines when performing an excision of a facial tumor. This leads to the most aesthetic result.
 
 # Langers lines
 
@@ -10832,8 +10831,8 @@ Preoerative information should always include:
 
 # Indications
 
-Suspicion of malignancy is the most common indication for facial excision.
-Facial skin tumors are most frequently found by dermatologists and general practitioners. 
+Suspicion of malignancy is the most common indication for facial excision.
+Facial skin tumors are most frequently found by dermatologists and general practitioners.
 
 ## High risk factors
 
@@ -11066,7 +11065,7 @@ Excision of two basocellular carcinomas on the nose
 
 ## Step 1: Excision
 
-BCC on the side of the nose excised 
+BCC on the side of the nose excised
 
 ![](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2020/12/Exc-Nose-Patient-2_2.jpg?resize=1170%2C1560&ssl=1)2
 
@@ -11095,12 +11094,12 @@ The location and size of the lesion play an important role when deciding on type
 # Types of lip excisions
 
 **Type of excision** | **Upper lip** | **Lower lip**
-**W-excision** |  | x
-**Pentagonal-wedge resection** |  | x
+**W-excision** | | x
+**Pentagonal-wedge resection** | | x
 **V-excision** | x | x
 **Shield excision** | x | x
-**Rectangular excision** | x  | x
-**T-excision**  | x (near philtrum) |
+**Rectangular excision** | x | x
+**T-excision** | x (near philtrum) |
 
 Table 1 |** **Types of lip excisions
 
@@ -11500,7 +11499,7 @@ Excision of facial tumors are, as most other skin excisions, most often performe
 
 ## References
 
-- 1 – Bhishagratna Kaviraj KL (1907). An English translation of the Sushruta Samhita in three volumes , (volume 1, 2 and 3, archived by University of Toronto) 1907. 
+- 1 – Bhishagratna Kaviraj KL (1907). An English translation of the Sushruta Samhita in three volumes , (volume 1, 2 and 3, archived by University of Toronto) 1907.
 - 2 – Breuninger H, Dietz K. Prediction of subclinical tumor infiltration in basal cell carcinoma. J Dermatol Surg Oncol 1991;17:574-8.
 
 ---
@@ -11541,7 +11540,7 @@ FORFATTERE: Hasan Gökcer Tekin, MD, Frederik Gulmark Hansen, med.stud., and Mag
 *Kapitelsti: facial-flaps › glabella-flap. Indholdstype: procedure.*
 # Case 1: Glabella flap
 
-**Authors:*** Hasan Gökcer Tekin, MD, Frederik Gulmark Hansen, med.stud., and Magnus Balslev Avnstorp, MD*
+**Authors:*** Hasan Gökcer Tekin, MD, Frederik Gulmark Hansen, med.stud., and Magnus Balslev Avnstorp, MD*
 
 # Patient history
 
@@ -11583,7 +11582,7 @@ The flap was designed with the scar placed vertical in the RSTL of the glabella.
 
 The skin was incised with a #15 blade and the undermined in the subcutaneous plane under the flap and down towards the left medial canthus to make the rotation easier.
 
-- Local flaps from the glabella can be risen in the subcutaneous plane, compared with flaps from the nasal dorsum which require subnasalis muscle dissection. 
+- Local flaps from the glabella can be risen in the subcutaneous plane, compared with flaps from the nasal dorsum which require subnasalis muscle dissection.
 
 ![](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2020/12/IMG_0972_photo.jpg?resize=1170%2C878&ssl=1)5
 
@@ -11630,7 +11629,7 @@ FORFATTERE: Hasan Gökcer Tekin, MD and Magnus Balslev Avnstorp, MD
 *Kapitelsti: facial-flaps › glabella-flap. Indholdstype: procedure.*
 # Case 2: Glabella flap
 
-**Authors: ***Hasan Gökcer Tekin, MD and Magnus Balslev Avnstorp, MD*
+**Authors: ***Hasan Gökcer Tekin, MD and Magnus Balslev Avnstorp, MD*
 
 # Patient History
 
@@ -11660,7 +11659,7 @@ A Limberg flap from the glabella region was preferred in this case to provide co
 
 ## Step 1: Excision
 
-The defect was 15mm in diameter and located in the proximal half of the nasal dorsum including both nasal sidewalls (crossing over 3 aesthetic subunits). Surgical margins for re-excision were 5 mm. 
+The defect was 15mm in diameter and located in the proximal half of the nasal dorsum including both nasal sidewalls (crossing over 3 aesthetic subunits). Surgical margins for re-excision were 5 mm.
 
 The flap was vertically oriented into the RSTL of the glabella to hide the following scar of the secondary defect. The cranial border of the defect did not cross into the glabella staying inside the aesthetic subunits of the nose.
 
@@ -11670,21 +11669,21 @@ The flap had to rotate about 90 degrees to close the primary defect around the p
 
 ## Step 2: Flap design
 
-The width (X) of the flap is identical to the width of the defect. The length (Y) of the flap is slightly longer (around 20%) than the length of the primary defect. A slight loss of distance occurs during rotation of the flap depending on the rotation angle. 
+The width (X) of the flap is identical to the width of the defect. The length (Y) of the flap is slightly longer (around 20%) than the length of the primary defect. A slight loss of distance occurs during rotation of the flap depending on the rotation angle.
 
-- The flap was thinned of subcutaneous tissue in the distal half to match the surrounding skin on the nose.  The proximal half of the flap is not thinned due to maintaining a steady blood supply, which makes the flap appear bulky at the basis. 
+- The flap was thinned of subcutaneous tissue in the distal half to match the surrounding skin on the nose.  The proximal half of the flap is not thinned due to maintaining a steady blood supply, which makes the flap appear bulky at the basis.
 
 ![](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2020/12/20200618_151210.jpg?resize=1170%2C1671&ssl=1)3
 
 ## Step 3: Post-operative photo
 
-The scars of the Limberg flap stay within the horizontal RSTL of the nasal bridge.  The flap crosses 3 subunits of the nose (both nasal sidewalls and the nasal dorsum) due to the size of the defect. Note the slight nose deviation of the lower two-thirds of the nose, which was seen preoperative also
+The scars of the Limberg flap stay within the horizontal RSTL of the nasal bridge. The flap crosses 3 subunits of the nose (both nasal sidewalls and the nasal dorsum) due to the size of the defect. Note the slight nose deviation of the lower two-thirds of the nose, which was seen preoperative also
 
 ![](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2020/12/20200625_102451.jpg?resize=1170%2C1706&ssl=1)4
 
 ## Step 4: 1-week follow-up
 
-The flap is slightly hyperemic 1 week postoperative but is expected with time to color-match the surrounding skin. Pincushioning at the wound edges is seen due to lymphedema in the early postoperative stages, which is expected to regress after a few of weeks. The basis of the flap is bulky at the nasal sidewall towards the left medial canthus and may require a second-stage debulking procedure. 
+The flap is slightly hyperemic 1 week postoperative but is expected with time to color-match the surrounding skin. Pincushioning at the wound edges is seen due to lymphedema in the early postoperative stages, which is expected to regress after a few of weeks. The basis of the flap is bulky at the nasal sidewall towards the left medial canthus and may require a second-stage debulking procedure.
 
 # Post-operative care
 
@@ -11700,7 +11699,7 @@ FORFATTERE: Hasan Gökcer Tekin, MD and Magnus Balslev Avnstorp, MD
 *Kapitelsti: facial-flaps › glabella-flap. Indholdstype: handbook.*
 # Design
 
-**Authors:*** Hasan Gökcer Tekin, MD and Magnus Balslev Avnstorp, MD*
+**Authors:*** Hasan Gökcer Tekin, MD and Magnus Balslev Avnstorp, MD*
 
 Learn how to use the skin in the glabella region for a transposition flap.
 
@@ -11712,7 +11711,7 @@ The glabella flap is based on the dorsal nasal artery (lower part), or the supra
 
 # Designing the flap
 
-The glabella flap can be used for reconstructing primary defects on the proximal half of the nose with excessive skin from the glabellar region. The secondary defect is closed primarily with excellent aesthetic result.  Local flaps from the glabella region can be designed as a variety of different geometric shapes such as transposition flaps (fig. 1), bilobed flaps (fig. 2), or as versatile rhombic (Limberg) flaps (Fig. 3).
+The glabella flap can be used for reconstructing primary defects on the proximal half of the nose with excessive skin from the glabellar region. The secondary defect is closed primarily with excellent aesthetic result. Local flaps from the glabella region can be designed as a variety of different geometric shapes such as transposition flaps (fig. 1), bilobed flaps (fig. 2), or as versatile rhombic (Limberg) flaps (Fig. 3).
 
 Key consideration when performing reconstruction on the nasal dorsum with glabella flaps, are aesthetic subunits of the nose, relaxed skin tension lines (RSTL), location of the defect (proximal or distal, central or off-center), the size of the defect and thickness of the flap.
 
@@ -11725,7 +11724,7 @@ Key consideration when performing reconstruction on the nasal dorsum with glabel
 ## Pearls
 
 - The optimal location for reconstructing a defect with a glabella flap is on the proximal half of the nose, as the skin on the proximal half of the nose is more similar to glabellar skin and does not contain sebaceous glands.
-- Excess skin and bulk at the basis of the glabella flap is common due to less thinning of subcutaneous tissue and maintaining a stable blood supply. The distal half of the flap can be thinned more aggressively. Secondary debulking can be necessary as a two-step procedure. 
+- Excess skin and bulk at the basis of the glabella flap is common due to less thinning of subcutaneous tissue and maintaining a stable blood supply. The distal half of the flap can be thinned more aggressively. Secondary debulking can be necessary as a two-step procedure.
 
 ## Pitfalls
 
@@ -11743,7 +11742,7 @@ FORFATTERE: Liv Schöllhammer, MD, Frederik Gulmark Hansen
 *Kapitelsti: facial-flaps › z-plasty. Indholdstype: procedure.*
 # Case 1: Z-Plasty
 
-**Authors: ***Liv Schöllhammer, MD, Frederik Gulmark Hansen*,* med.stud. and Magnus Balslev Avnstorp, MD*
+**Authors: ***Liv Schöllhammer, MD, Frederik Gulmark Hansen*,* med.stud. and Magnus Balslev Avnstorp, MD*
 
 29 years old female with a scar following a trauma to her right cheek/mandible.
 
@@ -11907,7 +11906,7 @@ FORFATTERE: Liv Schöllhammer, MD, Frederik Gulmark Hansen
 *Kapitelsti: facial-flaps › interpolated-flap. Indholdstype: procedure.*
 # Case 1: Nasolabial flap – 1 Step
 
-**Authors:*** Liv Schöllhammer, MD, Frederik Gulmark Hansen*,* *med.stud.* and Magnus Balslev Avnstorp, MD*
+**Authors:*** Liv Schöllhammer, MD, Frederik Gulmark Hansen*,* *med.stud.* and Magnus Balslev Avnstorp, MD*
 
 75 years old male with basal cell carcinoma on the left side of the nose involving parts of the alae.
 
@@ -12026,7 +12025,7 @@ TITEL: U
 *Kapitelsti: dictionary. Indholdstype: handbook.*
 # U
 
-**Ugly duckling ** | When reviewing birthmarks, one may find a birthmark that stands out very much from the rest, this birthmark will be described as an *ugly duckling*. These are often birthmarks with suspicion of malignancy. Should be removed for diagnostics on suspicion.
+**Ugly duckling ** | When reviewing birthmarks, one may find a birthmark that stands out very much from the rest, this birthmark will be described as an *ugly duckling*. These are often birthmarks with suspicion of malignancy. Should be removed for diagnostics on suspicion.
 **Ulcus** | Wound.
 **Undermining** | When a defect is expanded beneath the skin. Used to close a defect by undermining and loosening connective tissue in-depth, so that the skin edges become more mobile and can be pulled further.
 
@@ -12048,7 +12047,7 @@ Link: [https://plastsurgeon.com/breast-surgery/the-abnormal-breast/gynecomastia/
 
 Link: [https://plastsurgeon.com/burns-treatment/assessment-of-burn-degrees/](https://plastsurgeon.com/burns-treatment/assessment-of-burn-degrees/)
 **Tissue expansion** | Procedure in which a balloon/tissue expander prosthesis is placed under the skin and gradually filled with salt water to expand overlying skin. Subsequently, excess skin can be used to close the nearby defect, or simply hold a permanently drop-shaped breast prosthesis as seen during breast reconstruction.
-**TNM** | Classification of malignant tumors. *T* describes the primary tumor by size, depth of growth and/or local distribution. *N* describes whether there are metastases in regional lymph nodes such as the axilla. *M* describes whether there are distant metastases such as in the lungs or liver.
+**TNM** | Classification of malignant tumors. *T* describes the primary tumor by size, depth of growth and/or local distribution. *N* describes whether there are metastases in regional lymph nodes such as the axilla. *M* describes whether there are distant metastases such as in the lungs or liver.
 
 TNM (Melanoma): [https://plastsurgeon.com/melanoma/tnm-staging/](https://plastsurgeon.com/melanoma/tnm-staging/)
 **Tragus (ear)** | The posteriorly pointing cartilage projection in front of meatus acusticus externus.
@@ -12154,7 +12153,7 @@ Indication for fluid therapy is:
 – Children with burns over 10%
 
 The formula is: 3 ml x weight in kg x burned surface area (TBSA)
-E.g.: 3 ml x 75 kg x 25% = 5,825 liter over 24 hours. 
+E.g.: 3 ml x 75 kg x 25% = 5,825 liter over 24 hours.
 
 The first half is given 0-8 hours after the burn, while the second half is given 8-24 hours after the burn.
 
@@ -12336,7 +12335,7 @@ An ICD-10 diagnosis code consists of one letter and up to three numbers. The let
 In Denmark, the ICD is combined with the *Health Service’s classification system (SKS)*, where another letter is placed at the front and where it is possible to put a letter at the end to further specify the diagnosis. Eg. DC44.4A – Other skin cancers located on the scalp.
 **Inframammary furrow (IMF)** | Anatomically defined furrows in the skin, that form the natural lower border of the breast against the thoracic wall. May be smoothed in massive weight loss patients.
 **Immunotherapy** | Immunotherapy is a form of treatment, that utilizes the body’s immune system to target the cancer cells. The immune system can be activated either by stimulating the immune cells or by blocking the immune system’s brake mechanisms. Used in metastatic malignant melanoma.
-**In situ (cancer) ** |  A precursor to cancer, so-called premalignant cell changes. The definition of in situ changes is that the cells continue to respect the basal membrane of the skin and are *not *invasive in deeper layers of skin.
+**In situ (cancer) ** | A precursor to cancer, so-called premalignant cell changes. The definition of in situ changes is that the cells continue to respect the basal membrane of the skin and are *not *invasive in deeper layers of skin.
 **In-transit metastasis** | Spread of metastasis to the dermis, subcutis or deeper structures at a distance of > 2 cm from the primary tumor, but not peripherally to the regional lymph nodes.
 **Incision ** | Surgical incision through the skin’s surface with e.g, a scalpel.
 **Incisional biopsy** | A sample of a suspicious tissue in contrast to an excisional biopsy in which an entire tumor is removed. E.g., punch biopsy.
@@ -12402,13 +12401,13 @@ TITEL: F
 *Kapitelsti: dictionary. Indholdstype: handbook.*
 # F
 
-**Fasciitis (necrotising)** | Inflammation in the fascia, commonly known as flesh-eating disease. It is a severe disease of sudden onset that spreads rapidly.  Symptoms include red or purple skin in the affected area, severe pain, and fever. The most commonly affected areas are the limbs and perineum.
+**Fasciitis (necrotising)** | Inflammation in the fascia, commonly known as flesh-eating disease. It is a severe disease of sudden onset that spreads rapidly. Symptoms include red or purple skin in the affected area, severe pain, and fever. The most commonly affected areas are the limbs and perineum.
 **Fibroma** | Benign connective tissue nodule in the skin.
 **Fillers ** | A substance (often hyaluronic acid), which is injected into the skin for increased fullness and aesthetically rejuvenating expression.
 **First-degree burn** | A burn to the skin that only involves the epidermis. Flushing is visible as with a sunburn (erythema), but no bullae are seen.
 
 Link: [https://plastsurgeon.com/burns-treatment/assessment-of-burn-degrees/](https://plastsurgeon.com/burns-treatment/assessment-of-burn-degrees/)
-**Flamazine** | A cream containing silver sulfadiazine that acts antibacterial. It is often used in conjunction with burns. 
+**Flamazine** | A cream containing silver sulfadiazine that acts antibacterial. It is often used in conjunction with burns.
 
 Link: [https://plastsurgeon.com/burns-treatment/procedures/procedure-applying-bandages/](https://plastsurgeon.com/burns-treatment/procedures/procedure-applying-bandages/)
 **Flap surgery** | The surgical technique used to reposition the patient’s skin, muscle or fat from one place to another, to reconstruct a defect. Used when there is an insufficient amount of tissue for direct suturing. Flaps can be classified based on several characteristics including how the flap is manipulated (e.g. Transposition flap), its blood supply (e.g. Deep inferior epigastric perforator flap) or which tissue components (e.g. skin/muscle/cartilage) it contains.
@@ -12435,7 +12434,7 @@ Histologically, the epidermis is divided into stratum corneum, stratum lucidum (
 **Epilate** | Hair removal.
 **Erythema** | Redness of the skin.
 **Eyebrow lift** | The surgical procedure aimed at correcting eyebrow ptosis. It can be done on functional and/or cosmetic indications.
-**Exairesis  ** | Removal of all lymph nodes in a region, such as the axilla or the inguinal. The procedure is currently used to a limited extent, primarily in patients with macroscopic lymph nodes metastases from carcinomas or malignant melanoma.
+**Exairesis ** | Removal of all lymph nodes in a region, such as the axilla or the inguinal. The procedure is currently used to a limited extent, primarily in patients with macroscopic lymph nodes metastases from carcinomas or malignant melanoma.
 **Excision** | Surgical removal of a tumor, including the skin tissue by cutting around and under using a scalpel.
 **Exfoliation** | A rough peeling of the skin.
 **Expander** | The designation for a prosthesis placed under the skin and possibly muscle. The purpose is to expand the overlying skin and thus make room for a permanent prosthesis or to make a skin flap with the additional skin.
@@ -12483,7 +12482,7 @@ TITEL: C
 # C
 
 **Café au lait spots** | Hyperpigmented blotches on the skin, often seen together with another illness e.g. neurofibromatosis.
-**Cancer (skin)** | Uncontrolled growth of abnormal cells in the body. Cancer cells are defined as “malignant” by not respecting the natural boundaries of tissue and by having metastatic potential. Examples of skin cancers are basal cell carcinoma or squamous cell carcinoma. 
+**Cancer (skin)** | Uncontrolled growth of abnormal cells in the body. Cancer cells are defined as “malignant” by not respecting the natural boundaries of tissue and by having metastatic potential. Examples of skin cancers are basal cell carcinoma or squamous cell carcinoma.
 **Canthus (eye)** | Defined as the anatomical location, where the upper and lower eyelids meet. It is seen both medial and lateral to both eyes.
 **Capsular contracture** | A complication for breast implants occurs when the scar tissue formed around the implant starts to shrink (contract), and thereby pinches the implant eventually resulting in pain. The breast, therefore, appears unnaturally firm with an unnatural shape. The capsule may be visible through the skin.
 **Cellulitis** | A generic term for inflammation of the skin, which can be conditional on both bacterial or non-bacterial causes.
@@ -12491,7 +12490,7 @@ TITEL: C
 **Cicatrice** | A generic term for a scar left on the skin after either surgical treatment or a traumatic lesion.
 **Comedo** | Blackhead. Follicle with sebaceous secretase, where the sebum is mixed with keratin.
 **Columella** | The tissue which separates the two nares.
-**Concha** | The concave area posteriorly to the auditory canal (external auditory meatus). It is anatomically defined by antihelix (cranially), antitragus (distally), and tragus (anteriorly). 
+**Concha** | The concave area posteriorly to the auditory canal (external auditory meatus). It is anatomically defined by antihelix (cranially), antitragus (distally), and tragus (anteriorly).
 **Constricted ear (lop ear)** | Varying degrees of outer ear deformity such as protrusion, reduction of the circumference of the ear, increased folding/flattening of the helical rim or low placement of the ear.
 **Cont. (Continuat)** | Usually used about an ordination which is being continued.
 **Contracture of skin** | Scars that restrict movement as skin or underlying structures contract during healing. Often seen after major substance loss or deep 2nd degree and 3rd-degree burns.
@@ -12499,7 +12498,7 @@ TITEL: C
 **Crustae** | Scab, as on a wound.
 **Cryotherapy** | Tissue freezing (eg, basocellular carcinoma) by nitrogen, carbon dioxide or Freon. Frequently used technique in dermatology.
 **Cryptotia** | Known as a hidden ear. It is a deformity that occurs secondarily to the folding of the earlobe, whereby it becomes attached to the scalp.
-**Curettage ** | Removal of tissue using a curette or a knife. This is used in dermatology to treat minor basal cell carcinomas and benign disorders.
+**Curettage ** | Removal of tissue using a curette or a knife. This is used in dermatology to treat minor basal cell carcinomas and benign disorders.
 **Cutis laxa** | Excessive loose skin to a degree that makes it hang.
 **Cyst** | A cavity in the tissue developed through a pathological process. Contains liquid.
 
@@ -12531,7 +12530,7 @@ Link: [https://plastsurgeon.com/facial-flaps/glabella-flap/glabellar-flap/](http
 BMI is expressed by a number, which is used to classify whether the person is normal weight, underweight or overweight.
 Evidence shows a BMI exceeding 30 significantly heightens the risk of complications such as infection, bleeding, poor healing and poorer surgical outcomes. Most plastic surgical departments insist on a BMI equal to or below 25 when performing elective, non-cancerous surgery and non-massive weight loss surgery.
 **Bolus dressing** | Compressive bandage often composed of a foam sponge, which is sown to the surface of a skin transplant. The purpose of this is to ensure the transplant doesn’t move during the early phase and to prevent a hematoma between the transplant and the wound bed, which would otherwise compromise the diffusion of oxygen and nourishment that the transplant depends on. The foam dressing can be combined with moisturizing and antibacterial components (e.g. Jelonet and nitrofurantoin gaze) as needed.
-**Brachioplasty** | Correction of surplus skin on the upper arms. 
+**Brachioplasty** | Correction of surplus skin on the upper arms.
 
 Link: [https://plastsurgeon.com/massive-weight-loss/brachioplasty/indications/](https://plastsurgeon.com/massive-weight-loss/brachioplasty/indications/)
 **Breast Cancer** | Malignant tumor located in the mammary glands. There are several subtypes, but adenocarcinoma accounts for 99%. These include ductal carcinoma and lobular carcinoma.
@@ -12564,14 +12563,14 @@ B: Border (irregular borders that are difficult to delineate)
 C: Color (the presence of more than one color: e.g. different shades of blue, red, brown, and black)
 D: Diameter (>6mm in diameter)
 E: Evolving (changes in size, color, shape, incident itching, bleeding, or scarring).
-**Abdominoplasty** | A surgical procedure to remove excess skin and subcutaneous layers of fat from the abdomen. Multiple techniques exist for addressing multiple regions. It is often due to more extensive excess skin and/or skin looseness in more than one plane. E.g. Fleur de Lis with a vertical abdominal incision, or a 360˚ Belt Lipectomy where the skin is tightened in a belt shape around the abdomen and lower back. 
+**Abdominoplasty** | A surgical procedure to remove excess skin and subcutaneous layers of fat from the abdomen. Multiple techniques exist for addressing multiple regions. It is often due to more extensive excess skin and/or skin looseness in more than one plane. E.g. Fleur de Lis with a vertical abdominal incision, or a 360˚ Belt Lipectomy where the skin is tightened in a belt shape around the abdomen and lower back.
 
 Link: [https://plastsurgeon.com/massive-weight-loss/abdominoplasty/anatomy/](https://plastsurgeon.com/massive-weight-loss/abdominoplasty/anatomy/)
 **Abscess** | A collection of pus in a cavity formed by necrosis due to an inflammatory process.
 **Acne vulgaris** | A common term for a group of skin diseases of papular nature, which occurs in the follicular apparatus in seborrheic areas. They can be classified based on their type and degree.
 **Adenoma** | A benign tumor derived from glandular tissue.
 **Adnexal tumor** | Adnexal cell tumors are derived from connective tissue, and examples of this are sebaceous carcinoma, trichilemma carcinoma, or pilomatrix carcinoma.
-**Adson forceps** | Small surgical forceps characterized by ‘teeth’ at the holding jaws, in comparison to the anatomical forceps that has grooves. These forceps are used for gentle tissue handling, e.g. tissue of the face. 
+**Adson forceps** | Small surgical forceps characterized by ‘teeth’ at the holding jaws, in comparison to the anatomical forceps that has grooves. These forceps are used for gentle tissue handling, e.g. tissue of the face.
 
 Link: [https://plastsurgeon.com/surgical-instruments-2/forceps/](https://plastsurgeon.com/surgical-instruments-2/forceps/)
 **Advancement flap** | A common term for a local skin flap, that can be moved to a primary defect by advancement. E.g. V-Y-flap or H-flaps.
@@ -12582,7 +12581,7 @@ Link: [https://plastsurgeon.com/facial-flaps/advancement-flaps/](https://plastsu
 
 Link: [https://plastsurgeon.com/surgical-instruments-2/clamps/](https://plastsurgeon.com/surgical-instruments-2/clamps/)
 **Alopecia** | Baldness. The reason for this is manifold.
-**Anatomical forceps** | Characterized by grooves at the holding jaws, in comparison to the Adson forceps which has teeth. It is, amongst other things, used for the management of skin grafts or nerves. 
+**Anatomical forceps** | Characterized by grooves at the holding jaws, in comparison to the Adson forceps which has teeth. It is, amongst other things, used for the management of skin grafts or nerves.
 
 Link: [https://plastsurgeon.com/surgical-instruments-2/forceps/](https://plastsurgeon.com/surgical-instruments-2/forceps/)
 **Angioma** | A tumor derived from vascular or lymphatic vessels.
@@ -12604,7 +12603,7 @@ TITEL: Additional information
 *Kapitelsti: preoperative-assessment. Indholdstype: handbook.*
 # Additional information
 
-*By* * Mille Vissing, MD, Mie Pilegaard Bjarnesen, BCs. med. and Mia Wangsmo Steffenssen, MD*
+*By* * Mille Vissing, MD, Mie Pilegaard Bjarnesen, BCs. med. and Mia Wangsmo Steffenssen, MD*
 
 **Medication**: List of prescription, over the counter, and alternative medication including cod liver oil and ginger extracts. Note pauses in medication and their duration.
 
@@ -12633,7 +12632,7 @@ Assessment and proposed tentative treatment options. Will excision of a skin tum
 Details concerning the patient:
 Is the patient a candidate for the proposed surgery? Will surgery require optimizing the patient’s nutritional- or general health status or require discontinuing the use of drugs or certain medications?
 Risk of excessive bleeding should always be considered, especially when dealing with patients receiving anticoagulant treatment. If the patient is taking blood thinning medicine consider the need for pausation, bridging or INR monitoring. The regulations from the Danish Society of Thrombosis and Haemostasis is used in Denmark ([https://www.dsth.dk/bridging2018/index.html](https://www.dsth.dk/bridging2018/index.html)).
-Assess the venous thromboembolism risk by calculating the Caprini score of the patient: [https://www.mdcalc.com/caprini-score-venous-thromboembolism-2005](https://www.mdcalc.com/caprini-score-venous-thromboembolism-2005)
+Assess the venous thromboembolism risk by calculating the Caprini score of the patient: [https://www.mdcalc.com/caprini-score-venous-thromboembolism-2005](https://www.mdcalc.com/caprini-score-venous-thromboembolism-2005)
 
 Document that oral and written information was given to the patient about their condition, planned investigations, therapies or procedures, and any related risks.
 
@@ -12785,7 +12784,7 @@ TITEL: Medical History
 *Kapitelsti: preoperative-assessment. Indholdstype: handbook.*
 # Medical History
 
-*By* * Mille Vissing, MD, Mie Pilegaard Bjarnesen, BCs. med. and Mia Wangsmo Steffenssen, MD*
+*By* * Mille Vissing, MD, Mie Pilegaard Bjarnesen, BCs. med. and Mia Wangsmo Steffenssen, MD*
 
 ## Documentation of medical history (anamnesis)
 
@@ -12803,7 +12802,7 @@ Documentation of patient history should or can include the following:
 
 Below the list, current medical issues and chronic illnesses, where the exact dates of events are not known such as diabetes, coagulopathies or high blood pressure can be listed, but it is preferred to get all the details if possible. Any known complications with anesthesia such as nausea and vomiting are valuable information for the anesthesiologist and should also be noted.
 
-**Current concern:**  Short description of the debut of symptoms; localization, duration, development, and complaints concerning the patients current medical or surgical problem. Note other relevant information such as findings on previous scans or other paraclinical investigations that relate to the issue. Issues concerning the patient’s general condition that might influence the postoperative patient care is valuable information and should be noted. Lastly symptoms that link to malignant disease should also be noted including drowsiness, weight loss, and night sweats. In case of Massive weight loss (MWL) patients note method of weight loss i.e. bariatric surgery or change in lifestyle, reduction in BMI point (note highest and lowest BMI score), total weight loss (note highest and current weight) and for how long the weight loss has been stable.
+**Current concern:** Short description of the debut of symptoms; localization, duration, development, and complaints concerning the patients current medical or surgical problem. Note other relevant information such as findings on previous scans or other paraclinical investigations that relate to the issue. Issues concerning the patient’s general condition that might influence the postoperative patient care is valuable information and should be noted. Lastly symptoms that link to malignant disease should also be noted including drowsiness, weight loss, and night sweats. In case of Massive weight loss (MWL) patients note method of weight loss i.e. bariatric surgery or change in lifestyle, reduction in BMI point (note highest and lowest BMI score), total weight loss (note highest and current weight) and for how long the weight loss has been stable.
 
 ## Review of Organ Systems
 
@@ -12863,7 +12862,7 @@ Besides the surgical concern it is important to obtain knowledge of the patient�
 
 ## Medical History
 
-*By* * Mille Vissing, MD, Mie Pilegaard Bjarnesen, BCs. med. and Mia Wangsmo Steffenssen, MD*
+*By* * Mille Vissing, MD, Mie Pilegaard Bjarnesen, BCs. med. and Mia Wangsmo Steffenssen, MD*
 
 ## Documentation of medical history (anamnesis)
 
@@ -12881,7 +12880,7 @@ Documentation of patient history should or can include the following:
 
 Below the list, current medical issues and chronic illnesses, where the exact dates of events are not known such as diabetes, coagulopathies or high blood pressure can be listed, but it is preferred to get all the details if possible. Any known complications with anesthesia such as nausea and vomiting are valuable information for the anesthesiologist and should also be noted.
 
-**Current concern:**  Short description of the debut of symptoms; localization, duration, development, and complaints concerning the patients current medical or surgical problem. Note other relevant information such as findings on previous scans or other paraclinical investigations that relate to the issue. Issues concerning the patient’s general condition that might influence the postoperative patient care is valuable information and should be noted. Lastly symptoms that link to malignant disease should also be noted including drowsiness, weight loss, and night sweats. In case of Massive weight loss (MWL) patients note method of weight loss i.e. bariatric surgery or change in lifestyle, reduction in BMI point (note highest and lowest BMI score), total weight loss (note highest and current weight) and for how long the weight loss has been stable.
+**Current concern:** Short description of the debut of symptoms; localization, duration, development, and complaints concerning the patients current medical or surgical problem. Note other relevant information such as findings on previous scans or other paraclinical investigations that relate to the issue. Issues concerning the patient’s general condition that might influence the postoperative patient care is valuable information and should be noted. Lastly symptoms that link to malignant disease should also be noted including drowsiness, weight loss, and night sweats. In case of Massive weight loss (MWL) patients note method of weight loss i.e. bariatric surgery or change in lifestyle, reduction in BMI point (note highest and lowest BMI score), total weight loss (note highest and current weight) and for how long the weight loss has been stable.
 
 ## Review of Organ Systems
 
@@ -12988,7 +12987,7 @@ In cases of MWL patients, skin excess is described by measuring skin mobility in
 
 ## Additional information
 
-*By* * Mille Vissing, MD, Mie Pilegaard Bjarnesen, BCs. med. and Mia Wangsmo Steffenssen, MD*
+*By* * Mille Vissing, MD, Mie Pilegaard Bjarnesen, BCs. med. and Mia Wangsmo Steffenssen, MD*
 
 **Medication**: List of prescription, over the counter, and alternative medication including cod liver oil and ginger extracts. Note pauses in medication and their duration.
 
@@ -13012,7 +13011,7 @@ Assessment and proposed tentative treatment options. Will excision of a skin tum
 Details concerning the patient:
 Is the patient a candidate for the proposed surgery? Will surgery require optimizing the patient’s nutritional- or general health status or require discontinuing the use of drugs or certain medications?
 Risk of excessive bleeding should always be considered, especially when dealing with patients receiving anticoagulant treatment. If the patient is taking blood thinning medicine consider the need for pausation, bridging or INR monitoring. The regulations from the Danish Society of Thrombosis and Haemostasis is used in Denmark ([https://www.dsth.dk/bridging2018/index.html](https://www.dsth.dk/bridging2018/index.html)).
-Assess the venous thromboembolism risk by calculating the Caprini score of the patient: [https://www.mdcalc.com/caprini-score-venous-thromboembolism-2005](https://www.mdcalc.com/caprini-score-venous-thromboembolism-2005)
+Assess the venous thromboembolism risk by calculating the Caprini score of the patient: [https://www.mdcalc.com/caprini-score-venous-thromboembolism-2005](https://www.mdcalc.com/caprini-score-venous-thromboembolism-2005)
 
 Document that oral and written information was given to the patient about their condition, planned investigations, therapies or procedures, and any related risks.
 
@@ -13247,7 +13246,7 @@ The dissection should go no deeper than the muscle fascia and just superficial t
 
 ![](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2022/01/Skaermbillede-2022-01-12-kl.-22.19.15-876x1024.png?resize=876%2C1024&ssl=1)Figure 3 | Blood supply to the abdominal wall
 
-The blood supply to the abdominal wall comes from major arteries and can be divided into 3 different zones (Zone I-III).  Zone I is supplied by the deep superior/inferior epigastric arcade. Zone II by the superficial epigastric, superficial external pudendal, and superficial iliac arteries. Zone III (the flanks) is supplied by six lateral intercostal and four lumbar arteries. There is a rich plexus between these systems that allows for collateral flow.
+The blood supply to the abdominal wall comes from major arteries and can be divided into 3 different zones (Zone I-III). Zone I is supplied by the deep superior/inferior epigastric arcade. Zone II by the superficial epigastric, superficial external pudendal, and superficial iliac arteries. Zone III (the flanks) is supplied by six lateral intercostal and four lumbar arteries. There is a rich plexus between these systems that allows for collateral flow.
 
 When performing an abdominoplasty, the cutaneous supply of zone I and sizeable large part of zone II will be disrupted. Therefore, it is crucial for the survival of the abdominal flap to maintain blood supply from zone III. Any preoperative scars (from previous surgery) or intraoperative ligation of lateral intercostal/lumbar perforators might jeopardize flap survival and thus the outcome of abdominoplasty.
 
@@ -13289,7 +13288,7 @@ The dissection should go no deeper than the muscle fascia and just superficial t
 
 ![](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2022/01/Skaermbillede-2022-01-12-kl.-22.19.15-876x1024.png?resize=876%2C1024&ssl=1)Figure 3 | Blood supply to the abdominal wall
 
-The blood supply to the abdominal wall comes from major arteries and can be divided into 3 different zones (Zone I-III).  Zone I is supplied by the deep superior/inferior epigastric arcade. Zone II by the superficial epigastric, superficial external pudendal, and superficial iliac arteries. Zone III (the flanks) is supplied by six lateral intercostal and four lumbar arteries. There is a rich plexus between these systems that allows for collateral flow.
+The blood supply to the abdominal wall comes from major arteries and can be divided into 3 different zones (Zone I-III). Zone I is supplied by the deep superior/inferior epigastric arcade. Zone II by the superficial epigastric, superficial external pudendal, and superficial iliac arteries. Zone III (the flanks) is supplied by six lateral intercostal and four lumbar arteries. There is a rich plexus between these systems that allows for collateral flow.
 
 When performing an abdominoplasty, the cutaneous supply of zone I and sizeable large part of zone II will be disrupted. Therefore, it is crucial for the survival of the abdominal flap to maintain blood supply from zone III. Any preoperative scars (from previous surgery) or intraoperative ligation of lateral intercostal/lumbar perforators might jeopardize flap survival and thus the outcome of abdominoplasty.
 
@@ -13326,7 +13325,7 @@ Mons ptosis
 Distinct skin issues: Moisture, maceration, wounds
 Limitations in daily activities | Skin overhang crossing the midaxillary line in the back
 Excess skin on the back
-**Choice of procedure** | Simple procedure  | Circumferential or combined procedure
+**Choice of procedure** | Simple procedure | Circumferential or combined procedure
 
 ## Preoperative
 
@@ -13570,13 +13569,13 @@ FORFATTERE: Anne Mosebo, Med. Stud., Mie Pilegaard Bjarnesen, Med. Stud. and
 
 ## Indications for massive weight loss surgery
 
-The Danish scale for visual rating of massive weight loss (MWL) rates MWL by first, second and third degree. MWL of second (moderate) or third degree (severe) is a criterion for referral to a public hospital in Denmark along with the following criteria: 
+The Danish scale for visual rating of massive weight loss (MWL) rates MWL by first, second and third degree. MWL of second (moderate) or third degree (severe) is a criterion for referral to a public hospital in Denmark along with the following criteria:
 
-**Weight**               | A decrease in BMI of at least 15 points and a current BMI < 30kg/m2
+**Weight** | A decrease in BMI of at least 15 points and a current BMI < 30kg/m2
 (<34 for simple lipectomy)
 **Time** | At least 6 months of weight stability after MWL
 At least 18 months after a potential bariatric surgery
-**Individually**                   | Substantial psychosocial, functional and/or medical impairment
+**Individually** | Substantial psychosocial, functional and/or medical impairment
 from excess skin in daily life
 
 Physical: Pain, moisture, maceration, infection
@@ -13584,18 +13583,18 @@ Impaired daily activity, reduced ability to work
 
 Psycosocial: Reduced quality of life, discomfort during activities,
 undressing, sexually
-**General health               **    | ASA 1 or 2
-**Appearance**  | Conspicuous and not age appropriate. It should not simply be a
+**General health ** | ASA 1 or 2
+**Appearance** | Conspicuous and not age appropriate. It should not simply be a
 cosmetic and/or age-related issue
 
 ## Contraindications for massive weight loss surgery
 
-**Absolute**        | Drug or alcohol abuse
+**Absolute** | Drug or alcohol abuse
 ASA > 3
 Active psychosis (untreated psychiatric diagnosis)
 Smoking 6 weeks before and 3 weeks after surgery
 Metabolically unstable (GB blood samples), elevated risk of DVT or bleeding, diabetes mellitus
-**Relative**                    | Continued obesity or excessive amount of subcutaneous fat tissue
+**Relative** | Continued obesity or excessive amount of subcutaneous fat tissue
 
 ---
 ## KILDE: https://beta.plastsurgeon.com/handbook/breast-surgery/gynecomastia-2
@@ -13668,7 +13667,7 @@ Physical examination and patient history are crucial in ruling out pseudo-gyneco
 
 Most commonly, GM presents bilaterally, but unilateral is may be seen as well. When palpating the affected breast(s), you feel an elastic, rounded and discoid process, located centrally beneath the NAC. The glandular tissue is tender and only in 2 percent, nipple discharge occurs.
 
-When assessing the level of GM, the Tanner Scale (grade 1-5)  is often used.
+When assessing the level of GM, the Tanner Scale (grade 1-5) is often used.
 
 #### Tanner Scale
 
@@ -13858,7 +13857,7 @@ If the patient is more than 35-40 years old, she should have a mammogram done be
 ### Benefits and drawbacks of incision sites
 
 | Benefits | Drawbacks
-**IMF incision** | The best exposition of the pectoralis muscle  | Thicker, slightly more visible scar
+**IMF incision** | The best exposition of the pectoralis muscle | Thicker, slightly more visible scar
 **Periareolar incision** | Less visible scars than IMF incision | Difficult implant emplacement due to short access-incision
 **Transaxillary incision** | No visible scars on the breast proper | Greater risk of inferior asymmetry of the implant position
 
@@ -14013,7 +14012,7 @@ Post-operative clinical control and photos after 3 months.
 
 ## Acknowledgments
 
-**Illustrators**: *Caroline Lilja,* *med.stud.*
+**Illustrators**: *Caroline Lilja,* *med.stud.*
 
 ---
 ## KILDE: https://beta.plastsurgeon.com/handbook/example/breast-reduction
@@ -14275,7 +14274,7 @@ When there is a suspicion of metastasis in skin locally, the element should be e
 
 #### Distant
 
-When there is a suspicion of metastasis in skin distant, the element should be excised in 10 mm distance (Eg. excision of primary tumor foot 20 mm = excision of obs metastasis *chest* 10 mm).
+When there is a suspicion of metastasis in skin distant, the element should be excised in 10 mm distance (Eg. excision of primary tumor foot 20 mm = excision of obs metastasis *chest* 10 mm).
 
 #### Lymph node
 
@@ -14565,7 +14564,7 @@ FORFATTERE: Liv Schöllhammer, MD, Frederik Gulmark Hansen
 *Kapitelsti: facial-flaps › transposition-flap. Indholdstype: procedure.*
 # Case 1: L-flap on the nose
 
-**Authors:*** Liv Schöllhammer, MD, Frederik Gulmark Hansen*,* *med.stud.* and Magnus Balslev Avnstorp, MD*
+**Authors:*** Liv Schöllhammer, MD, Frederik Gulmark Hansen*,* *med.stud.* and Magnus Balslev Avnstorp, MD*
 
 50 years old male with minor basal cell carcinoma on the nose.
 
@@ -14681,7 +14680,7 @@ Also known as Limberg flap or simply L-flap.
 
 ## Case 1: L-flap on the nose
 
-**Authors:*** Liv Schöllhammer, MD, Frederik Gulmark Hansen*,* *med.stud.* and Magnus Balslev Avnstorp, MD*
+**Authors:*** Liv Schöllhammer, MD, Frederik Gulmark Hansen*,* *med.stud.* and Magnus Balslev Avnstorp, MD*
 
 50 years old male with minor basal cell carcinoma on the nose.
 
@@ -14901,7 +14900,7 @@ This is a short introduction to one of the earliest described flaps in literatur
 
 ## Case 1: Nasolabial flap – 1 Step
 
-**Authors:*** Liv Schöllhammer, MD, Frederik Gulmark Hansen*,* *med.stud.* and Magnus Balslev Avnstorp, MD*
+**Authors:*** Liv Schöllhammer, MD, Frederik Gulmark Hansen*,* *med.stud.* and Magnus Balslev Avnstorp, MD*
 
 75 years old male with basal cell carcinoma on the left side of the nose involving parts of the alae.
 
@@ -15198,8 +15197,8 @@ If the tumor depth is over 1 mm or if it is not possible to measure tumor depth,
 **Final distance of excision **
 is always defined by tumour depth
 MM in situ: total excision distance 5 mm
-MM  **≤** 1 mm: total excision distance 10 mm
-MM  **≥** 1 mm: total excision distance 20 mm
+MM **≤** 1 mm: total excision distance 10 mm
+MM **≥** 1 mm: total excision distance 20 mm
 
 If the melanoma was removed by a doctor outside the specialty of plastic surgery, the primary excision distance is unknown. Therefore the primary excision is 0 mm.
 
@@ -15547,7 +15546,7 @@ TITEL: The inverted T-technique
 
 **Authors**:** Mia Demant, MD, Magnus Balslev Avnstorp, MD and Mia Steffenssen, MD**
 
-When drawing an **anchor pattern**  (also called **Wise** **pattern** after the plastic surgeon Robert Wise) and resection of tissue and skin is conducted via 3 incisional components; periareolar, vertical, and horizontal, this results in a scar that looks like an **inverted T**. In Denmark, the inverted T-technique with a superomedial pedicle often is referred to as the **Orlando technique**.
+When drawing an **anchor pattern** (also called **Wise** **pattern** after the plastic surgeon Robert Wise) and resection of tissue and skin is conducted via 3 incisional components; periareolar, vertical, and horizontal, this results in a scar that looks like an **inverted T**. In Denmark, the inverted T-technique with a superomedial pedicle often is referred to as the **Orlando technique**.
 
 ![](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2020/12/Orlando-1-Christian-Kaare-Paaskesen-2-1024x735.png?resize=1024%2C735&ssl=1)
 
@@ -15792,7 +15791,7 @@ The general indications and contraindications when performing MWL-surgery will b
 
 A criterion for MWL surgery in the Danish health care system is MWL characterized as second (moderate) or third (severe) degree in accordance with the Danish scale. Regarding brachioplasty the classifications are as follows:
 
-**Second degree (moderate)**             | Excess skin makes up >50% of the muscular part of the upper arm (from the lower definition of the muscle)
+**Second degree (moderate)** | Excess skin makes up >50% of the muscular part of the upper arm (from the lower definition of the muscle)
 **Third degree (severe) ** | Excess skin makes up >100% of the muscular part of the upper arm
 
 Bat-Wing deformity: Extended brachioplasty (Richter) or extended mastopexy
@@ -16007,7 +16006,7 @@ In obese patients, the stretching of the skin will decrease the biomechanical ca
 ## Historical background
 
 **Brachioplasty** | Correa Iturraspe and Fernandez described aesthetic brachioplasty in 1954. Over the years, the method has been reshaped, to improve the scar aesthetic, the resulting arm shape and the overall safety of the procedure.1
-**Abdominoplasty** | Massive weight loss was first described in 1899 by American surgeon Kelly HA, who performed a herniorrhaphy through a transverse incision extending across both flanks. The hanging abdominal pannus was resected, and the incision closed without undermining. The umbilicus was sacrificed. Kelly called the procedure “transverse abdominal lipectomy”.  In 1972 surgeon Regnault P, described the technique still used today, the low “W” incision. The procedure may be combined with liposuction or the excised tissue may be used as a flap for breast reconstruction, based on the deep inferior epigastric artery perforator known as the DIEP-flap.
+**Abdominoplasty** | Massive weight loss was first described in 1899 by American surgeon Kelly HA, who performed a herniorrhaphy through a transverse incision extending across both flanks. The hanging abdominal pannus was resected, and the incision closed without undermining. The umbilicus was sacrificed. Kelly called the procedure “transverse abdominal lipectomy”. In 1972 surgeon Regnault P, described the technique still used today, the low “W” incision. The procedure may be combined with liposuction or the excised tissue may be used as a flap for breast reconstruction, based on the deep inferior epigastric artery perforator known as the DIEP-flap.
 
 ## References
 
@@ -16125,7 +16124,7 @@ In obese patients, the stretching of the skin will decrease the biomechanical ca
 ## Historical background
 
 **Brachioplasty** | Correa Iturraspe and Fernandez described aesthetic brachioplasty in 1954. Over the years, the method has been reshaped, to improve the scar aesthetic, the resulting arm shape and the overall safety of the procedure.1
-**Abdominoplasty** | Massive weight loss was first described in 1899 by American surgeon Kelly HA, who performed a herniorrhaphy through a transverse incision extending across both flanks. The hanging abdominal pannus was resected, and the incision closed without undermining. The umbilicus was sacrificed. Kelly called the procedure “transverse abdominal lipectomy”.  In 1972 surgeon Regnault P, described the technique still used today, the low “W” incision. The procedure may be combined with liposuction or the excised tissue may be used as a flap for breast reconstruction, based on the deep inferior epigastric artery perforator known as the DIEP-flap.
+**Abdominoplasty** | Massive weight loss was first described in 1899 by American surgeon Kelly HA, who performed a herniorrhaphy through a transverse incision extending across both flanks. The hanging abdominal pannus was resected, and the incision closed without undermining. The umbilicus was sacrificed. Kelly called the procedure “transverse abdominal lipectomy”. In 1972 surgeon Regnault P, described the technique still used today, the low “W” incision. The procedure may be combined with liposuction or the excised tissue may be used as a flap for breast reconstruction, based on the deep inferior epigastric artery perforator known as the DIEP-flap.
 
 ## References
 
@@ -16137,13 +16136,13 @@ In obese patients, the stretching of the skin will decrease the biomechanical ca
 
 ## Indications for massive weight loss surgery
 
-The Danish scale for visual rating of massive weight loss (MWL) rates MWL by first, second and third degree. MWL of second (moderate) or third degree (severe) is a criterion for referral to a public hospital in Denmark along with the following criteria: 
+The Danish scale for visual rating of massive weight loss (MWL) rates MWL by first, second and third degree. MWL of second (moderate) or third degree (severe) is a criterion for referral to a public hospital in Denmark along with the following criteria:
 
-**Weight**               | A decrease in BMI of at least 15 points and a current BMI < 30kg/m2
+**Weight** | A decrease in BMI of at least 15 points and a current BMI < 30kg/m2
 (<34 for simple lipectomy)
 **Time** | At least 6 months of weight stability after MWL
 At least 18 months after a potential bariatric surgery
-**Individually**                   | Substantial psychosocial, functional and/or medical impairment
+**Individually** | Substantial psychosocial, functional and/or medical impairment
 from excess skin in daily life
 
 Physical: Pain, moisture, maceration, infection
@@ -16151,18 +16150,18 @@ Impaired daily activity, reduced ability to work
 
 Psycosocial: Reduced quality of life, discomfort during activities,
 undressing, sexually
-**General health               **    | ASA 1 or 2
-**Appearance**  | Conspicuous and not age appropriate. It should not simply be a
+**General health ** | ASA 1 or 2
+**Appearance** | Conspicuous and not age appropriate. It should not simply be a
 cosmetic and/or age-related issue
 
 ## Contraindications for massive weight loss surgery
 
-**Absolute**        | Drug or alcohol abuse
+**Absolute** | Drug or alcohol abuse
 ASA > 3
 Active psychosis (untreated psychiatric diagnosis)
 Smoking 6 weeks before and 3 weeks after surgery
 Metabolically unstable (GB blood samples), elevated risk of DVT or bleeding, diabetes mellitus
-**Relative**                    | Continued obesity or excessive amount of subcutaneous fat tissue
+**Relative** | Continued obesity or excessive amount of subcutaneous fat tissue
 
 ## Brachioplasty
 
@@ -16206,7 +16205,7 @@ The general indications and contraindications when performing MWL-surgery will b
 
 A criterion for MWL surgery in the Danish health care system is MWL characterized as second (moderate) or third (severe) degree in accordance with the Danish scale. Regarding brachioplasty the classifications are as follows:
 
-**Second degree (moderate)**             | Excess skin makes up >50% of the muscular part of the upper arm (from the lower definition of the muscle)
+**Second degree (moderate)** | Excess skin makes up >50% of the muscular part of the upper arm (from the lower definition of the muscle)
 **Third degree (severe) ** | Excess skin makes up >100% of the muscular part of the upper arm
 
 Bat-Wing deformity: Extended brachioplasty (Richter) or extended mastopexy
@@ -16406,7 +16405,7 @@ The dissection should go no deeper than the muscle fascia and just superficial t
 
 ![](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2022/01/Skaermbillede-2022-01-12-kl.-22.19.15-876x1024.png?resize=876%2C1024&ssl=1)Figure 3 | Blood supply to the abdominal wall
 
-The blood supply to the abdominal wall comes from major arteries and can be divided into 3 different zones (Zone I-III).  Zone I is supplied by the deep superior/inferior epigastric arcade. Zone II by the superficial epigastric, superficial external pudendal, and superficial iliac arteries. Zone III (the flanks) is supplied by six lateral intercostal and four lumbar arteries. There is a rich plexus between these systems that allows for collateral flow.
+The blood supply to the abdominal wall comes from major arteries and can be divided into 3 different zones (Zone I-III). Zone I is supplied by the deep superior/inferior epigastric arcade. Zone II by the superficial epigastric, superficial external pudendal, and superficial iliac arteries. Zone III (the flanks) is supplied by six lateral intercostal and four lumbar arteries. There is a rich plexus between these systems that allows for collateral flow.
 
 When performing an abdominoplasty, the cutaneous supply of zone I and sizeable large part of zone II will be disrupted. Therefore, it is crucial for the survival of the abdominal flap to maintain blood supply from zone III. Any preoperative scars (from previous surgery) or intraoperative ligation of lateral intercostal/lumbar perforators might jeopardize flap survival and thus the outcome of abdominoplasty.
 
@@ -16443,7 +16442,7 @@ Mons ptosis
 Distinct skin issues: Moisture, maceration, wounds
 Limitations in daily activities | Skin overhang crossing the midaxillary line in the back
 Excess skin on the back
-**Choice of procedure** | Simple procedure  | Circumferential or combined procedure
+**Choice of procedure** | Simple procedure | Circumferential or combined procedure
 
 ## Preoperative
 
@@ -16671,15 +16670,15 @@ The blood supply of the skin, soft tissue and musculature of the gluteal area co
 
 ## Nerve supply
 
-The iliohypogastric and ilioinguinal nerve are sensory nerves innervating the area of the groin and medioventral part of the thigh. These nerves are located approximately 2 fingerbreadths below ASIS (anterior superior iliac spine). Disruption of these nerves will result in loss of sensation in this area.1
+The iliohypogastric and ilioinguinal nerve are sensory nerves innervating the area of the groin and medioventral part of the thigh. These nerves are located approximately 2 fingerbreadths below ASIS (anterior superior iliac spine). Disruption of these nerves will result in loss of sensation in this area.1
 
 ### Acknowledgements
 
-**Illustrators:*** *Emma Tubæk Nielsen, Med. Stud.** and *Anne Herman Mosebo, MD*
+**Illustrators:*** *Emma Tubæk Nielsen, Med. Stud.** and *Anne Herman Mosebo, MD*
 
 ## References
 
-- Richter, DF, Schwaiger, N. Abdominoplasty procedures. In: Rubin JP, Neligan, PC. Plastic Surgery: Volume 2: Aesthetic Surgery, Fourth Edition. Elsevier, 2018, p. 576. 
+- Richter, DF, Schwaiger, N. Abdominoplasty procedures. In: Rubin JP, Neligan, PC. Plastic Surgery: Volume 2: Aesthetic Surgery, Fourth Edition. Elsevier, 2018, p. 576.
 - Howard, MA, Dickie, SR, Comprehensive trunck anatomy. In: Song, DH. Plastic Surgery: Volume 4: Lower Extremity, Trunk, and Burns, Fourth Edition. Elsevier, 2018, p. 218.
 
 ## Indications
@@ -16694,7 +16693,7 @@ The general indications and contraindications when performing MWL-surgery will b
 
 A criterion for MWL surgery in the Danish healthcare system is MWL characterized as second (moderate) or third (severe) degree. In general, third-degree patients are candidates to belt lipectomy. Regarding belt lipectomy the classifications are as follows1:
 
-**Third degree (severe)**           |
+**Third degree (severe)** |
 **Abdomen** | Pannus extending posterior to the mid axillary line1
 **Upper back** | Upper back: Folds with skin-to-skin contact1
 
@@ -16844,62 +16843,62 @@ Risk of seroma
 
 ## Step 1: Preoperative markings
 
-The patient is laying faced down. The preoperative markings are shown. Reexamine the preoperative markings by performing pinch test both digital and using instruments. 
+The patient is laying faced down. The preoperative markings are shown. Reexamine the preoperative markings by performing pinch test both digital and using instruments.
 
 ![](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2023/08/2-1.jpg?resize=1170%2C1584&ssl=1)2
 
 ## Step 2: Incisions
 
-Use a knife to cut through the dermis of all markings. A monopolar electro dissector is used for dissection of excess skin starting medially going lateral in the scarpas fascia plane. A bipolar diathermy is used meanwhile to ensure hemostasis. 
+Use a knife to cut through the dermis of all markings. A monopolar electro dissector is used for dissection of excess skin starting medially going lateral in the scarpas fascia plane. A bipolar diathermy is used meanwhile to ensure hemostasis.
 
 ![](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2023/08/3-1.jpg?resize=1170%2C1432&ssl=1)3
 
 ## Step 3: Dissection
 
-Continue dissecting in the lateral direction in the scarpas plane. 
+Continue dissecting in the lateral direction in the scarpas plane.
 
 ![](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2023/08/4-2.jpg?resize=1170%2C1528&ssl=1)4
 
 ## Step 4: Dissection continued
 
-Continue the dissection to the vertical marking in the midaxillary line (line B) and remove the excessive skin corresponding to the vertical line.  
+Continue the dissection to the vertical marking in the midaxillary line (line B) and remove the excessive skin corresponding to the vertical line.
 
 ![](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2023/08/5-1.jpg?resize=1170%2C1484&ssl=1)5
 
 ## Step 5: Dissection continued
 
-Use the same technique to remove excessive skin on the other site of the back. 
+Use the same technique to remove excessive skin on the other site of the back.
 
 ![](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2023/08/6-1.jpg?resize=1170%2C1470&ssl=1)6
 
 ## Step 6: Place first suture
 
-The first suture is placed centrally in order to suture the skin. Ensure hemostasis before closure of the skin.  
+The first suture is placed centrally in order to suture the skin. Ensure hemostasis before closure of the skin.
 
 ![](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2023/08/7-1.jpg?resize=1170%2C1464&ssl=1)7
 
 ## Step 7: Place sutures
 
-Place sutures in three layers using absorbable sutures; 0 size-sutures in Scarpa’s fascia, 2/3-0 inverted dermal sutures and 3-0 intracutaneous running sutures. 
+Place sutures in three layers using absorbable sutures; 0 size-sutures in Scarpa’s fascia, 2/3-0 inverted dermal sutures and 3-0 intracutaneous running sutures.
 
 ![](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2023/08/8-1.jpg?resize=1170%2C1560&ssl=1)8
 
 ## Step 8: Superficial sutures
 
-Place the superficial sutures in the intracutaneous layer of the skin. 
+Place the superficial sutures in the intracutaneous layer of the skin.
 
 ![](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2023/08/9-1.jpg?resize=1170%2C1560&ssl=1)9
 
 ## Step 9: Sutures in three layers
 
-The skin is sutured in three layers.  
+The skin is sutured in three layers.
 
 ![](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2023/08/10-1.jpg?resize=1170%2C1548&ssl=1)10
 
 ## Step 10: Cover with micropore tape
 
-Micropore tape is used to cover the incision lines and on top dressing is placed. 
-When the procedure of the back is finished, the patient is turned to lay faced up.  
+Micropore tape is used to cover the incision lines and on top dressing is placed.
+When the procedure of the back is finished, the patient is turned to lay faced up.
 
 ## Procedure on the abdomen of the patient
 
@@ -16907,55 +16906,55 @@ When the procedure of the back is finished, the patient is turned to lay faced u
 
 ## Step 11: Incisions
 
-Make an incision through the skin according to the markings, starting from the xiphoid process. 
+Make an incision through the skin according to the markings, starting from the xiphoid process.
 
 ![](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2023/08/12-1.jpg?resize=1170%2C1498&ssl=1)12
 
 ## Step 12: Incision of the umbilicus
 
-The umbilicus is incised and dissected from the abdominal tissue. Carefully cut through the skin while stretching the umbilicus. Pay special attention to the blood supply of the umbilicus. 
+The umbilicus is incised and dissected from the abdominal tissue. Carefully cut through the skin while stretching the umbilicus. Pay special attention to the blood supply of the umbilicus.
 
 ![](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2023/08/13-1.jpg?resize=1170%2C1560&ssl=1)13
 
 ## Step 13: Dissection
 
-Starting from the xiphoid process gradually excise the abdominal skin flap using a monopolar electro dissector. Starting from the xiphoid process the desired level to reach is superficial to the rectus fascia. Stay just above Scarpa’s fascia the last 5-7 cm above the lower incision. Use a bipolar diathermy to ensure hemostasis. 
+Starting from the xiphoid process gradually excise the abdominal skin flap using a monopolar electro dissector. Starting from the xiphoid process the desired level to reach is superficial to the rectus fascia. Stay just above Scarpa’s fascia the last 5-7 cm above the lower incision. Use a bipolar diathermy to ensure hemostasis.
 
 ![](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2023/08/14-1.jpg?resize=1170%2C1560&ssl=1)14
 
 ## Step 14: The umbilicus is freed
 
-When the umbilicus is freed from the abdominal flap, two forceps can be used to hold the umbilicus in place. Continue to ensure hemostasis. 
+When the umbilicus is freed from the abdominal flap, two forceps can be used to hold the umbilicus in place. Continue to ensure hemostasis.
 
 ![](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2023/08/15-1.jpg?resize=1170%2C1483&ssl=1)15
 
 ## Step 15: Horizontal incision
 
-Make an incision in the horizontal line approximately 7 cm above labia majora. 
+Make an incision in the horizontal line approximately 7 cm above labia majora.
 
 ![](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2023/08/16.jpg?resize=1170%2C1560&ssl=1)16
 
 ## Step 16: Excess skin
 
-Pull the abdominal skin flap in the caudal direction to estimate the amount of excess skin. This will create a triangle flap of excessive tissue on both sides of the abdomen. 
+Pull the abdominal skin flap in the caudal direction to estimate the amount of excess skin. This will create a triangle flap of excessive tissue on both sides of the abdomen.
 
 ![](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2023/08/17-1.jpg?resize=1170%2C1537&ssl=1)17
 
 ## Step 17: Line A
 
-Mark the predicted line of incision (line A). Do this bilaterally. 
+Mark the predicted line of incision (line A). Do this bilaterally.
 
 ![](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2023/08/18.jpg?resize=1170%2C1426&ssl=1)18
 
 ## Step 18: Sutures in three layers
 
-Place sutures in three layers. Place the deepest sutures trough Scarpa’s Fascia starting from the xiphoid process following the vertical scar. 
+Place sutures in three layers. Place the deepest sutures trough Scarpa’s Fascia starting from the xiphoid process following the vertical scar.
 
 ![](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2023/08/19.jpg?resize=1170%2C1445&ssl=1)19
 
 ## Step 19: Examination
 
-After placing the sutures in the deepest layer, examine the need of removing further skin before resecting the two skin flaps. Make an incision following the horizontal line A (See Figure 17). Excise the abdominal flaps bilaterally in the sub Scarpa’s fascia level.  
+After placing the sutures in the deepest layer, examine the need of removing further skin before resecting the two skin flaps. Make an incision following the horizontal line A (See Figure 17). Excise the abdominal flaps bilaterally in the sub Scarpa’s fascia level.
 
 ![](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2023/08/21.jpg?resize=1170%2C1488&ssl=1)20
 
@@ -16967,19 +16966,19 @@ After removing the two skin flaps, place two drains bilaterally.
 
 ## Step 21: Sutures
 
-Place dermal and intracutaneous sutures.  
+Place dermal and intracutaneous sutures.
 
 ![](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2023/08/23.jpg?resize=1170%2C1460&ssl=1)22
 
 ## Step 22: Sutures continued
 
-The umbilicus is sutured as well with dermal and intracutaneous sutures in the desired position.  
+The umbilicus is sutured as well with dermal and intracutaneous sutures in the desired position.
 
 ![](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2023/08/24.jpg?resize=1170%2C1491&ssl=1)23
 
 ## Step 23: Cover with micropore tape
 
-Cover the sutured incisions with micropore tape.  
+Cover the sutured incisions with micropore tape.
 
 ## Pearls and pitfalls
 
@@ -17012,7 +17011,7 @@ The following six weeks: during daytime
 
 ## Introduction
 
-A 53-year old woman presenting with venter pendulus and diastasis of the rectus abdominis muscles was admitted to the Department of Burns and Plastic surgery for fleur-de-lis abdominoplasty.  The patient underwent bariatric surgery in June 2021, resulting in significant weight loss causing extensive laxity of the abdominal skin. She decided to have the consultation at our clinic to assess the problematic excessive tissue and seek surgical resolution for the unsatisfactory appearance, which has caused her mental and physical distress. In terms of further anamnesis, the patient is being treated for hypertension, depressive disorder and osteoporosis. She is also diagnosed with nephrolithiasis, hypothyreosis sleep apnoea, polytopic vertebrogenic algic syndrome and has an anterolisthesis of lumbosacral spine. Apart from bariatric surgery she underwent an urethral stent placement and the total endoprosthesis of the right knee joint. In terms of gynecological history, the patient has three children, one delivered vaginally and two by cesarean section. Concerning family history, her mother has an ischemic disease of the lower limbs and her father died of myocardial infarction. The patient is on disability pension, formerly a saleswoman. No allergies reported.
+A 53-year old woman presenting with venter pendulus and diastasis of the rectus abdominis muscles was admitted to the Department of Burns and Plastic surgery for fleur-de-lis abdominoplasty. The patient underwent bariatric surgery in June 2021, resulting in significant weight loss causing extensive laxity of the abdominal skin. She decided to have the consultation at our clinic to assess the problematic excessive tissue and seek surgical resolution for the unsatisfactory appearance, which has caused her mental and physical distress. In terms of further anamnesis, the patient is being treated for hypertension, depressive disorder and osteoporosis. She is also diagnosed with nephrolithiasis, hypothyreosis sleep apnoea, polytopic vertebrogenic algic syndrome and has an anterolisthesis of lumbosacral spine. Apart from bariatric surgery she underwent an urethral stent placement and the total endoprosthesis of the right knee joint. In terms of gynecological history, the patient has three children, one delivered vaginally and two by cesarean section. Concerning family history, her mother has an ischemic disease of the lower limbs and her father died of myocardial infarction. The patient is on disability pension, formerly a saleswoman. No allergies reported.
 
 ![](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2023/08/My-project-1-kopi.png?resize=1170%2C1449&ssl=1)
 
@@ -17068,7 +17067,7 @@ The umbilicus was then set directly into the vertical incision. A total of 2050 
 
 ## Postoperative plan
 
-Post operatively, the patient was kept in bed in the modified Fowler’s position. An abdominal pressure garment and antithrombotic pneumatic compression stockings were placed in the operation theatre. The stockings are kept until the patient is discharged and the abdominal binder is instructed to be worn for a period of 3 to 6 weeks. The drains are routinely removed when less than 20 mL drainage is observed in a 24h period. The Foley catheter is removed the next day after surgery.  The patient came for  follow ups regularly for wound assessment, 15 days and 3 weeks and 5 weeks post operatively. At the first visit, a hematoma was visible near the umbilicus, a 20 mL puncture was therefore performed. The stitches were consequently removed around the umbilicus and a betadine cream was prescribed to prevent infections. The patient came back for a 3 weeks follow up, the scar was without other complications, a small persistent hematoma was seen on the left side of the umbilicus but signs of resorption were present. An additional 5 mL puncture was done. During the last follow up (5 weeks after the surgery), the haematoma was fully resorbed and the scars healed by primary intention without secretion or dehiscence of the wound. The relocated umbilicus appeared to be vital. The patient is highly satisfied with the aesthetic results and reports experiencing mental and physical relief.
+Post operatively, the patient was kept in bed in the modified Fowler’s position. An abdominal pressure garment and antithrombotic pneumatic compression stockings were placed in the operation theatre. The stockings are kept until the patient is discharged and the abdominal binder is instructed to be worn for a period of 3 to 6 weeks. The drains are routinely removed when less than 20 mL drainage is observed in a 24h period. The Foley catheter is removed the next day after surgery. The patient came for follow ups regularly for wound assessment, 15 days and 3 weeks and 5 weeks post operatively. At the first visit, a hematoma was visible near the umbilicus, a 20 mL puncture was therefore performed. The stitches were consequently removed around the umbilicus and a betadine cream was prescribed to prevent infections. The patient came back for a 3 weeks follow up, the scar was without other complications, a small persistent hematoma was seen on the left side of the umbilicus but signs of resorption were present. An additional 5 mL puncture was done. During the last follow up (5 weeks after the surgery), the haematoma was fully resorbed and the scars healed by primary intention without secretion or dehiscence of the wound. The relocated umbilicus appeared to be vital. The patient is highly satisfied with the aesthetic results and reports experiencing mental and physical relief.
 
 ## Pearls
 
@@ -17217,7 +17216,7 @@ Radiation therapy was later on used after surgery to control the growth of small
 
 When talking about oncological treatment of breast cancer, there are different types of treatments depending on the type of cancer and how advanced it is. In the interest of simplification, the oncological treatment is divided into different groups and subgroups depending on the timing of the treatment or if it is has a local or systemic effect.
 
-It is important to have the right diagnosis before deciding on the right oncological treatment strategy.  When choosing the optimal treatment, several factors are considered:
+It is important to have the right diagnosis before deciding on the right oncological treatment strategy. When choosing the optimal treatment, several factors are considered:
 
 - Patient preferences
 - Co-morbidites and age of patient
@@ -17273,7 +17272,7 @@ Radiation therapy was later on used after surgery to control the growth of small
 
 When talking about oncological treatment of breast cancer, there are different types of treatments depending on the type of cancer and how advanced it is. In the interest of simplification, the oncological treatment is divided into different groups and subgroups depending on the timing of the treatment or if it is has a local or systemic effect.
 
-It is important to have the right diagnosis before deciding on the right oncological treatment strategy.  When choosing the optimal treatment, several factors are considered:
+It is important to have the right diagnosis before deciding on the right oncological treatment strategy. When choosing the optimal treatment, several factors are considered:
 
 - Patient preferences
 - Co-morbidites and age of patient
@@ -17286,7 +17285,7 @@ It is important to have the right diagnosis before deciding on the right oncolog
 
 ## Anatomy
 
-**Authors**: *Sarah Gierahn Nielsen, med. student & Hanne Melgaard Nielsen, MD*
+**Authors**: *Sarah Gierahn Nielsen, med. student & Hanne Melgaard Nielsen, MD*
 
 A clinical breast exam is important in the diagnosis and surveillance of both benign and malignant breast diseases emphasizing the importance of basic knowledge of the anatomy and physiology of the breast.
 
@@ -17298,7 +17297,7 @@ A clinical breast exam is important in the diagnosis and surveillance of both be
 
 ## Acknowledgments
 
-Illustrators: *Anders Kaa, MD, Anne Mosebo*,* med. student*
+Illustrators: *Anders Kaa, MD, Anne Mosebo*,* med. student*
 
 ## References
 
@@ -17391,7 +17390,7 @@ The peroneal artery gives off multiple branches to all of the surrounding muscle
 
 There are 2-6 cutaneous perforating branches of the peroneal artery, travelling along the posterior crural septum and through the soleus and flexor hallucis longus muscles, supplying a longitudinally oriented area of skin to be included with the harvested bone as an osteofaciocutaneous free fibula flap(6). The pedicle of the peroneal artery is usually about 6-8 cm(6) but varies with the length of the harvested bone and the orientation of the perforator. The pedicle vessels can then be anastomosed to a corresponding artery and vein in the neck.
 
-Bony reconstruction of the craniomaxillofacial skeleton has become more accurate since the advent of virtual surgical planning. Virtual surgical planning (VSP) and computer aided design (CAD) / computer aided modelling (CAM)  offers significant benefits for use in complex oncologic osseous head and neck reconstruction by providing enhanced cooperation between surgical teams, the extirpative and reconstructive teams by synergistically planning the resection and reconstruction pre-operative, and the ability to customize models to patient’s individual characteristics, which offers potential for considerable intraoperative time saving.
+Bony reconstruction of the craniomaxillofacial skeleton has become more accurate since the advent of virtual surgical planning. Virtual surgical planning (VSP) and computer aided design (CAD) / computer aided modelling (CAM) offers significant benefits for use in complex oncologic osseous head and neck reconstruction by providing enhanced cooperation between surgical teams, the extirpative and reconstructive teams by synergistically planning the resection and reconstruction pre-operative, and the ability to customize models to patient’s individual characteristics, which offers potential for considerable intraoperative time saving.
 
 # Acknowledgements
 
@@ -17442,7 +17441,7 @@ The peroneal artery gives off multiple branches to all of the surrounding muscle
 
 There are 2-6 cutaneous perforating branches of the peroneal artery, travelling along the posterior crural septum and through the soleus and flexor hallucis longus muscles, supplying a longitudinally oriented area of skin to be included with the harvested bone as an osteofaciocutaneous free fibula flap(6). The pedicle of the peroneal artery is usually about 6-8 cm(6) but varies with the length of the harvested bone and the orientation of the perforator. The pedicle vessels can then be anastomosed to a corresponding artery and vein in the neck.
 
-Bony reconstruction of the craniomaxillofacial skeleton has become more accurate since the advent of virtual surgical planning. Virtual surgical planning (VSP) and computer aided design (CAD) / computer aided modelling (CAM)  offers significant benefits for use in complex oncologic osseous head and neck reconstruction by providing enhanced cooperation between surgical teams, the extirpative and reconstructive teams by synergistically planning the resection and reconstruction pre-operative, and the ability to customize models to patient’s individual characteristics, which offers potential for considerable intraoperative time saving.
+Bony reconstruction of the craniomaxillofacial skeleton has become more accurate since the advent of virtual surgical planning. Virtual surgical planning (VSP) and computer aided design (CAD) / computer aided modelling (CAM) offers significant benefits for use in complex oncologic osseous head and neck reconstruction by providing enhanced cooperation between surgical teams, the extirpative and reconstructive teams by synergistically planning the resection and reconstruction pre-operative, and the ability to customize models to patient’s individual characteristics, which offers potential for considerable intraoperative time saving.
 
 # Acknowledgements
 
@@ -17821,8 +17820,8 @@ The patient should remain tracheostomized postoperatively as there is a risk of 
 
 ## Pitfalls
 
-- The venae commitans around the peroneal artery often have complex venous interconnections between the two veins. The microsurgeon should be mindful of this difference when preparing the vessels for microvascular anastomosis. 
-- The use of surgical drains requires caution. A suction drain in the neck might cause impingement on the vessels, causing pedicle thrombosis. Drains should always be sutured in position to avoid drain migration and vessel compression. 
+- The venae commitans around the peroneal artery often have complex venous interconnections between the two veins. The microsurgeon should be mindful of this difference when preparing the vessels for microvascular anastomosis.
+- The use of surgical drains requires caution. A suction drain in the neck might cause impingement on the vessels, causing pedicle thrombosis. Drains should always be sutured in position to avoid drain migration and vessel compression.
 - 5-7 % will experience inadequate vascularity, and flap salvage surgery will be needed – worst case the transplant will be lost.
 
 ---
@@ -17873,7 +17872,7 @@ Post-operative calm regime.
 
 Clinical flap assessment by laser and/or hand ultrasound doppler every hour the first 24 hours and the following days.
 
-See:  ****LINK TO CHAPTER ON MONITORING MICROSURGERY FLAPS****
+See: ****LINK TO CHAPTER ON MONITORING MICROSURGERY FLAPS****
 
 Depending on the complexity of the flap the monitoring may be less extensive.
 
@@ -17956,7 +17955,7 @@ Post-operative calm regime.
 
 Clinical flap assessment by laser and/or hand ultrasound doppler every hour the first 24 hours and the following days.
 
-See:  ****LINK TO CHAPTER ON MONITORING MICROSURGERY FLAPS****
+See: ****LINK TO CHAPTER ON MONITORING MICROSURGERY FLAPS****
 
 Depending on the complexity of the flap the monitoring may be less extensive.
 
@@ -18020,12 +18019,12 @@ Clinical evaluation by an experienced microsurgeon is the gold standard for perf
 
 Arterial circulatory disturbances usually include a pale looking flap with lack of capillary refill (capillary response). Muscle flaps can be particularly difficult to judge – color change with loss of a beefy red appearance is most common.
 
-Venous disturbances are usually caused by a clot or kink of the vessel preventing the blood from leaving the flap. The flap becomes congested and bluish in color while the capillary refill is referred to as brisk (Fast refill in 1 second in bluish color) (1).  The normal venous refill should be around 3 seconds.
+Venous disturbances are usually caused by a clot or kink of the vessel preventing the blood from leaving the flap. The flap becomes congested and bluish in color while the capillary refill is referred to as brisk (Fast refill in 1 second in bluish color) (1). The normal venous refill should be around 3 seconds.
 
 #### Examples:
 
 - A pale, cool flap without capillary refill implies an arterial inflow problem
-- A rigid, blue flap with rapid refill implies venous insufficiency (Brisk refill) 
+- A rigid, blue flap with rapid refill implies venous insufficiency (Brisk refill)
 - A pink color with 1-to-2-second refill is consistent with good perfusion
 - Stabbing with a needle or the tip of a scalpel should cause bright red bleeding. If no bleeding is noted, arterial occlusion is implied. If brisk, dark bleeding occurs, venous insufficiency with congestion should be considered. The stab should be away from the base of the free flap, avoid a lesion of the perforator
 
@@ -18941,7 +18940,7 @@ This is a short introduction to one of the earliest described flaps in literatur
 
 ## Case 1: Nasolabial flap – 1 Step
 
-**Authors:*** Liv Schöllhammer, MD, Frederik Gulmark Hansen*,* *med.stud.* and Magnus Balslev Avnstorp, MD*
+**Authors:*** Liv Schöllhammer, MD, Frederik Gulmark Hansen*,* *med.stud.* and Magnus Balslev Avnstorp, MD*
 
 75 years old male with basal cell carcinoma on the left side of the nose involving parts of the alae.
 
@@ -19079,7 +19078,7 @@ Also known as Limberg flap or simply L-flap.
 
 ## Case 1: L-flap on the nose
 
-**Authors:*** Liv Schöllhammer, MD, Frederik Gulmark Hansen*,* *med.stud.* and Magnus Balslev Avnstorp, MD*
+**Authors:*** Liv Schöllhammer, MD, Frederik Gulmark Hansen*,* *med.stud.* and Magnus Balslev Avnstorp, MD*
 
 50 years old male with minor basal cell carcinoma on the nose.
 
@@ -19574,8 +19573,6 @@ Fracture of a bone may have great implications i.e. missing structure or soft ti
 
 ![Human skull diagram with labeled bones.](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2025/07/anterior-kraniel-anatomi_christian-kaare-paaskesen-engelsk-1170x869.png)
 
- 
-
 ## Bones of the face - Lateral view
 
 ![Human skull anatomy diagram with bone labels.](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2025/07/lateral-kraniel-anatomi_christian-kaare-paaskesen-engelsk-e1753946499669-1170x976.png)
@@ -19588,7 +19585,7 @@ The muscles of the face that gives structure and facial mimic. Any lesion of the
 
 ## Facial Arteries
 
-The arteries of the face are important as they supply blood to the facial muscles, fat and skin. Any lesion may interrupt blood supply to the use of specific flaps, i.e. scalp rotation flaps. 
+The arteries of the face are important as they supply blood to the facial muscles, fat and skin. Any lesion may interrupt blood supply to the use of specific flaps, i.e. scalp rotation flaps.
 
 Normally muscles and skin have blood supply from two sides, but be aware of a lesion has interrupted both or either sided supply. No blood supply will lead to necrosis of the skin and fat in the respected area.
 
@@ -19644,9 +19641,7 @@ TITEL: Classification of facial trauma
 
 ***Avulsion trauma:* **Partial or complete loss of soft tissue, potentially compromising blood supply.
 
-***Degloving Injuries:*** Extensive separation of skin and subcutaneous tissue from underlying structures. I.e scalping injuries or leg injuries where the skin with subcutanous fat is tared apart from underlying fascia and muscle. 
-
- 
+***Degloving Injuries:*** Extensive separation of skin and subcutaneous tissue from underlying structures. I.e scalping injuries or leg injuries where the skin with subcutanous fat is tared apart from underlying fascia and muscle.
 
 ![](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2025/07/facial-fracture-e1753954214938-300x300.png)
 
@@ -19664,14 +19659,14 @@ Bone fractures is classified after Le fort.
 
 - Fracture line passes through the alveolar ridge, lateral nose and inferior wall of the maxillary sinus.
 
-- Loss of structural support leading to upper teeth 
+- Loss of structural support leading to upper teeth
 - Also known as a Guerin fracture
 
 - **Le Fort type II**
 
 - Pyramidal fracture, with the teeth at the pyramid base, and nasofrontal suture at its apex
 
-- Fracture arch passes through the posterior alveolar ridge, lateral walls of maxillary sinuses, inferior orbital rim and nasal bones. 
+- Fracture arch passes through the posterior alveolar ridge, lateral walls of maxillary sinuses, inferior orbital rim and nasal bones.
 
 - Risk of loss of structural support to the eye socket, leading to affected eye movement and enopthalmus or exopthalmus. "See no evil".
 - Uppermost fracture line can pass through the nasofrontal junction or the frontal process of the maxilla
@@ -19687,8 +19682,6 @@ Bone fractures is classified after Le fort.
 
 - Type III fractures have the highest rate of CSF leak
 
- 
-
 ![](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2025/07/knife-300x300.png)
 
 ### 3. Penetrating Injuries
@@ -19697,23 +19690,17 @@ Caused by sharp objects (knives, glass, metal) or projectiles (bullets - see gun
 
 Risk of deep structure damage, such as the bones, the salivary ducts, facial nerve, or major vessels. Often require surgical exploration in general anesthesia and layered closure.
 
- 
-
 ![Chemical burn on arm from spilled liquid](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2025/07/chemical-burns-300x169.jpg)
 
 ### 4. Burns Thermal, chemical, or electrical injuries to the facial skin
 
 May range from superficial (first-degree) to full-thickness (third-degree). High risk for airway compromise and hypertrophic scarring.
 
- 
-
 ![](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2025/07/dog-bite-300x300.png)
 
 ### 5. Animal or Human Bites
 
 Complex lacerations with high infection risk due to polymicrobial contamination. May require delayed closure, prophylactic antibiotics, and rabies/tetanus prophylaxis.
-
- 
 
 ![](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2025/07/bullet-e1753954170292-300x150.png)
 
@@ -19732,8 +19719,8 @@ The anatomy of the wound depends on the trauma mechanism as mentioned earlier. A
 
 The wound may be described as:
 
-- Superficial 
-- Deep 
+- Superficial
+- Deep
 - Undermined in the subcutis plane, leading to decollement of the tissue, with risk of tissue necrosis due to lack of blood supply.
 The wound has 4 healing phases:
 
@@ -19764,23 +19751,17 @@ TITEL: Procedure: Closure of a lip laceration in three layers
 
 you recieve a patient with a dog bite to the lip.
 
- 
-
 **Patient examination**
 
 Wound placement, depth, size, involvement of crictical structures.
 
- 
-
 **Surgical Considerations**
 
-Closure in 2 or 3 layers? 
+Closure in 2 or 3 layers?
 
-hemostasis. 
+hemostasis.
 
 Vermillion border
-
- 
 
 **Step by step procedure**
 
@@ -19788,23 +19769,13 @@ Vermillion border
 
 **Step 1: Photos with description**
 
- 
-
 **Step 2: Photos**
-
- 
 
 **Step 3: Photos**
 
- 
-
 **Post-operative plan**
 
- 
-
 **Follow up photo (if available)**
-
- 
 
 [Case 12: Bilobe flap for mandibular border reconstruction after BCC excision](https://plastsurgeon.com/case-competition-overview/case-competition-2023/case-12-bilobe-flap-for-mandibular-border-reconstruction-after-bcc-excision/)
 
@@ -20580,7 +20551,7 @@ This chapter explains and illustrates two different types of gracilis flap:
 
 ## Step 7: Gracilis muscle harvest
 
-- The muscle segment is detached from the remaining muscle. 
+- The muscle segment is detached from the remaining muscle.
 
 ![Arm fasciotomy illustration with surgical incision details.](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/staging-e5ba-plastsurgeon.wpcomstaging.com/wp-content/uploads/2025/09/20250603_120336088_ios-1-1170x878.png?resize=1170%2C878&ssl=1)8
 
@@ -20597,7 +20568,7 @@ This chapter explains and illustrates two different types of gracilis flap:
 ## References
 
 - Kim, Jason H. *Gracilis tissue transfer. *Medscape, Clinical procedures. 24.07.2019. Link:[https://emedicine.medscape.com/article/880792-overview#a2](https://emedicine.medscape.com/article/880792-overview#a2)
-- Fattah A. Y. et al. *A three-dimensional study of the musculotendinous and neurovascular architecture of the gracilis muscle: application to functional muscle transfer*. Journal of Plastic, Reconstructiv & Aesthetic Surgery, 2013.  
+- Fattah A. Y. et al. *A three-dimensional study of the musculotendinous and neurovascular architecture of the gracilis muscle: application to functional muscle transfer*. Journal of Plastic, Reconstructiv & Aesthetic Surgery, 2013.
 - Universitat Autònoma de Barcelona. *Dissection in Fresh Cadaver*. European Master’s degree in surgical oncology, reconstructive and aesthetic breast surgery (MRBS).
 - Buntic, Rudy. *The Gracilis Flap*. Microsurgeon, Flaps. Link: [https://www.microsurgeon.org/gracilismuscle](https://www.microsurgeon.org/gracilismuscle)
 - Dr Zezo*. Gracilis flap*. Plastic Surgery Key. 03.03.2017. Link: [https://plasticsurgerykey.com/gracilis-flap/](https://plasticsurgerykey.com/gracilis-flap/)
@@ -20649,7 +20620,7 @@ This chapter details the postoperative care following gracilis flap harvest.
 ## References
 
 - Kim, Jason H. *Gracilis tissue transfer. *Medscape, Clinical procedures. 24.07.2019. Link:[https://emedicine.medscape.com/article/880792-overview#a2](https://emedicine.medscape.com/article/880792-overview#a2)
-- Fattah A. Y. et al. *A three-dimensional study of the musculotendinous and neurovascular architecture of the gracilis muscle: application to functional muscle transfer*. Journal of Plastic, Reconstructiv & Aesthetic Surgery, 2013.  
+- Fattah A. Y. et al. *A three-dimensional study of the musculotendinous and neurovascular architecture of the gracilis muscle: application to functional muscle transfer*. Journal of Plastic, Reconstructiv & Aesthetic Surgery, 2013.
 - Universitat Autònoma de Barcelona. *Dissection in Fresh Cadaver*. European Master’s degree in surgical oncology, reconstructive and aesthetic breast surgery (MRBS).
 - Buntic, Rudy. *The Gracilis Flap*. Microsurgeon, Flaps. Link: [https://www.microsurgeon.org/gracilismuscle](https://www.microsurgeon.org/gracilismuscle)
 - Dr Zezo*. Gracilis flap*. Plastic Surgery Key. 03.03.2017. Link: [https://plasticsurgerykey.com/gracilis-flap/](https://plasticsurgerykey.com/gracilis-flap/)
@@ -20684,7 +20655,7 @@ TITEL: Pearls and pit-falls
 ## References
 
 - Kim, Jason H. *Gracilis tissue transfer. *Medscape, Clinical procedures. 24.07.2019. Link:[https://emedicine.medscape.com/article/880792-overview#a2](https://emedicine.medscape.com/article/880792-overview#a2)
-- Fattah A. Y. et al. *A three-dimensional study of the musculotendinous and neurovascular architecture of the gracilis muscle: application to functional muscle transfer*. Journal of Plastic, Reconstructiv & Aesthetic Surgery, 2013.  
+- Fattah A. Y. et al. *A three-dimensional study of the musculotendinous and neurovascular architecture of the gracilis muscle: application to functional muscle transfer*. Journal of Plastic, Reconstructiv & Aesthetic Surgery, 2013.
 - Universitat Autònoma de Barcelona. *Dissection in Fresh Cadaver*. European Master’s degree in surgical oncology, reconstructive and aesthetic breast surgery (MRBS).
 - Buntic, Rudy. *The Gracilis Flap*. Microsurgeon, Flaps. Link: [https://www.microsurgeon.org/gracilismuscle](https://www.microsurgeon.org/gracilismuscle)
 - Dr Zezo*. Gracilis flap*. Plastic Surgery Key. 03.03.2017. Link: [https://plasticsurgerykey.com/gracilis-flap/](https://plasticsurgerykey.com/gracilis-flap/)
@@ -20829,7 +20800,7 @@ Motoric innervation arises from the anterior branch of the obturator nerve. Befo
 ## References
 
 - Kim, Jason H. *Gracilis tissue transfer. *Medscape, Clinical procedures. 24.07.2019. Link:[https://emedicine.medscape.com/article/880792-overview#a2](https://emedicine.medscape.com/article/880792-overview#a2)
-- Fattah A. Y. et al. *A three-dimensional study of the musculotendinous and neurovascular architecture of the gracilis muscle: application to functional muscle transfer*. Journal of Plastic, Reconstructiv & Aesthetic Surgery, 2013.  
+- Fattah A. Y. et al. *A three-dimensional study of the musculotendinous and neurovascular architecture of the gracilis muscle: application to functional muscle transfer*. Journal of Plastic, Reconstructiv & Aesthetic Surgery, 2013.
 - Universitat Autònoma de Barcelona. *Dissection in Fresh Cadaver*. European Master’s degree in surgical oncology, reconstructive and aesthetic breast surgery (MRBS).
 - Buntic, Rudy. *The Gracilis Flap*. Microsurgeon, Flaps. Link: [https://www.microsurgeon.org/gracilismuscle](https://www.microsurgeon.org/gracilismuscle)
 
@@ -20861,7 +20832,7 @@ The gracilis flap has been utilized as a local pedicled flap for decades, partic
 ## References
 
 - Kim, Jason H. *Gracilis tissue transfer. *Medscape, Clinical procedures. 24.07.2019. Link:[https://emedicine.medscape.com/article/880792-overview#a2](https://emedicine.medscape.com/article/880792-overview#a2)
-- Fattah A. Y. et al. *A three-dimensional study of the musculotendinous and neurovascular architecture of the gracilis muscle: application to functional muscle transfer*. Journal of Plastic, Reconstructiv & Aesthetic Surgery, 2013.  
+- Fattah A. Y. et al. *A three-dimensional study of the musculotendinous and neurovascular architecture of the gracilis muscle: application to functional muscle transfer*. Journal of Plastic, Reconstructiv & Aesthetic Surgery, 2013.
 - Universitat Autònoma de Barcelona. *Dissection in Fresh Cadaver*. European Master’s degree in surgical oncology, reconstructive and aesthetic breast surgery (MRBS).
 - Buntic, Rudy. *The Gracilis Flap*. Microsurgeon, Flaps. Link: [https://www.microsurgeon.org/gracilismuscle](https://www.microsurgeon.org/gracilismuscle)
 
@@ -21051,7 +21022,7 @@ The patient is informed of the risks associated with the procedure and possible 
 
 ## References
 
-- Little S. C. *Latissimus Myocutaneous Flap*. Medscape, Clinical Procedures. 17.06.2019. [https://emedicine.medscape.com/article/880878-overview#showall](https://emedicine.medscape.com/article/880878-overview#showall) 
+- Little S. C. *Latissimus Myocutaneous Flap*. Medscape, Clinical Procedures. 17.06.2019. [https://emedicine.medscape.com/article/880878-overview#showall](https://emedicine.medscape.com/article/880878-overview#showall)
 
 - Sood R. et Al. *Latissimus Dorsi Flap in Breast Reconstruction: Recent Innovations in the Workhorse Flap*. Cancer Control, 2018.
 
@@ -21232,7 +21203,7 @@ The patient is informed of the risks associated with the procedure and possible 
 
 ## References
 
-- Little S. C. *Latissimus Myocutaneous Flap*. Medscape, Clinical Procedures. 17.06.2019. [https://emedicine.medscape.com/article/880878-overview#showall](https://emedicine.medscape.com/article/880878-overview#showall) 
+- Little S. C. *Latissimus Myocutaneous Flap*. Medscape, Clinical Procedures. 17.06.2019. [https://emedicine.medscape.com/article/880878-overview#showall](https://emedicine.medscape.com/article/880878-overview#showall)
 
 - Sood R. et Al. *Latissimus Dorsi Flap in Breast Reconstruction: Recent Innovations in the Workhorse Flap*. Cancer Control, 2018.
 
@@ -21500,7 +21471,7 @@ Reconstruction could be performed using different types of flaps, dependent on t
 
 ## Acknowledgments
 
-**Illustrations**: *Marie Nolsøe Helles Med. Stud*. *Caroline Lilja Med. Stud. and Emma Tubæk Med. Stud.*
+**Illustrations**: *Marie Nolsøe Helles Med. Stud*. *Caroline Lilja Med. Stud. and Emma Tubæk Med. Stud.*
 
 ## Instruments
 
@@ -21587,7 +21558,7 @@ The clamp applicator forceps are made specifically for the safe application of t
 
 ## Ergonomics and tremor control
 
-**Authors:*** Thomas Givskov Sørensen, Magnus Balslev Avstorp MD, Ahmad Makki  MD and Gete Toft*
+**Authors:*** Thomas Givskov Sørensen, Magnus Balslev Avstorp MD, Ahmad Makki MD and Gete Toft*
 
 Ergonomics is highly important in all surgical fields in order to optimize working conditions by minimizing tremor as well as to ensure the longevity of the surgeon by reducing the incidence of musculoskeletal injuries.
 
@@ -21729,12 +21700,12 @@ Clinical evaluation by an experienced microsurgeon is the gold standard for perf
 
 Arterial circulatory disturbances usually include a pale looking flap with lack of capillary refill (capillary response). Muscle flaps can be particularly difficult to judge – color change with loss of a beefy red appearance is most common.
 
-Venous disturbances are usually caused by a clot or kink of the vessel preventing the blood from leaving the flap. The flap becomes congested and bluish in color while the capillary refill is referred to as brisk (Fast refill in 1 second in bluish color) (1).  The normal venous refill should be around 3 seconds.
+Venous disturbances are usually caused by a clot or kink of the vessel preventing the blood from leaving the flap. The flap becomes congested and bluish in color while the capillary refill is referred to as brisk (Fast refill in 1 second in bluish color) (1). The normal venous refill should be around 3 seconds.
 
 #### Examples:
 
 - A pale, cool flap without capillary refill implies an arterial inflow problem
-- A rigid, blue flap with rapid refill implies venous insufficiency (Brisk refill) 
+- A rigid, blue flap with rapid refill implies venous insufficiency (Brisk refill)
 - A pink color with 1-to-2-second refill is consistent with good perfusion
 - Stabbing with a needle or the tip of a scalpel should cause bright red bleeding. If no bleeding is noted, arterial occlusion is implied. If brisk, dark bleeding occurs, venous insufficiency with congestion should be considered. The stab should be away from the base of the free flap, avoid a lesion of the perforator
 
@@ -21984,7 +21955,7 @@ Post-operative calm regime.
 
 Clinical flap assessment by laser and/or hand ultrasound doppler every hour the first 24 hours and the following days.
 
-See:  ****LINK TO CHAPTER ON MONITORING MICROSURGERY FLAPS****
+See: ****LINK TO CHAPTER ON MONITORING MICROSURGERY FLAPS****
 
 Depending on the complexity of the flap the monitoring may be less extensive.
 
@@ -22043,7 +22014,7 @@ The peroneal artery gives off multiple branches to all of the surrounding muscle
 
 There are 2-6 cutaneous perforating branches of the peroneal artery, travelling along the posterior crural septum and through the soleus and flexor hallucis longus muscles, supplying a longitudinally oriented area of skin to be included with the harvested bone as an osteofaciocutaneous free fibula flap(6). The pedicle of the peroneal artery is usually about 6-8 cm(6) but varies with the length of the harvested bone and the orientation of the perforator. The pedicle vessels can then be anastomosed to a corresponding artery and vein in the neck.
 
-Bony reconstruction of the craniomaxillofacial skeleton has become more accurate since the advent of virtual surgical planning. Virtual surgical planning (VSP) and computer aided design (CAD) / computer aided modelling (CAM)  offers significant benefits for use in complex oncologic osseous head and neck reconstruction by providing enhanced cooperation between surgical teams, the extirpative and reconstructive teams by synergistically planning the resection and reconstruction pre-operative, and the ability to customize models to patient’s individual characteristics, which offers potential for considerable intraoperative time saving.
+Bony reconstruction of the craniomaxillofacial skeleton has become more accurate since the advent of virtual surgical planning. Virtual surgical planning (VSP) and computer aided design (CAD) / computer aided modelling (CAM) offers significant benefits for use in complex oncologic osseous head and neck reconstruction by providing enhanced cooperation between surgical teams, the extirpative and reconstructive teams by synergistically planning the resection and reconstruction pre-operative, and the ability to customize models to patient’s individual characteristics, which offers potential for considerable intraoperative time saving.
 
 # Acknowledgements
 
@@ -22422,8 +22393,8 @@ The patient should remain tracheostomized postoperatively as there is a risk of 
 
 ## Pitfalls
 
-- The venae commitans around the peroneal artery often have complex venous interconnections between the two veins. The microsurgeon should be mindful of this difference when preparing the vessels for microvascular anastomosis. 
-- The use of surgical drains requires caution. A suction drain in the neck might cause impingement on the vessels, causing pedicle thrombosis. Drains should always be sutured in position to avoid drain migration and vessel compression. 
+- The venae commitans around the peroneal artery often have complex venous interconnections between the two veins. The microsurgeon should be mindful of this difference when preparing the vessels for microvascular anastomosis.
+- The use of surgical drains requires caution. A suction drain in the neck might cause impingement on the vessels, causing pedicle thrombosis. Drains should always be sutured in position to avoid drain migration and vessel compression.
 - 5-7 % will experience inadequate vascularity, and flap salvage surgery will be needed – worst case the transplant will be lost.
 
 ## Latissimus Dorsi Flap
@@ -22568,7 +22539,7 @@ The patient is informed of the risks associated with the procedure and possible 
 
 ## References
 
-- Little S. C. *Latissimus Myocutaneous Flap*. Medscape, Clinical Procedures. 17.06.2019. [https://emedicine.medscape.com/article/880878-overview#showall](https://emedicine.medscape.com/article/880878-overview#showall) 
+- Little S. C. *Latissimus Myocutaneous Flap*. Medscape, Clinical Procedures. 17.06.2019. [https://emedicine.medscape.com/article/880878-overview#showall](https://emedicine.medscape.com/article/880878-overview#showall)
 
 - Sood R. et Al. *Latissimus Dorsi Flap in Breast Reconstruction: Recent Innovations in the Workhorse Flap*. Cancer Control, 2018.
 
@@ -22708,7 +22679,7 @@ The gracilis flap has been utilized as a local pedicled flap for decades, partic
 ## References
 
 - Kim, Jason H. *Gracilis tissue transfer. *Medscape, Clinical procedures. 24.07.2019. Link:[https://emedicine.medscape.com/article/880792-overview#a2](https://emedicine.medscape.com/article/880792-overview#a2)
-- Fattah A. Y. et al. *A three-dimensional study of the musculotendinous and neurovascular architecture of the gracilis muscle: application to functional muscle transfer*. Journal of Plastic, Reconstructiv & Aesthetic Surgery, 2013.  
+- Fattah A. Y. et al. *A three-dimensional study of the musculotendinous and neurovascular architecture of the gracilis muscle: application to functional muscle transfer*. Journal of Plastic, Reconstructiv & Aesthetic Surgery, 2013.
 - Universitat Autònoma de Barcelona. *Dissection in Fresh Cadaver*. European Master’s degree in surgical oncology, reconstructive and aesthetic breast surgery (MRBS).
 - Buntic, Rudy. *The Gracilis Flap*. Microsurgeon, Flaps. Link: [https://www.microsurgeon.org/gracilismuscle](https://www.microsurgeon.org/gracilismuscle)
 
@@ -22736,7 +22707,7 @@ Motoric innervation arises from the anterior branch of the obturator nerve. Befo
 ## References
 
 - Kim, Jason H. *Gracilis tissue transfer. *Medscape, Clinical procedures. 24.07.2019. Link:[https://emedicine.medscape.com/article/880792-overview#a2](https://emedicine.medscape.com/article/880792-overview#a2)
-- Fattah A. Y. et al. *A three-dimensional study of the musculotendinous and neurovascular architecture of the gracilis muscle: application to functional muscle transfer*. Journal of Plastic, Reconstructiv & Aesthetic Surgery, 2013.  
+- Fattah A. Y. et al. *A three-dimensional study of the musculotendinous and neurovascular architecture of the gracilis muscle: application to functional muscle transfer*. Journal of Plastic, Reconstructiv & Aesthetic Surgery, 2013.
 - Universitat Autònoma de Barcelona. *Dissection in Fresh Cadaver*. European Master’s degree in surgical oncology, reconstructive and aesthetic breast surgery (MRBS).
 - Buntic, Rudy. *The Gracilis Flap*. Microsurgeon, Flaps. Link: [https://www.microsurgeon.org/gracilismuscle](https://www.microsurgeon.org/gracilismuscle)
 
@@ -23076,7 +23047,7 @@ This chapter explains and illustrates two different types of gracilis flap:
 
 ## Step 7: Gracilis muscle harvest
 
-- The muscle segment is detached from the remaining muscle. 
+- The muscle segment is detached from the remaining muscle.
 
 ![Arm fasciotomy illustration with surgical incision details.](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/staging-e5ba-plastsurgeon.wpcomstaging.com/wp-content/uploads/2025/09/20250603_120336088_ios-1-1170x878.png?resize=1170%2C878&ssl=1)8
 
@@ -23093,7 +23064,7 @@ This chapter explains and illustrates two different types of gracilis flap:
 ## References
 
 - Kim, Jason H. *Gracilis tissue transfer. *Medscape, Clinical procedures. 24.07.2019. Link:[https://emedicine.medscape.com/article/880792-overview#a2](https://emedicine.medscape.com/article/880792-overview#a2)
-- Fattah A. Y. et al. *A three-dimensional study of the musculotendinous and neurovascular architecture of the gracilis muscle: application to functional muscle transfer*. Journal of Plastic, Reconstructiv & Aesthetic Surgery, 2013.  
+- Fattah A. Y. et al. *A three-dimensional study of the musculotendinous and neurovascular architecture of the gracilis muscle: application to functional muscle transfer*. Journal of Plastic, Reconstructiv & Aesthetic Surgery, 2013.
 - Universitat Autònoma de Barcelona. *Dissection in Fresh Cadaver*. European Master’s degree in surgical oncology, reconstructive and aesthetic breast surgery (MRBS).
 - Buntic, Rudy. *The Gracilis Flap*. Microsurgeon, Flaps. Link: [https://www.microsurgeon.org/gracilismuscle](https://www.microsurgeon.org/gracilismuscle)
 - Dr Zezo*. Gracilis flap*. Plastic Surgery Key. 03.03.2017. Link: [https://plasticsurgerykey.com/gracilis-flap/](https://plasticsurgerykey.com/gracilis-flap/)
@@ -23123,7 +23094,7 @@ This chapter explains and illustrates two different types of gracilis flap:
 ## References
 
 - Kim, Jason H. *Gracilis tissue transfer. *Medscape, Clinical procedures. 24.07.2019. Link:[https://emedicine.medscape.com/article/880792-overview#a2](https://emedicine.medscape.com/article/880792-overview#a2)
-- Fattah A. Y. et al. *A three-dimensional study of the musculotendinous and neurovascular architecture of the gracilis muscle: application to functional muscle transfer*. Journal of Plastic, Reconstructiv & Aesthetic Surgery, 2013.  
+- Fattah A. Y. et al. *A three-dimensional study of the musculotendinous and neurovascular architecture of the gracilis muscle: application to functional muscle transfer*. Journal of Plastic, Reconstructiv & Aesthetic Surgery, 2013.
 - Universitat Autònoma de Barcelona. *Dissection in Fresh Cadaver*. European Master’s degree in surgical oncology, reconstructive and aesthetic breast surgery (MRBS).
 - Buntic, Rudy. *The Gracilis Flap*. Microsurgeon, Flaps. Link: [https://www.microsurgeon.org/gracilismuscle](https://www.microsurgeon.org/gracilismuscle)
 - Dr Zezo*. Gracilis flap*. Plastic Surgery Key. 03.03.2017. Link: [https://plasticsurgerykey.com/gracilis-flap/](https://plasticsurgerykey.com/gracilis-flap/)
@@ -23169,7 +23140,7 @@ This chapter details the postoperative care following gracilis flap harvest.
 ## References
 
 - Kim, Jason H. *Gracilis tissue transfer. *Medscape, Clinical procedures. 24.07.2019. Link:[https://emedicine.medscape.com/article/880792-overview#a2](https://emedicine.medscape.com/article/880792-overview#a2)
-- Fattah A. Y. et al. *A three-dimensional study of the musculotendinous and neurovascular architecture of the gracilis muscle: application to functional muscle transfer*. Journal of Plastic, Reconstructiv & Aesthetic Surgery, 2013.  
+- Fattah A. Y. et al. *A three-dimensional study of the musculotendinous and neurovascular architecture of the gracilis muscle: application to functional muscle transfer*. Journal of Plastic, Reconstructiv & Aesthetic Surgery, 2013.
 - Universitat Autònoma de Barcelona. *Dissection in Fresh Cadaver*. European Master’s degree in surgical oncology, reconstructive and aesthetic breast surgery (MRBS).
 - Buntic, Rudy. *The Gracilis Flap*. Microsurgeon, Flaps. Link: [https://www.microsurgeon.org/gracilismuscle](https://www.microsurgeon.org/gracilismuscle)
 - Dr Zezo*. Gracilis flap*. Plastic Surgery Key. 03.03.2017. Link: [https://plasticsurgerykey.com/gracilis-flap/](https://plasticsurgerykey.com/gracilis-flap/)
@@ -23370,7 +23341,7 @@ The pectoralis major serves a very important role in reconstructive (and aesthet
 
 **Authors**: Mia Demant, MD, Mia Wagsmo Steffensen, MD
 
-Breast cancer is the most common cancer affecting women and* *the leading cause of cancer mortality in women worldwide (1). Risk factors include increasing age, reproductive factors (e.g. early menarche, nulliparity, and later onset of menopause all increase the risk of breast cancer), genetic predisposition (e.g. BRCA1 and BRCA2), personal- or family history of breast cancer, and various environmental factors (excessive use of alcohol, obesity and physical inactivity account for 21% of all breast cancer deaths worldwide (2)). Moreover, exogenous hormone exposure (e.g. estrogen treatment in postmenopausal women) increases the risk significantly (3).  
+Breast cancer is the most common cancer affecting women and* *the leading cause of cancer mortality in women worldwide (1). Risk factors include increasing age, reproductive factors (e.g. early menarche, nulliparity, and later onset of menopause all increase the risk of breast cancer), genetic predisposition (e.g. BRCA1 and BRCA2), personal- or family history of breast cancer, and various environmental factors (excessive use of alcohol, obesity and physical inactivity account for 21% of all breast cancer deaths worldwide (2)). Moreover, exogenous hormone exposure (e.g. estrogen treatment in postmenopausal women) increases the risk significantly (3).
 
 It is currently estimated that approximately 25% of all women who undergo mastectomy also have breast reconstruction performed, and 25% of these women are primarily reconstructed, the others are reconstructed secondarily (4).
 
@@ -23622,7 +23593,7 @@ Free abdominal flaps are currently the most frequently used technique for breast
 - Bjarkam CR, Daugaard H, Houlind KC, Hölmich LR, Borgwardt A, Steinmetz J, et al. Kirurgi. FADL; 2020.
 - Schmauss D, Machens H-G, Harder Y. Breast Reconstruction after Mastectomy. Front Surg [Internet]. 2016 Jan 19 [cited 2021 Feb 17];2. Available from: [https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4717291/](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4717291/)
 - Hoppe DL, Ueberreiter K, Surlemont Y, Peltoniemi H, Stabile M, Kauhanen S. Breast reconstruction de novo by water-jet assisted autologous fat grafting – a retrospective study. GMS Ger Med Sci 11Doc17 ISSN 1612-3174 [Internet]. 2013 [cited 2021 Mar 13]; Available from: [http://www.egms.de/en/journals/gms/2013-11/000185.shtml](http://www.egms.de/en/journals/gms/2013-11/000185.shtml)
-- Coleman SR. Structural Fat Grafting: More Than a Permanent Filler: Plast Reconstr Surg. 2006 Sep;118(Suppl):108S-120S. 
+- Coleman SR. Structural Fat Grafting: More Than a Permanent Filler: Plast Reconstr Surg. 2006 Sep;118(Suppl):108S-120S.
 - Schoeller T, Huemer GM, Wechselberger G. The transverse musculocutaneous gracilis flap for breast reconstruction: guidelines for flap and patient selection. Plast Reconstr Surg. 2008 Jul;122(1):29–38.
 
 ## Oncoplastic breast surgery
@@ -23643,14 +23614,14 @@ Nonetheless, it is also important to apply the oncoplastic principles to mastect
 
 ## Methods and indications
 
-Oncoplastic breast-conserving surgical techniques fall into four main categories (1): 
+Oncoplastic breast-conserving surgical techniques fall into four main categories (1):
 
 - Simple wide local excision (with thoughtful incision planning)
 - Therapeutic breast reduction (bilateral breast reduction can be offered to women with large breasts, especially with morbidity associated with breast size)
 - Therapeutic mastopexy (for women with ptosis who do not necessarily ask for a breast reduction – the only breast volume reduction is the wide local excision itself, and a variable reduction in the skin envelope, makes the procedure more akin to a mastopexy than a reduction)
 - Volume replacement (for women with small and/or non-ptotic breasts, the breast shape is usually best maintained by combining wide local excision with volume replacement – e.g. perforator flaps, advancement flaps, fat grafting, and free flaps)
 
-Therapeutic breast reduction and therapeutic mastopexy are collectively termed therapeutic mammaplasty. In general, when different options are available, the simplest is preferred. 
+Therapeutic breast reduction and therapeutic mastopexy are collectively termed therapeutic mammaplasty. In general, when different options are available, the simplest is preferred.
 
 ## References
 
@@ -23723,7 +23694,7 @@ TITEL: Pathophysiology
 
 **Authors**: Mia Demant, MD, Mia Wagsmo Steffensen, MD
 
-Breast cancer is the most common cancer affecting women and* *the leading cause of cancer mortality in women worldwide (1). Risk factors include increasing age, reproductive factors (e.g. early menarche, nulliparity, and later onset of menopause all increase the risk of breast cancer), genetic predisposition (e.g. BRCA1 and BRCA2), personal- or family history of breast cancer, and various environmental factors (excessive use of alcohol, obesity and physical inactivity account for 21% of all breast cancer deaths worldwide (2)). Moreover, exogenous hormone exposure (e.g. estrogen treatment in postmenopausal women) increases the risk significantly (3).  
+Breast cancer is the most common cancer affecting women and* *the leading cause of cancer mortality in women worldwide (1). Risk factors include increasing age, reproductive factors (e.g. early menarche, nulliparity, and later onset of menopause all increase the risk of breast cancer), genetic predisposition (e.g. BRCA1 and BRCA2), personal- or family history of breast cancer, and various environmental factors (excessive use of alcohol, obesity and physical inactivity account for 21% of all breast cancer deaths worldwide (2)). Moreover, exogenous hormone exposure (e.g. estrogen treatment in postmenopausal women) increases the risk significantly (3).
 
 It is currently estimated that approximately 25% of all women who undergo mastectomy also have breast reconstruction performed, and 25% of these women are primarily reconstructed, the others are reconstructed secondarily (4).
 
@@ -23972,8 +23943,8 @@ If the tumor depth is over 1 mm or if it is not possible to measure tumor depth,
 **Final distance of excision **
 is always defined by tumour depth
 MM in situ: total excision distance 5 mm
-MM  **≤** 1 mm: total excision distance 10 mm
-MM  **≥** 1 mm: total excision distance 20 mm
+MM **≤** 1 mm: total excision distance 10 mm
+MM **≥** 1 mm: total excision distance 20 mm
 
 If the melanoma was removed by a doctor outside the specialty of plastic surgery, the primary excision distance is unknown. Therefore the primary excision is 0 mm.
 
@@ -24112,8 +24083,8 @@ If the tumor depth is over 1 mm or if it is not possible to measure tumor depth,
 **Final distance of excision **
 is always defined by tumour depth
 MM in situ: total excision distance 5 mm
-MM  **≤** 1 mm: total excision distance 10 mm
-MM  **≥** 1 mm: total excision distance 20 mm
+MM **≤** 1 mm: total excision distance 10 mm
+MM **≥** 1 mm: total excision distance 20 mm
 
 If the melanoma was removed by a doctor outside the specialty of plastic surgery, the primary excision distance is unknown. Therefore the primary excision is 0 mm.
 
@@ -24769,7 +24740,7 @@ Structure of procedure and case pages:
 
 - Anatomy, dissection plane, nerve, and arterial supply, etc.
 - Flap design, dimensions, and thoughts on e.g. pedicle
-- Useful tips for young doctors to prepare 
+- Useful tips for young doctors to prepare
 - Pre-operative information to the patient on e.g. damage to the facial nerve
 
 - **Before and after photo**
@@ -24777,12 +24748,12 @@ Structure of procedure and case pages:
 
 - With number, description, and photos.
 
-- Should be descriptive enough to be reproducible 
+- Should be descriptive enough to be reproducible
 
 - **Post-operative care**
 - **Pearls**
 
-- What are the advantages of this procedure/technique? 
+- What are the advantages of this procedure/technique?
 
 - **Pitfalls**
 
@@ -25247,7 +25218,7 @@ The template controls what the user sees when she selects a topic. We want the u
 
 ## Step 6: Add an image and publish
 
-Topic menu items have a small image to support the title. To add an image go to  “Document” in the right panel, then select the “Featured image” dropdown, and then select or upload a featured image. Finally select “Publish”.
+Topic menu items have a small image to support the title. To add an image go to “Document” in the right panel, then select the “Featured image” dropdown, and then select or upload a featured image. Finally select “Publish”.
 
 ![](https://fsn1.your-objectstorage.com/nordicsurgery/plastsurgeon/wp-media/plastsurgeon.com/wp-content/uploads/2020/10/Skaermbillede-2020-10-29-kl.-12.07.48.png?resize=1170%2C698&ssl=1)7
 
@@ -25290,7 +25261,7 @@ Authors:* Miroslava Verbat, med. student, Ema Šutáková, med. student, Dominik
 
 ## General Introduction
 
-Hidradenitis suppurativa, also called Verneuil’s disease or acne inversa  is a chronic inflammatory skin condition characterized by lesions located in hair follicles (1).
+Hidradenitis suppurativa, also called Verneuil’s disease or acne inversa is a chronic inflammatory skin condition characterized by lesions located in hair follicles (1).
 
 It is described as a pyoderma of the adnexal structures, more specifically of the apocrine glands, located on the scalp, neck, axilla, breast, periumbilical, inguinal, perianal, and gluteal regions, creating fistulas, abscesses, and fibrosis.
 
@@ -25650,7 +25621,7 @@ TITEL: Introduction
 *Kapitelsti: mwl › massie-weight-loss-brachioplasty. Indholdstype: document.*
 # Introduction
 
-A brachioplasty is a  procedure removing excess skin of the upper arms.
+A brachioplasty is a procedure removing excess skin of the upper arms.
 
 In this chapter, we will address the examination and surgical technique for the brachioplasty.
 
@@ -26435,7 +26406,7 @@ Evaluate the preoperative markings by pinch test using instruments (Backhaus Lic
 
 **2.	Incisions **
 
-Perform sharp incision through dermis along the superior incision line. Switch to monopolar to dissect straight down to the deep fascia.  Do not incise the inferior incision line yet.
+Perform sharp incision through dermis along the superior incision line. Switch to monopolar to dissect straight down to the deep fascia. Do not incise the inferior incision line yet.
 
 **3.	Dissection of the excessive skin**
 

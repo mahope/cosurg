@@ -71,7 +71,7 @@ export function LookupCard({
   const question = payload.kind === "chat" ? payload.turn.question : payload.question;
 
   return (
-    <div className="motion-forward flex h-[26rem] flex-col overflow-hidden rounded-2xl border bg-[var(--paper-raised)] shadow-[0_1px_2px_rgba(16,32,30,0.04)]">
+    <div className="motion-forward flex h-[26rem] flex-col overflow-hidden rounded-2xl border bg-[var(--paper-raised)] shadow-[var(--shadow-raised)]">
       <header className="flex shrink-0 items-start gap-3 border-b border-[var(--line)] px-5 py-3.5 sm:px-6">
         <div className="min-w-0 flex-1">
           {/*
@@ -109,7 +109,7 @@ export function LookupCard({
           payload.guide ? (
             <GuidePanel guide={payload.guide} lang={lang} topic={payload.question} onAskInstead={onSwitch} />
           ) : payload.error ? (
-            <p className="rounded-2xl border border-dashed border-[var(--nude-deep)] bg-[var(--nude-tint)] px-4 py-3 text-sm leading-relaxed text-[var(--nude-deep)]">
+            <p className="rounded-2xl border border-dashed border-[var(--nude-deep)] bg-[var(--nude-tint)] px-4 py-3 text-sm leading-relaxed text-[var(--nude-ink)]">
               {payload.error}
             </p>
           ) : (
@@ -184,7 +184,7 @@ export function LookupCard({
             )}
           </>
         ) : payload.turn.error ? (
-          <p className="rounded-2xl border border-dashed border-[var(--nude-deep)] bg-[var(--nude-tint)] px-4 py-3 text-sm leading-relaxed text-[var(--nude-deep)]">
+          <p className="rounded-2xl border border-dashed border-[var(--nude-deep)] bg-[var(--nude-tint)] px-4 py-3 text-sm leading-relaxed text-[var(--nude-ink)]">
             {payload.turn.error}
           </p>
         ) : (

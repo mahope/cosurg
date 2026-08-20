@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useRef, useState, type ChangeEvent, type DragEvent, type KeyboardEvent } from "react";
+import { useCallback, useEffect, useRef, useState, type ChangeEvent, type DragEvent, type KeyboardEvent } from "react";
 import type { Lang } from "@/lib/tree/types";
 import { tr } from "@/lib/i18n";
 import type { TreeSummary } from "./TreePicker";
@@ -138,15 +138,24 @@ export function IntakeCard({
    */
   const canSend = draft.trim().length > 0 || attachments.length > 0;
 
-  const submit = () => {
-    if (!canSend) return;
-    const text = draft.trim() || tr("intakeImageOnly", lang);
+  /**
+   * Send en bestemt tekst. `submit` (Enter/send-knappen) sender kladden som
+   * den står; dikteringens veje sender kladden PLUS et eventuelt uafsluttet
+   * interim-segment — stopper lægen selv midt i en sætning, er de sidste ord
+   * hans egne, og de må ikke tabes fordi transskriptionen ikke nåede at
+   * stemple dem færdige.
+   */
+  const submitText = (raw: string) => {
+    if (!raw.trim() && attachments.length === 0) return;
+    const text = raw.trim() || tr("intakeImageOnly", lang);
     const images = attachments.length > 0 ? toChatImages(attachments) : undefined;
     onSubmit(text, images);
     onDraftChange("");
     setAttachments([]);
     setAttachError(null);
   };
+
+  const submit = () => submitText(draft);
 
   const onKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
     // Enter sender, skift+enter giver en ny linje. En hel case skrives i
@@ -158,14 +167,136 @@ export function IntakeCard({
     }
   };
 
+  /* ------------------------------------------------------------------ *
+   * Dikteringens afslutning — uden ekstra klik
+   *
+   * Lægen taler sin case ind og skal ikke bagefter lede efter en
+   * send-knap. To veje afslutter:
+   *
+   * 1. STOP SENDER. Trykker han på mikrofonen mens den lytter og der står
+   *    tekst, stoppes optagelsen OG teksten sendes — ét tryk. Er feltet
+   *    tomt, stopper trykket bare (fejlstart uden ord er en fortrydelse).
+   *
+   * 2. STILHED SENDER, MED VARSEL. Har hverken talen (interim) eller
+   *    feltet rørt sig i et stykke tid, tæller knappen synligt ned og
+   *    sender. Taler han videre under varslet, annulleres det — interim
+   *    tæller som tale, så et ord der stadig ruller ind aldrig klippes.
+   *
+   * Fortryd: Escape (eller annullér-knappen under varslet) stopper uden at
+   * sende. Teksten bliver stående i feltet — den forsvinder aldrig.
+   *
+   * Tastaturet er urørt: Enter sender som altid. Og håndfri tilstand (OR)
+   * bruger slet ikke dette felt — dens egen auto-oplæsning kolliderer
+   * derfor ikke med dikteringen her.
+   */
+  const SILENCE_BEFORE_WARN_MS = 3500;
+  const COUNTDOWN_MS = 3000;
+
+  /**
+   * Sekunder tilbage af varslet. Null = intet varsel. Vises kun mens der
+   * faktisk lyttes — stopper mikrofonen udefra (sprogskift, fejl), falder
+   * varslet bort af sig selv uden at nogen skal huske at rydde op.
+   */
+  const [countdown, setCountdown] = useState<number | null>(null);
+  const showCountdown = listening && countdown !== null ? countdown : null;
+
+  const lastActivityRef = useRef(0);
+  const stateRef = useRef({ draft, interim, hasAttachments: false });
+  const submitRef = useRef<(raw: string) => void>(() => {});
+  const toggleMicRef = useRef(onToggleMic);
+
+  // Refs synkroniseres i en effekt (aldrig under render). De findes fordi
+  // stilhedsuret tikker i et interval, som ikke skal genstartes af hvert
+  // tastetryk — det læser altid den nyeste tilstand gennem dem.
+  useEffect(() => {
+    stateRef.current = { draft, interim, hasAttachments: attachments.length > 0 };
+    submitRef.current = submitText;
+    toggleMicRef.current = onToggleMic;
+  });
+
+  // Al aktivitet nulstiller stilhedsuret: nye talte ord OG tastetryk.
+  useEffect(() => {
+    lastActivityRef.current = Date.now();
+  }, [interim, draft]);
+
+  /** Stop og send — dikteringens normale afslutning. */
+  const stopAndSend = useCallback(() => {
+    const { draft: kladde, interim: rest } = stateRef.current;
+    const gap = kladde && !kladde.endsWith(" ") && rest ? " " : "";
+    setCountdown(null);
+    toggleMicRef.current();
+    submitRef.current(kladde + gap + rest);
+  }, []);
+
+  /** Stop UDEN at sende. Teksten bliver stående i feltet. */
+  const cancelDictation = useCallback(() => {
+    setCountdown(null);
+    toggleMicRef.current();
+  }, []);
+
+  useEffect(() => {
+    if (!listening) return;
+    lastActivityRef.current = Date.now();
+    const timer = window.setInterval(() => {
+      const { interim: nu, draft: kladde, hasAttachments } = stateRef.current;
+      // Interim der stadig ruller ind ER tale — også når teksten er uændret.
+      if (nu) lastActivityRef.current = Date.now();
+      if (!kladde.trim() && !hasAttachments) {
+        setCountdown(null);
+        return;
+      }
+      const silent = Date.now() - lastActivityRef.current;
+      if (silent < SILENCE_BEFORE_WARN_MS) {
+        setCountdown(null);
+        return;
+      }
+      const remaining = SILENCE_BEFORE_WARN_MS + COUNTDOWN_MS - silent;
+      if (remaining <= 0) {
+        window.clearInterval(timer);
+        stopAndSend();
+      } else {
+        setCountdown(Math.ceil(remaining / 1000));
+      }
+    }, 200);
+    return () => window.clearInterval(timer);
+  }, [listening, stopAndSend]);
+
+  // Escape fortryder dikteringen, uanset hvor fokus er.
+  useEffect(() => {
+    if (!listening) return;
+    const onEsc = (e: globalThis.KeyboardEvent) => {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        cancelDictation();
+      }
+    };
+    window.addEventListener("keydown", onEsc);
+    return () => window.removeEventListener("keydown", onEsc);
+  }, [listening, cancelDictation]);
+
+  /** Mikrofon-klikket: start, eller stop-og-send når der er noget at sende. */
+  const onMicClick = () => {
+    if (listening && (draft.trim() || interim.trim() || attachments.length > 0)) {
+      stopAndSend();
+      return;
+    }
+    setCountdown(null);
+    onToggleMic();
+  };
+
   /*
    * Feltets typografi står ÉT sted. Spøgelseslaget, målelaget og selve
    * textarea'en skal bryde linjerne på nøjagtig samme sted — ellers ville den
    * foreløbige tale stå forskudt i forhold til de ord den fortsætter.
    */
+  /*
+   * På en telefon er `text-lg` for stort til indgangsfeltet: pladsholderen
+   * fylder tre linjer på 360 px, og feltet bliver et afsnit i stedet for en
+   * linje. Skalaen falder derfor ét trin under sm og er uændret derover.
+   */
   const fieldType = compact
-    ? "whitespace-pre-wrap break-words px-4 py-3 text-[15px] leading-relaxed font-normal tracking-normal"
-    : "whitespace-pre-wrap break-words px-5 py-4 text-lg leading-relaxed font-normal tracking-normal";
+    ? "whitespace-pre-wrap break-words px-3.5 py-3 text-base leading-relaxed font-normal tracking-normal sm:px-4 sm:text-[15px]"
+    : "whitespace-pre-wrap break-words px-4 py-3.5 text-base leading-relaxed font-normal tracking-normal sm:px-5 sm:py-4 sm:text-lg";
 
   // Mellemrummet mellem det skrevne og det talte. Uden det ville spøgelset
   // klistre sig til sidste bogstav.
@@ -184,13 +315,20 @@ export function IntakeCard({
       onDrop={onDrop}
       /*
         Feltet skal LIGNE et felt. På det hvide kort forsvandt en flade i
-        papirfarve — så nu er den hvid med en tydelig kant og en indvendig
+        papirfarve — så nu er den hvid med en hårfin kant og en indvendig
         skygge, det ældste tegn på "her kan skrives" der findes. Cursoren
         siger det samme: tekstmarkør over hele fladen, ikke kun over linjen.
+
+        I komposeren har feltet INGEN egen ramme. Kortet udenom er allerede en
+        ramme, og to rammer om det samme felt ser ud som en fejl — det var
+        præcis dét den tykke fokusramme forstærkede. Dér markerer kortet fokus
+        for hele komposeren; feltet og værktøjslinjen er ét element.
       */
-      className={`cursor-text rounded-xl border-2 bg-[var(--paper-raised)] shadow-[inset_0_1px_4px_rgba(16,32,30,0.07)] transition-colors focus-within:border-[var(--teal)] focus-within:shadow-[inset_0_1px_4px_rgba(16,32,30,0.07),0_2px_16px_rgba(0,83,85,0.10)] ${
-        dragging ? "border-[var(--teal)] bg-[var(--teal-tint)]" : "border-[var(--line-strong)]"
-      }`}
+      className={`cursor-text rounded-xl ${
+        compact
+          ? ""
+          : "field-shell bg-[var(--paper-raised)] [--field-shadow:inset_0_1px_4px_rgba(16,32,30,0.07)]"
+      } ${dragging ? "is-dragging bg-[var(--teal-tint)]" : ""}`}
       onClick={() => areaRef.current?.focus()}
     >
       <div className="relative">
@@ -202,8 +340,24 @@ export function IntakeCard({
           Feltet starter som ÉN linje — det tomme lag indeholder præcis ét
           linjeskift — og vokser linje for linje med indholdet.
         */}
-        <div aria-hidden="true" className={`invisible ${fieldType}`}>
-          {draft + ghostGap + interim + "\n"}
+        {/*
+          To målinger i samme celle; den højeste vinder.
+
+          Pladsholderen står på ÉN linje på en bærbar og på to på en telefon.
+          Målte vi kun på indholdet, ville feltet være én linje højt mens
+          pladsholderen fyldte to — og på 390 px stod anden halvdel af
+          "…eller send et billede" bag værktøjslinjen. Måler vi omvendt kun på
+          pladsholderen, ville feltet KRYMPE i det øjeblik lægen skrev sit
+          første bogstav. Cellen tager derfor begge og bruger den største, så
+          feltet aldrig bliver lavere end det er nu — kun højere.
+        */}
+        <div aria-hidden="true" className="invisible grid">
+          <div className={`col-start-1 row-start-1 ${fieldType}`}>
+            {tr("intakePlaceholder", lang) + "\n"}
+          </div>
+          <div className={`col-start-1 row-start-1 ${fieldType}`}>
+            {draft + ghostGap + interim + "\n"}
+          </div>
         </div>
 
         {/*
@@ -249,7 +403,7 @@ export function IntakeCard({
                 type="button"
                 onClick={() => setAttachments((prev) => prev.filter((a) => a.id !== image.id))}
                 aria-label={tr("intakeRemoveImage", lang)}
-                className="absolute -right-1.5 -top-1.5 flex h-6 w-6 items-center justify-center rounded-full border border-[var(--line-strong)] bg-[var(--paper-raised)] text-[var(--ink-soft)] transition-colors hover:border-[var(--teal)] hover:text-[var(--ink)]"
+                className="absolute -right-2 -top-2 flex h-7 w-7 items-center justify-center rounded-full border border-[var(--line-strong)] bg-[var(--paper-raised)] text-[var(--ink-soft)] shadow-sm transition-colors hover:border-[var(--teal)] hover:text-[var(--ink)]"
               >
                 <svg viewBox="0 0 20 20" width={12} height={12} fill="none" aria-hidden="true">
                   <path d="M5 5l10 10M15 5 5 15" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
@@ -260,11 +414,14 @@ export function IntakeCard({
         </ul>
       )}
 
-      <div className="flex items-center justify-between gap-3 border-t border-[var(--line)] px-3 py-2.5 sm:px-4">
+      {/* Værktøjslinjen er den række der rammes med en tommelfinger. Hver knap
+          er derfor mindst 44 px høj — tommelfingerreglen — og linjen har lidt
+          mindre luft udenom for at bære det uden at blive et bånd. */}
+      <div className="flex items-center justify-between gap-3 border-t border-[var(--line)] px-2 py-2 sm:px-3">
         <button
           type="button"
           onClick={() => fileRef.current?.click()}
-          className="flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-[13px] font-medium text-[var(--ink-soft)] transition-colors hover:bg-[var(--teal-tint)] hover:text-[var(--teal-deep)]"
+          className="flex min-h-11 items-center gap-2 rounded-lg px-2.5 py-1.5 text-[13px] font-medium text-[var(--ink-soft)] transition-colors hover:bg-[var(--teal-tint)] hover:text-[var(--teal-deep)]"
         >
           <svg
             viewBox="0 0 24 24"
@@ -307,11 +464,11 @@ export function IntakeCard({
           {compact && (
             <button
               type="button"
-              onClick={onToggleMic}
+              onClick={onMicClick}
               aria-pressed={listening}
               aria-busy={starting}
               aria-label={tr(listening ? "micStop" : "micStart", lang)}
-              className={`relative flex h-10 w-10 shrink-0 items-center justify-center rounded-full transition-colors ${
+              className={`relative flex h-11 w-11 shrink-0 items-center justify-center rounded-full transition-colors ${
                 listening
                   ? "mic-breathe bg-[var(--teal)] text-white"
                   : starting
@@ -319,7 +476,11 @@ export function IntakeCard({
                     : "bg-[var(--teal-deep)] text-white hover:bg-[var(--teal)]"
               }`}
             >
-              <MicGlyph size={19} />
+              {showCountdown !== null ? (
+                <span className="font-[family-name:var(--font-mono)] text-base font-bold">{showCountdown}</span>
+              ) : (
+                <MicGlyph size={19} />
+              )}
             </button>
           )}
 
@@ -327,7 +488,7 @@ export function IntakeCard({
             type="button"
             onClick={submit}
             disabled={!canSend}
-            className="flex shrink-0 items-center gap-2 rounded-lg bg-[var(--teal)] px-4 py-2 text-[14px] font-semibold text-white transition-opacity disabled:opacity-25"
+            className="flex min-h-11 shrink-0 items-center gap-2 rounded-lg bg-[var(--teal)] px-4 py-2 text-[14px] font-semibold text-white transition-opacity disabled:opacity-25"
           >
             <SizeLock variants={[tr("intakeSend", "da"), tr("intakeSend", "en")]}>{tr("intakeSend", lang)}</SizeLock>
             <svg viewBox="0 0 20 20" width={15} height={15} fill="none" aria-hidden="true">
@@ -351,7 +512,7 @@ export function IntakeCard({
   const errorLine = (
     <div className="mt-2 h-5">
       {attachError && (
-        <p role="status" className="px-1 text-[13px] leading-5 text-[var(--nude-deep)]">
+        <p role="status" className="px-1 text-[13px] leading-5 text-[var(--nude-ink)]">
           {tr(attachError, lang)}
         </p>
       )}
@@ -375,9 +536,13 @@ export function IntakeCard({
           <button
             key={tree.id}
             onClick={() => onSelectTree(tree.id)}
-            className="rounded-lg border border-[var(--line-strong)] bg-[var(--paper-raised)] px-3 py-1.5 text-[13px] font-medium text-[var(--ink-soft)] transition-colors hover:border-[var(--teal)] hover:bg-[var(--teal-tint)] hover:text-[var(--ink)]"
+            className="flex min-h-11 items-center rounded-lg border border-[var(--line-strong)] bg-[var(--paper-raised)] px-3 py-1.5 text-[13px] font-medium text-[var(--ink-soft)] transition-colors hover:border-[var(--teal)] hover:bg-[var(--teal-tint)] hover:text-[var(--ink)]"
           >
-            <SizeLock variants={[tree.name.da, tree.name.en]}>{tree.name[lang]}</SizeLock>
+            {/* `wrap`: forløbsnavnene kommer fra JSON og kan være lange. På
+                360 px skal de bryde frem for at skubbe knappen ud af skærmen. */}
+            <SizeLock wrap variants={[tree.name.da, tree.name.en]}>
+              {tree.name[lang]}
+            </SizeLock>
           </button>
         ))}
       </div>
@@ -391,7 +556,7 @@ export function IntakeCard({
     return (
       <div className="mx-auto max-w-3xl">
         {unresolvedBlock}
-        <div className="rounded-2xl border border-[var(--line-strong)] bg-[var(--paper-raised)] p-2 shadow-[0_6px_24px_rgba(0,58,60,0.14)]">
+        <div className="field-shell rounded-2xl bg-[var(--paper-raised)] p-2 [--field-shadow:0_6px_24px_rgba(0,58,60,0.14)]">
           {fieldBox}
         </div>
         {errorLine}
@@ -410,7 +575,7 @@ export function IntakeCard({
         mikrofonen bor i samme kort — det er ÉN samlet handling, og en ramme
         om halvdelen af den ville dele den i to.
       */}
-      <div className="rounded-2xl border bg-[var(--paper-raised)] p-6 shadow-[0_1px_2px_rgba(16,32,30,0.04)] sm:p-8">
+      <div className="rounded-2xl border bg-[var(--paper-raised)] p-6 shadow-[var(--shadow-raised)] sm:p-8">
         <h2 className="font-[family-name:var(--font-display)] text-[28px] font-semibold leading-tight tracking-tight text-[var(--ink)] sm:text-[36px]">
           {tr("intakeQuestion", lang)}
         </h2>
@@ -427,18 +592,17 @@ export function IntakeCard({
         <div className="mt-6 flex flex-col items-center">
           <button
             type="button"
-            onClick={onToggleMic}
+            onClick={onMicClick}
             aria-pressed={listening}
             aria-busy={starting}
             aria-label={tr(listening ? "micStop" : "micStart", lang)}
             /*
-              Tre tilstande, samme størrelse i alle tre, så knappen aldrig
-              springer. Knappen er ALTID fyldt — den er skærmens omdrejningspunkt
-              og må ikke ligne en sekundær kontur-knap. "Åbner" lyser op med det
-              samme klikket lander; ringene og åndedrættet kommer først når
-              lyden faktisk løber.
+              Fire tilstande, samme størrelse i alle fire, så knappen aldrig
+              springer: klar, åbner, lytter — og varsler, hvor ikonet viger for
+              nedtællingstallet. Knappen er ALTID fyldt — den er skærmens
+              omdrejningspunkt og må ikke ligne en sekundær kontur-knap.
             */
-            className={`relative flex h-[116px] w-[116px] items-center justify-center rounded-full shadow-[0_4px_18px_rgba(0,83,85,0.18)] transition-colors ${
+            className={`relative flex h-[116px] w-[116px] items-center justify-center rounded-full shadow-[0_3px_12px_rgba(0,83,85,0.10)] transition-colors ${
               listening
                 ? "mic-breathe bg-[var(--teal)] text-white"
                 : starting
@@ -458,16 +622,35 @@ export function IntakeCard({
                 />
               </>
             )}
-            <MicGlyph size={50} />
+            {showCountdown !== null ? (
+              <span className="font-[family-name:var(--font-mono)] text-5xl font-bold">{showCountdown}</span>
+            ) : (
+              <MicGlyph size={50} />
+            )}
           </button>
 
           {/* Én linje, fast højde. Den skifter indhold — aldrig plads. */}
-          <p aria-live="polite" className="mt-3 flex h-5 items-center text-[13px] font-medium text-[var(--ink-soft)]">
-            {listening
-              ? tr("intakeMicListening", lang)
-              : starting
-                ? tr("intakeMicStarting", lang)
-                : tr("intakeMicHint", lang)}
+          <p aria-live="polite" className="mt-3 flex h-5 items-center gap-2 text-[13px] font-medium text-[var(--ink-soft)]">
+            {showCountdown !== null ? (
+              <>
+                <span>
+                  {tr("intakeMicCountdown", lang)} {showCountdown}…
+                </span>
+                <button
+                  type="button"
+                  onClick={cancelDictation}
+                  className="rounded border border-[var(--line-strong)] px-1.5 py-px text-[11px] font-medium text-[var(--ink-soft)] transition-colors hover:border-[var(--teal)] hover:text-[var(--ink)]"
+                >
+                  {tr("intakeMicCancel", lang)}
+                </button>
+              </>
+            ) : listening ? (
+              tr("intakeMicListening", lang)
+            ) : starting ? (
+              tr("intakeMicStarting", lang)
+            ) : (
+              tr("intakeMicHint", lang)
+            )}
           </p>
         </div>
       </div>

@@ -255,13 +255,18 @@ export function ChatView() {
             </p>
           </div>
 
-          <div className="ml-auto flex items-center gap-1.5">
+          {/* `flex-wrap`: rækken var ubrydelig og stak 35–65 px ud over
+              skærmkanten på en telefon — hele siden kunne trækkes sidelæns.
+              `basis-full sm:basis-auto` lægger kontrollerne på deres egen
+              linje under mærket på en telefon, og tilbage på samme linje fra
+              sm og op. */}
+          <div className="flex basis-full flex-wrap items-center gap-1.5 sm:ml-auto sm:basis-auto">
             <button
               type="button"
               onClick={toggleHandsFree}
               aria-pressed={handsFree}
               title={tr("chatHandsFreeHint", lang)}
-              className={`rounded-lg border px-2.5 py-1.5 text-[13px] font-medium transition-colors ${
+              className={`flex min-h-11 items-center rounded-lg border px-2.5 py-1.5 text-[13px] font-medium transition-colors ${
                 handsFree
                   ? "border-[var(--teal)] bg-[var(--teal)] text-white"
                   : "text-[var(--ink-soft)] hover:border-[var(--teal)] hover:bg-[var(--teal-tint)] hover:text-[var(--teal-deep)]"
@@ -281,7 +286,7 @@ export function ChatView() {
                   haltSpeech();
                   reset();
                 }}
-                className="rounded-lg border px-2.5 py-1.5 text-[13px] font-medium text-[var(--ink-soft)] transition-colors hover:border-[var(--teal)] hover:bg-[var(--teal-tint)] hover:text-[var(--teal-deep)]"
+                className="flex min-h-11 items-center rounded-lg border px-2.5 py-1.5 text-[13px] font-medium text-[var(--ink-soft)] transition-colors hover:border-[var(--teal)] hover:bg-[var(--teal-tint)] hover:text-[var(--teal-deep)]"
               >
                 {tr("chatNewThread", lang)}
               </button>
@@ -289,7 +294,7 @@ export function ChatView() {
 
             <Link
               href="/"
-              className="rounded-lg border px-2.5 py-1.5 text-[13px] font-medium text-[var(--ink-soft)] transition-colors hover:border-[var(--teal)] hover:bg-[var(--teal-tint)] hover:text-[var(--teal-deep)]"
+              className="flex min-h-11 items-center rounded-lg border px-2.5 py-1.5 text-[13px] font-medium text-[var(--ink-soft)] transition-colors hover:border-[var(--teal)] hover:bg-[var(--teal-tint)] hover:text-[var(--teal-deep)]"
             >
               ← {tr("chatBack", lang)}
             </Link>
@@ -379,7 +384,7 @@ export function ChatView() {
                     )}
                   </>
                 ) : turn.error ? (
-                  <p className="rounded-2xl border border-dashed border-[var(--nude-deep)] bg-[var(--nude-tint)] px-4 py-3 text-sm leading-relaxed text-[var(--nude-deep)]">
+                  <p className="rounded-2xl border border-dashed border-[var(--nude-deep)] bg-[var(--nude-tint)] px-4 py-3 text-sm leading-relaxed text-[var(--nude-ink)]">
                     {turn.error}
                   </p>
                 ) : (
@@ -395,7 +400,7 @@ export function ChatView() {
       <div className="sticky bottom-0 z-10 border-t bg-[color-mix(in_srgb,var(--paper)_92%,transparent)] backdrop-blur">
         <div className="mx-auto w-full max-w-3xl px-4 py-3 sm:px-6">
           {micNotice && (
-            <p className="mb-2 rounded-lg border border-dashed border-[var(--nude-deep)] bg-[var(--nude-tint)] px-3 py-2 text-[13px] leading-relaxed text-[var(--nude-deep)]">
+            <p className="mb-2 rounded-lg border border-dashed border-[var(--nude-deep)] bg-[var(--nude-tint)] px-3 py-2 text-[13px] leading-relaxed text-[var(--nude-ink)]">
               {micNotice}
             </p>
           )}

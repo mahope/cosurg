@@ -1,0 +1,328 @@
+{
+  "id": "co-poisoning-dk",
+  "version": "0.1.0",
+  "name": {
+    "da": "Kulilteforgiftning — HBO-vurdering",
+    "en": "Carbon monoxide poisoning — HBO assessment"
+  },
+  "description": {
+    "da": "Klinisk beslutningstræ for vurdering af kulilteforgiftede: indikationer for hyperbar oxygenbehandling (HBO). Bygget på Rigshospitalets VIP-instruks PBB - 20 Hyperbar Oxygen Behandling af kulmonooxidforgiftede. Rigshospitalet har landsfunktion for HBO-behandling.",
+    "en": "Clinical decision tree for carbon monoxide poisoning: indications for hyperbaric oxygen treatment (HBO). Built on the Rigshospitalet clinical instruction on hyperbaric oxygen treatment of CO poisoning. Rigshospitalet holds the national function for HBO."
+  },
+  "authors": [
+    "Klinisk grundlag: VIP-instruks PBB - 20 Hyperbar Oxygen Behandling af kulmonooxidforgiftede v8, Søren Partoft og Rikke Holmgaard, Rigshospitalet",
+    "Udkast samlet af CoSurg — afventer klinisk godkendelse"
+  ],
+  "rootNodeId": "oxygen",
+  "nodes": [
+    {
+      "id": "oxygen",
+      "question": {
+        "da": "Er der givet ilt på maske, 15 liter pr. minut?",
+        "en": "Has oxygen been given by mask, 15 litres per minute?"
+      },
+      "orQuestion": {
+        "da": "Ilt 15 liter i gang?",
+        "en": "Oxygen 15 litres running?"
+      },
+      "answerType": "boolean",
+      "help": {
+        "da": "Kulilte binder sig til hæmoglobin 250 gange stærkere end ilt. Halveringstiden for COHb er cirka 5 timer i atmosfærisk luft — men kun cirka 74 minutter med 100 procent ilt. Ilt på maske 15 liter pr. minut indtil eventuel første trykkammerbehandling.",
+        "en": "Carbon monoxide binds haemoglobin 250 times more strongly than oxygen. The half-life of COHb is about 5 hours in room air — but only about 74 minutes on 100 percent oxygen. Oxygen by mask at 15 litres per minute until any first chamber treatment."
+      },
+      "options": [
+        { "value": "yes", "label": { "da": "Ja", "en": "Yes" } },
+        { "value": "no", "label": { "da": "Nej", "en": "No" } }
+      ],
+      "redFlags": [
+        {
+          "when": "no",
+          "message": {
+            "da": "Giv 100 procent ilt på maske, 15 liter pr. minut, nu. Det nedsætter halveringstiden for COHb fra cirka 5 timer til cirka 74 minutter.",
+            "en": "Give 100 percent oxygen by mask, 15 litres per minute, now. It cuts the COHb half-life from about 5 hours to about 74 minutes."
+          }
+        }
+      ],
+      "edges": [
+        { "when": "*", "goto": "conscious" }
+      ]
+    },
+    {
+      "id": "conscious",
+      "question": {
+        "da": "Har patienten været — eller er patienten — bevidstløs?",
+        "en": "Has the patient been — or is the patient — unconscious?"
+      },
+      "orQuestion": {
+        "da": "Bevidstløshed?",
+        "en": "Unconsciousness?"
+      },
+      "answerType": "boolean",
+      "options": [
+        {
+          "value": "yes",
+          "label": { "da": "Ja", "en": "Yes" },
+          "synonyms": {
+            "da": ["ja", "bevidstløs", "ukontaktbar"],
+            "en": ["yes", "unconscious", "unresponsive"]
+          }
+        },
+        { "value": "no", "label": { "da": "Nej", "en": "No" } }
+      ],
+      "edges": [
+        { "when": "yes", "goto": "window" },
+        { "when": "*", "goto": "neuro" }
+      ]
+    },
+    {
+      "id": "neuro",
+      "question": {
+        "da": "Er der neurologiske deficits — positive neurologiske fund ved objektiv undersøgelse, uanset COHb-niveau?",
+        "en": "Are there neurological deficits — positive findings on examination, regardless of the COHb level?"
+      },
+      "orQuestion": {
+        "da": "Neurologiske fund?",
+        "en": "Neurological findings?"
+      },
+      "answerType": "boolean",
+      "help": {
+        "da": "Motorneuron-påvirkning, koordinationsbesvær og signifikante neurokognitive gener tæller som indikation uanset COHb-niveau.",
+        "en": "Motor neuron involvement, impaired coordination and significant neurocognitive complaints count as an indication regardless of the COHb level."
+      },
+      "options": [
+        { "value": "yes", "label": { "da": "Ja", "en": "Yes" } },
+        { "value": "no", "label": { "da": "Nej", "en": "No" } }
+      ],
+      "edges": [
+        { "when": "yes", "goto": "window" },
+        { "when": "*", "goto": "cohb" }
+      ]
+    },
+    {
+      "id": "cohb",
+      "question": {
+        "da": "Hvad er COHb-niveauet i procent — målt, eller ved tilbageregning til eksponeringsophør?",
+        "en": "What is the COHb level in percent — measured, or back-calculated to the end of exposure?"
+      },
+      "orQuestion": {
+        "da": "COHb i procent?",
+        "en": "COHb percent?"
+      },
+      "answerType": "number",
+      "unit": "% COHb",
+      "min": 0,
+      "max": 100,
+      "help": {
+        "da": "COHb på 25 procent eller derover — aktuelt eller ved tilbageregning — er indikation for HBO. Husk halveringstiden ved tilbageregningen: cirka 5 timer i atmosfærisk luft, cirka 74 minutter ved 100 procent ilt. Beregningen tager ikke højde for stor individuel variation.",
+        "en": "COHb of 25 percent or more — current or back-calculated — is an indication for HBO. Remember the half-life when back-calculating: about 5 hours in room air, about 74 minutes on 100 percent oxygen. The calculation does not capture the large individual variation."
+      },
+      "edges": [
+        { "when": ">=25", "goto": "window" },
+        { "when": "*", "goto": "cardiac" }
+      ]
+    },
+    {
+      "id": "cardiac",
+      "question": {
+        "da": "Er der tegn på myokardieiskæmi på EKG eller enzymer?",
+        "en": "Any signs of myocardial ischaemia on ECG or enzymes?"
+      },
+      "orQuestion": {
+        "da": "Myokardieiskæmi?",
+        "en": "Myocardial ischaemia?"
+      },
+      "answerType": "boolean",
+      "options": [
+        { "value": "yes", "label": { "da": "Ja", "en": "Yes" } },
+        { "value": "no", "label": { "da": "Nej", "en": "No" } }
+      ],
+      "edges": [
+        { "when": "yes", "goto": "window" },
+        { "when": "*", "goto": "acidosis" }
+      ]
+    },
+    {
+      "id": "acidosis",
+      "question": {
+        "da": "Er der signifikant metabolisk acidose — arteriel pH under 7,2 — med patologisk COHb-niveau, hvor kilden er brand?",
+        "en": "Is there significant metabolic acidosis — arterial pH below 7.2 — with a pathological COHb level, where the source is a fire?"
+      },
+      "orQuestion": {
+        "da": "pH under 7,2 med patologisk COHb?",
+        "en": "pH below 7.2 with pathological COHb?"
+      },
+      "answerType": "boolean",
+      "options": [
+        { "value": "yes", "label": { "da": "Ja", "en": "Yes" } },
+        { "value": "no", "label": { "da": "Nej", "en": "No" } }
+      ],
+      "edges": [
+        { "when": "yes", "goto": "window" },
+        { "when": "*", "goto": "disp-observe" }
+      ]
+    },
+    {
+      "id": "window",
+      "question": {
+        "da": "Er der gået under 24 timer siden kulilteeksponeringens ophør?",
+        "en": "Is it less than 24 hours since the carbon monoxide exposure ended?"
+      },
+      "orQuestion": {
+        "da": "Under 24 timer siden ophør?",
+        "en": "Under 24 hours since exposure ended?"
+      },
+      "answerType": "boolean",
+      "help": {
+        "da": "HBO er indiceret inden for de første 24 timer efter eksponeringens ophør, og behandlingen gives hurtigst muligt. Gravide behandles på samme indikation som ikke-gravide; tegn til føtalt stress vurderet ved obstetriker skærper indikationen.",
+        "en": "HBO is indicated within the first 24 hours after the exposure ended, and treatment is given as soon as possible. Pregnant patients are treated on the same indication; signs of fetal distress assessed by an obstetrician strengthen the indication."
+      },
+      "options": [
+        { "value": "yes", "label": { "da": "Ja", "en": "Yes" } },
+        { "value": "no", "label": { "da": "Nej", "en": "No" } }
+      ],
+      "redFlags": [
+        {
+          "when": "yes",
+          "message": {
+            "da": "HBO-indikation opfyldt inden for 24-timers-vinduet. Traumelederen kontakter vagthavende brandsårslæge på Rigshospitalet — landsfunktion for HBO-behandling. Fortsæt ilt 15 liter pr. minut indtil første trykkammerbehandling.",
+            "en": "HBO indication met within the 24-hour window. The trauma leader contacts the on-call burn surgeon at Rigshospitalet — the national centre for HBO. Continue oxygen at 15 litres per minute until the first chamber treatment."
+          },
+          "goto": "disp-hbo"
+        }
+      ],
+      "edges": [
+        { "when": "*", "goto": "disp-confer" }
+      ]
+    }
+  ],
+  "dispositions": [
+    {
+      "id": "disp-hbo",
+      "severity": "emergency",
+      "title": {
+        "da": "Akut: hyperbar oxygenbehandling",
+        "en": "Emergency: hyperbaric oxygen treatment"
+      },
+      "guidance": {
+        "da": "Overflyt til hyperbar oxygenbehandling hurtigst muligt — overflytning bør ske inden for 24 timer efter eksponeringsophør. Rigshospitalet har landsfunktion; traumelederen kontakter vagthavende brandsårslæge. Giv ilt på maske 15 liter pr. minut indtil første trykkammerbehandling. I traumecentret tages blodprøver inklusive eventuelle forgiftningsprøver, EKG og A-punktur, og eventuelt røntgen af thorax. Gravide behandles på samme indikation som ikke-gravide. Intuberede patienter med behov for intensiv terapi indlægges via intensiv.",
+        "en": "Transfer for hyperbaric oxygen treatment as soon as possible — within 24 hours of the end of exposure. Rigshospitalet holds the national function; the trauma leader contacts the on-call burn surgeon. Give oxygen by mask at 15 litres per minute until the first chamber treatment. In the trauma centre draw bloods including any toxicology, ECG and arterial gas, and a chest X-ray if indicated. Pregnant patients are treated on the same indication. Intubated patients needing intensive care are admitted via the ICU."
+      },
+      "sources": [
+        "VIP Rigshospitalet: PBB - 20 Hyperbar Oxygen Behandling af kulmonooxidforgiftede (version 8)"
+      ],
+      "lookup": {
+        "label": {
+          "da": "Hvad siger kilderne om hyperbar iltbehandling?",
+          "en": "What do the sources say about hyperbaric oxygen?"
+        },
+        "question": {
+          "da": "Hvad siger kilderne om hyperbar iltbehandling ved kulilteforgiftning — indikation, tidsvindue og behandling indtil trykkammeret?",
+          "en": "What do the sources say about hyperbaric oxygen in carbon monoxide poisoning — indication, time window and treatment until the chamber?"
+        }
+      },
+      "escalation": {
+        "calling": {
+          "da": "Ringer du op: traumelederen kontakter vagthavende brandsårslæge på Rigshospitalet, som har landsfunktionen for trykkammerbehandling. Trinnene herunder er dem der skal i gang imens.",
+          "en": "If you are calling: the trauma team leader contacts the on-call burn surgeon at Rigshospitalet, which holds the national function for hyperbaric treatment. The steps below are what should be under way meanwhile."
+        },
+        "receiving": {
+          "da": "Er du selv vagthavende brandsårslæge, er der ingen at ringe til — det er dig der visiterer til trykkammeret. Trinnene herunder er dem instruksen angiver, hver med sit ordrette belæg.",
+          "en": "If you are the on-call burn surgeon yourself, there is nobody to call — you are the one who triages to the chamber. The steps below are what the instruction specifies, each with its verbatim backing."
+        },
+        "actions": [
+          {
+            "id": "hbo-window",
+            "title": {
+              "da": "Tidsvinduet: hurtigst muligt, og overflytning inden for 24 timer",
+              "en": "The time window: as fast as possible, transfer within 24 hours"
+            },
+            "detail": {
+              "da": "Hyperbar iltbehandling gives hurtigst muligt, og overflytning bør ske inden for 24 timer efter eksponeringsophør. Gravide behandles på samme indikation som ikke-gravide; tegn til føtalt stress vurderet ved obstetriker skærper indikationen. Hovedpine som enkeltsymptom er ikke indikation for overflytning.",
+              "en": "Hyperbaric oxygen is given as soon as possible, and transfer should occur within 24 hours of the exposure ending. Pregnant patients are treated on the same indication as non-pregnant; signs of foetal stress assessed by an obstetrician strengthen the indication. Headache as an isolated symptom is not an indication for transfer."
+            },
+            "source": "VIP-instruks: PBB - 20 Hyperbar Oxygen Behandling af kulmonooxidforgiftede",
+            "query": "hyperbar oxygenbehandling kulmonooxidforgiftning indikation trykkammer 24 timer"
+          },
+          {
+            "id": "hbo-oxygen",
+            "title": {
+              "da": "Indtil trykkammeret: 100 % ilt på maske",
+              "en": "Until the chamber: 100% oxygen by mask"
+            },
+            "detail": {
+              "da": "Systemisk forgiftning behandles med 100 % ilt på maske til COHb er normal. Intubation kan blive nødvendig hvis patienten er bevidstløs eller har andre inhalationsskader end systemisk forgiftning. Væsketerapi er vigtigere end HBO og må ikke afbrydes under behandlingen.",
+              "en": "Systemic poisoning is treated with 100% oxygen by mask until COHb is normal. Intubation may be necessary if the patient is unconscious or has inhalation injury beyond systemic poisoning. Fluid therapy matters more than HBO and must not be interrupted during treatment."
+            },
+            "source": "VIP-instruks: PBB — Inhalationsskader · brandsaar.dk/inhalationsskader-2",
+            "query": "systemisk forgiftning 100 procent ilt paa maske COHb udvaskning intubation"
+          }
+        ]
+      }
+    },
+    {
+      "id": "disp-confer",
+      "severity": "refer",
+      "title": {
+        "da": "Konferér: HBO-indikation uden for 24-timers-vinduet",
+        "en": "Confer: HBO indication outside the 24-hour window"
+      },
+      "guidance": {
+        "da": "Indikationskriteriet er opfyldt, men der er gået mere end 24 timer siden eksponeringens ophør — HBO er indiceret inden for de første 24 timer. Konferér med vagthavende brandsårslæge på Rigshospitalet om det videre forløb, og fortsæt ilt på maske efter behov.",
+        "en": "An indication criterion is met, but more than 24 hours have passed since the exposure ended — HBO is indicated within the first 24 hours. Confer with the on-call burn surgeon at Rigshospitalet about the further course, and continue mask oxygen as needed."
+      },
+      "sources": [
+        "VIP Rigshospitalet: PBB - 20 Hyperbar Oxygen Behandling af kulmonooxidforgiftede (version 8)"
+      ],
+      "lookup": {
+        "label": {
+          "da": "Hvad siger kilderne om tidsvinduet for HBO?",
+          "en": "What do the sources say about the HBO time window?"
+        },
+        "question": {
+          "da": "Hvad siger kilderne om hyperbar iltbehandling når der er gået mere end 24 timer siden eksponeringsophør?",
+          "en": "What do the sources say about hyperbaric oxygen when more than 24 hours have passed since the exposure ended?"
+        }
+      },
+      "escalation": {
+        "calling": {
+          "da": "Ringer du op: konferér med vagthavende brandsårslæge på Rigshospitalet om det videre forløb. Fortsæt ilt på maske efter behov imens.",
+          "en": "If you are calling: confer with the on-call burn surgeon at Rigshospitalet about the further course. Continue mask oxygen as needed meanwhile."
+        },
+        "receiving": {
+          "da": "Er du selv vagthavende brandsårslæge, er vurderingen din. Det instruksen angiver om tidsvinduet og om iltbehandlingen står herunder.",
+          "en": "If you are the on-call burn surgeon yourself, the assessment is yours. What the instruction specifies about the time window and about oxygen therapy is below."
+        },
+        "actions": [
+          {
+            "id": "hbo-window-late",
+            "title": {
+              "da": "Tidsvinduet er passeret — men iltbehandlingen fortsætter",
+              "en": "The window has passed — but oxygen therapy continues"
+            },
+            "detail": {
+              "da": "Instruksen angiver at hyperbar iltbehandling gives hurtigst muligt og at overflytning bør ske inden for 24 timer efter eksponeringsophør. Halveringstiden for COHb falder fra cirka fem timer i atmosfærisk luft til cirka 74 minutter med 100 % ilt — så normobar ilt er ikke ingenting.",
+              "en": "The instruction states that hyperbaric oxygen is given as soon as possible and that transfer should occur within 24 hours of the exposure ending. The half-life of COHb falls from about five hours in atmospheric air to about 74 minutes on 100% oxygen — so normobaric oxygen is not nothing."
+            },
+            "source": "VIP-instruks: PBB - 20 Hyperbar Oxygen Behandling af kulmonooxidforgiftede",
+            "query": "halveringstid COHgb atmosfaerisk luft 100 procent ilt hyperbar 24 timer"
+          }
+        ]
+      }
+    },
+    {
+      "id": "disp-observe",
+      "severity": "treat",
+      "title": {
+        "da": "Observér: ingen HBO-indikation",
+        "en": "Observe: no HBO indication"
+      },
+      "guidance": {
+        "da": "Ingen af HBO-kriterierne er opfyldt. Hovedpine som enkeltsymptom er ikke indikation for overflytning til hyperbar iltbehandling. Giv ilt på maske 15 liter pr. minut efter behov, og monitorér eventuelt med perifer saturationsmåler. Ved udskrivelse medgives skriftlig instruks vedrørende eventuelle sensymptomer.",
+        "en": "None of the HBO criteria are met. Headache as an isolated symptom is not an indication for transfer to hyperbaric oxygen. Give mask oxygen at 15 litres per minute as needed, monitoring with a peripheral saturation probe if required. On discharge, provide written instructions about possible late symptoms."
+      },
+      "sources": [
+        "VIP Rigshospitalet: PBB - 20 Hyperbar Oxygen Behandling af kulmonooxidforgiftede (version 8)"
+      ]
+    }
+  ]
+}

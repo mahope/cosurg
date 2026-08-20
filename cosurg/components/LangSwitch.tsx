@@ -24,7 +24,9 @@ export function LangSwitch({ lang, onToggleLang }: LangSwitchProps) {
         onClick={() => lang !== "da" && onToggleLang()}
         aria-pressed={lang === "da"}
         aria-label="Dansk"
-        className={`flex items-center justify-center rounded-md p-1.5 transition-opacity ${
+        /* 40 px høj og 44 px bred inkl. båndets egen padding: flagene rammes
+           med en tommelfinger, ikke med en musemarkør. */
+        className={`flex h-10 w-10 items-center justify-center rounded-md transition-opacity ${
           lang === "da" ? "bg-[var(--teal-tint)] ring-1 ring-[var(--teal)]" : "opacity-50 hover:opacity-80"
         }`}
       >
@@ -35,7 +37,9 @@ export function LangSwitch({ lang, onToggleLang }: LangSwitchProps) {
         onClick={() => lang !== "en" && onToggleLang()}
         aria-pressed={lang === "en"}
         aria-label="English"
-        className={`flex items-center justify-center rounded-md p-1.5 transition-opacity ${
+        /* 40 px høj og 44 px bred inkl. båndets egen padding: flagene rammes
+           med en tommelfinger, ikke med en musemarkør. */
+        className={`flex h-10 w-10 items-center justify-center rounded-md transition-opacity ${
           lang === "en" ? "bg-[var(--teal-tint)] ring-1 ring-[var(--teal)]" : "opacity-50 hover:opacity-80"
         }`}
       >
