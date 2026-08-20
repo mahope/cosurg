@@ -1,0 +1,256 @@
+{
+  "id": "breast-seroma-dk",
+  "version": "0.1.0",
+  "name": {
+    "da": "Sen væskeansamling ved brystimplantat",
+    "en": "Late fluid collection around a breast implant"
+  },
+  "description": {
+    "da": "Klinisk beslutningstræ for sent indsættende periprostetisk væskeansamling associeret til brystimplantater, inklusive obs for BIA-ALCL. Bygget på Rigshospitalets VIP-instruks PBB - væskeansamling associeret til brystimplantater.",
+    "en": "Clinical decision tree for late periprosthetic fluid collection associated with breast implants, including vigilance for BIA-ALCL. Built on the Rigshospitalet clinical instruction on implant-associated fluid collections."
+  },
+  "authors": [
+    "Klinisk grundlag: VIP-instruks PBB - væskeansamling associeret til brystimplantater v3, Rikke Bredgaard, Rigshospitalet",
+    "Udkast samlet af CoSurg — afventer klinisk godkendelse"
+  ],
+  "rootNodeId": "infection",
+  "nodes": [
+    {
+      "id": "infection",
+      "question": {
+        "da": "Er der oplagte kliniske infektionstegn?",
+        "en": "Are there obvious clinical signs of infection?"
+      },
+      "orQuestion": {
+        "da": "Infektionstegn?",
+        "en": "Signs of infection?"
+      },
+      "answerType": "boolean",
+      "help": {
+        "da": "Sent indsættende periprostetisk væskeansamling er sjælden — incidens 1 til 2 procent — og majoriteten af tilfælde er tilsyneladende idiopatiske. Unilateral hævelse af et augmenteret bryst kan også skyldes patologi i selve kirtelvævet.",
+        "en": "Late periprosthetic fluid collection is rare — incidence 1 to 2 percent — and the majority of cases appear idiopathic. Unilateral swelling of an augmented breast can also be caused by pathology in the glandular tissue itself."
+      },
+      "options": [
+        { "value": "yes", "label": { "da": "Ja", "en": "Yes" } },
+        { "value": "no", "label": { "da": "Nej", "en": "No" } }
+      ],
+      "redFlags": [
+        {
+          "when": "yes",
+          "message": {
+            "da": "Oplagte kliniske infektionstegn: sæt patienten i empirisk antibiotisk behandling efter afdelingens separate instruks, og fortsæt udredningen.",
+            "en": "Obvious clinical signs of infection: start empirical antibiotics per the department's separate instruction, and continue the workup."
+          }
+        }
+      ],
+      "edges": [
+        { "when": "*", "goto": "indication" }
+      ]
+    },
+    {
+      "id": "indication",
+      "question": {
+        "da": "Er implantaterne anlagt på kosmetisk eller medicinsk indikation?",
+        "en": "Were the implants placed on a cosmetic or a medical indication?"
+      },
+      "orQuestion": {
+        "da": "Kosmetisk eller medicinsk indikation?",
+        "en": "Cosmetic or medical indication?"
+      },
+      "answerType": "choice",
+      "options": [
+        {
+          "value": "cosmetic",
+          "label": { "da": "Kosmetisk", "en": "Cosmetic" },
+          "synonyms": {
+            "da": ["kosmetisk", "privat", "augmentation"],
+            "en": ["cosmetic", "private", "augmentation"]
+          }
+        },
+        {
+          "value": "medical",
+          "label": { "da": "Medicinsk", "en": "Medical" },
+          "synonyms": {
+            "da": ["medicinsk", "rekonstruktion", "kræftoperation"],
+            "en": ["medical", "reconstruction", "cancer surgery"]
+          }
+        }
+      ],
+      "edges": [
+        { "when": "cosmetic", "goto": "disp-private" },
+        { "when": "*", "goto": "ultrasound" }
+      ]
+    },
+    {
+      "id": "ultrasound",
+      "question": {
+        "da": "Viser ultralyd — eventuelt mammografi, inklusive aksiller og hals — patologisk eller suspekt udfyldning i kirtelvævet?",
+        "en": "Does ultrasound — possibly mammography, including axillae and neck — show a pathological or suspicious mass in the glandular tissue?"
+      },
+      "orQuestion": {
+        "da": "Suspekt udfyldning i kirtelvævet?",
+        "en": "Suspicious mass in the gland?"
+      },
+      "answerType": "boolean",
+      "help": {
+        "da": "Mammografi kan være kontraindiceret, for eksempel ved akut hævet og ømt bryst, ved hæmatom og ved mistanke om implantatruptur, hvor undersøgelsen potentielt kan forværre tilstanden. Ved en periprostetisk udfyldning foretages biopsi.",
+        "en": "Mammography can be contraindicated, for example with an acutely swollen and tender breast, a haematoma, or suspected implant rupture, where the examination could worsen the condition. A periprosthetic mass is biopsied."
+      },
+      "options": [
+        { "value": "yes", "label": { "da": "Ja", "en": "Yes" } },
+        { "value": "no", "label": { "da": "Nej", "en": "No" } }
+      ],
+      "edges": [
+        { "when": "yes", "goto": "disp-breast-surgery" },
+        { "when": "*", "goto": "aspirate" }
+      ]
+    },
+    {
+      "id": "aspirate",
+      "question": {
+        "da": "Hvad viser aspiratet? Blank dyrkning og negativ patologi, CD30-positivt eller andet suspekt fund — eller afventer svar?",
+        "en": "What does the aspirate show? Negative culture and pathology, CD30-positive or otherwise suspicious — or results pending?"
+      },
+      "orQuestion": {
+        "da": "Aspirat: negativt, suspekt eller afventer?",
+        "en": "Aspirate: negative, suspicious or pending?"
+      },
+      "answerType": "choice",
+      "help": {
+        "da": "Væskeansamlingen aspireres med henblik på diagnostik og drænage. Aspiratet sendes til mikrobiologisk undersøgelse med dyrkning og resistens samt patologisk undersøgelse med cytologi — patologisedlen påføres obs BIA-ALCL og test for CD30.",
+        "en": "The fluid collection is aspirated for diagnosis and drainage. The aspirate is sent for microbiology with culture and sensitivity and for pathology with cytology — the pathology form is marked for BIA-ALCL and CD30 testing."
+      },
+      "options": [
+        {
+          "value": "negative",
+          "label": {
+            "da": "Blank dyrkning og negativ patologi",
+            "en": "Negative culture and pathology"
+          },
+          "synonyms": {
+            "da": ["negativt", "blank", "ingen fund"],
+            "en": ["negative", "clear", "no findings"]
+          }
+        },
+        {
+          "value": "suspicious",
+          "label": {
+            "da": "CD30-positivt eller andet suspekt fund",
+            "en": "CD30-positive or otherwise suspicious"
+          },
+          "synonyms": {
+            "da": ["cd30", "lymfom", "suspekt", "positiv"],
+            "en": ["cd30", "lymphoma", "suspicious", "positive"]
+          }
+        },
+        {
+          "value": "pending",
+          "label": {
+            "da": "Afventer svar",
+            "en": "Results pending"
+          },
+          "synonyms": {
+            "da": ["afventer", "ikke svar endnu"],
+            "en": ["pending", "awaiting"]
+          }
+        }
+      ],
+      "redFlags": [
+        {
+          "when": "suspicious",
+          "message": {
+            "da": "Obs BIA-ALCL — brystimplantat-associeret anaplastisk storcellet lymfom, CD30-positivt. Behandles med fjernelse af implantater og kapsulektomi, ved mistanke in toto, eventuelt suppleret med kemo- eller stråleterapi. Forløbet er ofte relativt godartet.",
+            "en": "Consider BIA-ALCL — breast implant-associated anaplastic large cell lymphoma, CD30-positive. Treated with implant removal and capsulectomy, en bloc when suspected, possibly supplemented with chemo- or radiotherapy. The course is often relatively benign."
+          },
+          "goto": "disp-explant"
+        }
+      ],
+      "edges": [
+        { "when": "negative", "goto": "persistent" },
+        { "when": "*", "goto": "persistent" }
+      ]
+    },
+    {
+      "id": "persistent",
+      "question": {
+        "da": "Er væskeansamlingen persisterende eller recidiverende?",
+        "en": "Is the fluid collection persistent or recurrent?"
+      },
+      "orQuestion": {
+        "da": "Persisterende eller recidiverende?",
+        "en": "Persistent or recurrent?"
+      },
+      "answerType": "boolean",
+      "options": [
+        { "value": "yes", "label": { "da": "Ja", "en": "Yes" } },
+        { "value": "no", "label": { "da": "Nej", "en": "No" } }
+      ],
+      "edges": [
+        { "when": "yes", "goto": "disp-explant" },
+        { "when": "*", "goto": "disp-conservative" }
+      ]
+    }
+  ],
+  "dispositions": [
+    {
+      "id": "disp-private",
+      "severity": "refer",
+      "title": {
+        "da": "Henvis: udredning i privat regi",
+        "en": "Refer: workup in the private sector"
+      },
+      "guidance": {
+        "da": "Implantater anlagt på kosmetisk indikation udredes ved privat eller privat praktiserende plastikkirurg, eventuelt egen læge. Førstegangs sen væskeansamling kan udredes og behandles konservativt i henhold til den primære indikation — men ved persisterende eller recidiverende ansamling er anbefalingen og tilbuddet eksplantation i offentligt regi.",
+        "en": "Implants placed on a cosmetic indication are worked up by a private plastic surgeon or the patient's own doctor. A first late fluid collection can be worked up and treated conservatively according to the primary indication — but for a persistent or recurrent collection the recommendation and offer is explantation in the public system."
+      },
+      "sources": [
+        "VIP Rigshospitalet: PBB - væskeansamling associeret til brystimplantater (version 3)"
+      ]
+    },
+    {
+      "id": "disp-breast-surgery",
+      "severity": "refer",
+      "title": {
+        "da": "Henvis: brystkirurgisk afdeling",
+        "en": "Refer: breast surgery department"
+      },
+      "guidance": {
+        "da": "Ved radiologisk evidens for patologisk og eventuelt suspekt udfyldning i kirtelvævet henvises patienten til brystkirurgisk afdeling med henblik på videre udredning og behandling.",
+        "en": "With radiological evidence of a pathological and possibly suspicious mass in the glandular tissue, the patient is referred to the breast surgery department for further workup and treatment."
+      },
+      "sources": [
+        "VIP Rigshospitalet: PBB - væskeansamling associeret til brystimplantater (version 3)"
+      ]
+    },
+    {
+      "id": "disp-conservative",
+      "severity": "treat",
+      "title": {
+        "da": "Behandl konservativt: NSAID og komprimerende BH",
+        "en": "Treat conservatively: NSAID and a compression bra"
+      },
+      "guidance": {
+        "da": "Ved blank dyrkning og negativ patologi behandles symptomatisk med NSAID og komprimerende BH. Behandling og eventuel videre udredning rettes ind efter svarene på de parakliniske undersøgelser. Ved persisterende eller recidiverende ansamling er anbefalingen eksplantation.",
+        "en": "With a negative culture and negative pathology, treat symptomatically with NSAIDs and a compression bra. Treatment and any further workup follow the paraclinical results. With a persistent or recurrent collection the recommendation is explantation."
+      },
+      "sources": [
+        "VIP Rigshospitalet: PBB - væskeansamling associeret til brystimplantater (version 3)"
+      ]
+    },
+    {
+      "id": "disp-explant",
+      "severity": "refer",
+      "title": {
+        "da": "Operér: eksplantation",
+        "en": "Operate: explantation"
+      },
+      "guidance": {
+        "da": "Persisterende eller recidiverende sen væskeansamling af uafklaret årsag behandles kirurgisk med eksplantation — uanset om implantaterne er anlagt kosmetisk eller medicinsk. Implantatet fjernes og inspiceres; væsken sendes til mikrobiologisk og patologisk undersøgelse med obs BIA-ALCL og CD30. Kapslen inspiceres, og der tages excisionsbiopsier af patologisk forandrede områder eventuelt kombineret med randombiopsier — eller der foretages kapsulektomi, ved mistanke om BIA-ALCL in toto. Der anlægges ikke nyt implantat, og det gamle genanlægges ikke. Eventuelt sugedræn, og patienten udstyres med komprimerende BH.",
+        "en": "A persistent or recurrent late fluid collection of unclear cause is treated surgically with explantation — regardless of whether the implants were placed cosmetically or medically. The implant is removed and inspected; the fluid is sent for microbiology and pathology marked for BIA-ALCL and CD30. The capsule is inspected, with excision biopsies of pathological areas possibly combined with random biopsies — or a capsulectomy, en bloc when BIA-ALCL is suspected. No new implant is placed and the old one is not reinserted. A suction drain may be placed, and the patient is fitted with a compression bra."
+      },
+      "sources": [
+        "VIP Rigshospitalet: PBB - væskeansamling associeret til brystimplantater (version 3)"
+      ]
+    }
+  ]
+}

@@ -130,6 +130,24 @@ const KEYWORDS: Record<string, string[]> = {
     "nikolsky",
     "necrolysis",
   ],
+  "melanoma-dk": [
+    "melanom",
+    "modermærke",
+    "breslow",
+    "sentinel",
+  ],
+  "breast-seroma-dk": [
+    "implantat",
+    "serom",
+    "væskeansamling",
+    "alcl",
+    "breast implant",
+  ],
+  "mastitis-dk": [
+    "mastit",
+    "brystbetændelse",
+    "brystabsces",
+  ],
 };
 
 /**
