@@ -5,7 +5,7 @@ import burnsTree from "@/content/trees/burns.json";
 import { advance, getDisposition, getNode, goBack, questionText, startSession } from "@/lib/tree/engine";
 import type { DecisionTree, Lang, SessionState } from "@/lib/tree/types";
 import { useTranscribe } from "@/lib/audio/useTranscribe";
-import { speak, stopSpeaking } from "@/lib/audio/speak";
+import { prefetchSpeech, speak, stopSpeaking } from "@/lib/audio/speak";
 import { tr } from "@/lib/i18n";
 
 const tree = burnsTree as unknown as DecisionTree;
@@ -166,6 +166,18 @@ export default function Home() {
     () => Math.round((state.path.length / Math.max(tree.nodes.length, 1)) * 100),
     [state.path.length],
   );
+
+  // Forvarm oplæsningen af de mulige næste spørgsmål, så stemmen starter uden
+  // ventetid når klinikeren svarer. Netværks-TTS koster ~1 s uden dette.
+  useEffect(() => {
+    if (!node) return;
+    const targets = new Set(node.edges.map((e) => e.goto));
+    node.redFlags?.forEach((f) => f.goto && targets.add(f.goto));
+    targets.forEach((id) => {
+      const nextNode = getNode(tree, id);
+      if (nextNode) prefetchSpeech(questionText(nextNode, lang, orMode), lang);
+    });
+  }, [node, lang, orMode]);
 
   const images = node?.images ?? disposition?.images ?? [];
 

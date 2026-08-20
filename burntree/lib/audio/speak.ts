@@ -56,9 +56,11 @@ async function fetchSpeech(text: string, lang: Lang): Promise<string | null> {
       body: JSON.stringify({ text, lang }),
     });
 
-    // 501 = ingen provider konfigureret. Slå fra permanent, brug browser-stemmen.
+    // 501 = provideren kan ikke levere dette. Er det dansk, findes der ingen nøgle,
+    // og netværkslaget slås fra resten af sessionen. For andre sprog betyder 501
+    // blot "understøttes ikke" — dansk skal stadig kunne bruge netværksstemmen.
     if (res.status === 501) {
-      networkTtsDisabled = true;
+      if (lang === "da") networkTtsDisabled = true;
       return null;
     }
     if (!res.ok) return null;

@@ -1,7 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  // Standalone-output holder runtime-imaget lille — nsl-server har kun 3,7 GB RAM.
+  output: "standalone",
 };
 
 export default nextConfig;
