@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import type { Lang } from "@/lib/tree/types";
-import { ZoneMark } from "./ZoneMark";
 
 interface ResponseBarProps {
   lang: Lang;
@@ -47,9 +46,41 @@ export function ResponseBar({
           onClick={onToggleMic}
           aria-pressed={listening}
           aria-label={listening ? tr(lang, "Stop mikrofon", "Stop microphone") : tr(lang, "Start mikrofon", "Start microphone")}
-          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-[var(--ink-soft)] hover:bg-[var(--teal-tint)] hover:text-[var(--teal-deep)] transition-colors"
+          className={`relative flex h-8 w-8 shrink-0 items-center justify-center rounded-lg transition-colors ${
+            listening
+              ? "text-[var(--teal)]"
+              : "text-[var(--ink-soft)] hover:bg-[var(--teal-tint)] hover:text-[var(--teal-deep)]"
+          }`}
         >
-          <ZoneMark variant="listening" active={listening} size={22} />
+          {listening && (
+            <>
+              <span
+                className="zone-pulse-ring absolute inset-0.5 rounded-full border"
+                style={{ borderColor: "var(--teal)" }}
+              />
+              <span
+                className="zone-pulse-ring absolute inset-0.5 rounded-full border"
+                style={{ borderColor: "var(--teal)", animationDelay: "0.6s" }}
+              />
+            </>
+          )}
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden="true">
+            <path
+              d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3Z"
+              stroke="currentColor"
+              strokeWidth="1.6"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <path
+              d="M19 10v2a7 7 0 0 1-14 0v-2"
+              stroke="currentColor"
+              strokeWidth="1.6"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <path d="M12 19v3M8.5 22h7" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+          </svg>
         </button>
 
         <input
