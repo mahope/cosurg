@@ -43,15 +43,35 @@ export function cortiModelsKonfigureret(): boolean {
   return !!process.env.CORTI_MODELS_KEY?.trim();
 }
 
+/**
+ * Ét billede til et vision-kald. `data` er ren base64 uden data-URI-præfiks —
+ * præfikset lægges på her, ét sted, så det ikke kan ende dobbelt.
+ *
+ * Verificeret 20/8: `corti-s1-mini-instant` tager imod billeder som
+ * `image_url` med data-URI og beskrev et rød/blåt testbillede korrekt på 3,1 s.
+ * `corti-s1-instant` afviser samme kald med 400 — triage-modellen kan altså
+ * IKKE se, og et billede må aldrig sendes med i et triage-kald.
+ */
+export interface ModelBillede {
+  mediaType: string;
+  data: string;
+}
+
+type IndholdsDel =
+  | { type: "text"; text: string }
+  | { type: "image_url"; image_url: { url: string } };
+
 interface Besked {
   role: "system" | "user" | "assistant";
-  content: string;
+  content: string | IndholdsDel[];
 }
 
 export interface ModelKald {
   model: string;
   system: string;
   user: string;
+  /** Billeder til et vision-kald. Kun modeller i mini-familien tager imod dem. */
+  images?: ModelBillede[];
   maxTokens?: number;
   temperature?: number;
   /** Hårdt loft. Et Models-kald der tager længere tid har mistet sin grund til at findes. */
@@ -69,6 +89,7 @@ export async function kaldModel({
   model,
   system,
   user,
+  images,
   maxTokens = 400,
   temperature = 0,
   timeoutMs = 8_000,
@@ -77,9 +98,22 @@ export async function kaldModel({
   const key = process.env.CORTI_MODELS_KEY?.trim();
   if (!key) throw new Error("CORTI_MODELS_KEY mangler i miljøet");
 
+  const userContent: string | IndholdsDel[] =
+    images && images.length > 0
+      ? [
+          { type: "text", text: user },
+          ...images.map(
+            (b): IndholdsDel => ({
+              type: "image_url",
+              image_url: { url: `data:${b.mediaType};base64,${b.data}` },
+            }),
+          ),
+        ]
+      : user;
+
   const messages: Besked[] = [
     { role: "system", content: system },
-    { role: "user", content: user },
+    { role: "user", content: userContent },
   ];
 
   const timeout = AbortSignal.timeout(timeoutMs);

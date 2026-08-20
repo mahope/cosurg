@@ -5,6 +5,13 @@ import { behandlingsGrundlag, byggGrundlag, faldgruberTilEmne } from "@/lib/cort
 import { hurtigtSvar } from "@/lib/corti/fastAnswer";
 import { mcpKonfigureret } from "@/lib/corti/mcp";
 import { triagér, type Triage } from "@/lib/corti/triage";
+import { cortiModelsKonfigureret } from "@/lib/corti/models";
+import {
+  beskrivBilleder,
+  billedBlok,
+  validerBilleder,
+  type BilledObservationer,
+} from "@/lib/corti/vision";
 import type { LoestFaldgrube } from "@/components/pitfalls/types";
 
 export const dynamic = "force-dynamic";
@@ -50,6 +57,8 @@ interface Body {
   patientContext?: unknown;
   /** Sæt false for at tvinge det tunge spor — fx til en side der vil have litteratur. */
   fastPath?: unknown;
+  /** Sårfotos: [{mediaType, data (ren base64), name?}]. Valideres i validerBilleder. */
+  images?: unknown;
 }
 
 /**
@@ -62,7 +71,13 @@ type UdgaaendeEvent =
   /** Hvad lægen ville, hvilket spor der køres, og hvorfor. Kommer efter ~1 sekund. */
   | { kind: "triage"; triage: Triage; mode: "fast" | "deep" }
   /** Faldgruberne med deres ORDRETTE belæg, uafhængigt af hvad modellen skriver. */
-  | { kind: "pitfalls"; pitfalls: LoestFaldgrube[] };
+  | { kind: "pitfalls"; pitfalls: LoestFaldgrube[] }
+  /**
+   * Billedanalysen. `ok: false` betyder at billederne IKKE indgik i svaret —
+   * det skal siges højt i UI'et frem for at fotoet stille bliver ignoreret.
+   */
+  | { kind: "vision"; ok: true; observations: BilledObservationer }
+  | { kind: "vision"; ok: false; message: string };
 
 /** Hvilke eksperter chatten faktisk har koblet på. Bruges til at være ærlig i UI'et. */
 export async function GET(req: Request) {
@@ -90,6 +105,25 @@ export async function POST(req: Request) {
   const recap = cap(body.recap, MAX_RECAP) || undefined;
   const patientContext = cap(body.patientContext, MAX_PATIENT_CONTEXT) || undefined;
   const tilladHurtigt = body.fastPath !== false;
+
+  /*
+   * Billederne valideres FØR strømmen åbnes: et ugyldigt billede er en 400,
+   * ikke en fejl-begivenhed. Klienten håndhæver 4 × 8 MB, men serveren stoler
+   * ikke på klienter — en forfalsket klient skal ikke kunne sende 100 MB.
+   */
+  const billedResultat = validerBilleder(body.images);
+  if ("fejl" in billedResultat) {
+    return NextResponse.json({ error: billedResultat.fejl }, { status: 400 });
+  }
+  const billeder = billedResultat.billeder;
+  if (billeder.length > 0 && !cortiModelsKonfigureret()) {
+    // Uden Models er der ingen billedforståelse — og et billede der stille
+    // ignoreres er værre end en ærlig afvisning.
+    return NextResponse.json(
+      { error: "Billedanalyse er ikke tilgængelig (CORTI_MODELS_KEY mangler)" },
+      { status: 503 },
+    );
+  }
 
   const encoder = new TextEncoder();
 
@@ -120,11 +154,43 @@ export async function POST(req: Request) {
 
       try {
         /*
+         * Trin 0: billederne. Analysen kommer FØR triagen, fordi observationerne
+         * er den bedste tekst vi har at triagere på — "hvad ser du her?" siger
+         * intet om emnet, men "bullae på håndryg, vådt sårbund" gør.
+         *
+         * Triage-modellen kan ikke se (400 på billeder), så det er
+         * synthesemodellen der beskriver, og triagen får teksten.
+         */
+        let syn: BilledObservationer | null = null;
+        if (billeder.length > 0) {
+          try {
+            syn = await beskrivBilleder(billeder, question, lang, req.signal);
+            send({ kind: "vision", ok: true, observations: syn });
+          } catch (err) {
+            // Sig det højt: svaret fortsætter, men uden billedet i grundlaget.
+            send({
+              kind: "vision",
+              ok: false,
+              message:
+                lang === "da"
+                  ? "Billedet kunne ikke analyseres — svaret bygger kun på teksten"
+                  : "The image could not be analysed — the answer rests on the text alone",
+            });
+            void err;
+          }
+        }
+
+        /*
          * Trin 1: hvad ville lægen? Ét Models-kald, målt 0,7-2,0 s. Det er den
          * eneste ventetid vi lægger til, og den betaler sig selv hjem: den
          * afgør om vi kan spare de 35-72 sekunder agentturen koster.
          */
-        const triage = await triagér({ utterance: question, lang, patientContext, signal: req.signal });
+        const triage = await triagér({
+          utterance: syn ? `${question}\n[Billedobservationer: ${syn.observations.slice(0, 500)}]` : question,
+          lang,
+          patientContext,
+          signal: req.signal,
+        });
 
         /*
          * Trin 2: hent grundlaget selv. Faldgruberne svarer på 40-60 ms,
@@ -147,16 +213,31 @@ export async function POST(req: Request) {
         const grundlag = byggGrundlag(afsnit, faldgruber, lang);
 
         /*
+         * Billedobservationerne lægges i SAMME blok som grundlaget, så begge
+         * spor får dem — men markeret som det modsatte af et uddrag: modellen
+         * får eksplicit at vide at billedfund er ræsonnement, aldrig kilde.
+         */
+        const promptBlok = syn ? [grundlag.blok, billedBlok(syn)].filter(Boolean).join("\n\n") : grundlag.blok;
+
+        /*
          * Trin 3: vælg spor. Hurtigsporet kræver at triagen sagde at
          * litteraturen ikke er nødvendig OG at vores egne kilder faktisk har
          * noget at sige. Har de ikke det, ville et hurtigt svar være et tomt
          * svar — og så er ventetiden det værd.
          */
+        /*
+         * Med et analyseret billede lempes kravet om uddrag: det tunge spor kan
+         * ikke se, så for et billedspørgsmål er hurtigsporet ikke bare
+         * hurtigere — det er det eneste spor med adgang til det lægen faktisk
+         * spørger om. Svaret bliver da ærligt mærket "extrapolated" med nul
+         * kilder, hvilket er sandt.
+         */
+        const harGrundlag = grundlag.uddrag.length >= 2 || (billeder.length > 0 && syn !== null);
         const kanHurtigt =
           tilladHurtigt &&
           !triage.needsLiterature &&
           triage.routedBy === "corti-models" &&
-          grundlag.uddrag.length >= 2;
+          harGrundlag;
 
         send({ kind: "triage", triage, mode: kanHurtigt ? "fast" : "deep" });
         if (faldgruber.length > 0) send({ kind: "pitfalls", pitfalls: faldgruber });
@@ -171,10 +252,13 @@ export async function POST(req: Request) {
             const answer = await hurtigtSvar({
               question,
               lang,
-              grounding: grundlag.blok,
+              grounding: promptBlok,
               uddrag: grundlag.uddrag,
               patientContext,
               recap,
+              // Synthesemodellen kan selv se — den får fotoene oveni
+              // observationerne, og reglen om mærkning står i dens systemprompt.
+              images: billeder.length > 0 ? billeder : undefined,
               signal: req.signal,
             });
             if (answer.answer) {
@@ -194,7 +278,9 @@ export async function POST(req: Request) {
           contextId,
           recap,
           patientContext,
-          grounding: grundlag.blok || undefined,
+          // Det agentiske framework kan ikke modtage billeder — det får
+          // observationsblokken i stedet, med sin mærkningsregel intakt.
+          grounding: promptBlok || undefined,
           signal: req.signal,
         })) {
           send(event);

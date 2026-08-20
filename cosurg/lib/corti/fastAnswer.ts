@@ -1,5 +1,5 @@
 import type { Lang } from "@/lib/tree/types";
-import { MODELS, kaldModelJson } from "./models";
+import { MODELS, kaldModelJson, type ModelBillede } from "./models";
 import { normalizeAnswer, type ChatAnswer } from "./chat";
 import { kildeEtiket, type KildeUddrag } from "./mcp";
 
@@ -53,6 +53,10 @@ const SYSTEM = [
   "- 'limitations': what this answer does NOT establish. Empty only if there is nothing.",
   "- 'spokenSummary': at most 3 sentences and 400 characters, no markdown, meant to be read aloud.",
   "- 'usedIds': the ids in square brackets of the excerpts you actually used. Do not list ones you did not use.",
+  "",
+  "IF PHOTOGRAPHS ARE ATTACHED: what you see in them is an observation, not a source. Anything you conclude",
+  "from an image goes in 'reasoning', hedged ('appears', 'consistent with'), and never becomes a depth grade",
+  "or a diagnosis — burn depth takes capillary refill and sensation testing, which no photograph contains.",
 ].join("\n");
 
 export interface HurtigtSvarInput {
@@ -64,6 +68,12 @@ export interface HurtigtSvarInput {
   uddrag: KildeUddrag[];
   patientContext?: string;
   recap?: string;
+  /**
+   * Lægens egne fotos. Synthesemodellen KAN se (verificeret 20/8), så den får
+   * billederne direkte oveni observationsblokken i `grounding` — men reglen
+   * står fast: hvad den konkluderer af et billede er ræsonnement, aldrig kilde.
+   */
+  images?: ModelBillede[];
   signal?: AbortSignal;
 }
 
@@ -90,6 +100,7 @@ export async function hurtigtSvar({
   uddrag,
   patientContext,
   recap,
+  images,
   signal,
 }: HurtigtSvarInput): Promise<ChatAnswer> {
   const language = lang === "da" ? "Danish" : "English";
@@ -114,6 +125,7 @@ export async function hurtigtSvar({
     model: MODELS.synthesis,
     system: SYSTEM,
     user: bruger,
+    images,
     maxTokens: 1_800,
     temperature: 0.1,
     // Målt 5 s på et fuldt grundlag. Loftet er der for at hurtigsporet skal

@@ -57,7 +57,7 @@ intent.
 | **Text generation** | Yes | `app/api/note/route.ts` | The clinical note is written by a Corti agent from the decision path, the transcript and the dictation. |
 | **Agentic framework** | Yes | `lib/corti/agent.ts` | Five agents with schema connectors and structured output: answer interpreter (flags doubt instead of guessing) and note writer here, an intent router (`app/api/route/agent.ts`), a guide topic router (`app/api/guide/route.ts`), and the clinical lookup agent (`lib/corti/chat.ts`) with Corti's registry experts and our own MCP server as connectors. `COMMAND_SPEC` is a sixth spec that is deliberately not called — see below. |
 | **Medical coding** | Yes | `lib/corti/coding.ts`, `app/api/coding/route.ts` | Corti Symphony, `POST /v2/tools/coding/`. The codes come from the coding API — the language model may only justify them. |
-| **Corti Models** | Yes | `lib/corti/models.ts`, `lib/corti/triage.ts`, `lib/corti/fastAnswer.ts` | Corti's own LLMs on the OpenAI-compatible endpoint `https://ai.eu.corti.app/v1`. `corti-s1-instant` triages an utterance and routes intent; `corti-s1-mini-instant` writes the fast answer from excerpts we retrieved ourselves. Used by `/api/triage`, `/api/route` and `/api/chat`. |
+| **Corti Models** | Yes | `lib/corti/models.ts`, `lib/corti/triage.ts`, `lib/corti/fastAnswer.ts`, `lib/corti/vision.ts` | Corti's own LLMs on the OpenAI-compatible endpoint `https://ai.eu.corti.app/v1`. `corti-s1-instant` triages an utterance and routes intent; `corti-s1-mini-instant` writes the fast answer from excerpts we retrieved ourselves, and describes attached wound photographs (verified: it accepts `image_url` data URIs; `corti-s1-instant` rejects them with a 400, so triage stays text-only). Used by `/api/triage`, `/api/route` and `/api/chat`. |
 
 ### Two tracks, and what decides between them
 
@@ -88,6 +88,20 @@ tools, and writes no source list — the list is built from the excerpts *we*
 retrieved. A fabricated source is therefore not possible on that track. Anything
 the model concludes beyond the excerpts goes in `reasoning`, and the answer is
 labelled `sourced`, `partial` or `extrapolated` exactly as before.
+
+**Wound photographs** (up to 4 × 8 MB, enforced server-side in
+`lib/corti/vision.ts`) are described first — cautiously: colour, demarcation,
+blisters, what can be seen — and never diagnosed. The description states
+explicitly what a photograph cannot establish: burn depth takes capillary refill
+and sensation testing, which no image contains. The observations are
+model-generated and carry no source, so they are treated as reasoning all the
+way through: they feed the triage, they go to both answer tracks marked *NOT a
+source*, and they can never make an answer `sourced`. The fast track's model
+additionally sees the photos themselves; the agentic track cannot accept images
+and gets the observation text. If the analysis fails, the stream says so
+(`vision`, `ok: false`) instead of silently ignoring the photo. Verified with a
+synthetic test image: the model itself noted it was a graphic, not skin, and the
+answer came back `extrapolated` and declined clinical assessment.
 
 Verified against production sources: *"hvordan behandler jeg en dyb dermal
 forbrænding på hånden?"* now answers, unprompted, that the dressing must not
@@ -219,7 +233,7 @@ was meant.
 | `/api/triage` | POST | What does the clinician want, does this need the literature, and what are the Danish search terms — one Corti Models call, 0.7–2.0 s. The same triage `/api/chat` runs internally, exposed so the UI can show the topic while the heavy answer is still being fetched |
 | `/api/note` | POST | Clinical note + codes |
 | `/api/coding` | GET/POST | Standalone coding of clinical text |
-| `/api/chat` | GET/POST | The question lookup. POST triages with Corti Models, retrieves the applicable pitfalls and the guide's sections itself, and then either writes the answer from those excerpts (fast track) or hands them to the agentic framework along with the question. Each answer carries an evidence label and its sources, marked as knowledge base or literature. Two additive SSE events, `triage` and `pitfalls`, are emitted before the answer; a client may ignore them. Pass `fastPath: false` to force the agentic track. GET reports which Corti experts are actually attached, so the UI can be honest about it. |
+| `/api/chat` | GET/POST | The question lookup. POST triages with Corti Models, retrieves the applicable pitfalls and the guide's sections itself, and then either writes the answer from those excerpts (fast track) or hands them to the agentic framework along with the question. Accepts `images` (≤ 4 × 8 MB, plain base64, jpeg/png/webp/heic) — described before triage, observations marked as reasoning, never as a source. Each answer carries an evidence label and its sources, marked as knowledge base or literature. Three additive SSE events, `triage`, `pitfalls` and `vision`, are emitted before the answer; a client may ignore them. Pass `fastPath: false` to force the agentic track. GET reports which Corti experts are actually attached, so the UI can be honest about it. |
 | `/api/guide` | POST | The treatment lookup, assembled from the MCP knowledge base. A topic agent first normalises the clinician's question into Danish clinical search terms; if that call fails, the route falls back to the clinician's own words — worse, but never wrong. |
 | `/api/pitfalls` | GET/POST | Pitfalls, each carrying a verbatim excerpt from the MCP knowledge base as backing. POST matches pitfalls to the current context (tree, node, disposition or topic); GET returns the whole catalogue. |
 | `/api/tts` | POST | Danish speech output (Syv.ai) |
