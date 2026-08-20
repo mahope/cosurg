@@ -1160,9 +1160,25 @@ export default function Home() {
     [tree, state, lang, speakAll, askCurrent, say],
   );
 
+  /*
+   * Mikrofonen skal svare i det sekund der trykkes.
+   *
+   * `start()` henter et Corti-token, åbner en websocket og beder om
+   * mikrofontilladelse. Det tager målt et sekund eller to, og indtil da var
+   * `listening` stadig falsk — knappen så altså fuldstændig uberørt ud efter
+   * klikket. Det er præcis den stilhed der får folk til at trykke igen, eller
+   * til at tro at det ikke virker. Vi holder derfor selv fast i at opstarten er
+   * i gang, så knappen kan sige det med det samme.
+   */
+  const [micStarting, setMicStarting] = useState(false);
+
   const toggleMic = useCallback(() => {
-    if (listening) stop();
-    else void start();
+    if (listening) {
+      stop();
+      return;
+    }
+    setMicStarting(true);
+    void start().finally(() => setMicStarting(false));
   }, [listening, start, stop]);
 
   /**
@@ -1473,6 +1489,7 @@ export default function Home() {
               ambiguous={intakeMiss?.candidates ?? []}
               unresolved={intakeMiss?.text ?? null}
               listening={listening}
+              starting={micStarting}
               interim={interim}
               draft={draft}
               onDraftChange={setDraft}

@@ -22,6 +22,8 @@ interface IntakeCardProps {
   /** Sat når en ytring ikke kunne henføres til et forløb. */
   unresolved: string | null;
   listening: boolean;
+  /** Mikrofonen er bedt om at åbne, men strømmen er der ikke endnu. */
+  starting: boolean;
   /** Foreløbig tale — det der opfanges LIGE NU, endnu ikke afsluttet. */
   interim: string;
   /** Teksten i feltet. Den bor hos forælderen, fordi genkendelsen læser den. */
@@ -66,6 +68,7 @@ export function IntakeCard({
   ambiguous,
   unresolved,
   listening,
+  starting,
   interim,
   draft,
   onDraftChange,
@@ -321,11 +324,20 @@ export function IntakeCard({
           type="button"
           onClick={onToggleMic}
           aria-pressed={listening}
+          aria-busy={starting}
           aria-label={tr(listening ? "micStop" : "micStart", lang)}
+          /*
+            Tre tilstande, ét udseende hver — og samme størrelse i alle tre, så
+            knappen aldrig springer. "Åbner" er fyldt ligesom "lytter", fordi
+            det klikket lovede allerede er i gang; kun ringene mangler, og de
+            kommer når lyden faktisk løber.
+          */
           className={`relative flex h-[88px] w-[88px] items-center justify-center rounded-full transition-colors ${
             listening
               ? "bg-[var(--teal)] text-white"
-              : "border-2 border-[var(--teal)] bg-[var(--paper-raised)] text-[var(--teal-deep)] hover:bg-[var(--teal-tint)]"
+              : starting
+                ? "bg-[var(--teal-deep)] text-white"
+                : "border-2 border-[var(--teal)] bg-[var(--paper-raised)] text-[var(--teal-deep)] hover:bg-[var(--teal-tint)]"
           }`}
         >
           {listening && (
@@ -358,7 +370,11 @@ export function IntakeCard({
 
         {/* Én linje, fast højde. Den skifter indhold — aldrig plads. */}
         <p aria-live="polite" className="mt-3 flex h-5 items-center text-[13px] font-medium text-[var(--ink-soft)]">
-          {listening ? tr("intakeMicListening", lang) : tr("intakeMicHint", lang)}
+          {listening
+            ? tr("intakeMicListening", lang)
+            : starting
+              ? tr("intakeMicStarting", lang)
+              : tr("intakeMicHint", lang)}
         </p>
       </div>
 
