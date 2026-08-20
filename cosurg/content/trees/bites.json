@@ -1,0 +1,330 @@
+{
+  "id": "bites-dk",
+  "version": "0.1.0",
+  "name": {
+    "da": "Bidsår — akut vurdering",
+    "en": "Bite wounds — acute assessment"
+  },
+  "description": {
+    "da": "Klinisk beslutningstræ for akut vurdering af bidsår (vulnus morsum). Bygget på Rigshospitalets VIP-instruks PBB - Bidsår, Afdeling for Plastikkirurgi og Brandsårsbehandling.",
+    "en": "Clinical decision tree for acute assessment of bite wounds (vulnus morsum). Built on the Rigshospitalet clinical instruction PBB - Bite wounds, Department of Plastic Surgery and Burn Treatment."
+  },
+  "authors": [
+    "Klinisk grundlag: VIP-instruks PBB - Bidsår v7, Lisa Toft Jensen og Peter Stemann Andersen, Rigshospitalet",
+    "Udkast samlet af CoSurg — afventer klinisk godkendelse"
+  ],
+  "rootNodeId": "animal",
+  "nodes": [
+    {
+      "id": "animal",
+      "question": {
+        "da": "Hvad har bidt patienten? Hund, kat, menneske — eller et andet dyr?",
+        "en": "What bit the patient? Dog, cat, human — or another animal?"
+      },
+      "orQuestion": {
+        "da": "Hvad har bidt?",
+        "en": "What bit?"
+      },
+      "answerType": "choice",
+      "help": {
+        "da": "Bidsår er en akut behandlingskrævende tilstand — infektionsrisikoen stiger jo længere tid der går før behandling. Infektionshyppighed: hundebid 2-25 %, kattebid 30-50 %, menneskebid 10-50 %.",
+        "en": "A bite wound requires acute treatment — the risk of infection rises the longer treatment is delayed. Infection rates: dog bites 2-25%, cat bites 30-50%, human bites 10-50%."
+      },
+      "options": [
+        {
+          "value": "dog",
+          "label": { "da": "Hund", "en": "Dog" },
+          "synonyms": {
+            "da": ["hundebid", "hunden"],
+            "en": ["dog bite"]
+          }
+        },
+        {
+          "value": "cat",
+          "label": { "da": "Kat", "en": "Cat" },
+          "synonyms": {
+            "da": ["kattebid", "katten"],
+            "en": ["cat bite"]
+          }
+        },
+        {
+          "value": "human",
+          "label": { "da": "Menneske", "en": "Human" },
+          "synonyms": {
+            "da": ["menneskebid", "person", "slagsmål"],
+            "en": ["human bite", "fight"]
+          }
+        },
+        {
+          "value": "other",
+          "label": { "da": "Andet dyr", "en": "Other animal" },
+          "synonyms": {
+            "da": ["ræv", "flagermus", "gnaver", "hest"],
+            "en": ["fox", "bat", "rodent", "horse"]
+          }
+        }
+      ],
+      "redFlags": [
+        {
+          "when": "other",
+          "message": {
+            "da": "Ved anamnestisk mistanke om rabies — blandt andet ved bid fra ræv og flagermus — kontaktes Statens Serum Institut. Podning kan være indiceret ved andre dyrearter; husk at skrive dyrets art på rekvisitionen.",
+            "en": "If rabies is suspected from the history — including bites from foxes and bats — contact the national serum institute. Culture may be indicated for other species; note the species on the requisition."
+          }
+        }
+      ],
+      "edges": [
+        { "when": "*", "goto": "systemic" }
+      ]
+    },
+    {
+      "id": "systemic",
+      "question": {
+        "da": "Er patienten systemisk påvirket — er der tegn på sepsis?",
+        "en": "Is the patient systemically affected — any signs of sepsis?"
+      },
+      "orQuestion": {
+        "da": "Systemisk påvirket?",
+        "en": "Systemically affected?"
+      },
+      "answerType": "boolean",
+      "options": [
+        {
+          "value": "yes",
+          "label": { "da": "Ja", "en": "Yes" },
+          "synonyms": {
+            "da": ["ja", "feber", "påvirket", "septisk"],
+            "en": ["yes", "fever", "septic"]
+          }
+        },
+        {
+          "value": "no",
+          "label": { "da": "Nej", "en": "No" },
+          "synonyms": {
+            "da": ["nej", "upåvirket"],
+            "en": ["no", "well"]
+          }
+        }
+      ],
+      "redFlags": [
+        {
+          "when": "yes",
+          "message": {
+            "da": "Tegn på sepsis eller systemisk påvirkning: patienten bør indlægges til behandling med intravenøs antibiotika. Podning er indiceret ved systemisk påvirkning.",
+            "en": "Signs of sepsis or systemic involvement: the patient should be admitted for intravenous antibiotics. Culture is indicated when the patient is systemically affected."
+          },
+          "goto": "disp-emergency"
+        }
+      ],
+      "edges": [
+        { "when": "*", "goto": "deep" }
+      ]
+    },
+    {
+      "id": "deep",
+      "question": {
+        "da": "Er der tegn på skade på vitale strukturer — led, sener, kar eller nerver?",
+        "en": "Any signs of injury to vital structures — joints, tendons, vessels or nerves?"
+      },
+      "orQuestion": {
+        "da": "Led, sener, kar eller nerver ramt?",
+        "en": "Joints, tendons, vessels or nerves involved?"
+      },
+      "answerType": "boolean",
+      "help": {
+        "da": "Læsionen skal exploreres grundigt for tegn på skade på vitale strukturer, hvilket kan kræve generel anæstesi.",
+        "en": "The lesion must be explored thoroughly for injury to vital structures, which may require general anaesthesia."
+      },
+      "options": [
+        { "value": "yes", "label": { "da": "Ja", "en": "Yes" } },
+        { "value": "no", "label": { "da": "Nej", "en": "No" } }
+      ],
+      "edges": [
+        { "when": "yes", "goto": "disp-refer" },
+        { "when": "*", "goto": "child" }
+      ]
+    },
+    {
+      "id": "child",
+      "question": {
+        "da": "Er patienten et barn?",
+        "en": "Is the patient a child?"
+      },
+      "orQuestion": {
+        "da": "Barn?",
+        "en": "Child?"
+      },
+      "answerType": "boolean",
+      "help": {
+        "da": "Børn kræver ofte generel anæstesi, skal behandles akut og forbliver indlagt til re-vurdering næste morgen. Barn er i sig selv kriterium for infektionsprofylakse; dosér efter vægt, se maksimal dosis af clavulansyre på promedicin.dk.",
+        "en": "Children often require general anaesthesia, must be treated acutely and remain admitted for review the next morning. Being a child is itself a criterion for infection prophylaxis; dose by weight."
+      },
+      "options": [
+        { "value": "yes", "label": { "da": "Ja", "en": "Yes" } },
+        { "value": "no", "label": { "da": "Nej", "en": "No" } }
+      ],
+      "edges": [
+        { "when": "yes", "goto": "disp-refer" },
+        { "when": "*", "goto": "wound-age" }
+      ]
+    },
+    {
+      "id": "wound-age",
+      "question": {
+        "da": "Hvor mange timer er der gået siden biddet?",
+        "en": "How many hours have passed since the bite?"
+      },
+      "orQuestion": {
+        "da": "Timer siden biddet?",
+        "en": "Hours since the bite?"
+      },
+      "answerType": "number",
+      "unit": "timer",
+      "min": 0,
+      "max": 720,
+      "help": {
+        "da": "Sår ældre end 6 timer er i sig selv kriterium for infektionsprofylakse. Kliniske infektionsmanifestationer indtræder inden for 24 timer ved hundebid og 12 timer ved kattebid.",
+        "en": "A wound older than 6 hours is itself a criterion for infection prophylaxis. Clinical infection appears within 24 hours for dog bites and 12 hours for cat bites."
+      },
+      "edges": [
+        { "when": "*", "goto": "immuno" }
+      ]
+    },
+    {
+      "id": "immuno",
+      "question": {
+        "da": "Er patienten immunsupprimeret?",
+        "en": "Is the patient immunosuppressed?"
+      },
+      "orQuestion": {
+        "da": "Immunsupprimeret?",
+        "en": "Immunosuppressed?"
+      },
+      "answerType": "boolean",
+      "help": {
+        "da": "Immunsuppression er i sig selv kriterium for infektionsprofylakse.",
+        "en": "Immunosuppression is itself a criterion for infection prophylaxis."
+      },
+      "options": [
+        { "value": "yes", "label": { "da": "Ja", "en": "Yes" } },
+        { "value": "no", "label": { "da": "Nej", "en": "No" } }
+      ],
+      "edges": [
+        { "when": "*", "goto": "wound-type" }
+      ]
+    },
+    {
+      "id": "wound-type",
+      "question": {
+        "da": "Hvordan ser såret ud? Lacereret eller gabende, punktat — eller klinisk inficeret?",
+        "en": "What does the wound look like? Lacerated or gaping, punctate — or clinically infected?"
+      },
+      "orQuestion": {
+        "da": "Lacereret, punktat eller inficeret?",
+        "en": "Lacerated, punctate or infected?"
+      },
+      "answerType": "choice",
+      "options": [
+        {
+          "value": "lacerated",
+          "label": {
+            "da": "Lacereret eller gabende",
+            "en": "Lacerated or gaping"
+          },
+          "synonyms": {
+            "da": ["flænge", "gabende", "åbent sår"],
+            "en": ["laceration", "gaping", "open wound"]
+          }
+        },
+        {
+          "value": "punctate",
+          "label": {
+            "da": "Punktat",
+            "en": "Punctate"
+          },
+          "synonyms": {
+            "da": ["punktur", "små huller", "tandmærker"],
+            "en": ["puncture", "small holes", "tooth marks"]
+          }
+        },
+        {
+          "value": "infected",
+          "label": {
+            "da": "Klinisk inficeret",
+            "en": "Clinically infected"
+          },
+          "synonyms": {
+            "da": ["rødme", "pus", "betændt", "infektion"],
+            "en": ["redness", "pus", "infection"]
+          }
+        }
+      ],
+      "edges": [
+        { "when": "lacerated", "goto": "disp-suture" },
+        { "when": "*", "goto": "disp-open" }
+      ]
+    }
+  ],
+  "dispositions": [
+    {
+      "id": "disp-emergency",
+      "severity": "emergency",
+      "title": {
+        "da": "Akut: indlæggelse og intravenøs antibiotika",
+        "en": "Emergency: admission and intravenous antibiotics"
+      },
+      "guidance": {
+        "da": "Alle patienter med tegn på sepsis eller systemisk påvirkning bør indlægges til behandling med intravenøs antibiotika. Pod fra læsionen og skriv dyrets art på rekvisitionen. Sikr intakt tetanusstatus eller giv post-expositionsprofylakse. Ved anamnestisk mistanke om rabies kontaktes Statens Serum Institut.",
+        "en": "All patients with signs of sepsis or systemic involvement should be admitted for intravenous antibiotics. Culture the lesion and note the species on the requisition. Ensure tetanus cover or give post-exposure prophylaxis. If rabies is suspected from the history, contact the national serum institute."
+      },
+      "sources": [
+        "VIP Rigshospitalet: PBB - Bidsår (version 7)"
+      ]
+    },
+    {
+      "id": "disp-refer",
+      "severity": "refer",
+      "title": {
+        "da": "Henvis: akut plastikkirurgisk behandling",
+        "en": "Refer: acute plastic surgical treatment"
+      },
+      "guidance": {
+        "da": "Skade på vitale strukturer — led, sener, kar eller nerver — kræver grundig exploration, evt. i generel anæstesi. Avitalt væv fjernes ved debridement, men med forsigtighed ved ansigtslæsioner, hvor vævets vitalitet er vanskelig at vurdere akut. Børn behandles akut, kræver ofte generel anæstesi og forbliver indlagt til re-vurdering næste morgen. Sikr tetanusstatus, og behandl snarest — infektionsrisikoen stiger jo længere tid der går.",
+        "en": "Injury to vital structures — joints, tendons, vessels or nerves — requires thorough exploration, possibly under general anaesthesia. Debride avital tissue, but with caution in facial lesions where tissue vitality is hard to judge acutely. Children are treated acutely, often need general anaesthesia and remain admitted for review the next morning. Ensure tetanus cover and treat as soon as possible — the risk of infection rises with time."
+      },
+      "sources": [
+        "VIP Rigshospitalet: PBB - Bidsår (version 7)"
+      ]
+    },
+    {
+      "id": "disp-suture",
+      "severity": "treat",
+      "title": {
+        "da": "Behandl: vask grundigt, suturér og vurdér profylakse",
+        "en": "Treat: wash thoroughly, suture and assess prophylaxis"
+      },
+      "guidance": {
+        "da": "Vask grundigt med sæbe og skumvaskeklud, suppleret med højtryksirrigation med isotonisk saltvand. Fjern avitalt væv ved debridement — forsigtighed ved ansigtslæsioner. Lacererede eller gabende bidsår sutureres tak-i-hak efter grundig sårvask; monofilament foretrækkes frem for spundet tråd for at nedsætte infektionsrisikoen. Giv infektionsprofylakse hvis mindst ét kriterium er opfyldt: Lackmann type II eller højere, barn, sår ældre end 6 timer, eller immunsupprimeret patient — standard er amoxicillin/clavulansyre 500/125 mg tre gange dagligt i 6 dage; ved penicillinallergi moxifloxacin til voksne og ciprofloxacin til børn. Sikr tetanusstatus. Giv infektionsvarsel både skriftligt og mundtligt, og aftal ambulant kontrol ved suturfjernelse.",
+        "en": "Wash thoroughly with soap, supplemented by high-pressure irrigation with isotonic saline. Debride avital tissue — with caution in facial lesions. Lacerated or gaping bite wounds are sutured edge-to-edge after thorough washing; monofilament is preferred over braided suture to reduce infection risk. Give infection prophylaxis if at least one criterion is met: Lackmann type II or higher, a child, a wound older than 6 hours, or an immunosuppressed patient — standard is amoxicillin/clavulanate 500/125 mg three times daily for 6 days; with penicillin allergy, moxifloxacin for adults and ciprofloxacin for children. Ensure tetanus cover. Give a written and verbal infection warning, and arrange follow-up at suture removal."
+      },
+      "sources": [
+        "VIP Rigshospitalet: PBB - Bidsår (version 7)"
+      ]
+    },
+    {
+      "id": "disp-open",
+      "severity": "treat",
+      "title": {
+        "da": "Behandl: lad såret stå åbent",
+        "en": "Treat: leave the wound open"
+      },
+      "guidance": {
+        "da": "Punktate bidsår bør lades åbne. Klinisk inficerede sår lades åbne, og der gives antibiotika. Vask grundigt med sæbe og skumvaskeklud, suppleret med højtryksirrigation med isotonisk saltvand. Vurdér infektionsprofylakse efter kriterierne: Lackmann type II eller højere, barn, sår ældre end 6 timer, eller immunsupprimeret patient — standard er amoxicillin/clavulansyre 500/125 mg tre gange dagligt i 6 dage; ved penicillinallergi moxifloxacin til voksne og ciprofloxacin til børn. Sikr tetanusstatus, og giv infektionsvarsel både skriftligt og mundtligt.",
+        "en": "Punctate bite wounds should be left open. Clinically infected wounds are left open and antibiotics given. Wash thoroughly with soap, supplemented by high-pressure irrigation with isotonic saline. Assess infection prophylaxis against the criteria: Lackmann type II or higher, a child, a wound older than 6 hours, or an immunosuppressed patient — standard is amoxicillin/clavulanate 500/125 mg three times daily for 6 days; with penicillin allergy, moxifloxacin for adults and ciprofloxacin for children. Ensure tetanus cover and give a written and verbal infection warning."
+      },
+      "sources": [
+        "VIP Rigshospitalet: PBB - Bidsår (version 7)"
+      ]
+    }
+  ]
+}

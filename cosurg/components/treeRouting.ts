@@ -70,6 +70,27 @@ const KEYWORDS: Record<string, string[]> = {
     "bandaging",
     "wrap",
   ],
+  "frostbite-dk": [
+    "forfrysning",
+    "forfros",
+    "frostskade",
+    "hypotermi",
+    "kuldeskade",
+    "frostbit",
+    "frozen",
+  ],
+  "bites-dk": [
+    "bidsår",
+    "bidt",
+    "hundebid",
+    "kattebid",
+    "menneskebid",
+    "bidlæsion",
+    "rabies",
+    "morsum",
+    "bite",
+    "bitten",
+  ],
 };
 
 /**
