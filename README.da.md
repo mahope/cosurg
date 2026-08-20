@@ -2,7 +2,9 @@
 
 # CoSurg
 
-**Stemmestyret klinisk beslutningsstøtte til brandsår.**
+**Ét felt. Lægen siger hvad han står med, og systemet finder selv ud af hvad han
+har brug for — en ført vurdering, et kildebelagt svar, et behandlingsopslag eller
+en advarsel. Hvert svar navngiver den kliniske kilde det kommer fra.**
 Bygget på Corti API til Corti Hack for Health, København, 20.–21. august 2026.
 
 | | |
@@ -45,37 +47,84 @@ Fem vurderinger afgør forløbet, og hver af dem har en fælde:
 Ingen af dem er svære at huske. De er svære at huske *alle sammen, hver gang,
 under tidspres*. Det er dét der bliver glemt — ikke viden, men fuldstændighed.
 
+Fuldstændighed er kun den ene halvdel. Den anden melder sig i det øjeblik tvivlen
+gør. Hvordan beregnes arealet på et barn? Hvor meget væske skal en mand på 80 kilo
+med 30 % have? Hvad gør man egentlig ved en cirkulær forbrænding på underarmen?
+Hvert af de spørgsmål sender lægen et andet sted hen — et andet system, en anden
+søgning, en anden måde at spørge på — og den vurdering han var midt i, bliver til
+noget han skal huske at vende tilbage til. Vores værktøjer er adskilte fordi vi
+byggede dem adskilt. Det kliniske øjeblik er ikke adskilt.
+
 ## Løsningen
 
-CoSurg fører lægen gennem vurderingen som en samtale. Agenten stiller næste
-spørgsmål højt, lægen svarer med stemmen, træet fyldes ud node for node, og til
-sidst falder disposition, journalnotat og diagnosekoder ud. Røde flag afbryder
-undervejs — ikke som en advarsel man kan overse, men som en oplæst besked med
-telefonnummeret til vagthavende brandsårslæge.
+CoSurg er ét felt. Lægen siger hvad han står med, og systemet finder selv ud af
+hvilken slags hjælp det var. At vælge værktøjet er netop dét der ikke er tid til,
+så CoSurg beder ikke nogen om at vælge.
 
-I operationsstue-tilstand vendes forholdet om: kirurgen er steril og rører
-aldrig skærmen. Mikrofonen er åben, kommandoerne er få og distinkte, og skærmen
-viser store procedurefotos af hvad der konkret skal gøres i dette trin.
+Fire ting kan komme retur, og hvilken af dem det bliver, er ikke lægens problem:
+
+- **En ført vurdering.** Ytringen beskriver en patient, så det rigtige forløb
+  åbnes, og første spørgsmål læses op. Lægens egne ord bliver første linje i
+  transskriptet — beskrivelsen er en klinisk oplysning fra begyndelsen, ikke noget
+  der skal skrives to gange.
+- **Et kildebelagt svar.** Ytringen er et spørgsmål, så det slås op — i vores egen
+  vidensbase, eller i litteraturen når den ikke rækker — og kommer tilbage med
+  uddraget ordret og kilden navngivet.
+- **Et behandlingsopslag.** Ytringen spørger hvordan en tilstand håndteres, så hele
+  forløbet samles fra vores egne kilder i klinisk rækkefølge, afsnit for afsnit,
+  hvert med sin oprindelse.
+- **Et spørgsmål tilbage.** Ytringen kan læses på to måder, så CoSurg siger det og
+  spørger hvad der var ment.
+
+**Sammensmeltningen er produktet, og det øjeblik den betaler sig er midt i noget
+andet.** Lægen står ved *hvor stort er arealet?* og spørger "hvordan behandler jeg
+en overfladisk dermal forbrænding?" — et spørgsmål, ikke et svar, og CoSurg læser
+det som et spørgsmål, fordi ingen besvarer et spørgsmål ved at indlede med
+"hvordan". Opslaget lægger sig under det spørgsmål der stadig står, citerer vores
+kilder med deres navne på, og nederst på kortet står *forløbet står uændret på trin
+4 / 8*. Intet blev lukket, intet skal findes frem igen, og spørgsmålet kommer aldrig
+i journalen som en oplysning om patienten.
+
+Undervejs afbryder røde flag — ikke som en advarsel man kan overse, men som en
+oplæst besked med telefonnummeret til vagthavende brandsårslæge. Og i håndfri
+tilstand vendes forholdet om: kirurgen er steril og rører aldrig skærmen.
+Mikrofonen er åben, kommandoerne er få og distinkte, og skærmen viser store
+procedurefotos af hvad der konkret skal gøres i dette trin.
 
 ### Hvad der gør den anderledes
 
-Det er let at bygge en chatbot der svarer på brandsårsspørgsmål. Forskellen på
-det og klinisk beslutningsstøtte er hvor svaret kommer fra. Fire steder har vi
-truffet valget bevidst:
+Det er let at bygge en chatbot der svarer på brandsårsspørgsmål. Forskellen på det
+og klinisk beslutningsstøtte er ikke hvor godt den formulerer sig. Den er hvor
+svaret kommer fra — og om nogen kan finde ud af det bagefter. Fem steder har vi
+truffet det valg bevidst.
 
-**Anbefalingen kommer fra træet, aldrig fra en sprogmodel.**
+**Den spørger igen frem for at gætte, og det er kalibreret.**
+Spørgsmål eller svar er appens farligste enkeltbeslutning. De to fejl er ikke lige
+store: et svar læst som spørgsmål koster et opslag og en gentagelse, mens et
+spørgsmål læst som svar rykker en klinisk beslutning på et falsk grundlag — og
+efterlader intet i resultatet der viser det. Lagene er derfor ordnet efter den
+skævhed. Et deterministisk lag
+([`components/unified/intent.ts`](cosurg/components/unified/intent.ts)) afgør kun
+det det er sikkert på, uden latens og uden net; resten falder igennem til Cortis
+svarfortolker; og først når DEN melder tvivl, spørges Cortis intent-router om
+ytringen mon var et spørgsmål alligevel
+([`app/api/route/agent.ts`](cosurg/app/api/route/agent.ts)). Er ytringen ægte
+tvetydig — "er det dybt?" sagt ved dybde-noden — standser CoSurg og spørger hvad
+der var ment. Den vælger aldrig det mest sandsynlige.
+
+Samme regel afgør hvilket forløb en ytring åbner. Genkendelsen sker i browseren
+([`components/treeRouting.ts`](cosurg/components/treeRouting.ts)), så vi kan sige
+præcis hvorfor: en vinder kræver både et absolut minimum og et klart forspring til
+nummer to. "Jeg skal lægge forbinding på en hånd med brandsår" rammer begge forløb
+— og netop dér spørger appen frem for at vælge.
+
+**Er svaret en anbefaling, kommer det fra træet, aldrig fra en sprogmodel.**
 Beslutningstræet er JSON skrevet af plastikkirurger. Motoren der kører det
-([`lib/tree/engine.ts`](cosurg/lib/tree/engine.ts)) er 123 linjer rene
-funktioner uden ét ord om brandsår i sig. Den slår en svarværdi op i nodens
-kanter og rykker frem. En sprogmodel kan ikke ændre hvor den lander, fordi den
-ikke er med i det opslag.
-
-**Agenten fortolker kun — og spørger igen frem for at gætte.**
-Cortis agentic framework får ét job: oversætte "øh, det er vist sådan halvdelen
-af underarmen" til en værdi nodens svarskema tillader. Kan svaret ikke afgøres,
-er det rigtige output at flagge tvivl, ikke at vælge det mest sandsynlige.
-Et gæt der ligner et svar er værre end intet svar, fordi det ikke kan ses på
-resultatet at der blev gættet.
+([`lib/tree/engine.ts`](cosurg/lib/tree/engine.ts)) er 123 linjer rene funktioner
+uden ét ord om brandsår i sig. Den slår en svarværdi op i nodens kanter og rykker
+frem. En sprogmodel kan ikke ændre hvor den lander, fordi den ikke er med i det
+opslag. Den førte vurdering er én af de former et svar kan tage — og det er den
+form hvor determinisme betyder mest, fordi det er den der ender i en disposition.
 
 **Koderne kommer fra Cortis coding-API, ikke fra en model der finder på dem.**
 En sprogmodel kan producere en ICD-10-kode der ser fuldstændig rigtig ud og ikke
@@ -84,17 +133,25 @@ kontekster til Corti Symphony, og skribent-agenten får koderne som en fast list
 den ikke må røre. Den må skrive *hvilket trin i beslutningsvejen der understøtter
 hver kode* — det er alt.
 
-**Chatten citerer vores egne kilder ordret.**
+**Opslag citerer vores egne kilder, og siger til når der ikke er nogen.**
 Svarene kommer fra vores egen MCP-server, som returnerer uddrag der bærer deres
 kilde-URL. Er emnet ikke dækket, svarer serveren `INGEN DAEKNING I VIDENSBASEN`,
 og det er dét brugeren får at se. Den falder ikke tilbage på almen viden, og går
 serveren ned, siger siderne at der ikke er dækning frem for at improvisere.
-Serveren nås ad to veje: guide- og faldgrubesiderne kalder den direkte
-([`lib/corti/mcp.ts`](cosurg/lib/corti/mcp.ts)), mens chatten giver Corti dens
-URL som MCP-connector og lader Cortis agentic framework foretage opslaget.
+Serveren nås ad to veje: behandlingsopslaget kalder den direkte
+([`lib/corti/mcp.ts`](cosurg/lib/corti/mcp.ts)), mens spørgsmålsopslaget giver
+Corti dens URL som MCP-connector og lader Cortis agentic framework foretage
+søgningen. Vidensbasen rummer 4.849 uddrag fra 592 navngivne kildeafsnit.
+
+**Hvert svar siger hvor godt det er belagt.** Et opslag mærkes *Kildebelagt*,
+*Delvist belagt*, *Ræsonneret* eller *Ikke belagt*, og hver kildehenvisning siger
+om den kom fra *Vidensbase* eller *Litteratur*, med identifikator og link. Hvor
+agenten har ræsonneret ud over kilderne, står ræsonnementet i sin egen boks under
+overskriften *Fagligt ræsonnement — ikke fra en kilde*. Lægen skal ikke selv regne
+ud hvor meget et svar kan bære; svaret siger det.
 
 Det samme princip går igen: **hvert udsagn skal kunne peges tilbage på noget en
-fagperson har skrevet.**
+fagperson har skrevet, og appen skal kunne sige hvilket.**
 
 ## Sådan bruges Corti
 
@@ -102,10 +159,10 @@ Alle fem produktområder er i brug. Tabellen beskriver hvad koden faktisk kalder
 
 | Produktområde | Hvor | Hvordan |
 |---|---|---|
-| **Ambient STT** | [`lib/audio/useTranscribe.ts`](cosurg/lib/audio/useTranscribe.ts) | `/transcribe`-websocket via `@corti/sdk` med `automaticPunctuation` og interim-resultater. Lytter mens lægen svarer på træets spørgsmål. |
+| **Ambient STT** | [`lib/audio/useTranscribe.ts`](cosurg/lib/audio/useTranscribe.ts) | `/transcribe`-websocket via `@corti/sdk` med `automaticPunctuation` og interim-resultater. Lytter fra første ytring i feltet og videre gennem vurderingen. |
 | **Dictation STT** | [`lib/audio/useDictation.ts`](cosurg/lib/audio/useDictation.ts) | Samme socket, konfigureret som diktat: `spokenPunctuation`, så lægen kan sige "punktum" og "nyt afsnit". Tilkoblet i `app/page.tsx`; diktatet føjes til notatet. |
 | **Text generation** | [`app/api/note/route.ts`](cosurg/app/api/note/route.ts) | En Corti-agent skriver journalnotatet ud fra beslutningsvejen, transskriptet og diktatet. |
-| **Agentic framework** | [`lib/corti/agent.ts`](cosurg/lib/corti/agent.ts) | Fire agenter med schema-connectors og struktureret output: svarfortolker og skribent her, plus en intent-router ([`app/api/route/agent.ts`](cosurg/app/api/route/agent.ts)) og en emne-router til behandlingsguiden ([`app/api/guide/route.ts`](cosurg/app/api/guide/route.ts)). Vores MCP-server kobles på som connector. |
+| **Agentic framework** | [`lib/corti/agent.ts`](cosurg/lib/corti/agent.ts) | Fire agenter med schema-connectors og struktureret output: svarfortolker og skribent her, plus en intent-router ([`app/api/route/agent.ts`](cosurg/app/api/route/agent.ts)) og en emne-router til behandlingsopslaget ([`app/api/guide/route.ts`](cosurg/app/api/guide/route.ts)). Vores MCP-server kobles på som connector. |
 | **Medical coding** | [`lib/corti/coding.ts`](cosurg/lib/corti/coding.ts) | Corti Symphony, `POST /v2/tools/coding/`. Koderne kommer fra kode-API'et; sprogmodellen må kun begrunde dem. |
 
 ### Forbehold vi ikke skjuler
@@ -134,7 +191,9 @@ Fire dele, og grænsen mellem dem er hvor troværdigheden bor.
 **Appen** ([`cosurg/`](cosurg/)) er Next.js 16 med App Router. Alle Corti-kald går
 gennem server-side API-ruter, så browseren aldrig ser credentials. Betalte ruter
 er bag `guard()` — origin-lås plus per-IP-kvote — og al fritekst passerer en
-længdegrænse (`cap()`), før den når et betalt API.
+længdegrænse (`cap()`), før den når et betalt API. Genkendelsen af hvad en ytring
+var, ligger før alt dette og kører i browseren: den koster ingenting, virker uden
+net, og kan navngive sin egen begrundelse.
 
 **Træmotoren** ([`cosurg/lib/tree/`](cosurg/lib/tree/)) er tilstandsløs og
 domæne-agnostisk. Den kender ikke til brandsår — den kender til noder, kanter,
@@ -147,13 +206,15 @@ røde flag og dispositioner. Derfor kører den samme motor begge vores træer:
 
 En procedureguide og et diagnostisk beslutningstræ er samme datastruktur.
 **Træer er data, ikke kode** — et nyt træ til bidsår eller forfrysninger kræver
-ingen ændring i motoren.
+ingen ændring i motoren. Hvilket af dem der åbner, afgøres ud fra hvad lægen sagde,
+så trævælgeren i headeren er en rettelse, ikke et første skridt.
 
 **MCP-serveren** ([`cosurg-mcp/`](cosurg-mcp/)) holder den kliniske vidensbase og
-svarer kun med ordrette uddrag der bærer deres kilde. Ni værktøjer: fritekstsøgning
-i kilderne, hentning af hele kildeafsnit, opslag i beslutningstræerne, PubMed-søgning
-og statusvisning. Ingen database, ingen skrivbar tilstand — alt indlæses ved opstart,
-så et svar altid kan spores til en fil. Aktuelle tal står på
+svarer kun med ordrette uddrag der bærer deres kilde. Ti værktøjer: fritekstsøgning
+i kilderne, hentning af hele kildeafsnit og deres illustrationer, opslag i
+beslutningstræerne, PubMed-søgning og -abstrakter samt statusvisning. Ingen
+database, ingen skrivbar tilstand — alt indlæses ved opstart, så et svar altid kan
+spores til en fil. Aktuelle tal står på
 [`/health`](https://mcp.cosurg.com/health).
 
 Serveren er også hvor vi holder to skel som en læge ikke skal kunne overse.
@@ -183,9 +244,8 @@ npm install
 npm run dev                    # http://localhost:3000
 ```
 
-Appen kører uden MCP-serveren — den kliniske chat melder så at der ikke er
-forbindelse til vidensbasen frem for at svare ud fra almen viden. Vil du køre
-begge dele:
+Appen kører uden MCP-serveren — opslagene melder så at der ikke er forbindelse til
+vidensbasen frem for at svare ud fra almen viden. Vil du køre begge dele:
 
 ```bash
 cd ../cosurg-mcp
@@ -203,7 +263,7 @@ Serveren finder selv `data/kilder/` og `../cosurg/content/trees/`. Sæt derefter
 | `CORTI_CLIENT_ID` / `CORTI_CLIENT_SECRET` | — | Fra Corti Console |
 | `CORTI_CODING_SYSTEM` | `icd10int-outpatient` | Sættes til et SKS-navn den dag adgangen findes |
 | `SYV_API_KEY` | — | Uden nøgle falder oplæsning tilbage til browserstemmen |
-| `MCP_URL` / `MCP_AUTH_TOKEN` | — | Uden dem er den kliniske chat slået fra |
+| `MCP_URL` / `MCP_AUTH_TOKEN` | — | Uden dem er opslagene slået fra |
 | `ALLOWED_ORIGINS` | — | Kommasepareret, til preview-udrulninger |
 
 Hele stakken i containere, fra repo-roden:
@@ -237,7 +297,7 @@ Kruse**, Afsnit for plastikkirurgi og brandsårsbehandling 6052.
 | [`cosurg/`](cosurg/) | Next.js-appen. Klinisk indhold i `content/trees/`, aldrig i kode. |
 | [`cosurg-mcp/`](cosurg-mcp/) | MCP-serveren og den kliniske vidensbase med proveniens. |
 | [`docs/`](docs/) | Specifikation, byggeplan og arrangørens brief. |
-| [`DEMO.md`](DEMO.md) | Demo-manuskript. Rammen er engelsk; replikkerne står på dansk, fordi demoen køres på dansk. |
+| [`DEMO.md`](DEMO.md) | Demo-manuskript. Rammen er engelsk; nødplanen er gentaget på dansk, fordi det er den del man læser under pres. |
 | [`THIRD-PARTY.md`](THIRD-PARTY.md) | Alt vi bruger som ikke er Corti. |
 | [`README.md`](README.md) | Denne side på engelsk — repoets hovedsprog. |
 
