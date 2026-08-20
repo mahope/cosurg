@@ -9,6 +9,7 @@ import { NotePanel, type NoteResult } from "./NotePanel";
 import { StatusLine } from "./ui/Working";
 import { useStepMotion } from "./ui/useStepMotion";
 import { SizeLock, widestOf } from "./ui/SizeLock";
+import { Kbd, Tooltip } from "./ui/Tooltip";
 
 interface OrViewProps {
   lang: Lang;
@@ -165,12 +166,14 @@ export function OrView({
             tone="or"
             className="order-last min-w-0 basis-full font-[family-name:var(--font-mono)] text-sm leading-snug sm:order-none sm:basis-auto sm:flex-1 sm:justify-end sm:text-right"
           />
-          <button
-            onClick={onExit}
-            className="flex min-h-11 shrink-0 items-center rounded-lg border border-[var(--or-line)] px-3 py-1.5 text-xs font-medium text-[var(--or-ink-soft)] transition-colors hover:border-[var(--or-accent)] hover:text-[var(--or-accent)]"
-          >
-            <SizeLock variants={widestOf("orExit")}>{tr("orExit", lang)}</SizeLock>
-          </button>
+          <Tooltip label={tr("tipOrExit", lang)} keys={["Esc"]} placement="bottom-end" tone="or" className="shrink-0">
+            <button
+              onClick={onExit}
+              className="flex min-h-11 shrink-0 items-center rounded-lg border border-[var(--or-line)] px-3 py-1.5 text-xs font-medium text-[var(--or-ink-soft)] transition-colors hover:border-[var(--or-accent)] hover:text-[var(--or-accent)]"
+            >
+              <SizeLock variants={widestOf("orExit")}>{tr("orExit", lang)}</SizeLock>
+            </button>
+          </Tooltip>
         </div>
 
         {/* Fremdrift som en tynd linje — aflæselig på afstand, uden at fylde. */}
@@ -289,21 +292,54 @@ export function OrView({
               usynlig på de noder hvor der ikke er et trin at kvittere. Ellers
               ville stemmekommando-hintet ved siden af hoppe frem og tilbage
               hver anden node — netop dét kirurgen læser på afstand. */}
-          <button
-            onClick={onNext}
-            tabIndex={canAdvance ? 0 : -1}
-            aria-hidden={!canAdvance}
-            className={`flex min-h-11 shrink-0 items-center rounded-lg border border-[var(--or-accent)] bg-[var(--or-accent-soft)] px-4 py-2 text-base font-semibold text-[var(--or-accent)] transition-colors hover:bg-[var(--or-surface-raised)] ${
-              canAdvance ? "" : "invisible pointer-events-none"
-            }`}
-          >
-            <SizeLock variants={widestOf("nextStep").map((s) => `${s} →`)}>
-              {tr("nextStep", lang)} →
-            </SizeLock>
-          </button>
-          <p className="font-[family-name:var(--font-mono)] text-sm text-[var(--or-ink-soft)]">
-            <span className="text-[var(--or-accent)]">{tr("orCommands", lang)}:</span> {tr("orHint", lang)}
-          </p>
+          <Tooltip label={tr("tipOrNext", lang)} keys={[tr("keySpace", lang)]} placement="top-start" tone="or" className="shrink-0">
+            <button
+              onClick={onNext}
+              tabIndex={canAdvance ? 0 : -1}
+              aria-hidden={!canAdvance}
+              className={`flex min-h-11 shrink-0 items-center rounded-lg border border-[var(--or-accent)] bg-[var(--or-accent-soft)] px-4 py-2 text-base font-semibold text-[var(--or-accent)] transition-colors hover:bg-[var(--or-surface-raised)] ${
+                canAdvance ? "" : "invisible pointer-events-none"
+              }`}
+            >
+              <SizeLock variants={widestOf("nextStep").map((s) => `${s} →`)}>
+                {tr("nextStep", lang)} →
+              </SizeLock>
+            </button>
+          </Tooltip>
+          {/*
+            Stemmekommandoerne står synligt, fordi det er dem kirurgen skal
+            bruge — han rører ikke skærmen, og en kommando han ikke kan se er
+            en kommando han ikke bruger.
+
+            Tastelinjen under er den usterile assistents. Den har virket hele
+            tiden (se page.tsx), men har aldrig stået nogen steder, og en
+            reserve ingen kender redder ingen demo.
+          */}
+          <div className="min-w-0">
+            <p className="font-[family-name:var(--font-mono)] text-sm text-[var(--or-ink-soft)]">
+              <span className="text-[var(--or-accent)]">{tr("orCommands", lang)}:</span> {tr("orHint", lang)}
+            </p>
+            <p className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 font-[family-name:var(--font-mono)] text-xs text-[var(--or-ink-soft)]">
+              <span>{tr("orKeyFallback", lang)}:</span>
+              <span className="flex items-center gap-1.5">
+                <Kbd tone="or">{tr("keySpace", lang)}</Kbd>
+                <Kbd tone="or">→</Kbd>
+                {tr("nextStep", lang)}
+              </span>
+              <span className="flex items-center gap-1.5">
+                <Kbd tone="or">←</Kbd>
+                {tr("back", lang)}
+              </span>
+              <span className="flex items-center gap-1.5">
+                <Kbd tone="or">R</Kbd>
+                {tr("repeat", lang)}
+              </span>
+              <span className="flex items-center gap-1.5">
+                <Kbd tone="or">Esc</Kbd>
+                {tr("orExitShort", lang)}
+              </span>
+            </p>
+          </div>
         </div>
         {/* Hvad appen sidst hørte. Kirurgen skal kunne se at han blev forstået
             uden at vente på kvitteringen — og en skærmlæser skal kunne følge

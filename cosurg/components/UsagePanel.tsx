@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import type { Lang } from "@/lib/tree/types";
 import { tr } from "@/lib/i18n";
+import { Tooltip } from "./ui/Tooltip";
 
 /**
  * Hvad appen faktisk har brugt i denne session.
@@ -72,23 +73,25 @@ export function UsagePanel({ lang, usage }: UsagePanelProps) {
 
   return (
     <div ref={rootRef} className="relative inline-flex">
-      <button
-        type="button"
-        onClick={() => setOpen((v) => !v)}
-        aria-expanded={open}
-        aria-label={tr("usageTitle", lang)}
-        className="flex h-6 w-6 items-center justify-center rounded-full border border-[var(--line-strong)] text-[var(--ink-faint)] transition-colors hover:border-[var(--teal)] hover:bg-[var(--teal-tint)] hover:text-[var(--teal-deep)]"
-      >
-        <svg viewBox="0 0 16 16" width="11" height="11" fill="none" aria-hidden="true">
-          <path
-            d="M8 7v4.5M8 4.6v.1"
-            stroke="currentColor"
-            strokeWidth="1.6"
-            strokeLinecap="round"
-          />
-          <circle cx="8" cy="8" r="6.4" stroke="currentColor" strokeWidth="1.2" />
-        </svg>
-      </button>
+      <Tooltip label={tr("tipUsage", lang)} placement="bottom-start">
+        <button
+          type="button"
+          onClick={() => setOpen((v) => !v)}
+          aria-expanded={open}
+          aria-label={tr("usageTitle", lang)}
+          className="flex h-6 w-6 items-center justify-center rounded-full border border-[var(--line-strong)] text-[var(--ink-faint)] transition-colors hover:border-[var(--teal)] hover:bg-[var(--teal-tint)] hover:text-[var(--teal-deep)]"
+        >
+          <svg viewBox="0 0 16 16" width="11" height="11" fill="none" aria-hidden="true">
+            <path
+              d="M8 7v4.5M8 4.6v.1"
+              stroke="currentColor"
+              strokeWidth="1.6"
+              strokeLinecap="round"
+            />
+            <circle cx="8" cy="8" r="6.4" stroke="currentColor" strokeWidth="1.2" />
+          </svg>
+        </button>
+      </Tooltip>
 
       {open && (
         <div className="absolute right-0 top-full z-30 mt-2 w-[min(24rem,calc(100vw-2rem))] rounded-xl border border-[var(--line)] bg-[var(--paper-raised)] p-4 text-left shadow-[var(--shadow-lifted)]">

@@ -9,6 +9,8 @@ import { AboutTeamLink } from "./AboutTeamLink";
 import { TreePicker, type TreeSummary } from "./TreePicker";
 import { UsagePanel, type SessionUsage } from "./UsagePanel";
 import { SizeLock, widestOf } from "./ui/SizeLock";
+import { Tooltip } from "./ui/Tooltip";
+import { combo, HELP_CHAR, SHORTCUT_KEYS } from "./shortcuts";
 
 interface ControlRailProps {
   lang: Lang;
@@ -27,6 +29,8 @@ interface ControlRailProps {
   onToggleLang: () => void;
   onToggleVoiceMode: () => void;
   onToggleOrMode: () => void;
+  /** Åbner genvejsoversigten — den samme «?» siden lytter efter. */
+  onOpenShortcuts: () => void;
 }
 
 /**
@@ -50,6 +54,7 @@ export function ControlRail({
   onToggleLang,
   onToggleVoiceMode,
   onToggleOrMode,
+  onOpenShortcuts,
 }: ControlRailProps) {
   return (
     /*
@@ -62,9 +67,16 @@ export function ControlRail({
     <header className="mb-4 sm:mb-5">
       <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-start sm:justify-between sm:gap-4">
         <div className="flex min-w-0 items-center gap-3">
-          <Link href="/" onClick={onGoHome} className="shrink-0 transition-opacity hover:opacity-80">
-            <BrandMark size={50} />
-          </Link>
+          <Tooltip
+            label={tr("tipHome", lang)}
+            keys={combo(SHORTCUT_KEYS.newSession)}
+            placement="bottom-start"
+            className="shrink-0"
+          >
+            <Link href="/" onClick={onGoHome} className="shrink-0 transition-opacity hover:opacity-80">
+              <BrandMark size={50} />
+            </Link>
+          </Tooltip>
           <div className="min-w-0">
             <Link href="/" onClick={onGoHome} className="transition-opacity hover:opacity-80">
               <h1 className="font-[family-name:var(--font-display)] text-[22px] font-semibold tracking-tight text-[var(--ink)]">
@@ -105,21 +117,23 @@ export function ControlRail({
               den er der ingen oplæsning at slå til eller fra. */}
           {orMode && (
             <div className="flex items-center rounded-lg border bg-[var(--paper-raised)] p-0.5">
-              <button
-                onClick={onToggleVoiceMode}
-                disabled={orMode}
-                aria-pressed={fullVoice}
-                className={`flex min-h-10 items-center rounded-md px-3 py-1.5 text-sm font-medium transition-colors disabled:opacity-40 ${
-                  fullVoice ? "bg-[var(--teal-tint)] text-[var(--teal-deep)]" : "text-[var(--ink-soft)]"
-                }`}
-              >
-                {/* "Oplæsning fra" er bredere end "Speech off" — uden en låst
-                    bredde flytter knapperne til højre sig hver gang man skifter
-                    sprog eller slår oplæsning til. */}
-                <SizeLock variants={widestOf("voiceFull", "voiceKey")}>
-                  {fullVoice ? tr("voiceFull", lang) : tr("voiceKey", lang)}
-                </SizeLock>
-              </button>
+              <Tooltip label={tr("tipSpeech", lang)} placement="bottom-end">
+                <button
+                  onClick={onToggleVoiceMode}
+                  disabled={orMode}
+                  aria-pressed={fullVoice}
+                  className={`flex min-h-10 items-center rounded-md px-3 py-1.5 text-sm font-medium transition-colors disabled:opacity-40 ${
+                    fullVoice ? "bg-[var(--teal-tint)] text-[var(--teal-deep)]" : "text-[var(--ink-soft)]"
+                  }`}
+                >
+                  {/* "Oplæsning fra" er bredere end "Speech off" — uden en låst
+                      bredde flytter knapperne til højre sig hver gang man skifter
+                      sprog eller slår oplæsning til. */}
+                  <SizeLock variants={widestOf("voiceFull", "voiceKey")}>
+                    {fullVoice ? tr("voiceFull", lang) : tr("voiceKey", lang)}
+                  </SizeLock>
+                </button>
+              </Tooltip>
             </div>
           )}
 
@@ -131,17 +145,39 @@ export function ControlRail({
               SurgeonBlue. Den bar før OR-tilstandens Turquoise mens den var
               tændt — den mørke verdens accent lagt oven på den lyse — og var
               dermed det stærkeste farvefelt på en ellers rolig skærm. */}
-          <button
-            onClick={onToggleOrMode}
-            aria-pressed={orMode}
-            className={`flex min-h-11 items-center rounded-lg border px-4 py-2 text-sm font-semibold transition-colors disabled:opacity-40 ${
-              orMode
-                ? "border-[var(--teal)] bg-[var(--teal)] text-white"
-                : "border-[var(--line-strong)] bg-[var(--paper-raised)] text-[var(--ink)] enabled:hover:border-[var(--teal)] enabled:hover:bg-[var(--teal-tint)]"
-            }`}
+          <Tooltip
+            label={tr("tipHandsfree", lang)}
+            keys={combo(SHORTCUT_KEYS.handsfree)}
+            placement="bottom-end"
           >
-            <SizeLock variants={widestOf("orMode")}>{tr("orMode", lang)}</SizeLock>
-          </button>
+            <button
+              onClick={onToggleOrMode}
+              aria-pressed={orMode}
+              className={`flex min-h-11 items-center rounded-lg border px-4 py-2 text-sm font-semibold transition-colors disabled:opacity-40 ${
+                orMode
+                  ? "border-[var(--teal)] bg-[var(--teal)] text-white"
+                  : "border-[var(--line-strong)] bg-[var(--paper-raised)] text-[var(--ink)] enabled:hover:border-[var(--teal)] enabled:hover:bg-[var(--teal-tint)]"
+              }`}
+            >
+              <SizeLock variants={widestOf("orMode")}>{tr("orMode", lang)}</SizeLock>
+            </button>
+          </Tooltip>
+
+          {/* Genvejsoversigten. Knappen er lille med vilje — den er en vej ind
+              for musen, mens «?» er vejen for den der allerede har hænderne på
+              tastaturet. Uden den ville genvejene kun kunne findes af den der
+              på forhånd vidste at de fandtes. */}
+          <Tooltip label={tr("tipShortcuts", lang)} keys={[HELP_CHAR]} placement="bottom-end">
+            <button
+              type="button"
+              onClick={onOpenShortcuts}
+              aria-label={tr("shortcutsTitle", lang)}
+              aria-haspopup="dialog"
+              className="flex h-6 w-6 items-center justify-center rounded-full border border-[var(--line-strong)] font-[family-name:var(--font-mono)] text-[12px] font-semibold text-[var(--ink-faint)] transition-colors hover:border-[var(--teal)] hover:bg-[var(--teal-tint)] hover:text-[var(--teal-deep)]"
+            >
+              ?
+            </button>
+          </Tooltip>
 
           <AboutTeamLink lang={lang} />
         </div>

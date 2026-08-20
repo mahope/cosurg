@@ -3,6 +3,8 @@
 import { useEffect, useRef, useState, type RefObject } from "react";
 import type { Lang } from "@/lib/tree/types";
 import { tr } from "@/lib/i18n";
+import { Tooltip } from "./ui/Tooltip";
+import { combo, SHORTCUT_KEYS } from "./shortcuts";
 
 interface ResponseBarProps {
   lang: Lang;
@@ -90,6 +92,12 @@ export function ResponseBar({
             : "py-1.5 pl-1.5 pr-1"
         }`}
       >
+        <Tooltip
+          label={tr(listening ? "tipMicStop" : "tipMicStart", lang)}
+          keys={combo(SHORTCUT_KEYS.mic)}
+          placement="top-start"
+          className="shrink-0"
+        >
         <button
           type="button"
           onClick={onToggleMic}
@@ -133,6 +141,7 @@ export function ResponseBar({
             <path d="M12 19v3M8.5 22h7" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
           </svg>
         </button>
+        </Tooltip>
 
         <input
           ref={inputRef}
@@ -164,25 +173,27 @@ export function ResponseBar({
           {tr("sent", lang)}
         </span>
 
-        <button
-          type="button"
-          onClick={submit}
-          disabled={!value.trim()}
-          aria-label={tr("sendAnswer", lang)}
-          className={`flex shrink-0 items-center justify-center rounded-lg bg-[var(--teal)] text-white transition-opacity disabled:opacity-25 ${
-            hero ? "h-11 w-11" : "h-10 w-10 sm:h-8 sm:w-8"
-          }`}
-        >
-          <svg viewBox="0 0 20 20" width={hero ? 18 : 15} height={hero ? 18 : 15} fill="none" aria-hidden="true">
-            <path
-              d="M4 10h11m0 0-4.5-4.5M15 10l-4.5 4.5"
-              stroke="currentColor"
-              strokeWidth="1.6"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-        </button>
+        <Tooltip label={tr("tipSendAnswer", lang)} keys={["Enter"]} placement="top-end" className="shrink-0">
+          <button
+            type="button"
+            onClick={submit}
+            disabled={!value.trim()}
+            aria-label={tr("sendAnswer", lang)}
+            className={`flex shrink-0 items-center justify-center rounded-lg bg-[var(--teal)] text-white transition-opacity disabled:opacity-25 ${
+              hero ? "h-11 w-11" : "h-10 w-10 sm:h-8 sm:w-8"
+            }`}
+          >
+            <svg viewBox="0 0 20 20" width={hero ? 18 : 15} height={hero ? 18 : 15} fill="none" aria-hidden="true">
+              <path
+                d="M4 10h11m0 0-4.5-4.5M15 10l-4.5 4.5"
+                stroke="currentColor"
+                strokeWidth="1.6"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </button>
+        </Tooltip>
       </div>
     </div>
   );

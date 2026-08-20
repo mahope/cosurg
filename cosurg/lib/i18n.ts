@@ -780,6 +780,174 @@ export const t = {
     da: "Du kan lige så godt bare stille et spørgsmål — så slår jeg det op med kilder først.",
     en: "You can just as well ask a question — then I look it up with sources first.",
   },
+
+  /* ==================================================================
+   * TOOLTIPS OG TASTATURGENVEJE
+   *
+   * En tooltip der gentager knappens etiket er støj. Teksterne herunder
+   * siger derfor hvad der SKER når man trykker — ikke hvad knappen hedder.
+   * De er korte, fordi de læses i forbifarten af en der har travlt, og de
+   * er skrevet i nutid: «optager og skriver ind», ikke «kan bruges til».
+   * ================================================================== */
+
+  /* Instrumentpanelet */
+  tipHome: {
+    da: "Rydder samtalen og starter forfra på en tom skærm",
+    en: "Clears the conversation and starts over on an empty screen",
+  },
+  tipUsage: {
+    da: "Viser hvilke Corti-områder denne session faktisk har brugt, og hvad de kostede",
+    en: "Shows which Corti areas this session actually used, and what they cost",
+  },
+  tipLang: {
+    da: "Skifter sprog for både skærmen og talen — spørgsmål, svar og oplæsning følger med",
+    en: "Switches the language of both screen and speech — questions, answers and read-aloud follow",
+  },
+  tipHandsfree: {
+    da: "Steril betjening: mikrofonen står åben, svarene læses op, og skærmen viser ét trin ad gangen",
+    en: "Sterile operation: the microphone stays open, answers are read aloud, and the screen shows one step at a time",
+  },
+  tipSpeech: {
+    da: "Læser spørgsmål og svar op undervejs",
+    en: "Reads questions and answers aloud as you go",
+  },
+  tipTree: {
+    da: "Skifter hvilket klinisk beslutningstræ udredningen følger",
+    en: "Switches which clinical decision tree the work-up follows",
+  },
+  tipAbout: {
+    da: "Om CoSurg og ekspertpanelet bag det kliniske indhold",
+    en: "About CoSurg and the expert panel behind the clinical content",
+  },
+  tipShortcuts: {
+    da: "Alle tastaturgenveje i appen",
+    en: "Every keyboard shortcut in the app",
+  },
+
+  /* Skrivefeltet og mikrofonen */
+  tipMicStart: {
+    da: "Optager og skriver det du siger ind i feltet, ord for ord",
+    en: "Records and types what you say into the field, word by word",
+  },
+  tipMicStop: {
+    da: "Stopper optagelsen og sender det du har sagt",
+    en: "Stops recording and sends what you said",
+  },
+  tipAddImage: {
+    da: "Vedhæft op til fire fotos af såret. De beskrives — de bliver aldrig diagnosticeret",
+    en: "Attach up to four wound photos. They are described — never diagnosed",
+  },
+  tipSend: {
+    da: "Sender feltet af sted. Appen afgør selv om det er et spørgsmål, en patient eller et opslag",
+    en: "Sends the field. The app works out whether it is a question, a patient or a lookup",
+  },
+  tipSendAnswer: {
+    da: "Sender svaret og går videre til næste spørgsmål",
+    en: "Sends the answer and moves on to the next question",
+  },
+  tipDictate: {
+    da: "Diktér et tillæg til journalnotatet — sig «punktum» og «nyt afsnit» undervejs",
+    en: "Dictate an addendum to the note — say “full stop” and “new paragraph” as you go",
+  },
+  tipGenerateNote: {
+    da: "Skriver journalnotatet ud fra beslutningsvejen og henter ICD-10-koderne fra Cortis kodnings-API",
+    en: "Writes the clinical note from the decision path and pulls the ICD-10 codes from Corti's coding API",
+  },
+  tipRestart: {
+    da: "Kasserer den nuværende vurdering og begynder forfra",
+    en: "Discards the current assessment and starts over",
+  },
+  tipRemoveImage: {
+    da: "Fjerner billedet igen — det er endnu ikke sendt nogen steder hen",
+    en: "Removes the image again — it has not been sent anywhere yet",
+  },
+
+  /* Svaret og dets belæg */
+  tipSpeakAnswer: {
+    da: "Læser svaret op, så du kan holde øjnene på patienten",
+    en: "Reads the answer aloud so you can keep your eyes on the patient",
+  },
+  tipStopSpeaking: { da: "Afbryder oplæsningen", en: "Stops the read-aloud" },
+  tipEvidenceSourced: {
+    da: "Hvert led i svaret kan føres tilbage til en navngiven kilde i listen nedenfor",
+    en: "Every step of the answer traces back to a named source in the list below",
+  },
+  tipEvidencePartial: {
+    da: "Dele af svaret har kilde; resten er slutninger. Se ræsonnementet for hvilke",
+    en: "Parts of the answer are sourced; the rest are inferences. See the reasoning for which",
+  },
+  tipEvidenceExtrapolated: {
+    da: "Ingen kilde dækker spørgsmålet direkte. Svaret er sluttet ud fra beslægtet materiale",
+    en: "No source covers the question directly. The answer is inferred from related material",
+  },
+  tipEvidenceUnsupported: {
+    da: "Kilderne dækker ikke spørgsmålet. Svaret må ikke stå alene for en klinisk beslutning",
+    en: "The sources do not cover the question. The answer must not stand alone for a clinical decision",
+  },
+  tipOriginKnowledgeBase: {
+    da: "Fra vores egen validerede vidensbase — dansk klinisk praksis",
+    en: "From our own validated knowledge base — Danish clinical practice",
+  },
+  tipOriginLiterature: {
+    da: "Fra litteratursøgning: PubMed, retningslinjer og web",
+    en: "From a literature search: PubMed, guidelines and the web",
+  },
+  tipSourceOpen: {
+    da: "Åbner kilden i et nyt faneblad",
+    en: "Opens the source in a new tab",
+  },
+
+  /* Håndfri tilstand */
+  tipOrExit: {
+    da: "Tilbage til den almindelige skærm. Mikrofonen lukkes",
+    en: "Back to the normal screen. The microphone closes",
+  },
+  tipOrNext: {
+    da: "Kvitterer for trinnet og går videre — det samme som at sige «næste»",
+    en: "Acknowledges the step and moves on — the same as saying “next”",
+  },
+  /* Tastaturet er den usterile assistents reserve når mikrofonen svigter. */
+  orKeyFallback: { da: "Eller på tastatur", en: "Or on the keyboard" },
+  /* Kort udgave til tastelinjen — den fulde etiket står på selve knappen. */
+  orExitShort: { da: "Afslut", en: "Exit" },
+
+  /* ------------------------------------------------------------------ *
+   * Genvejsoversigten bag «?»
+   * ------------------------------------------------------------------ */
+  shortcutsTitle: { da: "Tastaturgenveje", en: "Keyboard shortcuts" },
+  shortcutsClose: { da: "Luk oversigten", en: "Close the overview" },
+  shortcutsNote: {
+    da: "Alt-genvejene virker overalt — også midt i en sætning i skrivefeltet. Browserens egne (Ctrl+F, Ctrl+L) er urørte.",
+    en: "The Alt shortcuts work everywhere — even mid-sentence in the text field. The browser's own (Ctrl+F, Ctrl+L) are untouched.",
+  },
+  shortcutsGroupGlobal: { da: "Overalt", en: "Anywhere" },
+  shortcutsGroupField: { da: "I skrivefeltet", en: "In the text field" },
+  shortcutsGroupOr: { da: "Håndfri tilstand", en: "Handsfree mode" },
+
+  scHelp: { da: "Vis denne oversigt", en: "Show this overview" },
+  scFocusField: { da: "Sæt markøren i skrivefeltet", en: "Put the cursor in the text field" },
+  scMic: { da: "Start eller stop mikrofonen", en: "Start or stop the microphone" },
+  scHandsfree: { da: "Slå håndfri tilstand til eller fra", en: "Turn handsfree mode on or off" },
+  scNew: { da: "Ny samtale", en: "New conversation" },
+  scLang: { da: "Skift mellem dansk og engelsk", en: "Switch between Danish and English" },
+  scSend: { da: "Send det der står i feltet", en: "Send what is in the field" },
+  scNewline: { da: "Ny linje i stedet for at sende", en: "New line instead of sending" },
+  scHelpChar: {
+    da: "Samme oversigt — når markøren ikke står i feltet",
+    en: "The same overview — when the cursor is not in the field",
+  },
+  scCancelDictation: {
+    da: "Fortryd dikteringen mens mikrofonen lytter",
+    en: "Cancel the dictation while the microphone is listening",
+  },
+  scOrNext: { da: "Næste trin", en: "Next step" },
+  scOrBack: { da: "Et trin tilbage", en: "One step back" },
+  scOrRepeat: { da: "Gentag spørgsmålet", en: "Repeat the question" },
+  scOrExit: { da: "Afslut håndfri tilstand", en: "Exit handsfree mode" },
+
+  /* Tastenavne der ikke er ét tegn. Enter, Shift og Esc staves ens på begge
+     sprog og har derfor ingen nøgle her. */
+  keySpace: { da: "Mellemrum", en: "Space" },
 } satisfies Record<string, Record<Lang, string>>;
 
 export function tr(key: keyof typeof t, lang: Lang): string {

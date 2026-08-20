@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import type { Lang, LocalizedText } from "@/lib/tree/types";
 import { tr } from "@/lib/i18n";
+import { Tooltip } from "./ui/Tooltip";
 
 export interface TreeSummary {
   id: string;
@@ -62,30 +63,32 @@ export function TreePicker({
 
   return (
     <div ref={rootRef} className="relative">
-      <button
-        type="button"
-        onClick={() => multiple && setOpen((v) => !v)}
-        disabled={!multiple || busy}
-        aria-expanded={open}
-        aria-haspopup="listbox"
-        aria-label={tr("switchTree", lang)}
-        className="group flex items-center gap-1.5 rounded-md px-1.5 py-0.5 -ml-1.5 font-[family-name:var(--font-mono)] text-xs text-[var(--ink-faint)] transition-colors enabled:hover:bg-[var(--teal-tint)] enabled:hover:text-[var(--teal-deep)] disabled:cursor-default"
-      >
-        <span className="truncate">
-          {activeName} · v{activeVersion}
-        </span>
-        {multiple && (
-          <svg viewBox="0 0 12 12" width="10" height="10" fill="none" aria-hidden="true" className="shrink-0">
-            <path
-              d="M3 4.5 6 7.5 9 4.5"
-              stroke="currentColor"
-              strokeWidth="1.4"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-        )}
-      </button>
+      <Tooltip label={tr("tipTree", lang)} placement="bottom-start">
+        <button
+          type="button"
+          onClick={() => multiple && setOpen((v) => !v)}
+          disabled={!multiple || busy}
+          aria-expanded={open}
+          aria-haspopup="listbox"
+          aria-label={tr("switchTree", lang)}
+          className="group flex items-center gap-1.5 rounded-md px-1.5 py-0.5 -ml-1.5 font-[family-name:var(--font-mono)] text-xs text-[var(--ink-faint)] transition-colors enabled:hover:bg-[var(--teal-tint)] enabled:hover:text-[var(--teal-deep)] disabled:cursor-default"
+        >
+          <span className="truncate">
+            {activeName} · v{activeVersion}
+          </span>
+          {multiple && (
+            <svg viewBox="0 0 12 12" width="10" height="10" fill="none" aria-hidden="true" className="shrink-0">
+              <path
+                d="M3 4.5 6 7.5 9 4.5"
+                stroke="currentColor"
+                strokeWidth="1.4"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          )}
+        </button>
+      </Tooltip>
 
       {open && (
         <div

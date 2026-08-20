@@ -4,6 +4,7 @@ import type { ChatAnswer, Evidence } from "@/lib/corti/chat";
 import type { Lang } from "@/lib/tree/types";
 import { tr } from "@/lib/i18n";
 import { RichText } from "./RichText";
+import { Tooltip } from "../ui/Tooltip";
 
 /**
  * Svaret, og lige så vigtigt: hvad det hviler på.
@@ -28,6 +29,19 @@ function evidenceLabel(evidence: Evidence, lang: Lang): string {
   return key ? tr(key, lang) : tr("evidenceExtrapolated", lang);
 }
 
+/**
+ * Hvad mærkatet BETYDER. «Kildebelagt» og «Ræsonneret» er vores ord, ikke
+ * lægens, og forskellen mellem dem er den vigtigste på hele kortet: den ene
+ * kan følges tilbage til en kilde, den anden er en slutning. Et mærkat man
+ * skal gætte betydningen af, er værre end intet mærkat.
+ */
+const EVIDENCE_TIP: Record<Evidence, "tipEvidenceSourced" | "tipEvidencePartial" | "tipEvidenceExtrapolated" | "tipEvidenceUnsupported"> = {
+  sourced: "tipEvidenceSourced",
+  partial: "tipEvidencePartial",
+  extrapolated: "tipEvidenceExtrapolated",
+  unsupported: "tipEvidenceUnsupported",
+};
+
 function EvidenceBadge({ evidence, lang }: { evidence: Evidence; lang: Lang }) {
   const style =
     evidence === "sourced"
@@ -37,8 +51,14 @@ function EvidenceBadge({ evidence, lang }: { evidence: Evidence; lang: Lang }) {
         : "border-dashed border-[var(--nude-deep)] bg-[var(--nude-tint)] text-[var(--nude-ink)]";
 
   return (
+    <Tooltip label={tr(EVIDENCE_TIP[evidence], lang)} placement="bottom-start">
     <span
-      className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 font-[family-name:var(--font-mono)] text-[11px] font-medium uppercase tracking-[0.14em] ${style}`}
+      /* Mærkatet er ikke en knap, men det skal kunne nås med tastaturet:
+         forklaringen bag det er den eneste vej til at vide hvad ordet
+         dækker, og en forklaring der kun kan fås med mus er ingen
+         forklaring. */
+      tabIndex={0}
+      className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 font-[family-name:var(--font-mono)] text-[11px] font-medium uppercase tracking-[0.14em] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--teal)] ${style}`}
     >
       {evidence === "sourced" && (
         <svg viewBox="0 0 16 16" width="11" height="11" fill="none" aria-hidden="true">
@@ -53,6 +73,7 @@ function EvidenceBadge({ evidence, lang }: { evidence: Evidence; lang: Lang }) {
       )}
       {evidenceLabel(evidence, lang)}
     </span>
+    </Tooltip>
   );
 }
 
@@ -107,14 +128,27 @@ function SourceRow({
 
   return source.url ? (
     <li>
-      <a
-        href={source.url}
-        target="_blank"
-        rel="noopener noreferrer"
-        className={`${shell} hover:bg-[var(--teal-tint)]`}
+      {/* Tooltippen sidder på HELE linjen og ikke på oprindelsesmærkatet:
+          mærkatet ligger inde i linket, og et fokuspunkt inde i et andet
+          fokuspunkt kan ingen tastaturbruger nå. */}
+      <Tooltip
+        label={
+          source.origin
+            ? tr(source.origin === "knowledge-base" ? "tipOriginKnowledgeBase" : "tipOriginLiterature", lang)
+            : tr("tipSourceOpen", lang)
+        }
+        placement="top-start"
+        className="w-full"
       >
-        {body}
-      </a>
+        <a
+          href={source.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={`${shell} w-full hover:bg-[var(--teal-tint)]`}
+        >
+          {body}
+        </a>
+      </Tooltip>
     </li>
   ) : (
     <li className={shell}>{body}</li>
@@ -133,11 +167,12 @@ export function AnswerCard({ answer, lang, speaking, onSpeak }: AnswerCardProps)
     <div className="rounded-2xl border bg-[var(--paper-raised)] p-5 sm:p-6 shadow-[var(--shadow-raised)]">
       <div className="mb-3 flex flex-wrap items-center gap-2">
         <EvidenceBadge evidence={answer.evidence} lang={lang} />
+        <Tooltip label={tr(speaking ? "tipStopSpeaking" : "tipSpeakAnswer", lang)} placement="bottom-end" className="ml-auto">
         <button
           type="button"
           onClick={onSpeak}
           aria-label={tr(speaking ? "chatStopSpeaking" : "chatSpeakAnswer", lang)}
-          className="ml-auto inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1 text-xs font-medium text-[var(--ink-soft)] transition-colors hover:border-[var(--teal)] hover:bg-[var(--teal-tint)] hover:text-[var(--teal-deep)]"
+          className="inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1 text-xs font-medium text-[var(--ink-soft)] transition-colors hover:border-[var(--teal)] hover:bg-[var(--teal-tint)] hover:text-[var(--teal-deep)]"
         >
           <svg viewBox="0 0 20 20" width="13" height="13" fill="none" aria-hidden="true">
             {speaking ? (
@@ -156,6 +191,7 @@ export function AnswerCard({ answer, lang, speaking, onSpeak }: AnswerCardProps)
           </svg>
           {tr(speaking ? "chatStopSpeaking" : "chatSpeakAnswer", lang)}
         </button>
+        </Tooltip>
       </div>
 
       <RichText text={answer.answer} />

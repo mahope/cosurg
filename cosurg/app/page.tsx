@@ -40,6 +40,8 @@ import { fetchGuide, type GuideSvar } from "@/components/unified/guide";
 import { spokenText } from "@/components/unified/spoken";
 import { PitfallRail } from "@/components/pitfalls/PitfallRail";
 import { NoteSkeleton } from "@/components/ui/Skeleton";
+import { ShortcutsDialog } from "@/components/ShortcutsDialog";
+import { focusIntakeField, HELP_CHAR, isTypingTarget, SHORTCUT_KEYS } from "@/components/shortcuts";
 
 /**
  * Brandsårstræet er bundtet med, så første skærmbillede står med det samme —
@@ -93,6 +95,8 @@ function isStepLike(node: TreeNode): boolean {
 export default function Home() {
   const [lang, setLang] = useState<Lang>("da");
   const [orMode, setOrMode] = useState(false);
+  /** Genvejsoversigten bag «?». Den fylder intet før den åbnes. */
+  const [shortcutsOpen, setShortcutsOpen] = useState(false);
   /*
    * Oplæsning er slået FRA indtil klinikeren selv slår den til. Netværks-TTS
    * afregnes pr. tegn, og en app der taler uopfordret koster penge hos enhver
@@ -1087,6 +1091,16 @@ export default function Home() {
       const el = e.target as HTMLElement | null;
       if (el && (el.tagName === "INPUT" || el.tagName === "TEXTAREA" || el.isContentEditable)) return;
 
+      // Vejen ud. Afslut-knappen står i hjørnet, men den usterile assistent
+      // sidder ved tastaturet — og en tilstand man kun kan forlade med musen
+      // er en tilstand man sidder fast i når musen ikke er der.
+      if (e.key === "Escape") {
+        e.preventDefault();
+        setOrMode(false);
+        stop();
+        return;
+      }
+
       let cmd: VoiceCommand | null = null;
       if (e.key === " " || e.key === "ArrowRight") cmd = "next";
       else if (e.key === "ArrowLeft") cmd = "back";
@@ -1098,7 +1112,7 @@ export default function Home() {
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [orMode, runCommand]);
+  }, [orMode, runCommand, stop]);
 
   // Træ-listen er en bonus i UI'et; fejler den, kører brandsårstræet uforstyrret.
   useEffect(() => {
@@ -1244,6 +1258,96 @@ export default function Home() {
     setMicStarting(true);
     void start().finally(() => setMicStarting(false));
   }, [listening, start, stop]);
+
+  const toggleLang = useCallback(() => {
+    const next: Lang = lang === "da" ? "en" : "da";
+    setLang(next);
+    setState((s) => ({ ...s, lang: next }));
+  }, [lang]);
+
+  const toggleOrMode = useCallback(() => {
+    setOrMode((v) => !v);
+    if (orMode) stop();
+  }, [orMode, stop]);
+
+  /* ------------------------------------------------------------------ *
+   * Tastaturgenveje
+   *
+   * Alt + tast. Se components/shortcuts.ts for hvorfor det ikke er ét bart
+   * bogstav: skrivefeltet har fokus fra det sekund siden åbner, så et bart
+   * «m» ville enten aldrig nå frem eller blive revet ud af «mand med
+   * brandsår». Med Alt gælder genvejen overalt, også midt i en sætning, og
+   * der er ingen undtagelse at forklare lægen.
+   *
+   * To spærrer, begge sikkerhed og ikke pedanteri:
+   *
+   *   1. BROWSEREN BEHOLDER SINE EGNE. Ctrl og Cmd slipper igennem urørt, så
+   *      Ctrl+F, Ctrl+L og Cmd+T virker som altid.
+   *   2. HÅNDFRI TILSTAND HAR SIT EGET TASTATUR. Dér styrer mellemrum,
+   *      piletaster og R forløbet (se effekten længere oppe), og de to sæt
+   *      må ikke kunne udløse hinanden.
+   *
+   * Handlingerne læses gennem en ref frem for at stå i afhængighedslisten:
+   * lytteren skal sættes op én gang, ikke ved hver eneste render af en side
+   * hvor der tikker et transskript ind.
+   */
+  const shortcutActionsRef = useRef({ toggleMic, toggleLang, toggleOrMode, goHome });
+  useEffect(() => {
+    shortcutActionsRef.current = { toggleMic, toggleLang, toggleOrMode, goHome };
+  });
+
+  const inOrView = orMode && started;
+
+  useEffect(() => {
+    if (inOrView) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.ctrlKey || e.metaKey) return;
+
+      if (!e.altKey) {
+        // «?» er konventionen for genvejsoversigten. Den er også et rigtigt
+        // tegn, så den må kun gribe ind når der IKKE skrives.
+        if (e.key === HELP_CHAR && !isTypingTarget(e.target)) {
+          e.preventDefault();
+          setShortcutsOpen((v) => !v);
+        }
+        return;
+      }
+
+      // Genvejsoversigten er en dialog. Mens den står åben, må resten af
+      // genvejene ikke arbejde bag ryggen på den; kun Alt+K lukker den igen
+      // (Escape hører dialogen selv).
+      if (shortcutsOpen && e.code !== SHORTCUT_KEYS.help.code) return;
+
+      const actions = shortcutActionsRef.current;
+      switch (e.code) {
+        case SHORTCUT_KEYS.help.code:
+          setShortcutsOpen((v) => !v);
+          break;
+        case SHORTCUT_KEYS.focusField.code:
+          // Findes feltet ikke, får tasten lov at gå videre til browseren i
+          // stedet for at forsvinde ned i et tomt hul.
+          if (!focusIntakeField()) return;
+          break;
+        case SHORTCUT_KEYS.mic.code:
+          actions.toggleMic();
+          break;
+        case SHORTCUT_KEYS.handsfree.code:
+          actions.toggleOrMode();
+          break;
+        case SHORTCUT_KEYS.newSession.code:
+          actions.goHome();
+          break;
+        case SHORTCUT_KEYS.lang.code:
+          actions.toggleLang();
+          break;
+        default:
+          return;
+      }
+      e.preventDefault();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [inOrView, shortcutsOpen]);
 
   /**
    * Det opslag der vises. Kun det seneste — tidligere svar er allerede læst.
@@ -1575,17 +1679,13 @@ export default function Home() {
           onGoHome={goHome}
           fullVoice={fullVoice}
           orMode={orMode}
-          onToggleLang={() => {
-            const next: Lang = lang === "da" ? "en" : "da";
-            setLang(next);
-            setState((s) => ({ ...s, lang: next }));
-          }}
+          onToggleLang={toggleLang}
           onToggleVoiceMode={() => setFullVoice((v) => !v)}
-          onToggleOrMode={() => {
-            setOrMode((v) => !v);
-            if (orMode) stop();
-          }}
+          onToggleOrMode={toggleOrMode}
+          onOpenShortcuts={() => setShortcutsOpen(true)}
         />
+
+        <ShortcutsDialog lang={lang} open={shortcutsOpen} onClose={() => setShortcutsOpen(false)} />
 
         {/*
           Tekniske problemer er IKKE kliniske. Rød er reserveret til rødt flag

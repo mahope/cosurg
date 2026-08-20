@@ -5,6 +5,8 @@ import type { Lang } from "@/lib/tree/types";
 import { tr } from "@/lib/i18n";
 import type { TreeSummary } from "./TreePicker";
 import { SizeLock } from "./ui/SizeLock";
+import { Tooltip } from "./ui/Tooltip";
+import { combo, INTAKE_FIELD_ID, SHORTCUT_KEYS } from "./shortcuts";
 import {
   MAX_IMAGES,
   readAttachment,
@@ -376,6 +378,10 @@ export function IntakeCard({
 
         <textarea
           ref={areaRef}
+          /* Genvejen «F» slår feltet op på id'et — se components/shortcuts.ts.
+             De to udgaver af kortet står aldrig fremme samtidig, så id'et er
+             entydigt. */
+          id={INTAKE_FIELD_ID}
           value={draft}
           onChange={(e) => onDraftChange(e.target.value)}
           onKeyDown={onKeyDown}
@@ -385,6 +391,10 @@ export function IntakeCard({
           autoFocus
           spellCheck={false}
           aria-label={tr("intakePlaceholder", lang)}
+          /* Feltets egne genveje, annonceret frem for gemt: Enter sender,
+             Shift+Enter giver en ny linje. Begge har altid virket — de har
+             bare aldrig stået nogen steder. */
+          aria-keyshortcuts="Enter Shift+Enter"
           className={`absolute inset-0 h-full w-full resize-none bg-transparent text-[var(--ink)] placeholder:text-[var(--ink-faint)] focus:outline-none ${fieldType}`}
         />
       </div>
@@ -399,16 +409,18 @@ export function IntakeCard({
                 alt={image.name ?? ""}
                 className="h-20 w-20 rounded-lg border border-[var(--line)] object-cover"
               />
-              <button
-                type="button"
-                onClick={() => setAttachments((prev) => prev.filter((a) => a.id !== image.id))}
-                aria-label={tr("intakeRemoveImage", lang)}
-                className="absolute -right-2 -top-2 flex h-7 w-7 items-center justify-center rounded-full border border-[var(--line-strong)] bg-[var(--paper-raised)] text-[var(--ink-soft)] shadow-sm transition-colors hover:border-[var(--teal)] hover:text-[var(--ink)]"
-              >
-                <svg viewBox="0 0 20 20" width={12} height={12} fill="none" aria-hidden="true">
-                  <path d="M5 5l10 10M15 5 5 15" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-                </svg>
-              </button>
+              <Tooltip label={tr("tipRemoveImage", lang)} placement="top-end" className="absolute -right-2 -top-2">
+                <button
+                  type="button"
+                  onClick={() => setAttachments((prev) => prev.filter((a) => a.id !== image.id))}
+                  aria-label={tr("intakeRemoveImage", lang)}
+                  className="flex h-7 w-7 items-center justify-center rounded-full border border-[var(--line-strong)] bg-[var(--paper-raised)] text-[var(--ink-soft)] shadow-sm transition-colors hover:border-[var(--teal)] hover:text-[var(--ink)]"
+                >
+                  <svg viewBox="0 0 20 20" width={12} height={12} fill="none" aria-hidden="true">
+                    <path d="M5 5l10 10M15 5 5 15" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+                  </svg>
+                </button>
+              </Tooltip>
             </li>
           ))}
         </ul>
@@ -418,32 +430,34 @@ export function IntakeCard({
           er derfor mindst 44 px høj — tommelfingerreglen — og linjen har lidt
           mindre luft udenom for at bære det uden at blive et bånd. */}
       <div className="flex items-center justify-between gap-3 border-t border-[var(--line)] px-2 py-2 sm:px-3">
-        <button
-          type="button"
-          onClick={() => fileRef.current?.click()}
-          className="flex min-h-11 items-center gap-2 rounded-lg px-2.5 py-1.5 text-[13px] font-medium text-[var(--ink-soft)] transition-colors hover:bg-[var(--teal-tint)] hover:text-[var(--teal-deep)]"
-        >
-          <svg
-            viewBox="0 0 24 24"
-            width={17}
-            height={17}
-            fill="none"
-            stroke="currentColor"
-            strokeWidth={1.7}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            aria-hidden="true"
+        <Tooltip label={tr("tipAddImage", lang)} placement="top-start">
+          <button
+            type="button"
+            onClick={() => fileRef.current?.click()}
+            className="flex min-h-11 items-center gap-2 rounded-lg px-2.5 py-1.5 text-[13px] font-medium text-[var(--ink-soft)] transition-colors hover:bg-[var(--teal-tint)] hover:text-[var(--teal-deep)]"
           >
-            <rect x="3" y="4.5" width="18" height="15" rx="2.5" />
-            <circle cx="8.6" cy="10" r="1.6" />
-            <path d="m4 17 4.8-4.4a2 2 0 0 1 2.7 0L20 19.5" />
-          </svg>
-          <span className={compact ? "hidden sm:inline" : undefined}>
-            <SizeLock variants={[tr("intakeAddImage", "da"), tr("intakeAddImage", "en")]}>
-              {tr("intakeAddImage", lang)}
-            </SizeLock>
-          </span>
-        </button>
+            <svg
+              viewBox="0 0 24 24"
+              width={17}
+              height={17}
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={1.7}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <rect x="3" y="4.5" width="18" height="15" rx="2.5" />
+              <circle cx="8.6" cy="10" r="1.6" />
+              <path d="m4 17 4.8-4.4a2 2 0 0 1 2.7 0L20 19.5" />
+            </svg>
+            <span className={compact ? "hidden sm:inline" : undefined}>
+              <SizeLock variants={[tr("intakeAddImage", "da"), tr("intakeAddImage", "en")]}>
+                {tr("intakeAddImage", lang)}
+              </SizeLock>
+            </span>
+          </button>
+        </Tooltip>
         <input
           ref={fileRef}
           type="file"
@@ -462,45 +476,53 @@ export function IntakeCard({
             være dér hvor hånden allerede er.
           */}
           {compact && (
-            <button
-              type="button"
-              onClick={onMicClick}
-              aria-pressed={listening}
-              aria-busy={starting}
-              aria-label={tr(listening ? "micStop" : "micStart", lang)}
-              className={`relative flex h-11 w-11 shrink-0 items-center justify-center rounded-full transition-colors ${
-                listening
-                  ? "mic-breathe bg-[var(--teal)] text-white"
-                  : starting
-                    ? "bg-[var(--teal)] text-white"
-                    : "bg-[var(--teal-deep)] text-white hover:bg-[var(--teal)]"
-              }`}
+            <Tooltip
+              label={tr(listening ? "tipMicStop" : "tipMicStart", lang)}
+              keys={combo(SHORTCUT_KEYS.mic)}
+              placement="top-end"
             >
-              {showCountdown !== null ? (
-                <span className="font-[family-name:var(--font-mono)] text-base font-bold">{showCountdown}</span>
-              ) : (
-                <MicGlyph size={19} />
-              )}
-            </button>
+              <button
+                type="button"
+                onClick={onMicClick}
+                aria-pressed={listening}
+                aria-busy={starting}
+                aria-label={tr(listening ? "micStop" : "micStart", lang)}
+                className={`relative flex h-11 w-11 shrink-0 items-center justify-center rounded-full transition-colors ${
+                  listening
+                    ? "mic-breathe bg-[var(--teal)] text-white"
+                    : starting
+                      ? "bg-[var(--teal)] text-white"
+                      : "bg-[var(--teal-deep)] text-white hover:bg-[var(--teal)]"
+                }`}
+              >
+                {showCountdown !== null ? (
+                  <span className="font-[family-name:var(--font-mono)] text-base font-bold">{showCountdown}</span>
+                ) : (
+                  <MicGlyph size={19} />
+                )}
+              </button>
+            </Tooltip>
           )}
 
-          <button
-            type="button"
-            onClick={submit}
-            disabled={!canSend}
-            className="flex min-h-11 shrink-0 items-center gap-2 rounded-lg bg-[var(--teal)] px-4 py-2 text-[14px] font-semibold text-white transition-opacity disabled:opacity-25"
-          >
-            <SizeLock variants={[tr("intakeSend", "da"), tr("intakeSend", "en")]}>{tr("intakeSend", lang)}</SizeLock>
-            <svg viewBox="0 0 20 20" width={15} height={15} fill="none" aria-hidden="true">
-              <path
-                d="M4 10h11m0 0-4.5-4.5M15 10l-4.5 4.5"
-                stroke="currentColor"
-                strokeWidth="1.7"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </button>
+          <Tooltip label={tr("tipSend", lang)} keys={["Enter"]} placement="top-end">
+            <button
+              type="button"
+              onClick={submit}
+              disabled={!canSend}
+              className="flex min-h-11 shrink-0 items-center gap-2 rounded-lg bg-[var(--teal)] px-4 py-2 text-[14px] font-semibold text-white transition-opacity disabled:opacity-25"
+            >
+              <SizeLock variants={[tr("intakeSend", "da"), tr("intakeSend", "en")]}>{tr("intakeSend", lang)}</SizeLock>
+              <svg viewBox="0 0 20 20" width={15} height={15} fill="none" aria-hidden="true">
+                <path
+                  d="M4 10h11m0 0-4.5-4.5M15 10l-4.5 4.5"
+                  stroke="currentColor"
+                  strokeWidth="1.7"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </button>
+          </Tooltip>
         </div>
       </div>
     </div>
@@ -590,6 +612,11 @@ export function IntakeCard({
             Mikrofonen — det visuelle omdrejningspunkt. Alt andet er sekundært.
          * -------------------------------------------------------------- */}
         <div className="mt-6 flex flex-col items-center">
+          <Tooltip
+            label={tr(listening ? "tipMicStop" : "tipMicStart", lang)}
+            keys={combo(SHORTCUT_KEYS.mic)}
+            placement="top"
+          >
           <button
             type="button"
             onClick={onMicClick}
@@ -628,6 +655,7 @@ export function IntakeCard({
               <MicGlyph size={50} />
             )}
           </button>
+          </Tooltip>
 
           {/* Én linje, fast højde. Den skifter indhold — aldrig plads. */}
           <p aria-live="polite" className="mt-3 flex h-5 items-center gap-2 text-[13px] font-medium text-[var(--ink-soft)]">

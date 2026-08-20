@@ -6,6 +6,7 @@ import { ResponseBar } from "./ResponseBar";
 import { NoteSkeleton } from "./ui/Skeleton";
 import { NoteProgress } from "./ui/NoteProgress";
 import { SizeLock, widestOf } from "./ui/SizeLock";
+import { Tooltip } from "./ui/Tooltip";
 
 interface DispositionCardProps {
   disposition: Disposition;
@@ -144,39 +145,45 @@ export function DispositionCard({
       )}
 
       <div className="mt-6 flex flex-wrap items-center gap-2">
-        <button
-          onClick={onToggleAddendum}
-          aria-pressed={addendumOpen}
-          className={`rounded-lg border px-4 py-2 text-sm font-medium transition-colors ${
-            addendumOpen
-              ? "border-[var(--teal)] bg-[var(--teal-tint)] text-[var(--teal-deep)]"
-              : "bg-[var(--paper-raised)] text-[var(--ink)] hover:border-[var(--teal)]"
-          }`}
-        >
-          {/* Knapperne skifter både tekst og sprog. Uden låst bredde ville
-              rækken pakke om sig selv midt i et forløb — og "Generér
-              journalnotat" ville flytte sig netop som lægen sigter efter den. */}
-          <SizeLock variants={widestOf("stopDictate", "dictate")}>
-            {addendumOpen ? tr("stopDictate", lang) : tr("dictate", lang)}
-          </SizeLock>
-        </button>
-        <button
-          onClick={onGenerateNote}
-          disabled={noteBusy}
-          aria-busy={noteBusy}
-          aria-describedby="note-eta"
-          className="rounded-lg bg-[var(--teal-deep)] px-4 py-2 text-sm font-semibold text-white transition-colors enabled:hover:bg-[var(--teal)] disabled:opacity-50"
-        >
-          <SizeLock variants={widestOf("noteWorking", "generateNote")}>
-            {noteBusy ? tr("noteWorking", lang) : tr("generateNote", lang)}
-          </SizeLock>
-        </button>
-        <button
-          onClick={onRestart}
-          className="rounded-lg border bg-[var(--paper-raised)] px-4 py-2 text-sm font-medium text-[var(--ink)] transition-colors hover:border-[var(--teal)]"
-        >
-          <SizeLock variants={widestOf("restart")}>{tr("restart", lang)}</SizeLock>
-        </button>
+        <Tooltip label={tr("tipDictate", lang)} placement="top-start">
+          <button
+            onClick={onToggleAddendum}
+            aria-pressed={addendumOpen}
+            className={`rounded-lg border px-4 py-2 text-sm font-medium transition-colors ${
+              addendumOpen
+                ? "border-[var(--teal)] bg-[var(--teal-tint)] text-[var(--teal-deep)]"
+                : "bg-[var(--paper-raised)] text-[var(--ink)] hover:border-[var(--teal)]"
+            }`}
+          >
+            {/* Knapperne skifter både tekst og sprog. Uden låst bredde ville
+                rækken pakke om sig selv midt i et forløb — og "Generér
+                journalnotat" ville flytte sig netop som lægen sigter efter den. */}
+            <SizeLock variants={widestOf("stopDictate", "dictate")}>
+              {addendumOpen ? tr("stopDictate", lang) : tr("dictate", lang)}
+            </SizeLock>
+          </button>
+        </Tooltip>
+        <Tooltip label={tr("tipGenerateNote", lang)} placement="top-start">
+          <button
+            onClick={onGenerateNote}
+            disabled={noteBusy}
+            aria-busy={noteBusy}
+            aria-describedby="note-eta"
+            className="rounded-lg bg-[var(--teal-deep)] px-4 py-2 text-sm font-semibold text-white transition-colors enabled:hover:bg-[var(--teal)] disabled:opacity-50"
+          >
+            <SizeLock variants={widestOf("noteWorking", "generateNote")}>
+              {noteBusy ? tr("noteWorking", lang) : tr("generateNote", lang)}
+            </SizeLock>
+          </button>
+        </Tooltip>
+        <Tooltip label={tr("tipRestart", lang)} placement="top-start">
+          <button
+            onClick={onRestart}
+            className="rounded-lg border bg-[var(--paper-raised)] px-4 py-2 text-sm font-medium text-[var(--ink)] transition-colors hover:border-[var(--teal)]"
+          >
+            <SizeLock variants={widestOf("restart")}>{tr("restart", lang)}</SizeLock>
+          </button>
+        </Tooltip>
       </div>
 
       {/*
