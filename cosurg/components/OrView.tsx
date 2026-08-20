@@ -3,12 +3,7 @@ import { tr } from "@/lib/i18n";
 import { ZoneMark } from "./ZoneMark";
 import { StepImages } from "./StepImages";
 import { RedFlagBanner } from "./RedFlagBanner";
-import { NotePanel } from "./NotePanel";
-
-interface NoteResult {
-  note: string;
-  codes: Array<{ code: string; system?: string; description: string; rationale?: string }>;
-}
+import { NotePanel, type NoteResult } from "./NotePanel";
 
 interface OrViewProps {
   lang: Lang;

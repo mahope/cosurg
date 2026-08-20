@@ -5,6 +5,7 @@ import burnsTree from "@/content/trees/burns.json";
 import { advance, getDisposition, getNode, goBack, questionText, startSession } from "@/lib/tree/engine";
 import type { DecisionTree, Lang, SessionState, TreeNode } from "@/lib/tree/types";
 import { useTranscribe } from "@/lib/audio/useTranscribe";
+import { useDictation } from "@/lib/audio/useDictation";
 import { prefetchSpeech, speak, stopSpeaking } from "@/lib/audio/speak";
 import { failureMessage, micMessage, tr } from "@/lib/i18n";
 import { ControlRail } from "@/components/ControlRail";
@@ -13,11 +14,14 @@ import { DispositionCard } from "@/components/DispositionCard";
 import { RedFlagBanner } from "@/components/RedFlagBanner";
 import { SidebarPath } from "@/components/SidebarPath";
 import { TranscriptPanel } from "@/components/TranscriptPanel";
-import { NotePanel } from "@/components/NotePanel";
+import { NotePanel, type NoteResult } from "@/components/NotePanel";
 import { OrView } from "@/components/OrView";
 import type { TreeSummary } from "@/components/TreePicker";
 import { BrandWatermark } from "@/components/BrandMark";
 import { isEcho, matchCommand, type VoiceCommand } from "@/components/voiceCommands";
+import { IntakeCard } from "@/components/IntakeCard";
+import { followUpTreeId, routeUtterance } from "@/components/treeRouting";
+import type { SessionUsage } from "@/components/UsagePanel";
 
 /**
  * Brandsårstræet er bundtet med, så første skærmbillede står med det samme —
@@ -36,18 +40,16 @@ const STEP_VALUE = "done";
  * på scenen ved ikke at han skal genindlæse — så appen skal selv give op og
  * sige hvad man gør i stedet.
  *
- * Fristerne er sat ud fra MÅLT latens (interpret 1,5–2,1 s, note 14–16 s) med
- * rigelig luft, så et kald der ville være lykkedes aldrig afbrydes. Notatet får
- * derfor en helt anden frist end de øvrige kald — det er langsomt af natur.
+ * Fristerne er sat ud fra MÅLT latens (interpret 1,4–2,8 s varm, note 14–16 s)
+ * med rigelig luft, så et kald der ville være lykkedes aldrig afbrydes. Det
+ * første kald i en session er markant langsommere end de følgende — en frist
+ * på 8 s afbrød her et fortolkningskald der var på vej til at lykkes — så
+ * loftet ligger et godt stykke over den varme måling. Notatet får sin egen,
+ * meget længere frist: det er langsomt af natur, ikke i uføre.
  */
-const TIMEOUT_INTERPRET = 8_000;
-const TIMEOUT_NOTE = 30_000;
-const TIMEOUT_TREE = 8_000;
-
-interface NoteResult {
-  note: string;
-  codes: Array<{ code: string; system?: string; description: string; rationale?: string }>;
-}
+const TIMEOUT_INTERPRET = 15_000;
+const TIMEOUT_NOTE = 40_000;
+const TIMEOUT_TREE = 10_000;
 
 /**
  * En trin-node er en instruktion uden svar — procedureguidens tolv trin. Den
@@ -67,22 +69,80 @@ export default function Home() {
   const [orMode, setOrMode] = useState(false);
   const [fullVoice, setFullVoice] = useState(true);
   const [tree, setTree] = useState<DecisionTree>(initialTree);
-  const [trees, setTrees] = useState<TreeSummary[]>([]);
+  /*
+   * Listen sås med det bundtede træ. Uden det ville et netværksudfald efterlade
+   * indgangsskærmen uden ét eneste forløb at vælge — appen ville være tom fra
+   * første sekund. Ruten fylder resten på når den svarer.
+   */
+  const [trees, setTrees] = useState<TreeSummary[]>([
+    {
+      id: initialTree.id,
+      name: initialTree.name,
+      version: initialTree.version,
+      authors: initialTree.authors,
+    },
+  ]);
   const [treeBusy, setTreeBusy] = useState(false);
+  /*
+   * Sessionen er ikke begyndt før et forløb er valgt. Indtil da står der ét
+   * spørgsmål på skærmen — "Hvad drejer det sig om?" — og træet bagved er blot
+   * det bundtede udgangspunkt, ikke et valg vi har truffet for lægen.
+   */
+  const [started, setStarted] = useState(false);
+  /** Ytringen vi ikke kunne henføre, og de forløb der var i spil. */
+  const [intakeMiss, setIntakeMiss] = useState<{ text: string; candidates: string[] } | null>(null);
   const [state, setState] = useState<SessionState>(() => startSession(initialTree, "da"));
   const [transcript, setTranscript] = useState<string[]>([]);
   const [status, setStatus] = useState<string | null>(null);
   const [flash, setFlash] = useState<string | null>(null);
   const [note, setNote] = useState<NoteResult | null>(null);
-  const [dictating, setDictating] = useState(false);
   const [dictation, setDictation] = useState("");
+  /*
+   * Tillægsfeltet er en EGEN tilstand, ikke det samme som "mikrofonen kører".
+   * Nægtes mikrofonen, ville et felt bundet til diktatets tilstand aldrig komme
+   * frem — og så ville beskeden "skriv svaret i feltet nedenfor" pege på et felt
+   * der ikke findes. Feltet åbner derfor på klik, uanset om lyden kom op.
+   */
+  const [addendumOpen, setAddendumOpen] = useState(false);
   const [noteBusy, setNoteBusy] = useState(false);
+  /*
+   * Hvad vi faktisk har brugt hos Corti. Feltet tælles først op når kaldet er
+   * lykkedes — et forsøg er ikke et forbrug, og vi vil kunne stå inde for hvert
+   * tal vi viser.
+   */
+  const [usage, setUsage] = useState<SessionUsage>({
+    ambient: false,
+    dictation: false,
+    interpretations: 0,
+    notes: 0,
+    codingSystem: null,
+    credits: null,
+  });
   const busyRef = useRef(false);
 
   const node = state.currentNodeId ? getNode(tree, state.currentNodeId) : undefined;
   const disposition = state.dispositionId ? getDisposition(tree, state.dispositionId) : undefined;
   const speakAll = orMode || fullVoice;
   const canAdvance = !!node && isStepLike(node);
+
+  /*
+   * Lægens tillæg dikteres — det er et andet Corti-produkt end den ambiente
+   * lytning, og forskellen er reel i journalen: her bliver "komma" og "punktum"
+   * til tegn, og tal og mål sættes som i et journalnotat. Kun det færdige
+   * segment (onFinal) skrives ind; hookets `interim` er ubehandlet
+   * forhåndsvisning og indeholder stadig selve ordet "punktum".
+   */
+  const appendDictation = useCallback((text: string) => {
+    setDictation((prev) => `${prev} ${text}`.trim());
+  }, []);
+
+  const {
+    dictating,
+    interim: dictationInterim,
+    error: dictationError,
+    start: startDictation,
+    stop: stopDictation,
+  } = useDictation({ lang, onFinal: appendDictation });
 
   /*
    * Ekko-spærre. I OR-tilstand står mikrofonen altid åben, også mens appen selv
@@ -135,6 +195,85 @@ export default function Home() {
       if (speakAll) void say(questionText(n, s.lang, orMode));
     },
     [speakAll, orMode, say, tree],
+  );
+
+  const resetSession = useCallback(
+    (t: DecisionTree, nextLang: Lang) => {
+      stopSpeaking();
+      stopDictation();
+      const fresh = startSession(t, nextLang);
+      setState(fresh);
+      setTranscript([]);
+      setNote(null);
+      setDictation("");
+      setAddendumOpen(false);
+      setFlash(null);
+      setStatus(null);
+      return fresh;
+    },
+    [stopDictation],
+  );
+
+  /**
+   * Hent et forløb. Det bundtede brandsårstræ leveres uden netværkskald — det
+   * er både hurtigere og det eneste forløb der stadig kan startes hvis nettet
+   * er væk midt i demoen.
+   */
+  const loadTree = useCallback(async (id: string): Promise<DecisionTree> => {
+    if (id === initialTree.id) return initialTree;
+    const res = await fetch(`/api/tree?id=${encodeURIComponent(id)}`, {
+      signal: AbortSignal.timeout(TIMEOUT_TREE),
+    });
+    if (!res.ok) throw new Error("tree");
+    return (await res.json()) as DecisionTree;
+  }, []);
+
+  /**
+   * Start et forløb. Altid en frisk session: en halv beslutningsvej fra et
+   * andet forløb ville være klinisk meningsløs.
+   */
+  const beginTree = useCallback(
+    async (id: string, seedTranscript?: string) => {
+      if (treeBusy) return;
+      setTreeBusy(true);
+      try {
+        const next = await loadTree(id);
+        setTree(next);
+        setIntakeMiss(null);
+        setStarted(true);
+        askCurrent(resetSession(next, lang), next);
+        // Lægens egen beskrivelse er den første kliniske oplysning i sagen —
+        // den skal med i transskriptet og dermed i notatet, ikke kasseres som
+        // en menu-betjening.
+        if (seedTranscript) setTranscript([seedTranscript]);
+      } catch (err) {
+        // Det aktive forløb står urørt tilbage — et mislykket skift må ikke
+        // efterlade sessionen halvt i ét forløb og halvt i et andet.
+        setStatus(failureMessage(err, "tree", lang));
+      } finally {
+        setTreeBusy(false);
+      }
+    },
+    [treeBusy, lang, loadTree, askCurrent, resetSession],
+  );
+
+  /**
+   * Indgangen: lægen beskriver patienten, appen finder forløbet.
+   *
+   * Genkendelsen er konservativ med vilje. Rammer ytringen to forløb lige godt
+   * — "forbinding på en hånd med brandsår" gør — så spørger vi. At starte det
+   * forkerte forløb er værre end at bruge to sekunder på at spørge.
+   */
+  const handleIntake = useCallback(
+    (text: string) => {
+      const { match, ranked } = routeUtterance(text, trees, lang);
+      if (match) {
+        void beginTree(match.treeId, text);
+        return;
+      }
+      setIntakeMiss({ text, candidates: ranked.map((r) => r.treeId) });
+    },
+    [trees, lang, beginTree],
   );
 
   /**
@@ -255,12 +394,28 @@ export default function Home() {
 
   const handleUtterance = useCallback(
     async (text: string) => {
-      setTranscript((prev) => [...prev, text]);
-
-      if (dictating) {
-        setDictation((prev) => `${prev} ${text}`.trim());
+      // Før et forløb er valgt, er enhver ytring en beskrivelse af patienten —
+      // ikke et svar. Samme vej ind for tale og skrift.
+      if (!started) {
+        handleIntake(text);
         return;
       }
+
+      /*
+       * Er tillægsfeltet åbent, hører alt hvad der skrives eller siges til
+       * journaltillægget — ikke til svarfortolkningen, og ikke til
+       * transskriptet: transskriptet er hvad der blev sagt i rummet, tillægget
+       * er lægens egen formulering til journalen, og notatet får dem hver for
+       * sig. Vi ser på FELTET og ikke på om diktatet kører, ellers ville et
+       * skrevet tillæg blive tolket som et svar i det øjeblik mikrofonen
+       * svigtede.
+       */
+      if (addendumOpen) {
+        appendDictation(text);
+        return;
+      }
+
+      setTranscript((prev) => [...prev, text]);
 
       // Håndfri kommandoer før svarfortolkning — de skal ikke koste et agent-kald.
       const current = state.currentNodeId ? getNode(tree, state.currentNodeId) : undefined;
@@ -298,6 +453,10 @@ export default function Home() {
           clarificationQuestion?: string;
           error?: string;
         };
+
+        // Agenten svarede — så er produktområdet reelt brugt, uanset om svaret
+        // var entydigt nok til at rykke os videre.
+        if (!data.error) setUsage((u) => ({ ...u, interpretations: u.interpretations + 1 }));
 
         // En kommando har overhalet dette kald — svaret er forældet og
         // beskrives ikke i træet. Kassér det frem for at rykke to gange.
@@ -355,10 +514,39 @@ export default function Home() {
         if (seq === interpretSeqRef.current) busyRef.current = false;
       }
     },
-    [state, tree, lang, orMode, speakAll, askCurrent, dictating, flash, runCommand, isSelfEcho, say],
+    [
+      state,
+      tree,
+      lang,
+      orMode,
+      speakAll,
+      askCurrent,
+      started,
+      handleIntake,
+      addendumOpen,
+      appendDictation,
+      flash,
+      runCommand,
+      isSelfEcho,
+      say,
+    ],
   );
 
   const { listening, interim, error, start, stop } = useTranscribe({ lang, onFinal: handleUtterance });
+
+  // Produktområderne markeres som brugt når strømmen faktisk kom op — ikke når
+  // knappen blev trykket. Et forsøg er ikke et forbrug.
+  useEffect(() => {
+    if (!listening && !dictating) return;
+    // Optællingen sker efter renderen, ikke i den: den er ren bogføring til
+    // info-panelet og må aldrig kunne skubbe til det klinikeren ser.
+    queueMicrotask(() =>
+      setUsage((u) => {
+        const next = { ...u, ambient: u.ambient || listening, dictation: u.dictation || dictating };
+        return next.ambient === u.ambient && next.dictation === u.dictation ? u : next;
+      }),
+    );
+  }, [listening, dictating]);
 
   // OR-tilstand: mikrofonen skal altid være åben — kirurgen er steril.
   useEffect(() => {
@@ -403,52 +591,9 @@ export default function Home() {
     };
   }, []);
 
-  const resetSession = useCallback(
-    (t: DecisionTree, nextLang: Lang) => {
-      stopSpeaking();
-      const fresh = startSession(t, nextLang);
-      setState(fresh);
-      setTranscript([]);
-      setNote(null);
-      setDictation("");
-      setDictating(false);
-      setFlash(null);
-      setStatus(null);
-      return fresh;
-    },
-    [],
-  );
-
   const restart = () => {
     askCurrent(resetSession(tree, lang));
   };
-
-  /**
-   * Skift af træ starter altid en frisk session: en halv beslutningsvej fra et
-   * andet træ ville være klinisk meningsløs.
-   */
-  const selectTree = useCallback(
-    async (id: string) => {
-      if (id === tree.id || treeBusy) return;
-      setTreeBusy(true);
-      try {
-        const res = await fetch(`/api/tree?id=${encodeURIComponent(id)}`, {
-          signal: AbortSignal.timeout(TIMEOUT_TREE),
-        });
-        if (!res.ok) throw new Error("tree");
-        const next = (await res.json()) as DecisionTree;
-        setTree(next);
-        askCurrent(resetSession(next, lang), next);
-      } catch (err) {
-        // Det aktive træ står urørt tilbage — en mislykket omskiftning må ikke
-        // efterlade sessionen halvt i ét træ og halvt i et andet.
-        setStatus(failureMessage(err, "tree", lang));
-      } finally {
-        setTreeBusy(false);
-      }
-    },
-    [tree.id, treeBusy, lang, askCurrent, resetSession],
-  );
 
   /**
    * Journalnotatet er appens langsomste kald (målt 14–16 s) og derfor det der
@@ -476,7 +621,20 @@ export default function Home() {
       });
       const data = (await res.json()) as NoteResult & { error?: string };
       setStatus(data.error ?? null);
-      if (!data.error) setNote(data);
+      if (!data.error) {
+        setNote(data);
+        // Kun det Corti selv oplyser tælles med. Er credits ikke i svaret,
+        // lader vi feltet stå tomt frem for at opfinde et tal.
+        setUsage((u) => ({
+          ...u,
+          notes: u.notes + 1,
+          codingSystem: data.coding?.system ?? u.codingSystem,
+          credits:
+            typeof data.coding?.credits === "number"
+              ? (u.credits ?? 0) + data.coding.credits
+              : u.credits,
+        }));
+      }
     } catch (err) {
       // Anbefalingen kom fra træet og står allerede på skærmen — et manglende
       // notat er en ærgrelse, ikke et tab af beslutningen. Det siger beskeden.
@@ -517,6 +675,34 @@ export default function Home() {
     else void start();
   }, [listening, start, stop]);
 
+  /**
+   * Diktat og ambient lytning deler den fysiske mikrofon og må derfor aldrig
+   * køre samtidig: to optagere på samme enhed ville sende det samme diktat ind
+   * i BÅDE journaltillægget og svarfortolkningen — lægens formulering ville
+   * blive tolket som et svar på et spørgsmål. Vi lukker derfor den ambiente
+   * strøm først, og appen tier mens der dikteres.
+   */
+  const startDictationExclusively = useCallback(() => {
+    stop();
+    stopSpeaking();
+    void startDictation();
+  }, [startDictation, stop]);
+
+  const toggleDictationMic = useCallback(() => {
+    if (dictating) stopDictation();
+    else startDictationExclusively();
+  }, [dictating, stopDictation, startDictationExclusively]);
+
+  const toggleAddendum = useCallback(() => {
+    if (addendumOpen) {
+      stopDictation();
+      setAddendumOpen(false);
+      return;
+    }
+    setAddendumOpen(true);
+    startDictationExclusively();
+  }, [addendumOpen, stopDictation, startDictationExclusively]);
+
   const progress = useMemo(
     () => Math.round((state.path.length / Math.max(tree.nodes.length, 1)) * 100),
     [state.path.length, tree.nodes.length],
@@ -555,8 +741,10 @@ export default function Home() {
    * virker intet af det håndfri.
    */
   const notice = useMemo(
-    () => micMessage(error, lang, orMode) ?? (speakAll && !audioUnlocked ? tr("audioGesture", lang) : null),
-    [error, lang, orMode, speakAll, audioUnlocked],
+    () =>
+      micMessage(dictationError ?? error, lang, orMode) ??
+      (speakAll && !audioUnlocked ? tr("audioGesture", lang) : null),
+    [dictationError, error, lang, orMode, speakAll, audioUnlocked],
   );
 
   // Forvarm oplæsningen af de mulige næste spørgsmål, så stemmen starter uden
@@ -574,7 +762,17 @@ export default function Home() {
     [tr("ackNext", lang), tr("ackRepeat", lang), tr("ackBack", lang)].forEach((t) => prefetchSpeech(t, lang));
   }, [node, tree, lang, orMode]);
 
-  if (orMode) {
+  /*
+   * Ambulant behandlet brandsår skal forbindes. I stedet for at lade lægen lede
+   * efter proceduren bagefter, tilbyder vi den dér hvor anbefalingen står — som
+   * ét klik. Det er et TILBUD; forløbet skifter aldrig af sig selv.
+   */
+  const followUpId = followUpTreeId(tree.id, state.dispositionId);
+  const followUp = followUpId ? (trees.find((t) => t.id === followUpId) ?? null) : null;
+
+  // OR-tilstand forudsætter et valgt forløb — der er intet at føre kirurgen
+  // igennem før da, og indgangsspørgsmålet hører hjemme på den lyse skærm.
+  if (orMode && started) {
     return (
       <OrView
         lang={lang}
@@ -610,12 +808,14 @@ export default function Home() {
       <div className="relative z-10 mx-auto max-w-5xl">
         <ControlRail
           lang={lang}
+          started={started}
+          usage={usage}
           treeId={tree.id}
           treeName={tree.name[lang]}
           treeVersion={tree.version}
           trees={trees}
           treeBusy={treeBusy}
-          onSelectTree={(id) => void selectTree(id)}
+          onSelectTree={(id) => void beginTree(id)}
           fullVoice={fullVoice}
           orMode={orMode}
           onToggleLang={() => {
@@ -651,6 +851,21 @@ export default function Home() {
           </div>
         )}
 
+        {!started && (
+          <IntakeCard
+            lang={lang}
+            trees={trees}
+            ambiguous={intakeMiss?.candidates ?? []}
+            unresolved={intakeMiss?.text ?? null}
+            listening={listening}
+            interim={interim}
+            onToggleMic={toggleMic}
+            onSubmit={(t) => void handleUtterance(t)}
+            onSelectTree={(id) => void beginTree(id)}
+          />
+        )}
+
+        {started && (
         <div className="grid gap-6 md:grid-cols-[1fr_320px]">
           <section>
             {node && !flash && (
@@ -676,19 +891,18 @@ export default function Home() {
                 <DispositionCard
                   disposition={disposition}
                   lang={lang}
+                  addendumOpen={addendumOpen}
                   dictating={dictating}
                   dictation={dictation}
-                  listening={listening}
-                  interim={interim}
-                  onToggleDictate={() => {
-                    setDictating((d) => !d);
-                    if (!listening) void start();
-                  }}
-                  onToggleMic={toggleMic}
+                  interim={dictationInterim}
+                  onToggleAddendum={toggleAddendum}
+                  onToggleDictationMic={toggleDictationMic}
                   onSubmitFreeText={(t) => void handleUtterance(t)}
                   onGenerateNote={generateNote}
                   noteBusy={noteBusy}
                   onRestart={restart}
+                  followUpName={followUp ? followUp.name[lang] : null}
+                  onFollowUp={followUp ? () => void beginTree(followUp.id) : undefined}
                 />
               </div>
             )}
@@ -709,6 +923,7 @@ export default function Home() {
             {tree.authors && <p className="text-xs text-[var(--ink-faint)]">{tree.authors.join(", ")}</p>}
           </aside>
         </div>
+        )}
       </div>
     </main>
   );

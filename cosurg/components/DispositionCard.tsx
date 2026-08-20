@@ -6,17 +6,26 @@ import { ResponseBar } from "./ResponseBar";
 interface DispositionCardProps {
   disposition: Disposition;
   lang: Lang;
+  /** Tillægsfeltet er åbnet. Uafhængigt af om mikrofonen faktisk kom op. */
+  addendumOpen: boolean;
+  /** Diktat kører — Cortis dictation-strøm, ikke den ambiente lytning. */
   dictating: boolean;
   dictation: string;
-  listening: boolean;
+  /**
+   * Ubehandlet forhåndsvisning fra diktatet. Den indeholder stadig ordet
+   * "punktum" og må derfor kun VISES — aldrig skrives ind i tillægget.
+   */
   interim: string;
-  onToggleDictate: () => void;
-  onToggleMic: () => void;
+  onToggleAddendum: () => void;
+  onToggleDictationMic: () => void;
   onSubmitFreeText: (text: string) => void;
   onGenerateNote: () => void;
   /** Notatet er undervejs — knappen spærres, så utålmodige klik ikke sender kaldet igen. */
   noteBusy: boolean;
   onRestart: () => void;
+  /** Det oplagte næste forløb, hvis anbefalingen peger på et. */
+  followUpName?: string | null;
+  onFollowUp?: () => void;
 }
 
 // Kun rødt/gult/grønt bærer klinisk betydning her — "treat" er ikke en
@@ -33,16 +42,18 @@ const severityStyle: Record<Disposition["severity"], { border: string; bg: strin
 export function DispositionCard({
   disposition,
   lang,
+  addendumOpen,
   dictating,
   dictation,
-  listening,
   interim,
-  onToggleDictate,
-  onToggleMic,
+  onToggleAddendum,
+  onToggleDictationMic,
   onSubmitFreeText,
   onGenerateNote,
   noteBusy,
   onRestart,
+  followUpName,
+  onFollowUp,
 }: DispositionCardProps) {
   const style = severityStyle[disposition.severity];
 
@@ -71,17 +82,39 @@ export function DispositionCard({
 
       <StepImages images={disposition.images ?? []} lang={lang} />
 
+      {/*
+        Det næste skridt, tilbudt hvor anbefalingen står. Ét klik — lægen skal
+        ikke lede efter proceduren i en menu bagefter. Det er et TILBUD: appen
+        skifter aldrig forløb af sig selv.
+      */}
+      {followUpName && onFollowUp && (
+        <button
+          onClick={onFollowUp}
+          className="mt-5 flex w-full items-center justify-between gap-3 rounded-xl border border-[var(--teal)] bg-[var(--paper-raised)] px-4 py-3 text-left transition-colors hover:bg-[var(--teal-tint)]"
+        >
+          <span>
+            <span className="block font-[family-name:var(--font-mono)] text-[10px] font-semibold uppercase tracking-[0.16em] text-[var(--ink-faint)]">
+              {tr("nextPathway", lang)}
+            </span>
+            <span className="mt-0.5 block text-sm font-semibold text-[var(--teal-deep)]">{followUpName}</span>
+          </span>
+          <span aria-hidden="true" className="shrink-0 text-lg text-[var(--teal-deep)]">
+            →
+          </span>
+        </button>
+      )}
+
       <div className="mt-6 flex flex-wrap items-center gap-2">
         <button
-          onClick={onToggleDictate}
-          aria-pressed={dictating}
+          onClick={onToggleAddendum}
+          aria-pressed={addendumOpen}
           className={`rounded-lg border px-4 py-2 text-sm font-medium transition-colors ${
-            dictating
+            addendumOpen
               ? "border-[var(--teal)] bg-[var(--teal-tint)] text-[var(--teal-deep)]"
               : "bg-[var(--paper-raised)] text-[var(--ink)] hover:border-[var(--teal)]"
           }`}
         >
-          {dictating ? tr("stopDictate", lang) : tr("dictate", lang)}
+          {addendumOpen ? tr("stopDictate", lang) : tr("dictate", lang)}
         </button>
         <button
           onClick={onGenerateNote}
@@ -99,14 +132,16 @@ export function DispositionCard({
         </button>
       </div>
 
-      {dictating && (
+      {addendumOpen && (
         <div className="mt-4">
+          {/* Mikrofonringen i feltet styrer KUN diktatet — skriftvejen skal
+              blive stående selv når lyden er slået fra eller nægtet. */}
           <ResponseBar
             lang={lang}
             placeholder={tr("dictationPlaceholder", lang)}
-            listening={listening}
+            listening={dictating}
             interim={interim}
-            onToggleMic={onToggleMic}
+            onToggleMic={onToggleDictationMic}
             onSubmit={onSubmitFreeText}
             autoFocus
           />

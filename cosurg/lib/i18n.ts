@@ -20,6 +20,20 @@ export const t = {
   generateNote: { da: "Generér journalnotat", en: "Generate note" },
   note: { da: "Journalnotat", en: "Clinical note" },
   codes: { da: "Koder", en: "Codes" },
+  codesSource: {
+    da: "Fra Cortis kodnings-API",
+    en: "From Corti's coding API",
+  },
+  candidates: { da: "Forslag til gennemgang", en: "Suggested for review" },
+  candidatesNote: {
+    da: "Valgfrie koder — en kliniker skal godkende dem, før de sættes.",
+    en: "Optional codes — a clinician must approve them before they are used.",
+  },
+  alternatives: { da: "Alternativer", en: "Alternatives" },
+  noCodes: {
+    da: "Ingen koder returneret. Koder skal sættes manuelt.",
+    en: "No codes returned. Codes must be assigned manually.",
+  },
   dictate: { da: "Diktér tillæg", en: "Dictate addendum" },
   stopDictate: { da: "Stop diktering", en: "Stop dictation" },
   restart: { da: "Ny vurdering", en: "New assessment" },
@@ -66,6 +80,52 @@ export const t = {
     da: "Jeg mangler et svar først.",
     en: "I need an answer first.",
   },
+
+  /*
+   * Indgangen. Lægen beskriver patienten; appen finder forløbet. Ordet
+   * "beslutningstræ" optræder bevidst ikke — det er vores begreb, ikke hans.
+   */
+  intakeQuestion: { da: "Hvad drejer det sig om?", en: "What is this about?" },
+  intakeHelp: {
+    da: "Beskriv patienten med stemme eller tekst — så finder jeg det rette forløb.",
+    en: "Describe the patient by voice or text — I will find the right pathway.",
+  },
+  intakePlaceholder: {
+    da: "Fx «kogende vand over hånden»…",
+    en: "e.g. “boiling water over the hand”…",
+  },
+  intakeAmbiguous: {
+    da: "Det kan være flere forløb — vælg hvilket:",
+    en: "This could be more than one pathway — pick which:",
+  },
+  intakeUnknown: {
+    da: "Det kunne jeg ikke henføre til et forløb. Prøv igen, eller vælg selv:",
+    en: "I could not match that to a pathway. Try again, or choose yourself:",
+  },
+  intakePick: { da: "Vælg forløb", en: "Choose pathway" },
+  intakeManual: { da: "Eller vælg selv", en: "Or choose yourself" },
+  intakeMatched: { da: "Genkendt", en: "Matched" },
+  nextPathway: { da: "Næste skridt", en: "Next step" },
+  newIntake: { da: "Nyt forløb", en: "New pathway" },
+
+  /*
+   * Forbrugspanelet: interessant for os og for dommerne, støj for klinikeren.
+   * Det ligger bag et info-ikon og siger kun hvad vi kan gøre rede for.
+   */
+  usageTitle: { da: "Corti-forbrug i denne session", en: "Corti usage this session" },
+  usageUsed: { da: "brugt", en: "used" },
+  usageUnused: { da: "ikke brugt", en: "not used" },
+  usageCredits: { da: "Credits forbrugt", en: "Credits consumed" },
+  usageNoCredits: { da: "ikke oplyst", en: "not reported" },
+  usageNote: {
+    da: "Credits tælles kun for de kald hvor Corti selv oplyser forbruget. Kodesystemet er icd10int-outpatient — danske SKS-koder er ikke tilgængelige med vores adgang.",
+    en: "Credits are counted only for the calls where Corti reports consumption. The coding system is icd10int-outpatient — Danish SKS codes are not available with our access.",
+  },
+  areaAmbient: { da: "Ambient STT", en: "Ambient STT" },
+  areaDictation: { da: "Dictation STT", en: "Dictation STT" },
+  areaAgentic: { da: "Agentic framework (fortolkninger)", en: "Agentic framework (interpretations)" },
+  areaText: { da: "Text generation (notater)", en: "Text generation (notes)" },
+  areaCoding: { da: "Medical coding (system)", en: "Medical coding (system)" },
 
   // Træ-vælger
   tree: { da: "Klinisk træ", en: "Clinical tree" },
@@ -171,6 +231,87 @@ export const t = {
   audioGesture: {
     da: "Klik ét sted på siden for at slå oplæsning til — browseren blokerer lyd indtil da.",
     en: "Click anywhere on the page to enable spoken guidance — the browser blocks audio until then.",
+  },
+
+  /*
+   * Klinisk chat (/chat). Beslutningstræet svarer på "hvad gør jeg med DENNE
+   * patient"; chatten svarer på "hvad siger litteraturen". Sproget her skal
+   * holde de to fra hinanden, så ingen forveksler et litteraturopslag med en
+   * anbefaling til en konkret patient.
+   */
+  chatTitle: { da: "Klinisk chat", en: "Clinical chat" },
+  chatTagline: {
+    da: "Spørg frit — svaret kommer med kilder",
+    en: "Ask freely — the answer comes with sources",
+  },
+  chatBack: { da: "Beslutningstræ", en: "Decision tree" },
+  chatPlaceholder: {
+    da: "Spørg om brandsår — skriv eller tal…",
+    en: "Ask about burns — type or speak…",
+  },
+  chatSend: { da: "Send spørgsmål", en: "Send question" },
+  chatMicStart: { da: "Start mikrofon", en: "Start microphone" },
+  chatMicStop: { da: "Stop mikrofon", en: "Stop microphone" },
+  chatStop: { da: "Afbryd", en: "Stop" },
+  chatNewThread: { da: "Ny samtale", en: "New conversation" },
+  chatHandsFree: { da: "Håndfri", en: "Hands-free" },
+  chatHandsFreeHint: {
+    da: "Mikrofonen er åben, spørgsmål sendes automatisk, og svaret læses op.",
+    en: "The microphone stays open, questions are sent automatically, and answers are read aloud.",
+  },
+  chatWorking: { da: "Arbejder…", en: "Working…" },
+  chatSearching: { da: "Søger i litteraturen…", en: "Searching the literature…" },
+  chatAckHeard: { da: "Modtaget. Jeg søger i litteraturen.", en: "Got it. Searching the literature." },
+  chatSpeakAnswer: { da: "Læs svaret op", en: "Read the answer aloud" },
+  chatStopSpeaking: { da: "Stop oplæsning", en: "Stop reading" },
+  chatYou: { da: "Læge", en: "Clinician" },
+  chatAgentName: { da: "CoSurg", en: "CoSurg" },
+
+  evidenceSourced: { da: "Kildebelagt", en: "Source-backed" },
+  evidencePartial: { da: "Delvist belagt", en: "Partly backed" },
+  evidenceUnsupported: { da: "Ikke belagt", en: "Not substantiated" },
+  chatUnsupportedNote: {
+    da: "Agenten fandt ingen kilde der belægger svaret. Behandl det som ubekræftet.",
+    en: "The agent found no source that substantiates this. Treat it as unconfirmed.",
+  },
+  chatLimitations: { da: "Forbehold", en: "Limitations" },
+  chatExperts: { da: "Koblet på", en: "Connected to" },
+  chatGrounding: {
+    da: "Svaret hentes gennem Cortis registry-eksperter — ikke fra modellens hukommelse.",
+    en: "Answers are retrieved through Corti's registry experts — not from the model's memory.",
+  },
+  chatDisclaimer: {
+    da: "Litteraturopslag, ikke en ordination. Anbefalingen til en konkret patient kommer fra beslutningstræet.",
+    en: "A literature lookup, not a prescription. The recommendation for a specific patient comes from the decision tree.",
+  },
+  chatRestored: {
+    da: "Tråden havde ligget stille — agenten fik et resumé af samtalen med.",
+    en: "The thread had been idle — the agent was given a recap of the conversation.",
+  },
+  chatEmptyTitle: { da: "Hvad vil du vide?", en: "What do you need to know?" },
+  chatExample1: {
+    da: "Hvor meget væske skal en 80-kilos mand med 30 % forbrænding have det første døgn?",
+    en: "How much fluid does an 80 kg man with 30 % TBSA burns need in the first 24 hours?",
+  },
+  chatExample2: {
+    da: "Hvornår skal jeg overveje eskarotomi?",
+    en: "When should I consider escharotomy?",
+  },
+  chatExample3: {
+    da: "Hvilke kriterier udløser overflytning til brandsårscenter?",
+    en: "Which criteria trigger transfer to a burn centre?",
+  },
+  chatOffline: {
+    da: "Ingen forbindelse — spørgsmålet blev ikke sendt. Prøv igen når nettet er tilbage.",
+    en: "No connection — the question was not sent. Try again once you are back online.",
+  },
+  chatTimedOut: {
+    da: "Agenten svarede ikke i tide. Stil spørgsmålet igen, gerne kortere.",
+    en: "The agent did not answer in time. Ask again, ideally more briefly.",
+  },
+  chatFailed: {
+    da: "Svaret kunne ikke hentes. Prøv igen.",
+    en: "Could not retrieve the answer. Try again.",
   },
 } satisfies Record<string, Record<Lang, string>>;
 
