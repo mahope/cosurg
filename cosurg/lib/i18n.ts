@@ -648,67 +648,48 @@ export const t = {
 
   intakeQuestion: { da: "Sig hvad du står med.", en: "Say what you are looking at." },
   intakeHelp: {
-    da: "En patient, et fagligt spørgsmål eller et behandlingsopslag — samme felt. Jeg finder selv ud af hvad du har brug for, og viser hvor svaret kommer fra.",
-    en: "A patient, a clinical question or a treatment lookup — one field. I work out what you need, and show you where the answer comes from.",
+    da: "Tal eller skriv. Jeg finder selv ud af resten.",
+    en: "Talk or type. I work out the rest myself.",
   },
   intakePlaceholder: {
-    da: "Beskriv patienten, stil et spørgsmål, eller slå en behandling op…",
-    en: "Describe the patient, ask a question, or look up a treatment…",
+    da: "Beskriv patienten, stil et spørgsmål, eller send et billede med…",
+    en: "Describe the patient, ask a question, or attach an image…",
   },
+
+  /* ------------------------------------------------------------------ *
+   * Mikrofonen og billederne på forsiden
+   *
+   * Forsiden er ét felt og én mikrofon. Teksterne herunder skal derfor
+   * kunne bæres af sig selv: der er ingen knapper der forklarer hvad appen
+   * kan, og ingen eksempler der demonstrerer det.
+   * ------------------------------------------------------------------ */
+  intakeMicHint: { da: "Tryk og tal — ordene kommer med det samme", en: "Tap and talk — the words appear straight away" },
+  intakeMicListening: { da: "Jeg lytter", en: "Listening" },
+  intakeMicStarting: { da: "Åbner mikrofonen…", en: "Opening the microphone…" },
+  intakeSend: { da: "Send", en: "Send" },
+  intakeAddImage: { da: "Vedhæft billede", en: "Attach image" },
+  intakeRemoveImage: { da: "Fjern billede", en: "Remove image" },
+  intakeImageOnly: {
+    da: "Hvad ser du på dette billede?",
+    en: "What do you see in this image?",
+  },
+  intakeImageTooLarge: { da: "Billedet er for stort — maks. 8 MB.", en: "That image is too large — 8 MB max." },
+  intakeImageTooMany: { da: "Du kan sende op til fire billeder.", en: "You can send up to four images." },
+  intakeImageNotAnImage: { da: "Kun billeder kan vedhæftes.", en: "Only images can be attached." },
+  intakeImageUnreadable: { da: "Billedet kunne ikke læses.", en: "That image could not be read." },
+  intakeDropHere: { da: "Slip billedet her", en: "Drop the image here" },
 
   /*
-   * Genkendelsen mens den sker. Formen er bevidst «Det ser ud som X — så gør
-   * jeg Y»: første halvdel er hvad appen har forstået, anden halvdel er hvad
-   * den vil gøre ved det. Lægen skal kunne standse os FØR vi gør det, ikke
-   * bagefter.
+   * Her lå genkendelsens tekster («Jeg læser det som …»), de tre eksempel-
+   * ytringer og sporbarhedskortet. De er fjernet sammen med de flader de
+   * hørte til: forsiden er ét felt og én mikrofon, og alt andet på den var
+   * noget lægen skulle læse eller vælge før han kunne komme i gang.
+   *
+   * Sporbarheden er ikke forsvundet — den står hvor den betyder noget: på
+   * selve svaret (`LookupCard`s oprindelsesmærkat) og i instrumentpanelets
+   * `sourceNote`. En påstand om kilder hører til ved kilden, ikke på en tom
+   * startskærm.
    */
-  senseLabel: { da: "Jeg læser det som", en: "I read this as" },
-  sensePathway: { da: "En patient", en: "A patient" },
-  sensePathwayDoes: { da: "jeg fører dig gennem vurderingen", en: "I will take you through the assessment" },
-  senseQuestion: { da: "Et fagligt spørgsmål", en: "A clinical question" },
-  senseQuestionDoes: { da: "jeg slår det op i kilderne", en: "I will look it up in the sources" },
-  senseGuide: { da: "Et behandlingsopslag", en: "A treatment lookup" },
-  senseGuideDoes: { da: "jeg henter behandlingen fra vidensbasen", en: "I will fetch the treatment from the knowledge base" },
-  senseUnsure: { da: "Noget jeg ikke tør afgøre endnu", en: "Something I dare not decide yet" },
-  senseUnsureDoes: { da: "skriv lidt mere, så spørger jeg hellere end at gætte", en: "write a little more — I would rather ask than guess" },
-  senseIdle: {
-    da: "Jeg genkender selv hvad du skriver — beskrivelse, spørgsmål eller opslag.",
-    en: "I recognise what you write on my own — description, question or lookup.",
-  },
-
-  /*
-   * De tre eksempler. De er hverken en menu eller en fanebjælke: et klik
-   * FYLDER feltet i stedet for at navigere væk, så det eneste der sker er at
-   * genkendelsen tænder. Lægen ser altså evnen blive brugt, ikke beskrevet.
-   */
-  intakeTry: { da: "Prøv en af disse — de udfylder feltet", en: "Try one — it fills the field" },
-  intakeExamplePatient: {
-    da: "Mand på 34, kogende vand over højre hånd for en halv time siden",
-    en: "34-year-old man, boiling water over the right hand half an hour ago",
-  },
-  intakeExampleQuestion: {
-    da: "Hvor meget væske skal en mand på 80 kilo med 30 procent have?",
-    en: "How much fluid does an 80 kg man with 30 % need?",
-  },
-  intakeExampleGuide: {
-    da: "Behandling af cirkulær forbrænding på underarmen",
-    en: "Treatment of a circumferential forearm burn",
-  },
-
-  /* Sporbarheden — den anden halvdel af påstanden, og lige så synlig. */
-  provenanceTitle: { da: "Hvert svar peger på en navngiven kilde", en: "Every answer points to a named source" },
-  provenanceBody: {
-    da: "Anbefalingen kommer fra et forløb skrevet af plastikkirurger. Opslag citeres ordret fra vidensbasen. Ingen af delene kommer fra en sprogmodels hukommelse — og står der intet i kilderne, siger appen netop det.",
-    en: "The recommendation comes from a pathway written by plastic surgeons. Lookups are quoted verbatim from the knowledge base. Neither comes from a language model's memory — and when the sources are silent, the app says exactly that.",
-  },
-  provenanceSource1: { da: "Dansk Brandsårsforening — brandsaar.dk", en: "Danish Burn Association — brandsaar.dk" },
-  provenanceSource2: { da: "VIP-instrukser, Rigshospitalet", en: "VIP guidelines, Rigshospitalet" },
-  provenanceSource3: { da: "Afsnit 6052, plastikkirurgi og brandsår", en: "Section 6052, plastic surgery and burns" },
-
-  /* Kvitteringen bagefter: hvad blev genkendt, og hvorfor netop det. */
-  recognisedAs: { da: "Genkendt som", en: "Recognised as" },
-  recognisedBecause: { da: "fordi", en: "because" },
-  originFrom: { da: "Svaret kommer fra", en: "The answer comes from" },
   intakeAlsoAsk: {
     da: "Du kan lige så godt bare stille et spørgsmål — så slår jeg det op med kilder først.",
     en: "You can just as well ask a question — then I look it up with sources first.",

@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import type { ChatImage } from "@/components/attachments";
 import burnsTree from "@/content/trees/burns.json";
 import { advance, getDisposition, getNode, goBack, questionText, startSession } from "@/lib/tree/engine";
 import type { DecisionTree, Lang, SessionState, TreeNode } from "@/lib/tree/types";
@@ -30,11 +31,9 @@ import {
   looksLikeQuestion,
   matchAffirmative,
   matchIntentChoice,
-  previewIntake,
   startsWithTreatmentIntent,
 } from "@/components/unified/intent";
 import { IntentChoiceCard, LookupCard, type LookupPayload } from "@/components/unified/LookupCard";
-import { RecognitionNote } from "@/components/unified/RecognitionNote";
 import { fetchGuide, type GuideSvar } from "@/components/unified/guide";
 import { spokenText } from "@/components/unified/spoken";
 import { PitfallRail } from "@/components/pitfalls/PitfallRail";
@@ -123,18 +122,12 @@ export default function Home() {
   const [intakeMiss, setIntakeMiss] = useState<{ text: string; candidates: string[] } | null>(null);
   /*
    * Kladden i indgangsfeltet. Den bor HER og ikke kun i feltet, fordi
-   * forsiden viser hvad appen er ved at forstå mens der stadig skrives — og
-   * den forståelse er den samme funktion som den der bagefter afgør sagen.
-   * Kladden sendes aldrig nogen steder hen; den er en aflæsning, ikke en
-   * tilstand nogen kan handle på.
+   * MIKROFONEN skriver ind i den: hvert færdigt talesegment lægges bagest, så
+   * lægen kan tale en hel case ind, se ordene komme, rette i dem og først
+   * sende når han er færdig. Talen sender altså ikke af sig selv på forsiden —
+   * det ville gøre en tænkepause til en afsendelse.
    */
   const [draft, setDraft] = useState("");
-  /*
-   * Hvad der blev genkendt, da forløbet startede — og hvad i ytringen der
-   * pegede derhen. Kvitteringen bagefter er halvdelen af pointen: lægen skal
-   * kunne se AT der blev truffet et valg, og hvorfor netop det.
-   */
-  const [recognition, setRecognition] = useState<{ name: string; reasons: string[] } | null>(null);
   const [state, setState] = useState<SessionState>(() => startSession(initialTree, "da"));
   const [transcript, setTranscript] = useState<string[]>([]);
   const [status, setStatus] = useState<string | null>(null);
@@ -297,7 +290,17 @@ export default function Home() {
    * højt igen, så den der ikke kigger på skærmen ved hvor han er.
    */
   const runLookup = useCallback(
-    async (question: string, suggestTreeId?: string | null, mode: LookupMode = "auto") => {
+    async (
+      question: string,
+      suggestTreeId?: string | null,
+      mode: LookupMode = "auto",
+      /**
+       * Billeder lægen sendte med. De rejser KUN til litteraturvejen:
+       * behandlingsopslaget er ordret tekst fra vores egen vidensbase og har
+       * intet at se med. Et billede er derfor i sig selv et valg af vej.
+       */
+      images?: ChatImage[],
+    ) => {
       if (lookupBusyRef.current) return;
       lookupBusyRef.current = true;
 
@@ -326,7 +329,9 @@ export default function Home() {
        * proceduretrinnet — og chatten er den eneste af de to der kan læses HØJT
        * som ét kort, kildebelagt svar. Et opslagsværk i otte afsnit kan ikke.
        */
-      const useGuide = mode === "guide" || (mode === "auto" && !orMode && looksLikeGuideTopic(question));
+      const hasImages = !!images && images.length > 0;
+      const useGuide =
+        !hasImages && (mode === "guide" || (mode === "auto" && !orMode && looksLikeGuideTopic(question)));
 
       setLookupStatus(tr(useGuide ? "guideFetching" : "lookupWorking", lang));
       if (speakAll) void say(tr(useGuide ? "guideAck" : "lookupAck", lang));
@@ -379,7 +384,7 @@ export default function Home() {
             ? stateRef.current.path.map((p) => `- ${p.question} ${p.rawAnswer}`).join("\n")
             : undefined;
 
-        const { answer } = await askLookup(question, patientContext);
+        const { answer } = await askLookup(question, patientContext, images);
         if (answer) await finish(spokenText(answer, lang));
       } finally {
         lookupBusyRef.current = false;
@@ -448,7 +453,7 @@ export default function Home() {
    * andet forløb ville være klinisk meningsløs.
    */
   const beginTree = useCallback(
-    async (id: string, seedTranscript?: string, recognisedBy?: string[] | null) => {
+    async (id: string, seedTranscript?: string) => {
       if (treeBusy) return;
       setTreeBusy(true);
       try {
@@ -457,14 +462,6 @@ export default function Home() {
         setIntakeMiss(null);
         setStarted(true);
         setDraft("");
-        /*
-         * Kvitteringen sættes kun når forløbet blev GENKENDT. Valgte lægen selv
-         * i listen, er der intet at gøre rede for — og en kvittering på et valg
-         * han selv traf ville være støj der lod som om den var en oplysning.
-         */
-        setRecognition(
-          recognisedBy && recognisedBy.length > 0 ? { name: next.name[lang], reasons: recognisedBy } : null,
-        );
         askCurrent(resetSession(next, lang), next);
         // Lægens egen beskrivelse er den første kliniske oplysning i sagen —
         // den skal med i transskriptet og dermed i notatet, ikke kasseres som
@@ -496,7 +493,21 @@ export default function Home() {
    * starte det forkerte forløb er værre end at bruge to sekunder på at spørge.
    */
   const handleIntake = useCallback(
-    async (text: string) => {
+    async (text: string, images?: ChatImage[]) => {
+      /*
+       * Et billede er altid et spørgsmål.
+       *
+       * Lægen fotograferer et sår fordi han er i tvivl om det han ser — ikke
+       * for at starte et forløb. Vi sender derfor billedet til opslaget og
+       * springer forløbsgenkendelsen over: at åbne en brandsårsvurdering på et
+       * foto ville være at gætte på en diagnose ud fra en fil.
+       */
+      if (images && images.length > 0) {
+        setIntakeMiss(null);
+        void runLookup(text, null, "chat", images);
+        return;
+      }
+
       const { match, ranked } = routeUtterance(text, trees, lang);
       /*
        * Det forløb vi vil TILBYDE bagefter, hvis ytringen viser sig at være et
@@ -520,7 +531,7 @@ export default function Home() {
       }
 
       if (match) {
-        void beginTree(match.treeId, text, match.matched);
+        void beginTree(match.treeId, text);
         return;
       }
 
@@ -838,13 +849,15 @@ export default function Home() {
    *   5. Svarfortolkning hos Corti, med agent-klassificering som sidste net.
    */
   const handleUtterance = useCallback(
-    async (text: string) => {
+    async (text: string, images?: ChatImage[]) => {
       /*
        * Tog lægen imod tilbuddet om at blive ført gennem forløbet? Det ligger
        * FØRST, fordi tilbuddet står på indgangsskærmen, hvor enhver anden
-       * ytring ville blive læst som en ny patientbeskrivelse.
+       * ytring ville blive læst som en ny patientbeskrivelse. Et "ja" med et
+       * billede vedhæftet er dog ikke et ja til forløbet — så er billedet
+       * ærindet.
        */
-      if (offer && matchAffirmative(text)) {
+      if (offer && !images?.length && matchAffirmative(text)) {
         const id = offer.treeId;
         setOffer(null);
         void beginTree(id);
@@ -854,7 +867,7 @@ export default function Home() {
       // Før et forløb er valgt, er ytringen enten en patient eller et spørgsmål.
       // Samme vej ind for tale og skrift.
       if (!started) {
-        void handleIntake(text);
+        void handleIntake(text, images);
         return;
       }
 
@@ -978,7 +991,30 @@ export default function Home() {
     ],
   );
 
-  const { listening, interim, error, start, stop } = useTranscribe({ lang, onFinal: handleUtterance });
+  /**
+   * Hvad sker der med et færdigt talesegment?
+   *
+   * Inde i et forløb er det et svar, en kommando eller et spørgsmål — det går
+   * direkte videre, som det altid har gjort. På FORSIDEN gør det ikke: dér
+   * lægger talen sig i skrivefeltet, så lægen kan tale en hel case ind, se
+   * ordene stå der, rette et tal og selv trykke send. Sendte hvert segment sig
+   * selv, ville en tænkepause midt i en sætning blive til en afsendelse — og
+   * appen ville svare på en halv beskrivelse.
+   *
+   * Håndfri tilstand er undtagelsen: dér er der ingen der kan trykke send.
+   */
+  const handleVoiceFinal = useCallback(
+    (text: string) => {
+      if (!started && !orMode) {
+        setDraft((prev) => (prev ? `${prev.trimEnd()} ${text}` : text));
+        return;
+      }
+      void handleUtterance(text);
+    },
+    [started, orMode, handleUtterance],
+  );
+
+  const { listening, interim, error, start, stop } = useTranscribe({ lang, onFinal: handleVoiceFinal });
 
   // Produktområderne markeres som brugt når strømmen faktisk kom op — ikke når
   // knappen blev trykket. Et forsøg er ikke et forbrug.
@@ -1047,25 +1083,7 @@ export default function Home() {
     setStarted(false);
     setIntakeMiss(null);
     setDraft("");
-    setRecognition(null);
   };
-
-  /*
-   * GENKENDELSEN, VIST MENS DEN SKER.
-   *
-   * Det er den samme afgørelse som `handleIntake` træffer når der trykkes enter
-   * — kaldt på kladden i stedet for på den afsendte ytring. Derfor kan
-   * forhåndsvisningen ikke komme til at love noget andet end det der sker: der
-   * er kun én regel, og den bor i `unified/intent.ts`.
-   *
-   * Den koster nul netværkskald. Havde den kostet ét, kunne den ikke køre på
-   * hvert tastetryk — og en genkendelse man skal vente på, oplærer ingen.
-   */
-  const intakePreview = useMemo(() => {
-    if (started) return null;
-    const { match } = routeUtterance(draft, trees, lang);
-    return previewIntake(draft, match?.matched ?? null);
-  }, [started, draft, trees, lang]);
 
   /**
    * Journalnotatet er appens langsomste kald (målt 14–16 s) og derfor det der
@@ -1458,12 +1476,9 @@ export default function Home() {
               interim={interim}
               draft={draft}
               onDraftChange={setDraft}
-              preview={intakePreview}
               onToggleMic={toggleMic}
-              onSubmit={(t) => void handleUtterance(t)}
+              onSubmit={(t, images) => void handleUtterance(t, images)}
               onSelectTree={(id) => void beginTree(id)}
-              onGenerateNote={generateNote}
-              noteBusy={noteBusy}
             />
 
             {/* Kun mens agenten afgør om ytringen var et spørgsmål. Linjen
@@ -1492,15 +1507,6 @@ export default function Home() {
         {started && (
         <div className="grid gap-6 md:grid-cols-[1fr_320px]">
           <section>
-            {/*
-              Kvitteringen på hvad der blev genkendt. Den står øverst i
-              kolonnen og kommer til verden SAMTIDIG med hele gitteret — der er
-              altså intet den kan skubbe til, og den forsvinder ikke igen.
-            */}
-            {recognition && (
-              <RecognitionNote lang={lang} name={recognition.name} reasons={recognition.reasons} />
-            )}
-
             {/*
               Flaget ERSTATTER spørgsmålet frem for at lægge sig oven over det.
               Begge er sektionens øverste kort, så skiftet koster ingen

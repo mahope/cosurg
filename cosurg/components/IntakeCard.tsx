@@ -1,12 +1,18 @@
 "use client";
 
-import { useRef } from "react";
+import { useCallback, useRef, useState, type ChangeEvent, type DragEvent, type KeyboardEvent } from "react";
 import type { Lang } from "@/lib/tree/types";
-import { t, tr } from "@/lib/i18n";
-import type { IntakeKind, IntakePreview } from "./unified/intent";
-import { ResponseBar } from "./ResponseBar";
+import { tr } from "@/lib/i18n";
 import type { TreeSummary } from "./TreePicker";
-import { SizeLock, widestOf } from "./ui/SizeLock";
+import { SizeLock } from "./ui/SizeLock";
+import {
+  MAX_IMAGES,
+  readAttachment,
+  toChatImages,
+  type AttachError,
+  type Attachment,
+  type ChatImage,
+} from "./attachments";
 
 interface IntakeCardProps {
   lang: Lang;
@@ -16,49 +22,43 @@ interface IntakeCardProps {
   /** Sat når en ytring ikke kunne henføres til et forløb. */
   unresolved: string | null;
   listening: boolean;
+  /** Foreløbig tale — det der opfanges LIGE NU, endnu ikke afsluttet. */
   interim: string;
   /** Teksten i feltet. Den bor hos forælderen, fordi genkendelsen læser den. */
   draft: string;
   onDraftChange: (text: string) => void;
-  /** Hvad appen er ved at forstå, mens der stadig skrives. Null = intet at sige endnu. */
-  preview: IntakePreview | null;
   onToggleMic: () => void;
-  onSubmit: (text: string) => void;
+  onSubmit: (text: string, images?: ChatImage[]) => void;
   onSelectTree: (id: string) => void;
-  onGenerateNote: () => void;
-  noteBusy: boolean;
 }
 
 /**
  * FORSIDEN — og dermed produktet.
  *
- * CoSurg er ikke en brandsårsapp der også kan chatte. Det er ét sted hvor en
- * kliniker siger hvad han har på hjerte, og systemet finder ud af hvad han har
- * brug for: en ført vurdering, et kildebelagt svar eller et behandlingsopslag.
- * Den påstand skal skærmen bære selv, i det sekund den åbnes — ellers findes
- * produktet kun i koden.
+ * CoSurg er en klinisk assistent man taler eller skriver til. Forsiden skal
+ * derfor kunne bæres af to ting alene: ét stort felt og én stor mikrofon. Alt
+ * andet blev fjernet med vilje — eksempelknapper, forløbsvælgere, faneblade og
+ * forklarende kort. Hver af dem var et VALG lægen skulle træffe før han kunne
+ * begynde, og et valg under tidspres er en forsinkelse forklædt som hjælp.
  *
- * Tre ting gør arbejdet, og de er valgt frem for alternativerne:
+ * Tre beslutninger bærer skærmen:
  *
- * 1. INVITATIONEN FAVNER ALLE TRE VEJE. Den gamle forside sagde "beskriv
- *    patienten" tre gange (overskrift, hjælpetekst, pladsholder), og så prøver
- *    ingen at stille et spørgsmål. Nu nævner alle tre linjer alle tre veje.
+ * 1. MIKROFONEN SKRIVER MENS DER TALES. Den foreløbige tekst lægger sig som
+ *    spøgelsesskrift i feltet, dér hvor ordene ender når segmentet er færdigt —
+ *    ikke i en statuslinje et andet sted. Ventetid uden livstegn får folk til at
+ *    tro at det ikke virker, og det er den fejl der koster en demo.
  *
- * 2. GENKENDELSEN VISES MENS DEN SKER. Under feltet står hvad appen er ved at
- *    forstå — og hvad den så vil gøre — allerede før der trykkes enter. Det er
- *    både en oplæring (nå, den kan også det) og en sikkerhed (jeg kan standse
- *    den før den gør noget forkert). Grunden står med, fordi hele appens
- *    påstand er at den kan gøre rede for sig.
+ * 2. FELTET RUMMER EN HEL CASE. Det er en textarea der vokser med indholdet, så
+ *    en beskrivelse på fem linjer ikke skal presses ned i en enkeltlinje. Den
+ *    vokser NEDAD fra en fast minimumshøjde; overskriften og feltets top står
+ *    stille uanset hvor meget der skrives.
  *
- * 3. EKSEMPLER FREM FOR FORKLARINGER. Tre ytringer af hver sin slags. De er
- *    bevidst IKKE en fanebjælke: et klik fylder feltet i stedet for at
- *    navigere væk, og genkendelsen tænder med det samme, så man ser evnen
- *    blive brugt frem for beskrevet. Valget forbliver appens.
+ * 3. BILLEDET FØLGER MED SPØRGSMÅLET. Et foto af såret er ofte det præcise
+ *    spørgsmål — se attachments.ts for hvorfor det aldrig lander i et lager.
  *
- * Og hele vejen igennem: intet element flytter sig. Genkendelsens plads er
- * reserveret og ikke betinget, og eksempelkortene har fast tekstblok — ellers
- * ville skærmen rykke under hænderne på den der læser, hver gang han skriver
- * et bogstav eller skifter sprog.
+ * Beslutningstræerne findes stadig og starter af sig selv når ytringen er en
+ * patientbeskrivelse. Men de reklamerer ikke for sig selv her; forsiden lover
+ * hjælp, ikke et værktøjsvalg.
  */
 export function IntakeCard({
   lang,
@@ -69,354 +69,324 @@ export function IntakeCard({
   interim,
   draft,
   onDraftChange,
-  preview,
   onToggleMic,
   onSubmit,
   onSelectTree,
-  onGenerateNote,
-  noteBusy,
 }: IntakeCardProps) {
-  // Ved tvivl viser vi KUN de forløb der var i spil — at vise alle igen ville
-  // være at kaste spørgsmålet tilbage uden at have hjulpet med noget.
-  const choices = ambiguous.length > 0 ? trees.filter((tree) => ambiguous.includes(tree.id)) : trees;
+  const [attachments, setAttachments] = useState<Attachment[]>([]);
+  const [attachError, setAttachError] = useState<AttachError | null>(null);
+  const [dragging, setDragging] = useState(false);
+
+  const fileRef = useRef<HTMLInputElement>(null);
+  const areaRef = useRef<HTMLTextAreaElement>(null);
+
+  const addFiles = useCallback(
+    async (files: FileList | File[]) => {
+      const list = Array.from(files);
+      if (list.length === 0) return;
+      setAttachError(null);
+
+      const accepted: Attachment[] = [];
+      let error: AttachError | null = null;
+
+      for (const file of list) {
+        const result = await readAttachment(file);
+        if (typeof result === "string") {
+          error = result;
+          continue;
+        }
+        accepted.push(result);
+      }
+
+      setAttachments((prev) => {
+        const room = MAX_IMAGES - prev.length;
+        if (accepted.length > room) error = "intakeImageTooMany";
+        return [...prev, ...accepted.slice(0, Math.max(room, 0))];
+      });
+      if (error) setAttachError(error);
+    },
+    [],
+  );
+
+  const onPickFiles = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) void addFiles(e.target.files);
+    // Så den samme fil kan vælges igen efter den er fjernet.
+    e.target.value = "";
+  };
+
+  const onDrop = (e: DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setDragging(false);
+    if (e.dataTransfer.files?.length) void addFiles(e.dataTransfer.files);
+  };
 
   /*
-   * Et eksempel er klikket. Teksten lægges i feltet — den sendes IKKE — og
-   * markøren flytter med, så det næste tastetryk fortsætter hvor eksemplet
-   * slap. Forskellen på et eksempel og en menuknap er præcis den: eksemplet
-   * afleverer noget man kan rette i, knappen tager en beslutning.
+   * Et billede uden ord er stadig et spørgsmål — "hvad ser du?". Vi sætter
+   * spørgsmålet for lægen i stedet for at spærre send-knappen, fordi det er
+   * præcis den situation hvor han ikke har ord for det han ser.
    */
-  const inputRef = useRef<HTMLInputElement>(null);
-  const pick = (text: string) => {
-    onDraftChange(text);
-    const el = inputRef.current;
-    if (el) {
-      el.focus();
-      el.setSelectionRange(text.length, text.length);
+  const canSend = draft.trim().length > 0 || attachments.length > 0;
+
+  const submit = () => {
+    if (!canSend) return;
+    const text = draft.trim() || tr("intakeImageOnly", lang);
+    const images = attachments.length > 0 ? toChatImages(attachments) : undefined;
+    onSubmit(text, images);
+    onDraftChange("");
+    setAttachments([]);
+    setAttachError(null);
+  };
+
+  const onKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
+    // Enter sender, skift+enter giver en ny linje. En hel case skrives i
+    // afsnit, og en textarea uden linjeskift ville være et inputfelt i
+    // forklædning.
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      submit();
     }
   };
 
+  /*
+   * Feltets typografi står ÉT sted. Spøgelseslaget, målelaget og selve
+   * textarea'en skal bryde linjerne på nøjagtig samme sted — ellers ville den
+   * foreløbige tale stå forskudt i forhold til de ord den fortsætter.
+   */
+  const fieldType =
+    "whitespace-pre-wrap break-words px-5 py-4 text-lg leading-relaxed font-normal tracking-normal";
+
+  // Mellemrummet mellem det skrevne og det talte. Uden det ville spøgelset
+  // klistre sig til sidste bogstav.
+  const ghostGap = draft && !draft.endsWith(" ") ? " " : "";
+
   return (
-    <div className="motion-fade">
-      <div className="rounded-2xl border bg-[var(--paper-raised)] p-6 shadow-[0_1px_2px_rgba(16,32,30,0.04)] sm:p-8">
-        <h2 className="font-[family-name:var(--font-display)] text-[28px] font-semibold leading-tight tracking-tight text-[var(--ink)] sm:text-[34px]">
+    <div className="motion-fade mx-auto max-w-3xl">
+      <div className="pt-6 text-center sm:pt-12">
+        <h2 className="font-[family-name:var(--font-display)] text-[32px] font-semibold leading-tight tracking-tight text-[var(--ink)] sm:text-[42px]">
           {tr("intakeQuestion", lang)}
         </h2>
-        <p className="mt-2.5 max-w-2xl text-[15px] leading-relaxed text-[var(--ink-soft)]">
-          {tr("intakeHelp", lang)}
-        </p>
+        <p className="mt-2.5 text-[15px] leading-relaxed text-[var(--ink-soft)]">{tr("intakeHelp", lang)}</p>
+      </div>
 
-        <div className="mt-6">
-          <ResponseBar
-            lang={lang}
-            placeholder={tr("intakePlaceholder", lang)}
-            listening={listening}
-            interim={interim}
-            onToggleMic={onToggleMic}
-            onSubmit={onSubmit}
+      {/* ---------------------------------------------------------------- *
+          Feltet
+       * ---------------------------------------------------------------- */}
+      <div
+        onDragOver={(e) => {
+          e.preventDefault();
+          setDragging(true);
+        }}
+        onDragLeave={() => setDragging(false)}
+        onDrop={onDrop}
+        className={`mt-7 rounded-2xl border bg-[var(--paper-raised)] shadow-[0_2px_14px_rgba(0,83,85,0.07)] transition-colors focus-within:border-[var(--teal)] focus-within:shadow-[0_2px_22px_rgba(0,83,85,0.13)] ${
+          dragging ? "border-[var(--teal)] bg-[var(--teal-tint)]" : "border-[var(--line-strong)]"
+        }`}
+      >
+        <div className="relative">
+          {/*
+            Målelaget. Det er det eneste af de tre lag der fylder noget, og
+            derfor det der bestemmer højden. Det måler på BÅDE det skrevne og
+            det talte, så feltet allerede har gjort plads når ordene lander.
+            Det ekstra linjeskift holder den sidste linje synlig.
+          */}
+          <div aria-hidden="true" className={`invisible min-h-[10.5rem] ${fieldType}`}>
+            {draft + ghostGap + interim + "\n"}
+          </div>
+
+          {/*
+            Spøgelseslaget: det opfangede, skrevet mens der tales.
+
+            Det ligger UNDER textarea'en og gengiver det skrevne usynligt, så
+            den foreløbige tale står præcis dér hvor den vil ende. Det er hele
+            forskellen på "appen hørte noget" og "appen hørte DETTE".
+          */}
+          {interim && (
+            <p aria-hidden="true" className={`pointer-events-none absolute inset-0 ${fieldType} text-[var(--ink)]`}>
+              <span className="invisible">{draft + ghostGap}</span>
+              <span className="text-[var(--teal)]">{interim}</span>
+            </p>
+          )}
+
+          <textarea
+            ref={areaRef}
             value={draft}
-            onValueChange={onDraftChange}
-            inputRef={inputRef}
-            size="hero"
+            onChange={(e) => onDraftChange(e.target.value)}
+            onKeyDown={onKeyDown}
+            // Pladsholderen viger for det talte — ellers ville de to tekster
+            // ligge oven i hinanden i det sekund mikrofonen fanger noget.
+            placeholder={interim ? "" : tr("intakePlaceholder", lang)}
             autoFocus
+            spellCheck={false}
+            aria-label={tr("intakePlaceholder", lang)}
+            className={`absolute inset-0 h-full w-full resize-none bg-transparent text-[var(--ink)] placeholder:text-[var(--ink-faint)] focus:outline-none ${fieldType}`}
           />
         </div>
 
-        <SensePanel preview={preview} lang={lang} />
+        {attachments.length > 0 && (
+          <ul className="flex flex-wrap gap-2.5 px-5 pb-1">
+            {attachments.map((image) => (
+              <li key={image.id} className="relative">
+                {/* eslint-disable-next-line @next/next/no-img-element -- data-URL fra brugerens egen fil; next/image kan ikke optimere den */}
+                <img
+                  src={image.previewUrl}
+                  alt={image.name ?? ""}
+                  className="h-20 w-20 rounded-lg border border-[var(--line)] object-cover"
+                />
+                <button
+                  type="button"
+                  onClick={() => setAttachments((prev) => prev.filter((a) => a.id !== image.id))}
+                  aria-label={tr("intakeRemoveImage", lang)}
+                  className="absolute -right-1.5 -top-1.5 flex h-6 w-6 items-center justify-center rounded-full border border-[var(--line-strong)] bg-[var(--paper-raised)] text-[var(--ink-soft)] transition-colors hover:border-[var(--teal)] hover:text-[var(--ink)]"
+                >
+                  <svg viewBox="0 0 20 20" width={12} height={12} fill="none" aria-hidden="true">
+                    <path d="M5 5l10 10M15 5 5 15" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+                  </svg>
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
 
-        <ExampleRow lang={lang} onPick={pick} />
-
-        {/* Vi spørger igen — det er en besked der KRÆVER noget af lægen, så den
-            skal både ses og læses op. Nude og ikke rød: at have brug for et
-            ekstra ord er ikke en klinisk alvor. */}
-        {unresolved && (
-          <p
-            role="status"
-            aria-live="polite"
-            className="motion-forward mt-5 rounded-lg border border-[var(--nude-deep)] bg-[var(--nude-tint)] px-4 py-3 text-sm font-medium leading-relaxed text-[var(--ink)]"
+        <div className="flex items-center justify-between gap-3 border-t border-[var(--line)] px-4 py-3">
+          <button
+            type="button"
+            onClick={() => fileRef.current?.click()}
+            className="flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-[13px] font-medium text-[var(--ink-soft)] transition-colors hover:bg-[var(--teal-tint)] hover:text-[var(--teal-deep)]"
           >
+            <svg
+              viewBox="0 0 24 24"
+              width={17}
+              height={17}
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={1.7}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <rect x="3" y="4.5" width="18" height="15" rx="2.5" />
+              <circle cx="8.6" cy="10" r="1.6" />
+              <path d="m4 17 4.8-4.4a2 2 0 0 1 2.7 0L20 19.5" />
+            </svg>
+            <SizeLock variants={[tr("intakeAddImage", "da"), tr("intakeAddImage", "en")]}>
+              {tr("intakeAddImage", lang)}
+            </SizeLock>
+          </button>
+          <input
+            ref={fileRef}
+            type="file"
+            accept="image/*"
+            multiple
+            onChange={onPickFiles}
+            className="hidden"
+            tabIndex={-1}
+          />
+
+          <button
+            type="button"
+            onClick={submit}
+            disabled={!canSend}
+            className="flex shrink-0 items-center gap-2 rounded-lg bg-[var(--teal)] px-4 py-2 text-[14px] font-semibold text-white transition-opacity disabled:opacity-25"
+          >
+            <SizeLock variants={[tr("intakeSend", "da"), tr("intakeSend", "en")]}>{tr("intakeSend", lang)}</SizeLock>
+            <svg viewBox="0 0 20 20" width={15} height={15} fill="none" aria-hidden="true">
+              <path
+                d="M4 10h11m0 0-4.5-4.5M15 10l-4.5 4.5"
+                stroke="currentColor"
+                strokeWidth="1.7"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      {/* Fejl ved vedhæftning. Pladsen er reserveret, så feltet ikke rykker
+          når en for stor fil afvises. Nude og ikke rød: en afvist fil er en
+          hindring, ikke en klinisk alvor. */}
+      <div className="mt-2 h-5">
+        {attachError && (
+          <p role="status" className="px-1 text-[13px] leading-5 text-[var(--nude-deep)]">
+            {tr(attachError, lang)}
+          </p>
+        )}
+      </div>
+
+      {/* ---------------------------------------------------------------- *
+          Mikrofonen
+       * ---------------------------------------------------------------- */}
+      <div className="mt-5 flex flex-col items-center">
+        <button
+          type="button"
+          onClick={onToggleMic}
+          aria-pressed={listening}
+          aria-label={tr(listening ? "micStop" : "micStart", lang)}
+          className={`relative flex h-[88px] w-[88px] items-center justify-center rounded-full transition-colors ${
+            listening
+              ? "bg-[var(--teal)] text-white"
+              : "border-2 border-[var(--teal)] bg-[var(--paper-raised)] text-[var(--teal-deep)] hover:bg-[var(--teal-tint)]"
+          }`}
+        >
+          {listening && (
+            <>
+              <span className="zone-pulse-ring absolute inset-0 rounded-full border-2" style={{ borderColor: "var(--teal)" }} />
+              <span
+                className="zone-pulse-ring absolute inset-0 rounded-full border-2"
+                style={{ borderColor: "var(--teal)", animationDelay: "0.7s" }}
+              />
+            </>
+          )}
+          <svg viewBox="0 0 24 24" width={38} height={38} fill="none" aria-hidden="true">
+            <path
+              d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3Z"
+              stroke="currentColor"
+              strokeWidth="1.6"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <path
+              d="M19 10v2a7 7 0 0 1-14 0v-2"
+              stroke="currentColor"
+              strokeWidth="1.6"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <path d="M12 19v3M8.5 22h7" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+          </svg>
+        </button>
+
+        {/* Én linje, fast højde. Den skifter indhold — aldrig plads. */}
+        <p aria-live="polite" className="mt-3 flex h-5 items-center text-[13px] font-medium text-[var(--ink-soft)]">
+          {listening ? tr("intakeMicListening", lang) : tr("intakeMicHint", lang)}
+        </p>
+      </div>
+
+      {/*
+        Vi spørger igen. Knapperne herunder er IKKE en menu forsiden tilbyder —
+        de findes kun i det øjeblik vi selv har sagt at vi ikke kunne afgøre
+        sagen, og forsvinder med det samme igen. Et valg som svar på vores egen
+        tvivl er hjælp; et valg som udgangspunkt er forvirring.
+      */}
+      {unresolved && (
+        <div className="motion-forward mt-8 rounded-xl border border-[var(--nude-deep)] bg-[var(--nude-tint)] px-4 py-3.5">
+          <p role="status" aria-live="polite" className="text-sm font-medium leading-relaxed text-[var(--ink)]">
             {tr(ambiguous.length > 0 ? "intakeAmbiguous" : "intakeUnknown", lang)}
             <span className="mt-1 block font-normal text-[var(--ink-soft)]">&ldquo;{unresolved}&rdquo;</span>
           </p>
-        )}
-
-        {/*
-          Den manuelle vej. Den bliver stående, fordi den der allerede ved hvad
-          han vil skal kunne springe genkendelsen over — men den står nede og
-          småt. Gjorde den andet, ville forsiden igen bede lægen om det valg vi
-          netop har taget fra ham.
-        */}
-        <div className="mt-7 flex flex-wrap items-center gap-x-4 gap-y-3 border-t border-[var(--line)] pt-4">
-          <p className="font-[family-name:var(--font-mono)] text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--ink-faint)]">
-            {tr(ambiguous.length > 0 ? "intakePick" : "intakeManual", lang)}
-          </p>
-          <div className="flex flex-1 flex-wrap gap-2">
-            {choices.map((tree) => (
+          <div className="mt-3 flex flex-wrap gap-2">
+            {(ambiguous.length > 0 ? trees.filter((tree) => ambiguous.includes(tree.id)) : trees).map((tree) => (
               <button
                 key={tree.id}
                 onClick={() => onSelectTree(tree.id)}
-                className="rounded-lg border px-3 py-1.5 text-[13px] font-medium text-[var(--ink-soft)] transition-colors hover:border-[var(--teal)] hover:bg-[var(--teal-tint)] hover:text-[var(--ink)]"
+                className="rounded-lg border border-[var(--line-strong)] bg-[var(--paper-raised)] px-3 py-1.5 text-[13px] font-medium text-[var(--ink-soft)] transition-colors hover:border-[var(--teal)] hover:bg-[var(--teal-tint)] hover:text-[var(--ink)]"
               >
-                {/* Forløbsnavnene er oversat indhold og har hver sin længde på
-                    de to sprog. Knappen får plads til den længste, så rækken
-                    ikke pakker om sig selv ved et sprogskift. */}
                 <SizeLock variants={[tree.name.da, tree.name.en]}>{tree.name[lang]}</SizeLock>
               </button>
             ))}
           </div>
-          <button
-            onClick={onGenerateNote}
-            disabled={noteBusy}
-            aria-busy={noteBusy}
-            className="rounded-lg border border-[var(--line-strong)] px-3 py-1.5 text-[13px] font-medium text-[var(--ink-soft)] transition-colors enabled:hover:border-[var(--teal)] enabled:hover:text-[var(--ink)] disabled:opacity-50"
-          >
-            <SizeLock variants={widestOf("noteWorking", "intakeGenerateNote")}>
-              {noteBusy ? tr("noteWorking", lang) : tr("intakeGenerateNote", lang)}
-            </SizeLock>
-          </button>
         </div>
-      </div>
-
-      <ProvenanceStrip lang={lang} />
-    </div>
-  );
-}
-
-/* ------------------------------------------------------------------ *
- * Genkendelsen, vist mens den sker
- * ------------------------------------------------------------------ */
-
-/** Hvad hver slags hedder, og hvad appen så gør ved den. */
-const SENSE: Record<IntakeKind, { name: keyof typeof t; does: keyof typeof t }> = {
-  pathway: { name: "sensePathway", does: "sensePathwayDoes" },
-  question: { name: "senseQuestion", does: "senseQuestionDoes" },
-  guide: { name: "senseGuide", does: "senseGuideDoes" },
-  unsure: { name: "senseUnsure", does: "senseUnsureDoes" },
-};
-
-/**
- * Hvad er appen ved at forstå — lige nu, mens der skrives?
- *
- * Formen er «Jeg læser det som X — så gør jeg Y», og grunden står under.
- * Rækkefølgen er ikke tilfældig: forståelsen først (den er det interessante),
- * handlingen dernæst (den er det forpligtende), grunden til sidst (den er
- * belægget). Lægen kan altså standse os FØR vi gør noget, ikke bagefter.
- *
- * Pladsen er RESERVERET og ikke betinget. Voksede feltet frem under skrivning,
- * ville hele siden rykke ved hvert fjerde bogstav — og det ville føle sig
- * nervøst i en app hvis hele ærinde er ro under tidspres.
- */
-function SensePanel({ preview, lang }: { preview: IntakePreview | null; lang: Lang }) {
-  const unsure = preview?.kind === "unsure";
-
-  return (
-    <div className="mt-3 h-[5.25rem] overflow-hidden" aria-live="polite">
-      {preview ? (
-        <div
-          className={`motion-replace flex h-full items-start gap-3 rounded-xl border px-4 py-3 ${
-            unsure
-              ? "border-[var(--nude-deep)] bg-[var(--nude-tint)]"
-              : "border-[var(--line-strong)] bg-[var(--teal-tint)]"
-          }`}
-        >
-          <span className={`mt-0.5 shrink-0 ${unsure ? "text-[var(--nude-deep)]" : "text-[var(--teal)]"}`}>
-            <KindGlyph kind={preview.kind} />
-          </span>
-          <div className="min-w-0 flex-1">
-            <p className="flex flex-wrap items-baseline gap-x-2 leading-snug">
-              <span className="font-[family-name:var(--font-mono)] text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--ink-faint)]">
-                {tr("senseLabel", lang)}
-              </span>
-              <span className="text-[15px] font-semibold text-[var(--ink)]">
-                {tr(SENSE[preview.kind].name, lang)}
-              </span>
-            </p>
-            <p className="truncate text-sm leading-relaxed text-[var(--ink-soft)]">
-              — {tr(SENSE[preview.kind].does, lang)}
-            </p>
-            {preview.reasons.length > 0 && (
-              <p className="truncate font-[family-name:var(--font-mono)] text-[11px] leading-relaxed text-[var(--ink-faint)]">
-                {tr("recognisedBecause", lang)}: {preview.reasons.join(" · ")}
-              </p>
-            )}
-          </div>
-        </div>
-      ) : (
-        <p className="flex h-full items-center px-1 text-sm leading-relaxed text-[var(--ink-faint)]">
-          {tr("senseIdle", lang)}
-        </p>
       )}
     </div>
-  );
-}
-
-/**
- * Ét lille mærke pr. slags. De er bevidst tegnet i brandets accentfarve og
- * aldrig i rød, gul eller grøn: at appen har genkendt et spørgsmål er ikke en
- * klinisk oplysning, og de tre farver betyder noget andet i denne app.
- */
-function KindGlyph({ kind }: { kind: IntakeKind }) {
-  const common = {
-    width: 20,
-    height: 20,
-    viewBox: "0 0 24 24",
-    fill: "none",
-    stroke: "currentColor",
-    strokeWidth: 1.7,
-    strokeLinecap: "round" as const,
-    strokeLinejoin: "round" as const,
-    "aria-hidden": true,
-  };
-
-  if (kind === "pathway") {
-    // En person: ytringen handler om en patient.
-    return (
-      <svg {...common}>
-        <circle cx="12" cy="8" r="3.4" />
-        <path d="M4.8 20a7.2 7.2 0 0 1 14.4 0" />
-      </svg>
-    );
-  }
-  if (kind === "question") {
-    // Et spørgsmålstegn i en cirkel: ytringen er et spørgsmål til kilderne.
-    return (
-      <svg {...common}>
-        <circle cx="12" cy="12" r="9" />
-        <path d="M9.4 9.2a2.7 2.7 0 0 1 5.2.9c0 1.8-2.6 2.2-2.6 3.9" />
-        <path d="M12 17.4h.01" />
-      </svg>
-    );
-  }
-  if (kind === "guide") {
-    // En opslået bog: behandlingen ordret fra vidensbasen.
-    return (
-      <svg {...common}>
-        <path d="M3.5 5.2A9.6 9.6 0 0 1 12 7a9.6 9.6 0 0 1 8.5-1.8v13A9.6 9.6 0 0 0 12 20a9.6 9.6 0 0 0-8.5-1.8Z" />
-        <path d="M12 7v13" />
-      </svg>
-    );
-  }
-  // Tvivl: en åben ring. Ikke et advarselstegn — vi mangler blot ord.
-  return (
-    <svg {...common} strokeDasharray="3 3">
-      <circle cx="12" cy="12" r="9" />
-    </svg>
-  );
-}
-
-/* ------------------------------------------------------------------ *
- * Eksemplerne
- * ------------------------------------------------------------------ */
-
-/** De tre ytringer, og hvad hver af dem sætter i gang. */
-const EXAMPLES: Array<{ text: keyof typeof t; kind: IntakeKind }> = [
-  { text: "intakeExamplePatient", kind: "pathway" },
-  { text: "intakeExampleQuestion", kind: "question" },
-  { text: "intakeExampleGuide", kind: "guide" },
-];
-
-/**
- * Tre eksempler, én af hver slags — evnerne vist på ét sekund.
- *
- * Det afgørende er hvad et klik GØR: det fylder feltet. Det navigerer ikke, det
- * vælger ikke en tilstand, og det sender ikke. Derfor er rækken ikke en
- * fanebjælke i forklædning — den afleverer ord man kan rette i, og lader
- * genkendelsen tage stilling til dem lige for øjnene af én.
- *
- * Selve ytringen står øverst og med lægens egne ord; hvad appen så gør, står
- * under og småt. Omvendt rækkefølge ville gøre kortene til tre kategorier — og
- * dermed til netop det valg vi har taget fra ham.
- */
-function ExampleRow({ lang, onPick }: { lang: Lang; onPick: (text: string) => void }) {
-  return (
-    <div className="mt-4">
-      <p className="font-[family-name:var(--font-mono)] text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--ink-faint)]">
-        {tr("intakeTry", lang)}
-      </p>
-      <div className="mt-2.5 grid gap-2.5 sm:grid-cols-3">
-        {EXAMPLES.map((example) => (
-          <button
-            key={example.text}
-            type="button"
-            onClick={() => onPick(tr(example.text, lang))}
-            className="group rounded-xl border border-[var(--line)] bg-[var(--paper)] px-3.5 py-3 text-left transition-colors hover:border-[var(--teal)] hover:bg-[var(--teal-tint)]"
-          >
-            {/*
-              Fast højde på citatet. Dansk og engelsk er ikke lige lange, og
-              uden den ville rækken skifte højde ved et sprogskift — det ene
-              sted vi har lovet at intet flytter sig.
-            */}
-            <span className="block h-[3.6rem] overflow-hidden text-sm font-medium leading-snug text-[var(--ink)]">
-              &ldquo;{tr(example.text, lang)}&rdquo;
-            </span>
-            <span className="mt-1.5 flex items-center gap-1.5 text-xs leading-snug text-[var(--ink-faint)] transition-colors group-hover:text-[var(--teal-deep)]">
-              <span className="shrink-0" aria-hidden="true">
-                →
-              </span>
-              <span className="truncate">{tr(SENSE[example.kind].does, lang)}</span>
-            </span>
-          </button>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-/* ------------------------------------------------------------------ *
- * Sporbarheden
- * ------------------------------------------------------------------ */
-
-/**
- * Den anden halvdel af påstanden.
- *
- * At appen selv finder ud af hvad lægen har brug for, gør den smart. At hvert
- * svar kan spores til et navngivent dokument, er det der gør den klinisk
- * brugbar frem for imponerende. De to skal derfor stå lige synligt på forsiden
- * — ikke som en ansvarsfraskrivelse i bunden, men som en oplysning om hvor
- * indholdet kommer fra.
- *
- * Kilderne står med navn og ikke som "valideret indhold". Et navn kan slås op
- * og modsiges; en forsikring kan ikke.
- */
-function ProvenanceStrip({ lang }: { lang: Lang }) {
-  const sources = ["provenanceSource1", "provenanceSource2", "provenanceSource3"] as const;
-
-  return (
-    <section className="mt-4 rounded-2xl border border-[var(--line)] bg-[var(--nude-tint)] px-6 py-5 sm:px-8">
-      <div className="flex items-start gap-3">
-        <span className="mt-0.5 shrink-0 text-[var(--teal)]">
-          <svg
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth={1.7}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            aria-hidden="true"
-          >
-            <path d="M12 3 4.5 6v5.4c0 4.4 3 8.2 7.5 9.6 4.5-1.4 7.5-5.2 7.5-9.6V6Z" />
-            <path d="m9 12 2.2 2.2L15.4 10" />
-          </svg>
-        </span>
-        <div className="min-w-0">
-          <p className="text-[15px] font-semibold leading-snug text-[var(--ink)]">{tr("provenanceTitle", lang)}</p>
-          <p className="mt-1.5 max-w-3xl text-sm leading-relaxed text-[var(--ink-soft)]">
-            {tr("provenanceBody", lang)}
-          </p>
-          <ul className="mt-3 flex flex-wrap gap-2">
-            {sources.map((key) => (
-              <li
-                key={key}
-                className="rounded-full border border-[var(--nude-deep)] bg-[var(--paper-raised)] px-3 py-1 font-[family-name:var(--font-mono)] text-[11px] font-medium text-[var(--ink-soft)]"
-              >
-                <SizeLock variants={[t[key].da, t[key].en]}>{tr(key, lang)}</SizeLock>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-    </section>
   );
 }

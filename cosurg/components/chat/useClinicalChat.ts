@@ -4,6 +4,7 @@ import { useCallback, useRef, useState } from "react";
 import type { ChatAnswer, ChatEvent } from "@/lib/corti/chat";
 import type { Lang } from "@/lib/tree/types";
 import { tr } from "@/lib/i18n";
+import type { ChatImage } from "../attachments";
 
 /**
  * Samtalens tilstand på klienten.
@@ -109,6 +110,15 @@ export function useClinicalChat(lang: Lang) {
        * agenten mærker selv hvad der er ræsonnement og hvad der er kilde.
        */
       patientContext?: string,
+      /**
+       * Billeder lægen sendte med spørgsmålet — fx et foto af såret.
+       *
+       * De rejser i den SAMME POST som spørgsmålet og gemmes ingen steder:
+       * ingen upload-runde, intet blob-lager, ingen URL der overlever
+       * sessionen. Se components/attachments.ts for hvorfor det er et krav og
+       * ikke en forenkling.
+       */
+      images?: ChatImage[],
     ): Promise<{ id: string; answer: ChatAnswer | null }> => {
       const text = question.trim();
       if (!text || abortRef.current) return { id: "", answer: null };
@@ -138,6 +148,9 @@ export function useClinicalChat(lang: Lang) {
             contextId: contextIdRef.current,
             recap,
             patientContext,
+            // Udelades når der ingen billeder er, så et almindeligt spørgsmål
+            // ser præcis ud som det altid har gjort på serversiden.
+            ...(images && images.length > 0 ? { images } : {}),
           }),
           signal: controller.signal,
         });
