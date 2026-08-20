@@ -66,7 +66,7 @@ export function FieldRow({ felt, svar, lang, naeste, onSvar, onRyd, onLaesOp }: 
         <span className="text-sm font-semibold text-[var(--ink)]">{felt.label[lang]}</span>
 
         {!felt.required && (
-          <span className="font-[family-name:var(--font-mono)] text-[10px] uppercase tracking-[0.14em] text-[var(--ink-faint)]">
+          <span className="font-[family-name:var(--font-mono)] text-[11px] uppercase tracking-[0.14em] text-[var(--ink-faint)]">
             {tr("interviewOptional", lang)}
           </span>
         )}
@@ -87,9 +87,21 @@ export function FieldRow({ felt, svar, lang, naeste, onSvar, onRyd, onLaesOp }: 
           <button
             onClick={onLaesOp}
             title={tr("interviewAskAloud", lang)}
-            className="ml-auto rounded-md px-2 py-1 text-[11px] font-medium text-[var(--teal)] hover:bg-[var(--paper-raised)]"
+            className="ml-auto inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-[11px] font-medium text-[var(--teal)] hover:bg-[var(--paper-raised)]"
           >
-            🔊 {tr("interviewAskAloud", lang)}
+            <svg viewBox="0 0 16 16" width="12" height="12" fill="none" aria-hidden="true">
+              <path
+                d="M2.5 6v4h2.6L8.6 13V3L5.1 6H2.5Z"
+                fill="currentColor"
+              />
+              <path
+                d="M10.8 5.6a3.4 3.4 0 0 1 0 4.8M12.6 3.8a5.9 5.9 0 0 1 0 8.4"
+                stroke="currentColor"
+                strokeWidth="1.3"
+                strokeLinecap="round"
+              />
+            </svg>
+            {tr("interviewAskAloud", lang)}
           </button>
         )}
       </div>
@@ -125,7 +137,7 @@ export function FieldRow({ felt, svar, lang, naeste, onSvar, onRyd, onLaesOp }: 
                 <button
                   onClick={send}
                   disabled={!indtastning.trim()}
-                  className="rounded-lg bg-[var(--teal)] px-3 py-1.5 text-sm font-semibold text-white transition-opacity disabled:opacity-30"
+                  className="rounded-lg bg-[var(--teal-deep)] px-3 py-1.5 text-sm font-semibold text-white transition-colors enabled:hover:bg-[var(--teal)] disabled:opacity-30"
                 >
                   OK
                 </button>

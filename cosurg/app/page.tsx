@@ -30,12 +30,13 @@ import {
   looksLikeQuestion,
   matchAffirmative,
   matchIntentChoice,
+  previewIntake,
   startsWithTreatmentIntent,
 } from "@/components/unified/intent";
 import { IntentChoiceCard, LookupCard, type LookupPayload } from "@/components/unified/LookupCard";
+import { RecognitionNote } from "@/components/unified/RecognitionNote";
 import { fetchGuide, type GuideSvar } from "@/components/unified/guide";
 import { spokenText } from "@/components/unified/spoken";
-import { ut } from "@/components/unified/text";
 import { PitfallRail } from "@/components/pitfalls/PitfallRail";
 import { NoteSkeleton } from "@/components/ui/Skeleton";
 
@@ -120,6 +121,20 @@ export default function Home() {
   const [started, setStarted] = useState(false);
   /** Ytringen vi ikke kunne henføre, og de forløb der var i spil. */
   const [intakeMiss, setIntakeMiss] = useState<{ text: string; candidates: string[] } | null>(null);
+  /*
+   * Kladden i indgangsfeltet. Den bor HER og ikke kun i feltet, fordi
+   * forsiden viser hvad appen er ved at forstå mens der stadig skrives — og
+   * den forståelse er den samme funktion som den der bagefter afgør sagen.
+   * Kladden sendes aldrig nogen steder hen; den er en aflæsning, ikke en
+   * tilstand nogen kan handle på.
+   */
+  const [draft, setDraft] = useState("");
+  /*
+   * Hvad der blev genkendt, da forløbet startede — og hvad i ytringen der
+   * pegede derhen. Kvitteringen bagefter er halvdelen af pointen: lægen skal
+   * kunne se AT der blev truffet et valg, og hvorfor netop det.
+   */
+  const [recognition, setRecognition] = useState<{ name: string; reasons: string[] } | null>(null);
   const [state, setState] = useState<SessionState>(() => startSession(initialTree, "da"));
   const [transcript, setTranscript] = useState<string[]>([]);
   const [status, setStatus] = useState<string | null>(null);
@@ -313,8 +328,8 @@ export default function Home() {
        */
       const useGuide = mode === "guide" || (mode === "auto" && !orMode && looksLikeGuideTopic(question));
 
-      setLookupStatus(ut(useGuide ? "guideWorking" : "lookupWorking", lang));
-      if (speakAll) void say(ut(useGuide ? "guideAck" : "lookupAck", lang));
+      setLookupStatus(tr(useGuide ? "guideFetching" : "lookupWorking", lang));
+      if (speakAll) void say(tr(useGuide ? "guideAck" : "lookupAck", lang));
 
       /** Fælles afslutning: tilbyd forløbet, læs op, og vend tilbage til noden. */
       const finish = async (spoken: string | null) => {
@@ -325,9 +340,9 @@ export default function Home() {
         if (!speakAll || !spoken) return;
         await say(spoken);
         if (suggestTreeId) {
-          void say(ut("offerSpoken", lang));
+          void say(tr("offerSpoken", lang));
         } else if (stateRef.current.currentNodeId) {
-          await say(ut("lookupSpokenResume", lang));
+          await say(tr("lookupSpokenResume", lang));
           askCurrent(stateRef.current);
         }
       };
@@ -340,7 +355,7 @@ export default function Home() {
             setGuideLookup({ question, guide, error: null });
             // Guiden har intet talt resumé — otte afsnit ordret fra kilderne kan
             // ikke læses højt. Vi siger at den står der, og lader øjnene om det.
-            await finish(guide.covered > 0 ? ut("guideSpokenFound", lang) : ut("guideEmpty", lang));
+            await finish(guide.covered > 0 ? tr("guideSpokenFound", lang) : tr("guideEmpty", lang));
           } catch (err) {
             setGuideLookup({ question, guide: null, error: failureMessage(err, "tree", lang) });
           }
@@ -433,7 +448,7 @@ export default function Home() {
    * andet forløb ville være klinisk meningsløs.
    */
   const beginTree = useCallback(
-    async (id: string, seedTranscript?: string) => {
+    async (id: string, seedTranscript?: string, recognisedBy?: string[] | null) => {
       if (treeBusy) return;
       setTreeBusy(true);
       try {
@@ -441,6 +456,15 @@ export default function Home() {
         setTree(next);
         setIntakeMiss(null);
         setStarted(true);
+        setDraft("");
+        /*
+         * Kvitteringen sættes kun når forløbet blev GENKENDT. Valgte lægen selv
+         * i listen, er der intet at gøre rede for — og en kvittering på et valg
+         * han selv traf ville være støj der lod som om den var en oplysning.
+         */
+        setRecognition(
+          recognisedBy && recognisedBy.length > 0 ? { name: next.name[lang], reasons: recognisedBy } : null,
+        );
         askCurrent(resetSession(next, lang), next);
         // Lægens egen beskrivelse er den første kliniske oplysning i sagen —
         // den skal med i transskriptet og dermed i notatet, ikke kasseres som
@@ -496,7 +520,7 @@ export default function Home() {
       }
 
       if (match) {
-        void beginTree(match.treeId, text);
+        void beginTree(match.treeId, text, match.matched);
         return;
       }
 
@@ -927,7 +951,7 @@ export default function Home() {
        */
       if (verdict.intent === "ambiguous") {
         setAmbiguity({ text, reasons: verdict.reasons });
-        if (speakAll) void say(ut("ambiguousSpoken", lang));
+        if (speakAll) void say(tr("ambiguousSpoken", lang));
         return;
       }
 
@@ -1022,7 +1046,26 @@ export default function Home() {
     restart();
     setStarted(false);
     setIntakeMiss(null);
+    setDraft("");
+    setRecognition(null);
   };
+
+  /*
+   * GENKENDELSEN, VIST MENS DEN SKER.
+   *
+   * Det er den samme afgørelse som `handleIntake` træffer når der trykkes enter
+   * — kaldt på kladden i stedet for på den afsendte ytring. Derfor kan
+   * forhåndsvisningen ikke komme til at love noget andet end det der sker: der
+   * er kun én regel, og den bor i `unified/intent.ts`.
+   *
+   * Den koster nul netværkskald. Havde den kostet ét, kunne den ikke køre på
+   * hvert tastetryk — og en genkendelse man skal vente på, oplærer ingen.
+   */
+  const intakePreview = useMemo(() => {
+    if (started) return null;
+    const { match } = routeUtterance(draft, trees, lang);
+    return previewIntake(draft, match?.matched ?? null);
+  }, [started, draft, trees, lang]);
 
   /**
    * Journalnotatet er appens langsomste kald (målt 14–16 s) og derfor det der
@@ -1413,6 +1456,9 @@ export default function Home() {
               unresolved={intakeMiss?.text ?? null}
               listening={listening}
               interim={interim}
+              draft={draft}
+              onDraftChange={setDraft}
+              preview={intakePreview}
               onToggleMic={toggleMic}
               onSubmit={(t) => void handleUtterance(t)}
               onSelectTree={(id) => void beginTree(id)}
@@ -1428,7 +1474,7 @@ export default function Home() {
                 aria-live="polite"
                 className="mt-4 text-sm leading-relaxed text-[var(--ink-soft)]"
               >
-                {ut("intakeThinking", lang)}
+                {tr("intakeThinking", lang)}
               </p>
             )}
 
@@ -1446,6 +1492,15 @@ export default function Home() {
         {started && (
         <div className="grid gap-6 md:grid-cols-[1fr_320px]">
           <section>
+            {/*
+              Kvitteringen på hvad der blev genkendt. Den står øverst i
+              kolonnen og kommer til verden SAMTIDIG med hele gitteret — der er
+              altså intet den kan skubbe til, og den forsvinder ikke igen.
+            */}
+            {recognition && (
+              <RecognitionNote lang={lang} name={recognition.name} reasons={recognition.reasons} />
+            )}
+
             {/*
               Flaget ERSTATTER spørgsmålet frem for at lægge sig oven over det.
               Begge er sektionens øverste kort, så skiftet koster ingen
@@ -1536,7 +1591,7 @@ export default function Home() {
                 dispositionId: state.dispositionId,
               }}
               limit={2}
-              overskrift={ut("pitfallsAtStep", lang)}
+              overskrift={tr("pitfallsAtStep", lang)}
             />
 
             <TranscriptPanel lines={transcript} interim={interim} listening={listening} status={liveStatus} lang={lang} />

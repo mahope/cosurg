@@ -2,7 +2,6 @@
 
 import type { Lang } from "@/lib/tree/types";
 import { tr } from "@/lib/i18n";
-import { ui } from "./uiText";
 
 /**
  * Tre prikker der arbejder. Bruges KUN hvor appen faktisk venter på et svar.
@@ -67,7 +66,7 @@ export function StatusLine({ status, lang, tone = "light", className = "" }: Sta
       role="status"
       aria-live="polite"
       aria-atomic="true"
-      aria-label={ui("statusRegion", lang)}
+      aria-label={tr("statusRegion", lang)}
       /* `items-start`: en besked på to linjer skal vokse NEDAD fra samme
          øverste kant som en på én linje — ellers flytter teksten sig lodret
          hver gang statussen skifter længde. */

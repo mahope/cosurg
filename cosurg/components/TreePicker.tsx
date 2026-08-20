@@ -92,7 +92,7 @@ export function TreePicker({
           role="listbox"
           className="absolute left-0 top-full z-20 mt-2 w-[min(22rem,calc(100vw-2rem))] overflow-hidden rounded-xl border border-[var(--line)] bg-[var(--paper-raised)] shadow-[0_12px_32px_rgba(0,83,85,0.14)]"
         >
-          <p className="border-b border-[var(--line)] px-3 py-2 font-[family-name:var(--font-mono)] text-[10px] font-semibold uppercase tracking-[0.16em] text-[var(--ink-faint)]">
+          <p className="border-b border-[var(--line)] px-3 py-2 font-[family-name:var(--font-mono)] text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--ink-faint)]">
             {tr("tree", lang)}
           </p>
           <ul>
@@ -115,12 +115,12 @@ export function TreePicker({
                     <span className="flex w-full items-center gap-2">
                       <span className="text-sm font-medium text-[var(--ink)]">{t.name[lang]}</span>
                       {active && (
-                        <span className="ml-auto font-[family-name:var(--font-mono)] text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--teal-deep)]">
+                        <span className="ml-auto font-[family-name:var(--font-mono)] text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--teal-deep)]">
                           ●
                         </span>
                       )}
                     </span>
-                    <span className="font-[family-name:var(--font-mono)] text-[10px] text-[var(--ink-faint)]">
+                    <span className="font-[family-name:var(--font-mono)] text-[11px] text-[var(--ink-faint)]">
                       v{t.version}
                     </span>
                     {t.authors && t.authors.length > 0 && (

@@ -61,8 +61,8 @@ function CodeItem({ c, tone, lang }: { c: NoteCode; tone: Tone; lang: Lang }) {
       {c.evidences && c.evidences.length > 0 && (
         <ul className="mt-1.5 space-y-1">
           {c.evidences.map((e, i) => (
-            <li key={i} className={`text-[12px] leading-snug ${tone.quiet}`}>
-              <span className="font-[family-name:var(--font-mono)] font-semibold uppercase tracking-[0.08em]">
+            <li key={i} className={`text-xs leading-snug ${tone.quiet}`}>
+              <span className="font-[family-name:var(--font-mono)] font-semibold uppercase tracking-[0.14em]">
                 {e.source}
               </span>
               : &ldquo;{e.text}&rdquo;
@@ -72,7 +72,7 @@ function CodeItem({ c, tone, lang }: { c: NoteCode; tone: Tone; lang: Lang }) {
       )}
 
       {c.alternatives && c.alternatives.length > 0 && (
-        <p className={`mt-1.5 font-[family-name:var(--font-mono)] text-[12px] leading-snug ${tone.faint}`}>
+        <p className={`mt-1.5 font-[family-name:var(--font-mono)] text-xs leading-snug ${tone.faint}`}>
           {tr("alternatives", lang)}: {c.alternatives.map((a) => `${a.code} ${a.display}`).join(" · ")}
         </p>
       )}
@@ -101,7 +101,7 @@ export function NotePanel({ note, lang, orMode }: NotePanelProps) {
 
   const codes = note.codes ?? [];
   const candidates = note.candidates ?? [];
-  const heading = `font-[family-name:var(--font-mono)] text-xs font-semibold uppercase tracking-[0.14em] ${tone.faint}`;
+  const heading = `font-[family-name:var(--font-mono)] text-[11px] font-semibold uppercase tracking-[0.14em] ${tone.faint}`;
 
   return (
     /*
@@ -162,7 +162,7 @@ export function NotePanel({ note, lang, orMode }: NotePanelProps) {
          */
         <div className={`mt-5 rounded-xl border border-dashed p-4 ${tone.line}`}>
           <h4 className={heading}>{tr("candidates", lang)}</h4>
-          <p className={`mt-1 text-[12px] leading-snug ${tone.quiet}`}>{tr("candidatesNote", lang)}</p>
+          <p className={`mt-1 text-xs leading-snug ${tone.quiet}`}>{tr("candidatesNote", lang)}</p>
           <ul className="mt-2.5 space-y-2.5">
             {candidates.map((c) => (
               <CodeItem key={c.code} c={c} tone={tone} lang={lang} />

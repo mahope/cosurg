@@ -1,6 +1,5 @@
 import type { ReactNode } from "react";
 import { t } from "@/lib/i18n";
-import { uiStrings } from "./uiText";
 
 /**
  * Låser et elements bredde til den længste tekst det NOGENSINDE kan indeholde.
@@ -52,12 +51,12 @@ export function SizeLock({
  * Nøglerne slås op i begge ordbøger, så en tekst kan flytte mellem dem uden at
  * bredden går i stykker.
  */
-export function widestOf(...keys: Array<keyof typeof t | keyof typeof uiStrings>): string[] {
+export function widestOf(...keys: Array<keyof typeof t | keyof typeof t>): string[] {
   const out: string[] = [];
   for (const k of keys) {
     const entry =
       (t as Record<string, { da: string; en: string } | undefined>)[k as string] ??
-      (uiStrings as Record<string, { da: string; en: string } | undefined>)[k as string];
+      (t as Record<string, { da: string; en: string } | undefined>)[k as string];
     if (entry) out.push(entry.da, entry.en);
   }
   return out;

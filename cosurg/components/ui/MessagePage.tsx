@@ -1,12 +1,12 @@
 import type { ReactNode } from "react";
 import { BrandMark, BrandWatermark } from "../BrandMark";
-import { both, uiStrings } from "./uiText";
+import { both, t } from "@/lib/i18n";
 
 interface MessagePageProps {
   /** Kort mærkat over overskriften — fx "404". Udelades ved fejl uden nummer. */
   badge?: string;
-  titleKey: keyof typeof uiStrings;
-  bodyKey: keyof typeof uiStrings;
+  titleKey: keyof typeof t;
+  bodyKey: keyof typeof t;
   /** Teknisk detalje, kun når der ER en. Aldrig en tom ramme. */
   detail?: string | null;
   children?: ReactNode;
@@ -40,7 +40,7 @@ export function MessagePage({ badge, titleKey, bodyKey, detail, children }: Mess
       <div className="motion-settle relative z-10 w-full max-w-xl rounded-2xl border bg-[var(--paper-raised)] p-7 shadow-[0_1px_2px_rgba(16,32,30,0.04)] sm:p-9">
         <div className="flex items-center gap-3">
           <BrandMark size={34} />
-          <p className="font-[family-name:var(--font-mono)] text-xs font-semibold uppercase tracking-[0.16em] text-[var(--ink-faint)]">
+          <p className="font-[family-name:var(--font-mono)] text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--ink-faint)]">
             CoSurg
             {badge && <span className="ml-2 text-[var(--teal-deep)]">{badge}</span>}
           </p>
@@ -48,7 +48,7 @@ export function MessagePage({ badge, titleKey, bodyKey, detail, children }: Mess
 
         <h1
           lang="da"
-          className="mt-6 font-[family-name:var(--font-display)] text-[30px] font-semibold leading-tight tracking-tight sm:text-[34px]"
+          className="mt-6 font-[family-name:var(--font-display)] text-[28px] font-semibold leading-tight tracking-tight sm:text-[34px]"
         >
           {title.da}
         </h1>
@@ -64,8 +64,8 @@ export function MessagePage({ badge, titleKey, bodyKey, detail, children }: Mess
         </p>
 
         {detail && (
-          <p className="mt-5 overflow-x-auto rounded-lg border border-[var(--line)] bg-[var(--paper)] px-3 py-2 font-[family-name:var(--font-mono)] text-[12px] leading-snug text-[var(--ink-faint)]">
-            <span className="font-semibold uppercase tracking-[0.1em]">{both("errorDetailLabel").da}</span>{" "}
+          <p className="mt-5 overflow-x-auto rounded-lg border border-[var(--line)] bg-[var(--paper)] px-3 py-2 font-[family-name:var(--font-mono)] text-xs leading-snug text-[var(--ink-faint)]">
+            <span className="font-semibold uppercase tracking-[0.14em]">{both("errorDetailLabel").da}</span>{" "}
             {detail}
           </p>
         )}
@@ -106,7 +106,7 @@ export function SecondaryAction({ children, onClick, href }: { children: ReactNo
 }
 
 /** Begge sprog på én knap — siden ved ikke hvem der læser den. */
-export function Bilingual({ k }: { k: keyof typeof uiStrings }) {
+export function Bilingual({ k }: { k: keyof typeof t }) {
   const s = both(k);
   return (
     <>

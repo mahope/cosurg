@@ -160,7 +160,7 @@ export function GuideView() {
         )}
 
         <div className="mt-6 border-t border-[var(--line)] pt-4">
-          <p className="font-[family-name:var(--font-mono)] text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--ink-faint)]">
+          <p className="font-[family-name:var(--font-mono)] text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--ink-faint)]">
             {tr("guideExamples", lang)}
           </p>
           <div className="mt-2 flex flex-wrap gap-2">
@@ -201,7 +201,7 @@ export function GuideView() {
             </h2>
             <Link
               href="/"
-              className="rounded-lg bg-[var(--teal-deep)] px-3.5 py-2 text-sm font-semibold text-white transition-colors hover:bg-[var(--teal)]"
+              className="rounded-lg bg-[var(--teal-deep)] px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-[var(--teal)]"
             >
               {tr("guideStartTree", lang)} →
             </Link>

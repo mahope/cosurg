@@ -101,7 +101,7 @@ export function OrView({
           <div className="flex items-center gap-3">
             <ZoneMark variant="listening" active={listening} tone="or" size={30} />
             <div className="min-w-0">
-              <p className="font-[family-name:var(--font-mono)] text-sm font-semibold uppercase tracking-[0.24em] text-[var(--or-accent)]">
+              <p className="font-[family-name:var(--font-mono)] text-sm font-semibold uppercase tracking-[0.2em] text-[var(--or-accent)]">
                 {tr("orModeOn", lang)}
               </p>
               <p className="truncate font-[family-name:var(--font-mono)] text-xs text-[var(--or-ink-soft)]">

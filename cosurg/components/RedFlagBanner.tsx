@@ -3,7 +3,6 @@
 import { useEffect, useRef } from "react";
 import type { Lang } from "@/lib/tree/types";
 import { tr } from "@/lib/i18n";
-import { ui } from "@/components/ui/uiText";
 
 interface RedFlagBannerProps {
   message: string;
@@ -41,7 +40,7 @@ export function RedFlagBanner({ message, lang, orMode, onAcknowledge }: RedFlagB
     return (
       <div
         role="alert"
-        className="motion-flag overflow-hidden rounded-2xl border-2 border-[var(--or-red)] bg-[#2a0f0a] px-8 py-10"
+        className="motion-flag overflow-hidden rounded-2xl border-2 border-[var(--or-red)] bg-[var(--or-red-deep)] px-8 py-10"
       >
         <p className="font-[family-name:var(--font-mono)] text-base font-semibold uppercase tracking-[0.2em] text-[var(--or-red)]">
           {tr("redFlag", lang)}
@@ -52,7 +51,7 @@ export function RedFlagBanner({ message, lang, orMode, onAcknowledge }: RedFlagB
         <button
           ref={ackRef}
           onClick={onAcknowledge}
-          className="mt-8 rounded-xl border-2 border-[var(--or-ink)] px-6 py-3 text-lg font-semibold text-[var(--or-ink)] transition-colors hover:bg-[var(--or-ink)] hover:text-[#2a0f0a]"
+          className="mt-8 rounded-xl border-2 border-[var(--or-ink)] px-6 py-3 text-lg font-semibold text-[var(--or-ink)] transition-colors hover:bg-[var(--or-ink)] hover:text-[var(--or-red-deep)]"
         >
           OK
         </button>
@@ -67,7 +66,7 @@ export function RedFlagBanner({ message, lang, orMode, onAcknowledge }: RedFlagB
     >
       <div className="motion-flag-rule h-1.5 bg-[var(--red)]" />
       <div className="px-6 py-5">
-        <p className="font-[family-name:var(--font-mono)] text-xs font-semibold uppercase tracking-[0.16em] text-[var(--red)]">
+        <p className="font-[family-name:var(--font-mono)] text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--red)]">
           {tr("redFlag", lang)}
         </p>
         <p className="mt-2 font-[family-name:var(--font-display)] text-xl font-semibold leading-snug text-[var(--ink)]">
@@ -76,7 +75,7 @@ export function RedFlagBanner({ message, lang, orMode, onAcknowledge }: RedFlagB
         <button
           ref={ackRef}
           onClick={onAcknowledge}
-          aria-label={`OK — ${ui("redFlagAnnounce", lang)}`}
+          aria-label={`OK — ${tr("redFlagAnnounce", lang)}`}
           className="mt-4 rounded-lg border border-[var(--red-line)] bg-[var(--paper-raised)] px-4 py-2 text-sm font-medium text-[var(--ink)] transition-colors hover:bg-white"
         >
           OK

@@ -5,7 +5,6 @@ import type { Lang } from "@/lib/tree/types";
 import { tr } from "@/lib/i18n";
 import { ZoneMark } from "./ZoneMark";
 import { StatusLine } from "./ui/Working";
-import { ui } from "./ui/uiText";
 
 interface TranscriptPanelProps {
   lines: string[];
@@ -45,7 +44,7 @@ export function TranscriptPanel({ lines, interim, listening, status, lang }: Tra
     <div className="rounded-xl border bg-[var(--paper-raised)] p-4">
       <div className="flex items-center gap-2">
         <ZoneMark variant="listening" active={listening} size={16} />
-        <p className="font-[family-name:var(--font-mono)] text-xs font-semibold uppercase tracking-[0.14em] text-[var(--ink-faint)]">
+        <p className="font-[family-name:var(--font-mono)] text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--ink-faint)]">
           {tr("transcript", lang)}
         </p>
       </div>
@@ -76,7 +75,7 @@ export function TranscriptPanel({ lines, interim, listening, status, lang }: Tra
           </ul>
         ) : (
           /* Tom er ikke det samme som i stykker. Linjen siger begge veje ind. */
-          <p className="text-[13px] leading-snug text-[var(--ink-soft)]">{ui("transcriptEmpty", lang)}</p>
+          <p className="text-[13px] leading-snug text-[var(--ink-soft)]">{tr("transcriptEmpty", lang)}</p>
         )}
       </div>
 

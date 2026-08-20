@@ -87,10 +87,25 @@
      Cherry optræder ikke som dekoration i OR-tilstand, så den kan ikke
      forveksles med en brandaccent her. */
   --or-red: #ff5568;
+  /* Flagets mørke flade og teksten på det lyse accent-fyld: begge er "blæk
+     mod signal" og må aldrig opfindes lokalt i en komponent. */
+  --or-red-deep: #2a0f0a;
+  --or-accent-ink: #062422;
   --or-amber: #f0b357;
   --or-amber-soft: rgba(240, 179, 87, 0.16);
   --or-green: #4fc98c;
   --or-green-soft: rgba(79, 201, 140, 0.16);
+
+  /*
+   * TYPOGRAFISK SKALA (kanonisk — afvig ikke pr. komponent):
+   *   11px  mærkater/eyebrows: mono, uppercase, tracking .14em (OR-display: .2em)
+   *   xs    12px  støttetekst, metadata
+   *   13px        sekundær UI-tekst, kompakte lister
+   *   sm    14px  knapper, brød-sekundær
+   *   15px        primær brødtekst
+   *   lg/xl/[22px]/2xl/[28px]/[34px]  overskriftstrappen (kort → side → hero)
+   * Mellemtrin (12.5, 13.5, 14.5, 17, 19 px) findes ikke.
+   */
 
   /* Roboto hele vejen — brandets skrift. Roboto Mono bærer data (koder,
      transskript, tidsstempler), så monitorkonventionen holdes uden at forlade

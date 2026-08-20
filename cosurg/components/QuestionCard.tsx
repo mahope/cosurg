@@ -56,7 +56,7 @@ export function QuestionCard({
       ref={cardRef}
       className="rounded-2xl border bg-[var(--paper-raised)] p-6 sm:p-7 shadow-[0_1px_2px_rgba(16,32,30,0.04)]"
     >
-      <p className="font-[family-name:var(--font-mono)] text-xs font-medium uppercase tracking-[0.14em] text-[var(--ink-faint)]">
+      <p className="font-[family-name:var(--font-mono)] text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--ink-faint)]">
         {tr("step", lang)} {stepNumber} / {totalNodes}
       </p>
       {/*

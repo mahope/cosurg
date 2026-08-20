@@ -5,7 +5,6 @@ import type { AnsweredStep, DecisionTree, Lang } from "@/lib/tree/types";
 import { getNode } from "@/lib/tree/engine";
 import { tr } from "@/lib/i18n";
 import { ZoneMark } from "./ZoneMark";
-import { ui } from "./ui/uiText";
 
 interface SidebarPathProps {
   tree: DecisionTree;
@@ -47,7 +46,7 @@ export function SidebarPath({ tree, path, progress, stepLabel, lang }: SidebarPa
     <div className="rounded-xl border bg-[var(--paper-raised)] p-4">
       <div className="flex items-center gap-3">
         <ZoneMark variant="progress" percent={progress} label={stepLabel} size={48} />
-        <p className="font-[family-name:var(--font-mono)] text-xs font-semibold uppercase tracking-[0.14em] text-[var(--ink-faint)]">
+        <p className="font-[family-name:var(--font-mono)] text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--ink-faint)]">
           {tr("path", lang)}
         </p>
       </div>
@@ -65,11 +64,17 @@ export function SidebarPath({ tree, path, progress, stepLabel, lang }: SidebarPa
             <p className="font-medium text-[var(--ink)]">
               {answerLabel(tree, s, lang)}
               {s.redFlagged && (
-                <span
-                  className="ml-2 font-[family-name:var(--font-mono)] text-xs font-semibold text-[var(--red)]"
-                  title={tr("redFlag", lang)}
-                >
-                  <span aria-hidden="true">⚠</span>
+                <span className="ml-2 inline-flex align-baseline text-[var(--red)]" title={tr("redFlag", lang)}>
+                  <svg viewBox="0 0 16 16" width="12" height="12" fill="none" aria-hidden="true">
+                    <path
+                      d="M8 2.2 14.6 13.4H1.4L8 2.2Z"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      strokeLinejoin="round"
+                    />
+                    <path d="M8 6.4v3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                    <circle cx="8" cy="11.4" r="0.9" fill="currentColor" />
+                  </svg>
                   <span className="sr-only">{tr("redFlag", lang)}</span>
                 </span>
               )}
@@ -80,7 +85,7 @@ export function SidebarPath({ tree, path, progress, stepLabel, lang }: SidebarPa
 
       {path.length === 0 && (
         /* En tankestreg fortæller ikke om vejen er tom eller i stykker. */
-        <p className="text-[13px] leading-snug text-[var(--ink-soft)]">{ui("pathEmpty", lang)}</p>
+        <p className="text-[13px] leading-snug text-[var(--ink-soft)]">{tr("pathEmpty", lang)}</p>
       )}
       </div>
     </div>

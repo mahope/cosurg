@@ -1,6 +1,5 @@
 import type { Lang } from "@/lib/tree/types";
 import { tr } from "@/lib/i18n";
-import { ui } from "./uiText";
 
 /**
  * Skeletter — ventetid der ligner det der kommer.
@@ -26,7 +25,7 @@ export function NoteSkeleton({ lang }: { lang: Lang }) {
     <div
       className="motion-fade rounded-2xl border border-[var(--line)] bg-[var(--paper-raised)] p-5 sm:p-6"
       role="status"
-      aria-label={ui("noteSkeletonLabel", lang)}
+      aria-label={tr("noteSkeletonLabel", lang)}
     >
       {/* Overskriften er RIGTIG tekst, ikke en grå bjælke: den er det ene vi
           med sikkerhed ved om det der kommer, og den står præcis hvor notatets

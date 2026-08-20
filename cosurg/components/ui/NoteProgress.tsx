@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import type { Lang } from "@/lib/tree/types";
-import { ui, uiStrings } from "./uiText";
 import { WorkingDots } from "./Working";
+import { t, tr } from "@/lib/i18n";
 
 /**
  * Fremdrift for det langsomste kald i appen.
@@ -17,7 +17,7 @@ import { WorkingDots } from "./Working";
  * påstår at være længere fremme end kaldet er. Tager det længere end målt,
  * siger linjen præcis det i stedet for at stå og lyve på sidste trin.
  */
-const STAGES: Array<{ at: number; key: keyof typeof uiStrings }> = [
+const STAGES: Array<{ at: number; key: keyof typeof t }> = [
   { at: 0, key: "noteStage1" },
   { at: 1500, key: "noteStage2" },
   { at: 7000, key: "noteStage3" },
@@ -45,11 +45,11 @@ export function NoteProgress({ lang }: { lang: Lang }) {
         className="flex items-center gap-2 text-sm font-medium text-[var(--ink)]"
       >
         <WorkingDots />
-        <span>{ui(STAGES[stage].key, lang)}</span>
+        <span>{tr(STAGES[stage].key, lang)}</span>
       </p>
       {!late && (
         <span className="font-[family-name:var(--font-mono)] text-[11px] text-[var(--ink-faint)]">
-          {ui("noteEta", lang)}
+          {tr("noteEta", lang)}
         </span>
       )}
     </div>

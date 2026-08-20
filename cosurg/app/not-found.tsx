@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Bilingual, MessagePage, PrimaryAction } from "@/components/ui/MessagePage";
-import { both } from "@/components/ui/uiText";
+import { both } from "@/lib/i18n";
 
 export const metadata: Metadata = {
   title: both("notFoundTitle").da,

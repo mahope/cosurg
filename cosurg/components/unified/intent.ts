@@ -556,11 +556,17 @@ export function classifyUtterance(text: string, node: TreeNode, lang: Lang): Int
  * ellers starte en patientvurdering, som om nogen havde beskrevet en patient.
  */
 export function looksLikeQuestion(text: string): boolean {
+  return freeStandingQuestion(text).hit;
+}
+
+/** Samme afgørelse som `looksLikeQuestion`, men med grundene i behold. */
+function freeStandingQuestion(text: string): { hit: boolean; reasons: string[] } {
   const normalized = normalize(text);
-  if (!normalized) return false;
+  if (!normalized) return { hit: false, reasons: [] };
   const words = normalized.split(" ");
   const q = questionSignals(text, normalized, words);
-  return q.strong || q.weak >= 2 || (words.length >= 3 && q.weak >= 1);
+  const hit = q.strong || q.weak >= 2 || (words.length >= 3 && q.weak >= 1);
+  return { hit, reasons: q.reasons };
 }
 
 /* ------------------------------------------------------------------ *
@@ -657,6 +663,62 @@ export function startsWithTreatmentIntent(text: string): boolean {
     const p = normalize(raw);
     return normalized === p || normalized.startsWith(`${p} `);
   });
+}
+
+/* ------------------------------------------------------------------ *
+ * Genkendelsen mens den sker
+ * ------------------------------------------------------------------ */
+
+/** De fire ting en fritstående ytring kan vise sig at være. */
+export type IntakeKind = "pathway" | "question" | "guide" | "unsure";
+
+export interface IntakePreview {
+  kind: IntakeKind;
+  /** Hvad i ytringen der pegede den vej. Sporbarhed, ikke pynt. */
+  reasons: string[];
+}
+
+/**
+ * Kortest ytring vi overhovedet udtaler os om. Under den er der ikke noget at
+ * genkende endnu, og en forhåndsvurdering af to bogstaver ville flakke for
+ * hvert tastetryk — netop den nervøsitet en klinisk app ikke må udstråle.
+ */
+const PREVIEW_MIN_CHARS = 4;
+
+/**
+ * Hvad VIL der ske, hvis ytringen sendes nu?
+ *
+ * Det er ikke en ny beslutning — det er den samme beslutning, vist frem før
+ * den træffes. Rækkefølgen herunder er nøjagtig `handleIntake`s i `page.tsx`,
+ * og den må aldrig komme ud af trit: en forhåndsvisning der lover noget andet
+ * end det der sker, er værre end ingen forhåndsvisning. Er de to nogensinde
+ * uenige, er det HER der skal rettes, ikke i teksten på skærmen.
+ *
+ * `pathwayMatched` er de kliniske stammer `routeUtterance` fandt — den hører
+ * til forløbslisten og kan derfor ikke slås op herfra. Er den tom eller null,
+ * fandt genkendelsen ingen sikker vinder.
+ */
+export function previewIntake(text: string, pathwayMatched: string[] | null): IntakePreview | null {
+  const normalized = normalize(text);
+  if (normalized.length < PREVIEW_MIN_CHARS) return null;
+
+  // 1. Et spørgsmål — eller et rent behandlingsopslag — er ikke en patient.
+  const q = freeStandingQuestion(text);
+  const treatment = startsWithTreatmentIntent(text);
+  if (q.hit || treatment) {
+    const guide = looksLikeGuideTopic(text);
+    const reasons = q.reasons.length > 0 ? q.reasons : [];
+    if (treatment && reasons.length === 0) reasons.push("behandlingshensigt forrest");
+    return { kind: guide ? "guide" : "question", reasons };
+  }
+
+  // 2. Et sikkert forløbsmatch. Grundene er de ord der pegede derhen.
+  if (pathwayMatched && pathwayMatched.length > 0) {
+    return { kind: "pathway", reasons: [`kliniske ord: ${pathwayMatched.map((m) => `«${m}»`).join(", ")}`] };
+  }
+
+  // 3. Hverken-eller. Vi siger det frem for at lade som om vi ved det.
+  return { kind: "unsure", reasons: [] };
 }
 
 /* ------------------------------------------------------------------ *

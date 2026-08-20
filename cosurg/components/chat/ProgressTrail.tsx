@@ -44,10 +44,10 @@ export function ProgressTrail({ progress, lang }: { progress: Turn["progress"]; 
           />
           <span className="h-1.5 w-1.5 rounded-full bg-[var(--teal)]" />
         </span>
-        <span className="text-[14px] font-medium text-[var(--ink)]">
+        <span className="text-sm font-medium text-[var(--ink)]">
           {progressLabel(steps[steps.length - 1].expert, steps[steps.length - 1].text, lang)}
         </span>
-        <span className="ml-auto font-[family-name:var(--font-mono)] text-[12px] tabular-nums text-[var(--ink-faint)]">
+        <span className="ml-auto font-[family-name:var(--font-mono)] text-xs tabular-nums text-[var(--ink-faint)]">
           {seconds}s
         </span>
       </div>
@@ -55,7 +55,7 @@ export function ProgressTrail({ progress, lang }: { progress: Turn["progress"]; 
       {steps.length > 1 && (
         <ul className="mt-2.5 space-y-1 border-t border-[var(--line)] pt-2.5">
           {steps.slice(0, -1).map((s, i) => (
-            <li key={i} className="flex items-center gap-2 text-[12.5px] text-[var(--ink-faint)]">
+            <li key={i} className="flex items-center gap-2 text-[13px] text-[var(--ink-faint)]">
               <svg viewBox="0 0 16 16" width="11" height="11" fill="none" aria-hidden="true">
                 <path
                   d="M3 8.5 6.2 12 13 4.5"

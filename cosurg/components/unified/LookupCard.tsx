@@ -8,7 +8,6 @@ import { ProgressTrail } from "@/components/chat/ProgressTrail";
 import { tr } from "@/lib/i18n";
 import type { GuideSvar } from "./guide";
 import { GuidePanel } from "./GuidePanel";
-import { ut } from "./text";
 
 /**
  * Opslaget — svaret på et spørgsmål stillet MIDT i et forløb.
@@ -73,8 +72,21 @@ export function LookupCard({
     <div className="motion-forward flex h-[26rem] flex-col overflow-hidden rounded-2xl border bg-[var(--paper-raised)] shadow-[0_1px_2px_rgba(16,32,30,0.04)]">
       <header className="flex shrink-0 items-start gap-3 border-b border-[var(--line)] px-5 py-3.5 sm:px-6">
         <div className="min-w-0 flex-1">
-          <p className="font-[family-name:var(--font-mono)] text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--ink-faint)]">
-            {ut("lookupTitle", lang)}
+          {/*
+            Hvor svaret kommer fra, sagt HØJT.
+
+            Appen traf et valg — vidensbasen eller litteraturen — uden at
+            spørge, fordi det valg ikke er sikkerhedskritisk (se
+            `looksLikeGuideTopic`). Men et valg der ikke kan ses, er ikke til at
+            skelne fra et tilfælde. Mærkatet gør det synligt at der blev valgt,
+            og knappen længere nede gør det muligt at vælge om.
+          */}
+          <p className="flex flex-wrap items-baseline gap-x-2 font-[family-name:var(--font-mono)] text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--ink-faint)]">
+            <span>{tr("lookupTitle", lang)}</span>
+            <span aria-hidden="true">·</span>
+            <span className="text-[var(--teal)]">
+              {tr(payload.kind === "guide" ? "originKnowledgeBase" : "originLiterature", lang)}
+            </span>
           </p>
           <p className="mt-1 truncate text-[15px] font-medium leading-snug text-[var(--ink)]" title={question}>
             {question}
@@ -83,10 +95,10 @@ export function LookupCard({
         <button
           type="button"
           onClick={onClose}
-          aria-label={ut("lookupClose", lang)}
-          className="shrink-0 rounded-lg border px-2.5 py-1.5 text-[12.5px] font-medium text-[var(--ink-soft)] transition-colors hover:border-[var(--teal)] hover:bg-[var(--teal-tint)] hover:text-[var(--teal-deep)]"
+          aria-label={tr("lookupClose", lang)}
+          className="shrink-0 rounded-lg border px-2.5 py-1.5 text-[13px] font-medium text-[var(--ink-soft)] transition-colors hover:border-[var(--teal)] hover:bg-[var(--teal-tint)] hover:text-[var(--teal-deep)]"
         >
-          {ut("lookupResume", lang)}
+          {tr("lookupResume", lang)}
         </button>
       </header>
 
@@ -95,11 +107,11 @@ export function LookupCard({
           payload.guide ? (
             <GuidePanel guide={payload.guide} lang={lang} topic={payload.question} onAskInstead={onSwitch} />
           ) : payload.error ? (
-            <p className="rounded-2xl border border-dashed border-[var(--nude-deep)] bg-[var(--nude-tint)] px-4 py-3 text-[14px] leading-relaxed text-[var(--nude-deep)]">
+            <p className="rounded-2xl border border-dashed border-[var(--nude-deep)] bg-[var(--nude-tint)] px-4 py-3 text-sm leading-relaxed text-[var(--nude-deep)]">
               {payload.error}
             </p>
           ) : (
-            <ProgressTrail progress={[{ expert: null, text: ut("guideWorking", lang) }]} lang={lang} />
+            <ProgressTrail progress={[{ expert: null, text: tr("guideFetching", lang) }]} lang={lang} />
           )
         ) : payload.turn.answer ? (
           <>
@@ -115,37 +127,37 @@ export function LookupCard({
             <button
               type="button"
               onClick={onSwitch}
-              className="mt-3 rounded-lg border border-[var(--line-strong)] bg-[var(--paper)] px-3.5 py-2 text-[13.5px] font-medium text-[var(--ink-soft)] transition-colors hover:border-[var(--teal)] hover:text-[var(--ink)]"
+              className="mt-3 rounded-lg border border-[var(--line-strong)] bg-[var(--paper)] px-3.5 py-2 text-sm font-medium text-[var(--ink-soft)] transition-colors hover:border-[var(--teal)] hover:text-[var(--ink)]"
             >
-              {ut("guideAsGuideInstead", lang)}
+              {tr("guideAsGuideInstead", lang)}
             </button>
             {offer && (
               <div className="mt-4 rounded-xl border border-[var(--teal)] bg-[var(--teal-tint)] p-4">
-                <p className="text-[14.5px] font-medium leading-snug text-[var(--ink)]">
-                  {ut("offerTitle", lang)}
+                <p className="text-[15px] font-medium leading-snug text-[var(--ink)]">
+                  {tr("offerTitle", lang)}
                 </p>
                 <p className="mt-1 text-[13px] leading-relaxed text-[var(--ink-soft)]">{offer.name}</p>
                 <div className="mt-3 flex flex-wrap gap-2">
                   <button
                     type="button"
                     onClick={offer.onAccept}
-                    className="rounded-lg bg-[var(--teal-deep)] px-3.5 py-2 text-[13.5px] font-semibold text-white transition-colors hover:bg-[var(--teal)]"
+                    className="rounded-lg bg-[var(--teal-deep)] px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-[var(--teal)]"
                   >
-                    {ut("offerAccept", lang)}
+                    {tr("offerAccept", lang)}
                   </button>
                   <button
                     type="button"
                     onClick={offer.onDismiss}
-                    className="rounded-lg border border-[var(--line-strong)] bg-[var(--paper)] px-3.5 py-2 text-[13.5px] font-medium text-[var(--ink-soft)] transition-colors hover:border-[var(--teal)]"
+                    className="rounded-lg border border-[var(--line-strong)] bg-[var(--paper)] px-3.5 py-2 text-sm font-medium text-[var(--ink-soft)] transition-colors hover:border-[var(--teal)]"
                   >
-                    {ut("offerDismiss", lang)}
+                    {tr("offerDismiss", lang)}
                   </button>
                 </div>
               </div>
             )}
           </>
         ) : payload.turn.error ? (
-          <p className="rounded-2xl border border-dashed border-[var(--nude-deep)] bg-[var(--nude-tint)] px-4 py-3 text-[14px] leading-relaxed text-[var(--nude-deep)]">
+          <p className="rounded-2xl border border-dashed border-[var(--nude-deep)] bg-[var(--nude-tint)] px-4 py-3 text-sm leading-relaxed text-[var(--nude-deep)]">
             {payload.turn.error}
           </p>
         ) : (
@@ -153,11 +165,11 @@ export function LookupCard({
         )}
       </div>
 
-      <footer className="shrink-0 border-t border-[var(--line)] px-5 py-2.5 text-[12.5px] leading-relaxed text-[var(--ink-soft)] sm:px-6">
+      <footer className="shrink-0 border-t border-[var(--line)] px-5 py-2.5 text-[13px] leading-relaxed text-[var(--ink-soft)] sm:px-6">
         {heldDone
-          ? ut("lookupHeldDone", lang)
+          ? tr("lookupHeldDone", lang)
           : held
-            ? `${ut("lookupHeldStep", lang)} ${held.step} / ${held.total}.`
+            ? `${tr("lookupHeldStep", lang)} ${held.step} / ${held.total}.`
             : tr("chatDisclaimer", lang)}
       </footer>
     </div>
@@ -191,10 +203,10 @@ export function IntentChoiceCard({ lang, utterance, reasons, onAnswer, onLookUp 
       aria-live="polite"
       className="motion-forward rounded-2xl border border-[var(--nude-deep)] bg-[var(--nude-tint)] p-5 sm:p-6"
     >
-      <p className="font-[family-name:var(--font-display)] text-[19px] font-semibold leading-snug tracking-tight text-[var(--ink)]">
-        {ut("ambiguousTitle", lang)}
+      <p className="font-[family-name:var(--font-display)] text-xl font-semibold leading-snug tracking-tight text-[var(--ink)]">
+        {tr("ambiguousTitle", lang)}
       </p>
-      <p className="mt-1.5 text-[14px] leading-relaxed text-[var(--ink-soft)]">{ut("ambiguousBody", lang)}</p>
+      <p className="mt-1.5 text-sm leading-relaxed text-[var(--ink-soft)]">{tr("ambiguousBody", lang)}</p>
 
       <p className="mt-3 text-[15px] leading-snug text-[var(--ink)]">&ldquo;{utterance}&rdquo;</p>
 
@@ -204,20 +216,20 @@ export function IntentChoiceCard({ lang, utterance, reasons, onAnswer, onLookUp 
           onClick={onAnswer}
           className="rounded-lg bg-[var(--teal-deep)] px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-[var(--teal)]"
         >
-          {ut("ambiguousAsAnswer", lang)}
+          {tr("ambiguousAsAnswer", lang)}
         </button>
         <button
           type="button"
           onClick={onLookUp}
           className="rounded-lg border border-[var(--line-strong)] bg-[var(--paper)] px-4 py-2 text-sm font-medium text-[var(--ink)] transition-colors hover:border-[var(--teal)] hover:bg-[var(--teal-tint)]"
         >
-          {ut("ambiguousAsQuestion", lang)}
+          {tr("ambiguousAsQuestion", lang)}
         </button>
       </div>
 
       {reasons.length > 0 && (
-        <p className="mt-4 border-t border-[var(--nude-deep)] pt-3 font-[family-name:var(--font-mono)] text-[11px] leading-relaxed tracking-[0.02em] text-[var(--ink-faint)]">
-          {ut("ambiguousBecause", lang)}: {reasons.join(" · ")}
+        <p className="mt-4 border-t border-[var(--nude-deep)] pt-3 font-[family-name:var(--font-mono)] text-[11px] leading-relaxed text-[var(--ink-faint)]">
+          {tr("ambiguousBecause", lang)}: {reasons.join(" · ")}
         </p>
       )}
     </div>

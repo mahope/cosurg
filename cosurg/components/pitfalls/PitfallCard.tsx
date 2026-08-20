@@ -47,11 +47,11 @@ export function PitfallCard({ faldgrube, lang, kompakt = false }: PitfallCardPro
 
         <div className="min-w-0 flex-1">
           <p
-            className={`font-[family-name:var(--font-mono)] text-[10px] font-semibold uppercase tracking-[0.18em] ${maerkat}`}
+            className={`font-[family-name:var(--font-mono)] text-[11px] font-semibold uppercase tracking-[0.14em] ${maerkat}`}
           >
             {tr(kritisk ? "pitfallsCritical" : "pitfallsImportant", lang)}
           </p>
-          <h3 className="mt-1 font-[family-name:var(--font-display)] text-[17px] font-semibold leading-snug tracking-tight text-[var(--ink)]">
+          <h3 className="mt-1 font-[family-name:var(--font-display)] text-lg font-semibold leading-snug tracking-tight text-[var(--ink)]">
             {faldgrube.title[lang]}
           </h3>
           <p className="mt-1.5 text-sm leading-relaxed text-[var(--ink-soft)]">{faldgrube.consequence[lang]}</p>

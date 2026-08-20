@@ -4,7 +4,6 @@ import { StepImages } from "./StepImages";
 import { ResponseBar } from "./ResponseBar";
 import { NoteSkeleton } from "./ui/Skeleton";
 import { NoteProgress } from "./ui/NoteProgress";
-import { ui } from "./ui/uiText";
 import { SizeLock, widestOf } from "./ui/SizeLock";
 
 interface DispositionCardProps {
@@ -74,12 +73,12 @@ export function DispositionCard({
       style={{ borderColor: style.border, background: style.bg }}
     >
       <p
-        className="font-[family-name:var(--font-mono)] text-xs font-semibold uppercase tracking-[0.16em]"
+        className="font-[family-name:var(--font-mono)] text-[11px] font-semibold uppercase tracking-[0.14em]"
         style={{ color: style.label }}
       >
         {tr("recommendation", lang)}
       </p>
-      <h2 className="mt-2 font-[family-name:var(--font-display)] text-[26px] font-semibold leading-tight text-[var(--ink)]">
+      <h2 className="mt-2 font-[family-name:var(--font-display)] text-2xl font-semibold leading-snug tracking-tight sm:text-[28px] text-[var(--ink)]">
         {disposition.title[lang]}
       </h2>
       <p className="mt-3 leading-relaxed text-[var(--ink)]">{disposition.guidance[lang]}</p>
@@ -104,7 +103,7 @@ export function DispositionCard({
           className="mt-5 flex w-full items-center justify-between gap-3 rounded-xl border border-[var(--teal)] bg-[var(--paper-raised)] px-4 py-3 text-left transition-colors hover:bg-[var(--teal-tint)]"
         >
           <span>
-            <span className="block font-[family-name:var(--font-mono)] text-[10px] font-semibold uppercase tracking-[0.16em] text-[var(--ink-faint)]">
+            <span className="block font-[family-name:var(--font-mono)] text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--ink-faint)]">
               {tr("nextPathway", lang)}
             </span>
             <span className="mt-0.5 block text-sm font-semibold text-[var(--teal-deep)]">{followUpName}</span>
@@ -158,7 +157,7 @@ export function DispositionCard({
         rækken ikke ombrydes når teksten forsvinder under skrivningen.
       */}
       <p id="note-eta" className="mt-2 h-4 font-[family-name:var(--font-mono)] text-[11px] leading-4 text-[var(--ink-soft)]">
-        {!noteBusy && ui("noteEta", lang)}
+        {!noteBusy && tr("noteEta", lang)}
       </p>
 
       {addendumOpen && (

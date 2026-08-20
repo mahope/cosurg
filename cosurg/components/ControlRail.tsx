@@ -123,7 +123,7 @@ export function ControlRail({
             aria-pressed={orMode}
             className={`rounded-lg px-4 py-2 text-sm font-semibold transition-colors disabled:opacity-40 ${
               orMode
-                ? "bg-[var(--or-accent)] text-[#062422]"
+                ? "bg-[var(--or-accent)] text-[var(--or-accent-ink)]"
                 : "bg-[var(--teal-deep)] text-white enabled:hover:bg-[var(--teal)]"
             }`}
           >

@@ -3,7 +3,6 @@
 import type { ChatAnswer, Evidence } from "@/lib/corti/chat";
 import type { Lang } from "@/lib/tree/types";
 import { tr } from "@/lib/i18n";
-import { ut } from "@/components/unified/text";
 import { RichText } from "./RichText";
 
 /**
@@ -26,7 +25,7 @@ const EVIDENCE_KEY: Record<Evidence, "evidenceSourced" | "evidencePartial" | "ev
 
 function evidenceLabel(evidence: Evidence, lang: Lang): string {
   const key = EVIDENCE_KEY[evidence];
-  return key ? tr(key, lang) : ut("evidenceExtrapolated", lang);
+  return key ? tr(key, lang) : tr("evidenceExtrapolated", lang);
 }
 
 function EvidenceBadge({ evidence, lang }: { evidence: Evidence; lang: Lang }) {
@@ -39,7 +38,7 @@ function EvidenceBadge({ evidence, lang }: { evidence: Evidence; lang: Lang }) {
 
   return (
     <span
-      className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 font-[family-name:var(--font-mono)] text-[11px] font-medium uppercase tracking-[0.1em] ${style}`}
+      className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 font-[family-name:var(--font-mono)] text-[11px] font-medium uppercase tracking-[0.14em] ${style}`}
     >
       {evidence === "sourced" && (
         <svg viewBox="0 0 16 16" width="11" height="11" fill="none" aria-hidden="true">
@@ -72,11 +71,11 @@ function SourceRow({
         [{index + 1}]
       </span>
       <span className="min-w-0">
-        <span className="block text-[13.5px] font-medium leading-snug text-[var(--ink)] group-hover:text-[var(--teal-deep)]">
+        <span className="block text-sm font-medium leading-snug text-[var(--ink)] group-hover:text-[var(--teal-deep)]">
           {source.title}
         </span>
         {source.supports && (
-          <span className="mt-0.5 block text-[12.5px] leading-relaxed text-[var(--ink-soft)]">
+          <span className="mt-0.5 block text-[13px] leading-relaxed text-[var(--ink-soft)]">
             {source.supports}
           </span>
         )}
@@ -85,17 +84,17 @@ function SourceRow({
               kliniker end international litteratur. Mærkatet siger hvilken. */}
           {source.origin && (
             <span
-              className={`inline-block rounded border px-1.5 py-px font-[family-name:var(--font-mono)] text-[10.5px] ${
+              className={`inline-block rounded border px-1.5 py-px font-[family-name:var(--font-mono)] text-[11px] ${
                 source.origin === "knowledge-base"
                   ? "border-[var(--teal)] bg-[var(--teal-tint)] text-[var(--teal-deep)]"
                   : "border-[var(--line)] bg-[var(--paper)] text-[var(--ink-faint)]"
               }`}
             >
-              {ut(source.origin === "knowledge-base" ? "originKnowledgeBase" : "originLiterature", lang)}
+              {tr(source.origin === "knowledge-base" ? "originKnowledgeBase" : "originLiterature", lang)}
             </span>
           )}
           {source.identifier && (
-            <span className="inline-block rounded border border-[var(--line)] bg-[var(--paper)] px-1.5 py-px font-[family-name:var(--font-mono)] text-[10.5px] text-[var(--ink-faint)]">
+            <span className="inline-block rounded border border-[var(--line)] bg-[var(--paper)] px-1.5 py-px font-[family-name:var(--font-mono)] text-[11px] text-[var(--ink-faint)]">
               {source.identifier}
             </span>
           )}
@@ -138,7 +137,7 @@ export function AnswerCard({ answer, lang, speaking, onSpeak }: AnswerCardProps)
           type="button"
           onClick={onSpeak}
           aria-label={tr(speaking ? "chatStopSpeaking" : "chatSpeakAnswer", lang)}
-          className="ml-auto inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1 text-[12px] font-medium text-[var(--ink-soft)] transition-colors hover:border-[var(--teal)] hover:bg-[var(--teal-tint)] hover:text-[var(--teal-deep)]"
+          className="ml-auto inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1 text-xs font-medium text-[var(--ink-soft)] transition-colors hover:border-[var(--teal)] hover:bg-[var(--teal-tint)] hover:text-[var(--teal-deep)]"
         >
           <svg viewBox="0 0 20 20" width="13" height="13" fill="none" aria-hidden="true">
             {speaking ? (
@@ -170,21 +169,21 @@ export function AnswerCard({ answer, lang, speaking, onSpeak }: AnswerCardProps)
       */}
       {answer.reasoning && (
         <div className="mt-4 rounded-xl border border-dashed border-[var(--line-strong)] bg-[var(--paper)] p-4">
-          <p className="font-[family-name:var(--font-mono)] text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--ink-faint)]">
-            {ut("reasoningTitle", lang)}
+          <p className="font-[family-name:var(--font-mono)] text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--ink-faint)]">
+            {tr("reasoningTitle", lang)}
           </p>
           <div className="mt-2">
             <RichText text={answer.reasoning} />
           </div>
-          <p className="mt-3 text-[12.5px] leading-relaxed text-[var(--ink-faint)]">
-            {ut("reasoningNote", lang)}
+          <p className="mt-3 text-[13px] leading-relaxed text-[var(--ink-faint)]">
+            {tr("reasoningNote", lang)}
           </p>
         </div>
       )}
 
       {answer.usedContext && (
-        <p className="mt-3 inline-flex items-center gap-1.5 rounded-full border border-[var(--line-strong)] bg-[var(--paper)] px-2.5 py-1 font-[family-name:var(--font-mono)] text-[11px] uppercase tracking-[0.1em] text-[var(--ink-soft)]">
-          {ut("usedContext", lang)}
+        <p className="mt-3 inline-flex items-center gap-1.5 rounded-full border border-[var(--line-strong)] bg-[var(--paper)] px-2.5 py-1 font-[family-name:var(--font-mono)] text-[11px] uppercase tracking-[0.14em] text-[var(--ink-soft)]">
+          {tr("usedContext", lang)}
         </p>
       )}
 
@@ -196,16 +195,16 @@ export function AnswerCard({ answer, lang, speaking, onSpeak }: AnswerCardProps)
 
       {answer.limitations && (
         <div className="mt-4 border-t border-[var(--line)] pt-3">
-          <p className="font-[family-name:var(--font-mono)] text-[11px] font-medium uppercase tracking-[0.12em] text-[var(--ink-faint)]">
+          <p className="font-[family-name:var(--font-mono)] text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--ink-faint)]">
             {tr("chatLimitations", lang)}
           </p>
-          <p className="mt-1.5 text-[13.5px] leading-relaxed text-[var(--ink-soft)]">{answer.limitations}</p>
+          <p className="mt-1.5 text-sm leading-relaxed text-[var(--ink-soft)]">{answer.limitations}</p>
         </div>
       )}
 
       {answer.sources.length > 0 && (
         <div className="mt-4 border-t border-[var(--line)] pt-3">
-          <p className="font-[family-name:var(--font-mono)] text-[11px] font-medium uppercase tracking-[0.12em] text-[var(--ink-faint)]">
+          <p className="font-[family-name:var(--font-mono)] text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--ink-faint)]">
             {tr("sources", lang)} · {answer.sources.length}
           </p>
           <ul className="mt-1.5">

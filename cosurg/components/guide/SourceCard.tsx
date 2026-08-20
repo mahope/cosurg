@@ -56,7 +56,7 @@ export function SourceCard({ uddrag, lang, tæt = false }: SourceCardProps) {
             {sti.map((s) => `› ${s}`).join(" ")}
           </span>
         )}
-        <span className="ml-auto font-[family-name:var(--font-mono)] text-[10px] uppercase tracking-[0.14em] text-[var(--ink-faint)]">
+        <span className="ml-auto font-[family-name:var(--font-mono)] text-[11px] uppercase tracking-[0.14em] text-[var(--ink-faint)]">
           {tr("sourceVerbatim", lang)}
         </span>
       </div>

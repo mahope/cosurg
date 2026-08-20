@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type RefObject } from "react";
 import type { Lang } from "@/lib/tree/types";
-import { ui } from "./ui/uiText";
+import { tr } from "@/lib/i18n";
 
 interface ResponseBarProps {
   lang: Lang;
@@ -12,6 +12,20 @@ interface ResponseBarProps {
   onToggleMic: () => void;
   onSubmit: (text: string) => void;
   autoFocus?: boolean;
+  /**
+   * Styret tilstand. Udelades den, ejer feltet sin egen tekst som hidtil.
+   *
+   * Indgangsskærmen sætter den, fordi kladden dér skal ses to steder på én
+   * gang: i feltet, og i linjen under der viser hvad appen er ved at forstå.
+   * To kopier af den samme tekst kan komme ud af trit — så er der kun én, og
+   * den bor hos den der har brug for at læse den.
+   */
+  value?: string;
+  onValueChange?: (text: string) => void;
+  /** Så et klikbart eksempel kan lægge markøren i feltet bagefter. */
+  inputRef?: RefObject<HTMLInputElement | null>;
+  /** Større type og luft. Kun forsiden, hvor feltet ER produktet. */
+  size?: "default" | "hero";
 }
 
 /**
@@ -29,8 +43,14 @@ export function ResponseBar({
   onToggleMic,
   onSubmit,
   autoFocus,
+  value: controlledValue,
+  onValueChange,
+  inputRef,
+  size = "default",
 }: ResponseBarProps) {
-  const [value, setValue] = useState("");
+  const [ownValue, setOwnValue] = useState("");
+  const controlled = controlledValue !== undefined;
+  const value = controlled ? controlledValue : ownValue;
   /*
    * Kort kvittering på at svaret forlod feltet. Den er sand uanset hvad
    * agenten svarer bagefter — derfor må den ikke ligne en arbejdsindikator,
@@ -42,25 +62,40 @@ export function ResponseBar({
 
   useEffect(() => () => window.clearTimeout(sentTimer.current), []);
 
+  const change = (text: string) => {
+    if (!controlled) setOwnValue(text);
+    onValueChange?.(text);
+  };
+
   const submit = () => {
     const text = value.trim();
     if (!text) return;
     onSubmit(text);
-    setValue("");
+    change("");
     setSent(true);
     window.clearTimeout(sentTimer.current);
     sentTimer.current = window.setTimeout(() => setSent(false), 1400);
   };
 
+  const hero = size === "hero";
+
   return (
     <div className="w-full">
-      <div className="relative flex items-center gap-1 rounded-xl border bg-[var(--paper-raised)] pr-1 pl-1.5 py-1.5 focus-within:border-[var(--teal)] transition-colors">
+      <div
+        className={`relative flex items-center gap-1 rounded-xl border bg-[var(--paper-raised)] transition-colors focus-within:border-[var(--teal)] ${
+          hero
+            ? "border-[var(--line-strong)] py-2.5 pl-2 pr-1.5 shadow-[0_2px_10px_rgba(0,83,85,0.07)] focus-within:shadow-[0_2px_16px_rgba(0,83,85,0.13)]"
+            : "py-1.5 pl-1.5 pr-1"
+        }`}
+      >
         <button
           type="button"
           onClick={onToggleMic}
           aria-pressed={listening}
-          aria-label={listening ? tr(lang, "Stop mikrofon", "Stop microphone") : tr(lang, "Start mikrofon", "Start microphone")}
-          className={`relative flex h-8 w-8 shrink-0 items-center justify-center rounded-lg transition-colors ${
+          aria-label={tr(listening ? "micStop" : "micStart", lang)}
+          className={`relative flex shrink-0 items-center justify-center rounded-lg transition-colors ${
+            hero ? "h-10 w-10" : "h-8 w-8"
+          } ${
             listening
               ? "text-[var(--teal)]"
               : "text-[var(--ink-soft)] hover:bg-[var(--teal-tint)] hover:text-[var(--teal-deep)]"
@@ -78,7 +113,7 @@ export function ResponseBar({
               />
             </>
           )}
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width={hero ? 21 : 18} height={hero ? 21 : 18} fill="none" aria-hidden="true">
             <path
               d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3Z"
               stroke="currentColor"
@@ -98,15 +133,18 @@ export function ResponseBar({
         </button>
 
         <input
+          ref={inputRef}
           type="text"
           value={value}
-          onChange={(e) => setValue(e.target.value)}
+          onChange={(e) => change(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === "Enter") submit();
           }}
           autoFocus={autoFocus}
           placeholder={interim ? interim : placeholder}
-          className="min-w-0 flex-1 bg-transparent px-1.5 py-1 text-[15px] leading-tight text-[var(--ink)] placeholder:text-[var(--ink-faint)] placeholder:italic focus:outline-none"
+          className={`min-w-0 flex-1 bg-transparent py-1 text-[var(--ink)] placeholder:text-[var(--ink-faint)] placeholder:italic focus:outline-none ${
+            hero ? "px-2 text-lg leading-snug" : "px-1.5 text-[15px] leading-tight"
+          }`}
         />
 
         {/*
@@ -117,21 +155,23 @@ export function ResponseBar({
         */}
         <span
           aria-hidden={!sent}
-          className={`pointer-events-none absolute right-11 top-1/2 -translate-y-1/2 bg-[var(--paper-raised)] pl-2 font-[family-name:var(--font-mono)] text-[11px] font-medium uppercase tracking-[0.12em] text-[var(--teal-deep)] transition-opacity duration-200 ${
-            sent ? "opacity-100" : "opacity-0"
-          }`}
+          className={`pointer-events-none absolute top-1/2 -translate-y-1/2 bg-[var(--paper-raised)] pl-2 font-[family-name:var(--font-mono)] text-[11px] font-medium uppercase tracking-[0.14em] text-[var(--teal-deep)] transition-opacity duration-200 ${
+            hero ? "right-14" : "right-11"
+          } ${sent ? "opacity-100" : "opacity-0"}`}
         >
-          {ui("sent", lang)}
+          {tr("sent", lang)}
         </span>
 
         <button
           type="button"
           onClick={submit}
           disabled={!value.trim()}
-          aria-label={tr(lang, "Send svar", "Send answer")}
-          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[var(--teal)] text-white transition-opacity disabled:opacity-25"
+          aria-label={tr("sendAnswer", lang)}
+          className={`flex shrink-0 items-center justify-center rounded-lg bg-[var(--teal)] text-white transition-opacity disabled:opacity-25 ${
+            hero ? "h-10 w-10" : "h-8 w-8"
+          }`}
         >
-          <svg viewBox="0 0 20 20" width="15" height="15" fill="none" aria-hidden="true">
+          <svg viewBox="0 0 20 20" width={hero ? 18 : 15} height={hero ? 18 : 15} fill="none" aria-hidden="true">
             <path
               d="M4 10h11m0 0-4.5-4.5M15 10l-4.5 4.5"
               stroke="currentColor"
@@ -144,8 +184,4 @@ export function ResponseBar({
       </div>
     </div>
   );
-}
-
-function tr(lang: Lang, da: string, en: string) {
-  return lang === "da" ? da : en;
 }

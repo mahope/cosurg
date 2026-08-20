@@ -72,7 +72,7 @@ export function PitfallRail({ lang, kontekst, limit = 3, overskrift }: PitfallRa
   return (
     <div className="space-y-3">
       {overskrift && (
-        <p className="font-[family-name:var(--font-mono)] text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--ink-faint)]">
+        <p className="font-[family-name:var(--font-mono)] text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--ink-faint)]">
           {overskrift}
         </p>
       )}

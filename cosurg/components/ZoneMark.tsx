@@ -88,7 +88,7 @@ export function ZoneMark({
       </svg>
       {label && (
         <span
-          className="absolute inset-0 flex items-center justify-center font-[family-name:var(--font-mono)] text-[10px] font-medium leading-none"
+          className="absolute inset-0 flex items-center justify-center font-[family-name:var(--font-mono)] text-[11px] font-medium leading-none"
           style={{ color: tone === "or" ? "var(--or-ink)" : "var(--ink)" }}
         >
           {label}

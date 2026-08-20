@@ -244,11 +244,11 @@ export function ChatView() {
           </Link>
           <div className="min-w-0">
             <Link href="/" className="transition-opacity hover:opacity-80">
-              <h1 className="font-[family-name:var(--font-display)] text-[17px] font-semibold leading-tight tracking-tight text-[var(--ink)]">
+              <h1 className="font-[family-name:var(--font-display)] text-lg font-semibold leading-tight tracking-tight text-[var(--ink)]">
                 {tr("chatTitle", lang)}
               </h1>
             </Link>
-            <p className="truncate text-[12.5px] leading-tight text-[var(--ink-soft)]">
+            <p className="truncate text-[13px] leading-tight text-[var(--ink-soft)]">
               {tr("chatTagline", lang)}
             </p>
           </div>
@@ -259,7 +259,7 @@ export function ChatView() {
               onClick={toggleHandsFree}
               aria-pressed={handsFree}
               title={tr("chatHandsFreeHint", lang)}
-              className={`rounded-lg border px-2.5 py-1.5 text-[12.5px] font-medium transition-colors ${
+              className={`rounded-lg border px-2.5 py-1.5 text-[13px] font-medium transition-colors ${
                 handsFree
                   ? "border-[var(--teal)] bg-[var(--teal)] text-white"
                   : "text-[var(--ink-soft)] hover:border-[var(--teal)] hover:bg-[var(--teal-tint)] hover:text-[var(--teal-deep)]"
@@ -279,7 +279,7 @@ export function ChatView() {
                   haltSpeech();
                   reset();
                 }}
-                className="rounded-lg border px-2.5 py-1.5 text-[12.5px] font-medium text-[var(--ink-soft)] transition-colors hover:border-[var(--teal)] hover:bg-[var(--teal-tint)] hover:text-[var(--teal-deep)]"
+                className="rounded-lg border px-2.5 py-1.5 text-[13px] font-medium text-[var(--ink-soft)] transition-colors hover:border-[var(--teal)] hover:bg-[var(--teal-tint)] hover:text-[var(--teal-deep)]"
               >
                 {tr("chatNewThread", lang)}
               </button>
@@ -287,18 +287,9 @@ export function ChatView() {
 
             <Link
               href="/"
-              className="flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-[12.5px] font-medium text-[var(--ink-soft)] transition-colors hover:border-[var(--teal)] hover:bg-[var(--teal-tint)] hover:text-[var(--teal-deep)]"
+              className="rounded-lg border px-2.5 py-1.5 text-[13px] font-medium text-[var(--ink-soft)] transition-colors hover:border-[var(--teal)] hover:bg-[var(--teal-tint)] hover:text-[var(--teal-deep)]"
             >
-              <svg viewBox="0 0 20 20" width="13" height="13" fill="none" aria-hidden="true">
-                <path
-                  d="M12 4 6.5 10l5.5 6"
-                  stroke="currentColor"
-                  strokeWidth="1.7"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-              {tr("chatBack", lang)}
+              ← {tr("chatBack", lang)}
             </Link>
           </div>
         </div>
@@ -310,7 +301,7 @@ export function ChatView() {
             <h2 className="font-[family-name:var(--font-display)] text-[22px] font-semibold tracking-tight text-[var(--ink)]">
               {tr("chatEmptyTitle", lang)}
             </h2>
-            <p className="mt-2 text-[14px] leading-relaxed text-[var(--ink-soft)]">
+            <p className="mt-2 text-sm leading-relaxed text-[var(--ink-soft)]">
               {tr("chatGrounding", lang)}
             </p>
             <div className="mt-5 flex flex-col gap-2">
@@ -319,14 +310,14 @@ export function ChatView() {
                   key={q}
                   type="button"
                   onClick={() => void submit(q)}
-                  className="rounded-xl border px-3.5 py-2.5 text-left text-[14px] leading-snug text-[var(--ink)] transition-colors hover:border-[var(--teal)] hover:bg-[var(--teal-tint)]"
+                  className="rounded-xl border px-3.5 py-2.5 text-left text-sm leading-snug text-[var(--ink)] transition-colors hover:border-[var(--teal)] hover:bg-[var(--teal-tint)]"
                 >
                   {q}
                 </button>
               ))}
             </div>
             {experts.length > 0 && (
-              <p className="mt-5 flex flex-wrap items-center gap-1.5 border-t border-[var(--line)] pt-4 font-[family-name:var(--font-mono)] text-[11px] uppercase tracking-[0.1em] text-[var(--ink-faint)]">
+              <p className="mt-5 flex flex-wrap items-center gap-1.5 border-t border-[var(--line)] pt-4 font-[family-name:var(--font-mono)] text-[11px] uppercase tracking-[0.14em] text-[var(--ink-faint)]">
                 {tr("chatExperts", lang)}
                 {experts.map((e) => (
                   <span
@@ -350,7 +341,7 @@ export function ChatView() {
                 </div>
 
                 {turn.restored && (
-                  <p className="text-center font-[family-name:var(--font-mono)] text-[11px] uppercase tracking-[0.1em] text-[var(--ink-faint)]">
+                  <p className="text-center font-[family-name:var(--font-mono)] text-[11px] uppercase tracking-[0.14em] text-[var(--ink-faint)]">
                     {tr("chatRestored", lang)}
                   </p>
                 )}
@@ -363,7 +354,7 @@ export function ChatView() {
                     onSpeak={() => toggleSpeak(turn.id, turn.answer!)}
                   />
                 ) : turn.error ? (
-                  <p className="rounded-2xl border border-dashed border-[var(--nude-deep)] bg-[var(--nude-tint)] px-4 py-3 text-[14px] leading-relaxed text-[var(--nude-deep)]">
+                  <p className="rounded-2xl border border-dashed border-[var(--nude-deep)] bg-[var(--nude-tint)] px-4 py-3 text-sm leading-relaxed text-[var(--nude-deep)]">
                     {turn.error}
                   </p>
                 ) : (
@@ -384,7 +375,7 @@ export function ChatView() {
             </p>
           )}
           {handsFree && (
-            <p className="mb-2 text-center text-[12.5px] text-[var(--ink-soft)]">
+            <p className="mb-2 text-center text-[13px] text-[var(--ink-soft)]">
               {tr("chatHandsFreeHint", lang)}
             </p>
           )}
@@ -397,7 +388,7 @@ export function ChatView() {
             onSubmit={(text) => void submit(text)}
             onStop={stop}
           />
-          <p className="mt-2 text-center text-[11.5px] leading-relaxed text-[var(--ink-faint)]">
+          <p className="mt-2 text-center text-[11px] leading-relaxed text-[var(--ink-faint)]">
             {tr("chatDisclaimer", lang)}
           </p>
         </div>

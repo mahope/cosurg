@@ -172,7 +172,7 @@ export function InterviewView() {
         {naesteFelt ? (
           <button
             onClick={() => laesOp(naesteFelt.id)}
-            className="rounded-lg bg-[var(--teal-deep)] px-3.5 py-2 text-sm font-semibold text-white transition-colors hover:bg-[var(--teal)]"
+            className="rounded-lg bg-[var(--teal-deep)] px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-[var(--teal)]"
           >
             {tr("interviewAskNext", lang)}: {naesteFelt.label[lang]}
           </button>
