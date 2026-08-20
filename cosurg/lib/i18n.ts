@@ -9,9 +9,14 @@ export const t = {
   start: { da: "Start vurdering", en: "Start assessment" },
   aboutTeam: { da: "Om & Team", en: "About & Team" },
   aboutTeamTagline: { da: "Om CoSurg og holdet bag", en: "About CoSurg and the team behind it" },
-  aboutTeamPlaceholder: {
-    da: "Indhold følger snart.",
-    en: "Content coming soon.",
+  aboutTeamIntro: {
+    da: "CoSurg er et stemmestyret klinisk beslutningsstøtteværktøj til vurdering og behandling af brandsår, bygget under Corti Hack for Health 2026. Anbefalingen kommer altid fra et klinisk valideret beslutningstræ — AI bruges kun til at fortolke det der bliver sagt, aldrig til at generere selve anbefalingen.",
+    en: "CoSurg is a voice-driven clinical decision-support tool for burns assessment and treatment, built at Corti Hack for Health 2026. Every recommendation comes from a clinically validated decision tree — AI is used only to interpret what is said, never to generate the recommendation itself.",
+  },
+  aboutTeamSectionTitle: { da: "Teamet bag CoSurg", en: "The team behind CoSurg" },
+  aboutTeamSectionIntro: {
+    da: "CoSurgs kliniske grundlag er valideret af Nordic Surgery Labs internationale ekspertpanel.",
+    en: "CoSurg's clinical foundation is validated by Nordic Surgery Lab's international expert panel.",
   },
   listening: { da: "Lytter", en: "Listening" },
   micOff: { da: "Mikrofon slukket", en: "Microphone off" },
