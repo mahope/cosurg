@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import type { Lang } from "@/lib/tree/types";
 import { tr } from "@/lib/i18n";
 import { BrandMark } from "./BrandMark";
@@ -18,6 +19,7 @@ interface ControlRailProps {
   trees: TreeSummary[];
   treeBusy: boolean;
   onSelectTree: (id: string) => void;
+  onGoHome: () => void;
   fullVoice: boolean;
   orMode: boolean;
   onToggleLang: () => void;
@@ -40,6 +42,7 @@ export function ControlRail({
   trees,
   treeBusy,
   onSelectTree,
+  onGoHome,
   fullVoice,
   orMode,
   onToggleLang,
@@ -50,11 +53,15 @@ export function ControlRail({
     <header className="mb-8">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div className="flex items-center gap-3">
-          <BrandMark size={34} />
+          <Link href="/" onClick={onGoHome} className="shrink-0 transition-opacity hover:opacity-80">
+            <BrandMark size={34} />
+          </Link>
           <div>
-            <h1 className="font-[family-name:var(--font-display)] text-[22px] font-semibold tracking-tight text-[var(--ink)]">
-              {tr("title", lang)}
-            </h1>
+            <Link href="/" onClick={onGoHome} className="transition-opacity hover:opacity-80">
+              <h1 className="font-[family-name:var(--font-display)] text-[22px] font-semibold tracking-tight text-[var(--ink)]">
+                {tr("title", lang)}
+              </h1>
+            </Link>
             {/* Før et forløb er valgt, ville trænavnet være et valg vi havde
                 truffet for lægen. Der står linjen om hvad appen er i stedet. */}
             {started ? (
