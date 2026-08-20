@@ -6,6 +6,8 @@ import type { Lang } from "@/lib/tree/types";
 import type { Triage } from "@/lib/corti/triage";
 import type { BilledObservationer } from "@/lib/corti/vision";
 import type { LoestFaldgrube } from "@/components/pitfalls/types";
+import type { AnsweredStep } from "@/lib/tree/types";
+import type { DispositionUd, UdtrukketSvar, WorkupSpoergsmaal } from "@/lib/corti/workup";
 import { tr } from "@/lib/i18n";
 import type { ChatImage } from "../attachments";
 
@@ -17,17 +19,104 @@ export type VisionResult =
   | { ok: true; observations: BilledObservationer }
   | { ok: false; message: string };
 
+/* ------------------------------------------------------------------ *
+ * UDREDNINGEN I CHATTEN
+ *
+ * Beslutningstræerne er ikke længere en skærm man skifter til — de er det
+ * agenten UDREDER med, inde i samtalen. Agenten stiller træets manglende
+ * spørgsmål ét ad gangen som chatbeskeder og springer alt over som lægen
+ * allerede har fortalt. Klienten viser dem; den kender ikke træet.
+ *
+ * Teksterne kan komme som ren streng eller som {da,en}. Bagenden er ved at
+ * blive skrevet, og en klient der vælter på det ene format ville låse dens
+ * valg fast. `tekst()` tager imod begge.
+ * ------------------------------------------------------------------ */
+
 /**
- * Alt ruten kan sende. `ChatEvent` er agentens egne begivenheder; de tre
- * ekstra er rutens og er additive — kendte vi dem ikke, ville vi kaste dem
- * væk og opføre os som før. Typen bor HER og ikke i lib/corti, fordi det er
- * rutens kontrakt med klienten, ikke agentens.
+ * UDREDNINGENS TILSTAND — og hvorfor den bor hos klienten.
+ *
+ * Ruten er statsløs: den genafspiller hele stien fra træets rod ved hvert
+ * kald og stoler aldrig på klientens ord for hvor vi er. Klienten holder
+ * derfor `{treeId, path}` og sender den TILBAGE som `workup` på næste tur.
+ * Det er ikke en genvej — det er det der gør at en genindlæst side, et
+ * tabt svar eller en langsom forbindelse aldrig kan efterlade en udredning
+ * halvvejs inde i sig selv uden vej ud.
+ */
+export interface WorkupState {
+  treeId: string;
+  path: AnsweredStep[];
+  /**
+   * Svar lægen HAR givet, som gennemløbet endnu ikke er nået til.
+   *
+   * "50-årig med brandsår på hele armen" besvarer lokalisationen med det
+   * samme, men træet spørger først om skadesmekanismen. Rejste de svar ikke
+   * med tilbage, ville agenten spørge om armen igen tre trin senere — og
+   * lægen ville med rette tro at appen ikke lyttede.
+   */
+  pending?: UdtrukketSvar[];
+}
+
+/** Det spørgsmål udredningen mangler svar på lige nu. Rutens egen form. */
+export interface WorkupStep {
+  /**
+   * Hvad turen er:
+   * - "started"  — udredningen er lige begyndt
+   * - "question" — næste spørgsmål
+   * - "held"     — lægen spurgte om noget andet; udredningen holder sin plads
+   * - "clarify"  — svaret kunne ikke afgøres, så vi spørger igen
+   */
+  phase: "started" | "question" | "held" | "clarify";
+  treeId: string;
+  treeName: string;
+  path: AnsweredStep[];
+  progress: { answered: number; total: number };
+  question?: WorkupSpoergsmaal;
+  /** Det agenten selv udfyldte fra lægens beskrivelse — vist som kvittering. */
+  prefilled?: AnsweredStep[];
+  /** Svar der er givet, men som gennemløbet endnu ikke er nået frem til. */
+  pending?: UdtrukketSvar[];
+  clarification?: string;
+}
+
+/** Et rødt flag fra træet: afbryder tråden, kan ikke overses. */
+export interface RedflagEvent {
+  treeId: string;
+  nodeId: string;
+  message: string;
+  source: string;
+}
+
+/** Udredningens konklusion. Anbefalingen kommer fra træets kanter, aldrig fra en model. */
+export interface DispositionEvent {
+  treeId: string;
+  treeName: string;
+  disposition: DispositionUd;
+  path: AnsweredStep[];
+  redFlags: string[];
+  source: string;
+}
+
+/** Notat-tilbuddet bærer alt POST /api/note skal bruge. */
+export interface NoteOfferEvent {
+  treeId: string;
+  path: AnsweredStep[];
+}
+
+/**
+ * Alt ruten kan sende. `ChatEvent` er agentens egne begivenheder; resten er
+ * rutens og er additive — kender vi ikke en `kind`, kastes den væk, og
+ * tråden opfører sig præcis som før. Typen bor HER og ikke i lib/corti,
+ * fordi det er rutens kontrakt med klienten, ikke agentens.
  */
 type StreamEvent =
   | ChatEvent
-  | { kind: "triage"; triage: Triage; mode: "fast" | "deep" }
+  | { kind: "triage"; triage: Triage; mode: "fast" | "deep" | "workup" }
   | { kind: "pitfalls"; pitfalls: LoestFaldgrube[] }
-  | ({ kind: "vision" } & VisionResult);
+  | ({ kind: "vision" } & VisionResult)
+  | ({ kind: "workup" } & WorkupStep)
+  | ({ kind: "redflag" } & RedflagEvent)
+  | ({ kind: "disposition" } & DispositionEvent)
+  | ({ kind: "noteOffer" } & NoteOfferEvent);
 
 /**
  * Samtalens tilstand på klienten.
@@ -60,6 +149,18 @@ export interface Turn {
   vision?: VisionResult;
   /** Faldgruberne for emnet, hver med sit ordrette belæg. Rutens egne, ikke modellens. */
   pitfalls?: LoestFaldgrube[];
+  /** Udredningens næste spørgsmål — agentens tur i samtalen. */
+  workup?: WorkupStep;
+  /**
+   * Røde flag. En LISTE, fordi én tur kan udløse flere: beskriver lægen både
+   * cirkulær forbrænding og inhalation i én sætning, er begge sande, og at
+   * lade det ene overskrive det andet ville skjule en eskalering.
+   */
+  redflags?: RedflagEvent[];
+  /** Udredningens konklusion, med kilder. */
+  disposition?: DispositionEvent;
+  /** Agenten mener der er nok til et journalnotat. Et TILBUD, aldrig en handling. */
+  noteOffer?: NoteOfferEvent;
   done: boolean;
 }
 
@@ -81,6 +182,12 @@ export function useClinicalChat(lang: Lang) {
   const [busy, setBusy] = useState(false);
 
   const contextIdRef = useRef<string | undefined>(undefined);
+  /**
+   * Udredningens kanoniske sti. Ruten er statsløs og genafspiller den fra
+   * træets rod ved hvert kald, så den SKAL med tilbage — ellers begynder
+   * udredningen forfra ved hvert svar.
+   */
+  const workupRef = useRef<WorkupState | undefined>(undefined);
   const lastActivityRef = useRef<number>(0);
   const turnsRef = useRef<Turn[]>([]);
   const abortRef = useRef<AbortController | null>(null);
@@ -119,6 +226,9 @@ export function useClinicalChat(lang: Lang) {
   const reset = useCallback(() => {
     stop();
     contextIdRef.current = undefined;
+    // En ny tråd er en ny patient. En halv udredning fra den forrige ville
+    // være klinisk meningsløs — og farlig, fordi den ser fuldt gyldig ud.
+    workupRef.current = undefined;
     lastActivityRef.current = 0;
     write([]);
   }, [stop, write]);
@@ -178,6 +288,9 @@ export function useClinicalChat(lang: Lang) {
             // Udelades når der ingen billeder er, så et almindeligt spørgsmål
             // ser præcis ud som det altid har gjort på serversiden.
             ...(images && images.length > 0 ? { images } : {}),
+            // Er en udredning i gang, rejser dens sti med — så ruten kan
+            // genafspille den og vide hvor vi står.
+            ...(workupRef.current ? { workup: workupRef.current } : {}),
           }),
           signal: controller.signal,
         });
@@ -239,6 +352,28 @@ export function useClinicalChat(lang: Lang) {
                     ? { ok: true, observations: event.observations }
                     : { ok: false, message: event.message },
                 });
+              } else if (event.kind === "workup") {
+                const { kind, ...step } = event;
+                void kind;
+                // Stien er den kanoniske tilstand — den skal med tilbage næste
+                // gang, ellers begynder udredningen forfra ved roden. Og
+                // `pending` med, ellers spørges lægen igen om det han lige
+                // har fortalt.
+                workupRef.current = { treeId: event.treeId, path: event.path, pending: event.pending };
+                patch(id, { workup: step });
+              } else if (event.kind === "redflag") {
+                const { kind, ...flag } = event;
+                void kind;
+                patch(id, (t) => ({ redflags: [...(t.redflags ?? []), flag] }));
+              } else if (event.kind === "disposition") {
+                const { kind, ...d } = event;
+                void kind;
+                // Forløbet er kørt til ende. Næste ytring er et nyt ærinde og
+                // må ikke genoptage en afsluttet udredning.
+                workupRef.current = undefined;
+                patch(id, { disposition: d });
+              } else if (event.kind === "noteOffer") {
+                patch(id, { noteOffer: { treeId: event.treeId, path: event.path } });
               } else if (event.kind === "answer") {
                 answer = event.answer;
                 patch(id, { answer: event.answer, done: true });

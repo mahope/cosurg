@@ -1,9 +1,15 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { ChatAnswer } from "@/lib/corti/chat";
-import type { Lang } from "@/lib/tree/types";
-import type { Turn, VisionResult } from "@/components/chat/useClinicalChat";
+import type { AnsweredStep, Lang } from "@/lib/tree/types";
+import type {
+  DispositionEvent,
+  RedflagEvent,
+  Turn,
+  VisionResult,
+  WorkupStep,
+} from "@/components/chat/useClinicalChat";
 import { AnswerCard } from "@/components/chat/AnswerCard";
 import { ProgressTrail } from "@/components/chat/ProgressTrail";
 import { PitfallCard } from "@/components/pitfalls/PitfallCard";
@@ -42,9 +48,29 @@ interface ChatThreadProps {
   onSwitch: () => void;
   /** Tilbud om at blive ført gennem et forløb. Vises ved det seneste svar. */
   offer: { name: string; onAccept: () => void; onDismiss: () => void } | null;
+  /**
+   * Lægen svarede på udredningens spørgsmål med ét klik. Teksten sendes som
+   * hans næste besked — hurtig-svaret er en genvej til at skrive, ikke en
+   * anden slags handling.
+   */
+  onQuickReply: (text: string) => void;
+  /** Tag imod journalnotat-tilbuddet. */
+  onWriteNote: (treeId: string, path: AnsweredStep[]) => void;
+  noteBusy: boolean;
 }
 
-export function ChatThread({ lang, turns, guide, speakingTurn, onSpeak, onSwitch, offer }: ChatThreadProps) {
+export function ChatThread({
+  lang,
+  turns,
+  guide,
+  speakingTurn,
+  onSpeak,
+  onSwitch,
+  offer,
+  onQuickReply,
+  onWriteNote,
+  noteBusy,
+}: ChatThreadProps) {
   /*
    * Nyt indhold skal kunne ses uden at lægen selv skal rulle efter det.
    * Sentinel-elementet i bunden følges når der kommer en ny tur eller et
@@ -78,6 +104,13 @@ export function ChatThread({ lang, turns, guide, speakingTurn, onSpeak, onSwitch
           isLatest={!guide && turn.id === lastTurnId}
           onSwitch={onSwitch}
           offer={!guide && turn.id === lastTurnId ? offer : null}
+          /* Hurtig-svar og notat-tilbud hører kun til den SENESTE tur: en
+             ældre udredning er allerede besvaret, og knapper der stadig
+             kunne trykkes ville sende samtalen tilbage i tiden. */
+          interactive={turn.id === lastTurnId}
+          onQuickReply={onQuickReply}
+          onWriteNote={onWriteNote}
+          noteBusy={noteBusy}
         />
       ))}
 
@@ -127,6 +160,10 @@ function TurnEntry({
   isLatest,
   onSwitch,
   offer,
+  interactive,
+  onQuickReply,
+  onWriteNote,
+  noteBusy,
 }: {
   turn: Turn;
   lang: Lang;
@@ -135,6 +172,10 @@ function TurnEntry({
   isLatest: boolean;
   onSwitch: () => void;
   offer: { name: string; onAccept: () => void; onDismiss: () => void } | null;
+  interactive: boolean;
+  onQuickReply: (text: string) => void;
+  onWriteNote: (treeId: string, path: AnsweredStep[]) => void;
+  noteBusy: boolean;
 }) {
   return (
     <section>
@@ -145,6 +186,16 @@ function TurnEntry({
             så, før han læser hvad den konkluderede. Den lander ~1 s inde og
             er samtidig livstegnet mens svaret arbejder. */}
         {turn.vision && <VisionBlock vision={turn.vision} lang={lang} />}
+
+        {/*
+          Røde flag afbryder. De står ØVERST i turen — før svaret, før
+          udredningens næste spørgsmål — fordi en eskalering ikke må stå
+          under noget som helst. Farven er klinisk: rød når patienten kan
+          tage skade, gul når behandlingen bliver forkert.
+        */}
+        {turn.redflags?.map((flag, i) => (
+          <RedflagBlock key={i} flag={flag} lang={lang} />
+        ))}
 
         {turn.answer ? (
           <>
@@ -205,9 +256,261 @@ function TurnEntry({
           <p className="rounded-2xl border border-dashed border-[var(--nude-deep)] bg-[var(--nude-tint)] px-4 py-3 text-sm leading-relaxed text-[var(--nude-deep)]">
             {turn.error}
           </p>
-        ) : (
+        ) : turn.workup || turn.disposition ? null : (
+          /* Fremdriften vises kun mens der IKKE er noget bedre at vise.
+             Er udredningens spørgsmål eller anbefalingen landet, er de
+             svaret — og en arbejdslinje under dem ville påstå at der stadig
+             mangler noget. */
           <ProgressTrail progress={turn.progress} lang={lang} />
         )}
+
+        {/* Anbefalingen: udredningens konklusion, med de kilder den hviler på. */}
+        {turn.disposition && <DispositionBlock disposition={turn.disposition} lang={lang} />}
+
+        {/*
+          Udredningens næste spørgsmål — agentens tur i samtalen.
+
+          Det står SIDST i turen fordi det er det der venter på lægen: alt
+          over det er noget han kan læse, dette er noget han skal svare på.
+        */}
+        {turn.workup && (
+          <WorkupBlock
+            step={turn.workup}
+            lang={lang}
+            interactive={interactive}
+            onQuickReply={onQuickReply}
+          />
+        )}
+
+        {/*
+          Notatet er et TILBUD, ikke en handling appen tager. "Ikke nu" er
+          derfor et ægte valg der bare lukker tilbuddet — journalen skrives
+          aldrig fordi en samtale tilfældigvis nåede langt nok.
+        */}
+        {turn.noteOffer && interactive && (
+          <NoteOfferBlock
+            lang={lang}
+            onWrite={() => onWriteNote(turn.noteOffer!.treeId, turn.noteOffer!.path)}
+            busy={noteBusy}
+          />
+        )}
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------------ *
+ * Udredningen
+ * ------------------------------------------------------------------ */
+
+/**
+ * Udredningens næste spørgsmål.
+ *
+ * Det er agentens tur i en SAMTALE, ikke et felt i en formular — derfor er
+ * det formet som det svar-kort en kollega ville give: spørgsmålet i fuld
+ * størrelse, og svarmulighederne som diskrete genveje NÅR noden har et
+ * lukket svarskema. Har den ikke det, står der intet, og lægen skriver eller
+ * taler frit. Knapperne er hjælp til at svare, aldrig den eneste vej.
+ *
+ * Fremdriften står lavmælt og i ord ("4 af 8 afklaret"). En procentbjælke
+ * ville gøre en klinisk udredning til en overførsel der skal blive færdig.
+ */
+function WorkupBlock({
+  step,
+  lang,
+  interactive,
+  onQuickReply,
+}: {
+  step: WorkupStep;
+  lang: Lang;
+  interactive: boolean;
+  onQuickReply: (text: string) => void;
+}) {
+  const spørgsmål = step.question;
+  if (!spørgsmål) return null;
+
+  const muligheder = spørgsmål.options ?? [];
+
+  return (
+    <section className="mt-3 rounded-2xl border border-[var(--teal)] bg-[var(--teal-tint)] p-5 sm:p-6">
+      <p className="flex flex-wrap items-baseline gap-x-2 font-[family-name:var(--font-mono)] text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--ink-faint)]">
+        <span className="text-[var(--teal-deep)]">{tr("workupLabel", lang)}</span>
+        <span className="normal-case tracking-normal">{step.treeName}</span>
+        <span className="ml-auto normal-case tracking-normal">
+          {step.progress.answered} {tr("workupOf", lang)} {step.progress.total} {tr("workupProgress", lang)}
+        </span>
+      </p>
+
+      {/*
+        Hvad agenten selv nåede at udfylde fra lægens beskrivelse. Kvitteringen
+        er halvdelen af pointen: lægen skal kunne se AT hans ord blev brugt —
+        ellers ligner en udredning der springer fem spørgsmål over, at appen
+        har glemt dem.
+      */}
+      {step.prefilled && step.prefilled.length > 0 && (
+        <p className="mt-2 text-[13px] leading-relaxed text-[var(--teal-deep)]">
+          {tr("workupPrefilled", lang)}: {step.prefilled.map((s) => s.rawAnswer || s.value).join(" · ")}
+        </p>
+      )}
+
+      {/* Svaret kunne ikke afgøres. Vi spørger igen med agentens egne ord om
+          hvad der manglede — aldrig ved bare at gentage spørgsmålet. */}
+      {step.clarification && (
+        <p className="mt-2 rounded-lg border border-[var(--nude-deep)] bg-[var(--nude-tint)] px-3 py-2 text-[13px] leading-relaxed text-[var(--ink)]">
+          {step.clarification}
+        </p>
+      )}
+
+      <p className="mt-2 font-[family-name:var(--font-display)] text-xl font-semibold leading-snug tracking-tight text-[var(--ink)]">
+        {spørgsmål.question}
+        {spørgsmål.unit && <span className="ml-1.5 text-base font-normal text-[var(--ink-soft)]">({spørgsmål.unit})</span>}
+      </p>
+
+      {spørgsmål.help && (
+        <p className="mt-1.5 text-[13px] leading-relaxed text-[var(--ink-soft)]">{spørgsmål.help}</p>
+      )}
+
+      {muligheder.length > 0 && interactive && (
+        <>
+          <div className="mt-4 flex flex-wrap gap-2">
+            {muligheder.map((mulighed) => (
+              <button
+                key={mulighed.value}
+                type="button"
+                /* Lægens egne ord er det der sendes — etiketten, ikke
+                   maskinværdien. Transskriptet og notatet skal læse som en
+                   journal, ikke som en formular. */
+                onClick={() => onQuickReply(mulighed.label)}
+                className="rounded-lg border border-[var(--line-strong)] bg-[var(--paper-raised)] px-3.5 py-2 text-sm font-medium text-[var(--ink)] transition-colors hover:border-[var(--teal)] hover:bg-[var(--paper)]"
+              >
+                {mulighed.label}
+              </button>
+            ))}
+          </div>
+          <p className="mt-2.5 text-[13px] leading-relaxed text-[var(--ink-soft)]">
+            {tr("workupAnswerHint", lang)}
+          </p>
+        </>
+      )}
+    </section>
+  );
+}
+
+/**
+ * Et rødt flag i tråden.
+ *
+ * Farven er den eneste i appen der betyder noget klinisk: rød når patienten
+ * kan tage skade af at det overses, gul når behandlingen bliver forkert.
+ * Derfor bærer blokken ingen anden pynt — den skal kunne aflæses på et halvt
+ * sekund fra den anden side af et leje.
+ */
+function RedflagBlock({ flag, lang }: { flag: RedflagEvent; lang: Lang }) {
+  if (!flag.message) return null;
+
+  return (
+    <section role="alert" className="motion-forward mb-3 rounded-xl border-2 border-[var(--red)] bg-[var(--red-tint)] p-4">
+      <p className="font-[family-name:var(--font-mono)] text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--red)]">
+        {tr("workupRedflag", lang)}
+      </p>
+      <p className="mt-1.5 text-[15px] font-semibold leading-relaxed text-[var(--ink)]">{flag.message}</p>
+      {/* Flaget kommer fra træet, ikke fra en model — og træet har en
+          afsender. Uden den ville den skarpeste besked i appen være den
+          eneste uden kilde. */}
+      <p className="mt-2 font-[family-name:var(--font-mono)] text-[11px] leading-relaxed text-[var(--ink-faint)]">
+        {flag.source}
+      </p>
+    </section>
+  );
+}
+
+/** Udredningens konklusion, med de kilder den hviler på. */
+function DispositionBlock({ disposition, lang }: { disposition: DispositionEvent; lang: Lang }) {
+  const d = disposition.disposition;
+  /*
+   * Rød ramme er forbeholdt den anbefaling der ikke tåler at vente.
+   * "emergency" er akut overflytning; "refer" er en henvisning der skal ske,
+   * men ikke i det næste minut. De to andre — behandl her, send hjem — er
+   * gode nyheder og må aldrig låne alarmens farve.
+   */
+  const kritisk = d.severity === "emergency";
+
+  return (
+    <section
+      className={`mt-3 rounded-2xl border-2 bg-[var(--paper-raised)] p-5 sm:p-6 ${
+        kritisk ? "border-[var(--red)]" : "border-[var(--teal)]"
+      }`}
+    >
+      <p className="flex flex-wrap items-baseline gap-x-2 font-[family-name:var(--font-mono)] text-[11px] font-semibold uppercase tracking-[0.14em]">
+        <span className={kritisk ? "text-[var(--red)]" : "text-[var(--teal-deep)]"}>
+          {tr("workupDisposition", lang)}
+        </span>
+        <span className="normal-case tracking-normal text-[var(--ink-faint)]">{disposition.treeName}</span>
+      </p>
+
+      <h3 className="mt-1.5 font-[family-name:var(--font-display)] text-xl font-semibold leading-snug tracking-tight text-[var(--ink)]">
+        {d.title}
+      </h3>
+      <p className="mt-2 text-[15px] leading-relaxed text-[var(--ink)]">{d.guidance}</p>
+
+      {/* De røde flag der sprang undervejs. De står MED anbefalingen, fordi
+          det er dem der forklarer hvorfor den lyder som den gør. */}
+      {disposition.redFlags.length > 0 && (
+        <ul className="mt-3 space-y-1.5 rounded-lg border border-[var(--red-line)] bg-[var(--red-tint)] p-3">
+          {disposition.redFlags.map((f, i) => (
+            <li key={i} className="text-[13px] font-medium leading-relaxed text-[var(--ink)]">
+              {f}
+            </li>
+          ))}
+        </ul>
+      )}
+
+      {/* Kilderne står MED anbefalingen og ikke som en fodnote: hele appens
+          påstand er at rådet kan spores, og en anbefaling uden afsender er
+          præcis det den ikke må være. */}
+      <div className="mt-4 border-t border-[var(--line)] pt-3">
+        <p className="font-[family-name:var(--font-mono)] text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--ink-faint)]">
+          {tr("workupDispositionSources", lang)}
+        </p>
+        <p className="mt-1.5 text-[13px] leading-relaxed text-[var(--ink-soft)]">{disposition.source}</p>
+        {d.sources.length > 0 && (
+          <ul className="mt-1.5 space-y-1">
+            {d.sources.map((s, i) => (
+              <li key={i} className="text-[13px] leading-relaxed text-[var(--ink-soft)]">
+                {s}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    </section>
+  );
+}
+
+/** Journalnotatet tilbydes — det skrives aldrig af sig selv. */
+function NoteOfferBlock({ lang, onWrite, busy }: { lang: Lang; onWrite: () => void; busy: boolean }) {
+  const [afvist, setAfvist] = useState(false);
+  if (afvist) return null;
+
+  return (
+    <section className="mt-3 rounded-xl border border-[var(--line-strong)] bg-[var(--paper-raised)] p-4">
+      <p className="text-[15px] leading-relaxed text-[var(--ink)]">{tr("workupNoteOffer", lang)}</p>
+      <div className="mt-3 flex flex-wrap gap-2">
+        <button
+          type="button"
+          onClick={onWrite}
+          disabled={busy}
+          aria-busy={busy}
+          className="rounded-lg bg-[var(--teal-deep)] px-4 py-2 text-sm font-semibold text-white transition-colors enabled:hover:bg-[var(--teal)] disabled:opacity-50"
+        >
+          {busy ? tr("noteWorking", lang) : tr("workupNoteWrite", lang)}
+        </button>
+        <button
+          type="button"
+          onClick={() => setAfvist(true)}
+          className="rounded-lg border border-[var(--line-strong)] bg-[var(--paper)] px-3.5 py-2 text-sm font-medium text-[var(--ink-soft)] transition-colors hover:border-[var(--teal)] hover:text-[var(--ink)]"
+        >
+          {tr("workupNoteLater", lang)}
+        </button>
       </div>
     </section>
   );

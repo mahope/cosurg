@@ -509,7 +509,7 @@ export const t = {
     da: "Slå oplæsning til eller fra",
     en: "Turn spoken guidance on or off",
   },
-  orSwitch: { da: "Slå OR-tilstand til eller fra", en: "Turn OR mode on or off" },
+  orSwitch: { da: "Slå håndfri tilstand til eller fra", en: "Turn handsfree mode on or off" },
   statusRegion: { da: "Status", en: "Status" },
   /** Læses op når et rødt flag tager skærmen. Skærmlæseren skal sige alvoren først. */
   redFlagAnnounce: { da: "Rødt flag", en: "Red flag" },
@@ -697,6 +697,28 @@ export const t = {
 
   /* Faldgruberne der følger med et chatsvar. Rutens egne, med ordret belæg. */
   answerPitfalls: { da: "Faldgruber ved dette emne", en: "Pitfalls on this topic" },
+
+  /* ------------------------------------------------------------------ *
+   * Udredningen i chatten
+   *
+   * Beslutningstræet er ikke længere en skærm man skifter til — det er det
+   * agenten udreder med, inde i samtalen. Teksterne skal derfor lyde som en
+   * kollega der spørger videre, ikke som en formular der skal udfyldes.
+   * ------------------------------------------------------------------ */
+  workupLabel: { da: "Udredning", en: "Work-up" },
+  workupProgress: { da: "afklaret", en: "settled" },
+  workupOf: { da: "af", en: "of" },
+  workupAnswerHint: { da: "Svar med et klik — eller skriv det selv", en: "Answer with a tap — or write it yourself" },
+  workupPrefilled: { da: "Taget fra din beskrivelse", en: "Taken from your description" },
+  workupRedflag: { da: "Rødt flag", en: "Red flag" },
+  workupDisposition: { da: "Anbefaling", en: "Recommendation" },
+  workupDispositionSources: { da: "Anbefalingen hviler på", en: "The recommendation rests on" },
+  workupNoteOffer: {
+    da: "Der er nok til et journalnotat nu.",
+    en: "There is enough for a clinical note now.",
+  },
+  workupNoteWrite: { da: "Skriv notatet", en: "Write the note" },
+  workupNoteLater: { da: "Ikke nu", en: "Not now" },
 
   /*
    * Her lå genkendelsens tekster («Jeg læser det som …»), de tre eksempel-

@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { ChatImage } from "@/components/attachments";
 import burnsTree from "@/content/trees/burns.json";
 import { advance, getDisposition, getNode, goBack, questionText, startSession } from "@/lib/tree/engine";
-import type { DecisionTree, Lang, SessionState, TreeNode } from "@/lib/tree/types";
+import type { AnsweredStep, DecisionTree, Lang, SessionState, TreeNode } from "@/lib/tree/types";
 import { useTranscribe } from "@/lib/audio/useTranscribe";
 import { useDictation } from "@/lib/audio/useDictation";
 import { prefetchSpeech, speak, stopSpeaking } from "@/lib/audio/speak";
@@ -21,7 +21,7 @@ import type { TreeSummary } from "@/components/TreePicker";
 import { BrandWatermark } from "@/components/BrandMark";
 import { isEcho, matchCommand, type VoiceCommand } from "@/components/voiceCommands";
 import { IntakeCard } from "@/components/IntakeCard";
-import { followUpTreeId, routeUtterance, suggestTreeId } from "@/components/treeRouting";
+import { followUpTreeId } from "@/components/treeRouting";
 import type { SessionUsage } from "@/components/UsagePanel";
 import { useClinicalChat } from "@/components/chat/useClinicalChat";
 import type { ChatAnswer } from "@/lib/corti/chat";
@@ -31,7 +31,6 @@ import {
   looksLikeQuestion,
   matchAffirmative,
   matchIntentChoice,
-  startsWithTreatmentIntent,
 } from "@/components/unified/intent";
 import { IntentChoiceCard, LookupCard, type LookupPayload } from "@/components/unified/LookupCard";
 import { ChatThread } from "@/components/unified/ChatThread";
@@ -508,63 +507,26 @@ export default function Home() {
         return;
       }
 
-      const { match, ranked } = routeUtterance(text, trees, lang);
       /*
-       * Det forløb vi vil TILBYDE bagefter, hvis ytringen viser sig at være et
-       * spørgsmål. Her bruges den LØSE genkendelse med vilje: et tilbud kan
-       * afvises med ét klik, mens et forkert startet forløb sender lægen ned ad
-       * et klinisk spor han ikke bad om. Uden den ville "hvornår skal en
-       * brandsårspatient overflyttes?" ende uden tilbud, fordi den stramme regel
-       * ikke kan se "brandsår" inde i "brandsårspatient".
-       */
-      const suggestion = match?.treeId ?? ranked[0]?.treeId ?? suggestTreeId(text, trees, lang);
-
-      /*
-       * Et spørgsmål — eller et rent behandlingsopslag — er ikke en patient.
-       * Begge slags ville ellers ramme forløbets ordliste og starte en
-       * vurdering af en patient der ikke findes.
-       */
-      if (looksLikeQuestion(text) || startsWithTreatmentIntent(text)) {
-        setIntakeMiss(null);
-        void runLookup(text, suggestion);
-        return;
-      }
-
-      if (match) {
-        void beginTree(match.treeId, text);
-        return;
-      }
-
-      /*
-       * Ytringen ramte forløbenes kliniske ordlister, men uden en klar vinder
-       * — "forbinding på en hånd med brandsår" rammer to forløb lige godt.
-       * Det er tydeligt en patient, så HER er et valg stadig det rigtige: at
-       * starte det forkerte forløb er værre end at spørge.
-       */
-      if (ranked.length > 0) {
-        setIntakeMiss({ text, candidates: ranked.map((r) => r.treeId) });
-        return;
-      }
-
-      /*
-       * Alt andet slås op. Punktum.
+       * ALT går i chatten. Der er ikke længere en anden skærm at komme til.
        *
-       * Her stod før en blindgyde: ytringer uden spørgeord og uden kliniske
-       * forløbsord — "Parkland Formel", "escharotomi", "Nexobrid" — blev sendt
-       * til en klassificerings-agent, og sagde den ikke "question", endte
-       * skærmen med "det kunne jeg ikke henføre til et forløb". Et fagligt
-       * opslag uden svar, i en app hvis produkt ER svaret.
+       * Beslutningstræerne er ikke afskaffet — de har skiftet rolle. Før var
+       * en patientbeskrivelse en kommando der skiftede til trævisningen med
+       * ét spørgsmål ad gangen og sit eget sidepanel. Nu er træet det agenten
+       * UDREDER med: den stiller de manglende spørgsmål som chatbeskeder
+       * (`workup`-begivenheden) og springer alt over som lægen allerede har
+       * fortalt. Derfor findes der ikke længere en ytring der "hører til" et
+       * andet sted end tråden.
        *
-       * Reglen er nu principiel: kun en KLAR patientbeskrivelse starter et
-       * forløb (grenene ovenfor), og alt der ikke er det, går til opslaget.
-       * Chatten er standardvejen — den kan altid svare eller ærligt sige at
-       * kilderne er tavse, og begge dele er bedre end en blindgyde. Bagendens
-       * egen triage vælger spor derefter; klienten skal ikke gætte først.
+       * Det gør indgangen så enkel som forsiden lover: lægen taler eller
+       * skriver, og samtalen fortsætter. Ingen vej herfra kan ende blindt —
+       * chatten kan altid svare, spørge videre, eller ærligt sige at kilderne
+       * er tavse.
        */
       setIntakeMiss(null);
-      void runLookup(text, suggestion);
+      void runLookup(text, null);
     },
-    [trees, lang, beginTree, runLookup],
+    [runLookup],
   );
 
   /**
@@ -1086,7 +1048,7 @@ export default function Home() {
    * længere frist end de øvrige kald — en generøs frist er ikke det samme som
    * ingen frist — og en spærre så et utålmodigt klik ikke sender kaldet igen.
    */
-  const generateNote = async () => {
+  const generateNote = async (fraUdredning?: { treeId: string; path: AnsweredStep[] }) => {
     if (noteBusy) return;
     setNoteBusy(true);
     setStatus(tr("noteWorking", lang));
@@ -1094,14 +1056,31 @@ export default function Home() {
       const res = await fetch("/api/note", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          treeId: tree.id,
-          lang,
-          path: state.path,
-          dispositionId: state.dispositionId,
-          transcript: transcript.join("\n"),
-          dictation,
-        }),
+        /*
+         * Notatet kan komme to steder fra, og de har hver sin sandhed om
+         * hvad der blev afklaret. Kom tilbuddet fra en udredning i chatten,
+         * er DENS sti den kanoniske — den er genafspillet på serveren og
+         * indeholder de svar agenten trak ud af lægens egen beskrivelse.
+         * `state.path` hører til den gamle trævisning og ved intet om dem.
+         */
+        body: JSON.stringify(
+          fraUdredning
+            ? {
+                treeId: fraUdredning.treeId,
+                lang,
+                path: fraUdredning.path,
+                transcript: transcript.join("\n"),
+                dictation,
+              }
+            : {
+                treeId: tree.id,
+                lang,
+                path: state.path,
+                dispositionId: state.dispositionId,
+                transcript: transcript.join("\n"),
+                dictation,
+              },
+        ),
         signal: AbortSignal.timeout(TIMEOUT_NOTE),
       });
       const data = (await res.json()) as NoteResult & { error?: string };
@@ -1520,6 +1499,11 @@ export default function Home() {
                         }
                       : null
                   }
+                  /* Et hurtig-svar ER lægens næste besked — samme vej ind som
+                     hvis han havde skrevet eller sagt ordet selv. */
+                  onQuickReply={(t) => void handleUtterance(t)}
+                  onWriteNote={(treeId, path) => void generateNote({ treeId, path })}
+                  noteBusy={noteBusy}
                 />
               </div>
               <div className="sticky bottom-4 z-20">
