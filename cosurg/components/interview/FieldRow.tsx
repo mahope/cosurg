@@ -26,16 +26,16 @@ interface FieldRowProps {
 }
 
 export function FieldRow({ felt, svar, lang, naeste, onSvar, onRyd, onLaesOp }: FieldRowProps) {
-  const [udkast, setUdkast] = useState("");
+  const [indtastning, setIndtastning] = useState("");
   const udfyldt = !!svar;
 
   const send = () => {
-    const rent = udkast.trim();
+    const rent = indtastning.trim();
     if (!rent) return;
     const display = felt.unit ? `${rent} ${felt.unit[lang]}` : rent;
     // Feltet ryddes her og ikke i en effekt: bliver svaret senere ryddet igen,
     // skal linjen stå tom og klar, ikke med den gamle tekst liggende.
-    setUdkast("");
+    setIndtastning("");
     onSvar(rent, display);
   };
 
@@ -114,8 +114,8 @@ export function FieldRow({ felt, svar, lang, naeste, onSvar, onRyd, onLaesOp }: 
                 <input
                   type={felt.type === "number" ? "number" : "text"}
                   inputMode={felt.type === "number" ? "decimal" : "text"}
-                  value={udkast}
-                  onChange={(e) => setUdkast(e.target.value)}
+                  value={indtastning}
+                  onChange={(e) => setIndtastning(e.target.value)}
                   onKeyDown={(e) => {
                     if (e.key === "Enter") send();
                   }}
@@ -124,7 +124,7 @@ export function FieldRow({ felt, svar, lang, naeste, onSvar, onRyd, onLaesOp }: 
                 />
                 <button
                   onClick={send}
-                  disabled={!udkast.trim()}
+                  disabled={!indtastning.trim()}
                   className="rounded-lg bg-[var(--teal)] px-3 py-1.5 text-sm font-semibold text-white transition-opacity disabled:opacity-30"
                 >
                   OK
