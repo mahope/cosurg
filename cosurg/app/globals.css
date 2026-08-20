@@ -369,6 +369,24 @@ body {
 }
 
 /*
+ * DEN DOBBELTE FOKUSRAMME.
+ *
+ * Den globale `:focus-visible` tegner en 2 px SurgeonBlue outline med 2 px
+ * afstand. Den er skrevet uden for et cascade layer, og i Tailwind v4 slår
+ * ulagdelt CSS ALTID utilities — så `focus:outline-none` på selve feltet
+ * havde ingen virkning, og der stod en hård mørk ramme om textarea'en INDE i
+ * komposerens egen ramme. Det var netop den ramme der skulle væk.
+ *
+ * Undtagelsen gælder kun selve skrivekontrollen, ikke knapperne i
+ * værktøjslinjen: de har ingen anden fokusmarkering og beholder ringen. Og
+ * fokus forsvinder ikke — beholderen skifter kant og får sin egen bløde ring,
+ * som er hele pointen med .field-shell.
+ */
+.field-shell :is(input, textarea):focus-visible {
+  outline: none;
+}
+
+/*
  * Kildetekst på en telefon.
  *
  * Uddragene er ordret klinisk tekst, og de indeholder ting der ikke kan
