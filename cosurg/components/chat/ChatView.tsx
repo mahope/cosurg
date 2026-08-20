@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { BrandMark, BrandWatermark } from "@/components/BrandMark";
+import { LangSwitch } from "@/components/LangSwitch";
+import { AboutTeamLink } from "@/components/AboutTeamLink";
 import { speak, stopSpeaking } from "@/lib/audio/speak";
 import { useTranscribe } from "@/lib/audio/useTranscribe";
 import { micMessage, tr } from "@/lib/i18n";
@@ -237,11 +239,15 @@ export function ChatView() {
 
       <header className="sticky top-0 z-10 border-b bg-[color-mix(in_srgb,var(--paper)_92%,transparent)] backdrop-blur">
         <div className="mx-auto flex w-full max-w-3xl flex-wrap items-center gap-x-3 gap-y-2 px-4 py-3 sm:px-6">
-          <BrandMark size={30} />
+          <Link href="/" className="shrink-0 transition-opacity hover:opacity-80">
+            <BrandMark size={30} />
+          </Link>
           <div className="min-w-0">
-            <h1 className="font-[family-name:var(--font-display)] text-[17px] font-semibold leading-tight tracking-tight text-[var(--ink)]">
-              {tr("chatTitle", lang)}
-            </h1>
+            <Link href="/" className="transition-opacity hover:opacity-80">
+              <h1 className="font-[family-name:var(--font-display)] text-[17px] font-semibold leading-tight tracking-tight text-[var(--ink)]">
+                {tr("chatTitle", lang)}
+              </h1>
+            </Link>
             <p className="truncate text-[12.5px] leading-tight text-[var(--ink-soft)]">
               {tr("chatTagline", lang)}
             </p>
@@ -262,23 +268,9 @@ export function ChatView() {
               {tr("chatHandsFree", lang)}
             </button>
 
-            <div className="flex overflow-hidden rounded-lg border">
-              {(["da", "en"] as const).map((code) => (
-                <button
-                  key={code}
-                  type="button"
-                  onClick={() => changeLang(code)}
-                  aria-pressed={lang === code}
-                  className={`px-2.5 py-1.5 font-[family-name:var(--font-mono)] text-[12px] font-medium uppercase transition-colors ${
-                    lang === code
-                      ? "bg-[var(--teal)] text-white"
-                      : "text-[var(--ink-soft)] hover:bg-[var(--teal-tint)]"
-                  }`}
-                >
-                  {code}
-                </button>
-              ))}
-            </div>
+            <LangSwitch lang={lang} onToggleLang={() => changeLang(lang === "da" ? "en" : "da")} />
+
+            <AboutTeamLink lang={lang} />
 
             {turns.length > 0 && (
               <button

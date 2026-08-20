@@ -4,7 +4,8 @@ import Link from "next/link";
 import type { Lang } from "@/lib/tree/types";
 import { tr } from "@/lib/i18n";
 import { BrandMark } from "./BrandMark";
-import { Flag } from "./Flag";
+import { LangSwitch } from "./LangSwitch";
+import { AboutTeamLink } from "./AboutTeamLink";
 import { TreePicker, type TreeSummary } from "./TreePicker";
 import { UsagePanel, type SessionUsage } from "./UsagePanel";
 import { SizeLock, widestOf } from "./ui/SizeLock";
@@ -91,36 +92,7 @@ export function ControlRail({
         <div className="flex flex-wrap items-center gap-2">
           <UsagePanel lang={lang} usage={usage} />
 
-          {/* To flag uden fælles etiket læses op som "Dansk knap, English knap"
-              uden at sige hvad valget handler om. Gruppen bærer betydningen. */}
-          <div
-            role="group"
-            aria-label={lang === "da" ? "Sprog" : "Language"}
-            className="flex items-center gap-1 rounded-lg border bg-[var(--paper-raised)] p-0.5"
-          >
-            <button
-              type="button"
-              onClick={() => lang !== "da" && onToggleLang()}
-              aria-pressed={lang === "da"}
-              aria-label="Dansk"
-              className={`flex items-center justify-center rounded-md p-1.5 transition-opacity ${
-                lang === "da" ? "bg-[var(--teal-tint)] ring-1 ring-[var(--teal)]" : "opacity-50 hover:opacity-80"
-              }`}
-            >
-              <Flag country="dk" size={22} />
-            </button>
-            <button
-              type="button"
-              onClick={() => lang !== "en" && onToggleLang()}
-              aria-pressed={lang === "en"}
-              aria-label="English"
-              className={`flex items-center justify-center rounded-md p-1.5 transition-opacity ${
-                lang === "en" ? "bg-[var(--teal-tint)] ring-1 ring-[var(--teal)]" : "opacity-50 hover:opacity-80"
-              }`}
-            >
-              <Flag country="gb" size={22} />
-            </button>
-          </div>
+          <LangSwitch lang={lang} onToggleLang={onToggleLang} />
 
           <div className="flex items-center rounded-lg border bg-[var(--paper-raised)] p-0.5">
             <button
@@ -155,12 +127,7 @@ export function ControlRail({
             <SizeLock variants={widestOf("orMode")}>{tr("orMode", lang)}</SizeLock>
           </button>
 
-          <Link
-            href="/aboutandteam"
-            className="rounded-lg border bg-[var(--paper-raised)] px-4 py-2 text-sm font-medium text-[var(--ink)] transition-colors hover:border-[var(--teal)] hover:bg-[var(--teal-tint)]"
-          >
-            <SizeLock variants={widestOf("aboutTeam")}>{tr("aboutTeam", lang)}</SizeLock>
-          </Link>
+          <AboutTeamLink lang={lang} />
         </div>
       </div>
 
