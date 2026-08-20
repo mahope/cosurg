@@ -5,6 +5,8 @@ import type { ReactNode } from "react";
 import type { Lang } from "@/lib/tree/types";
 import { tr } from "@/lib/i18n";
 import { BrandMark, BrandWatermark } from "@/components/BrandMark";
+import { LangSwitch } from "@/components/LangSwitch";
+import { AboutTeamLink } from "@/components/AboutTeamLink";
 
 /**
  * Fælles ramme om de tre opslagsværktøjer: behandlingsguide, faldgruber og
@@ -50,11 +52,15 @@ export function ToolShell({ active, lang, onToggleLang, title, tagline, children
         <header className="mb-7">
           <div className="flex flex-wrap items-start justify-between gap-4">
             <div className="flex items-center gap-3">
-              <BrandMark size={34} />
+              <Link href="/" className="shrink-0 transition-opacity hover:opacity-80">
+                <BrandMark size={34} />
+              </Link>
               <div>
-                <h1 className="font-[family-name:var(--font-display)] text-[22px] font-semibold leading-tight tracking-tight text-[var(--ink)]">
-                  {title}
-                </h1>
+                <Link href="/" className="transition-opacity hover:opacity-80">
+                  <h1 className="font-[family-name:var(--font-display)] text-[22px] font-semibold leading-tight tracking-tight text-[var(--ink)]">
+                    {title}
+                  </h1>
+                </Link>
                 <p className="font-[family-name:var(--font-mono)] text-xs text-[var(--ink-faint)]">{tagline}</p>
               </div>
             </div>
@@ -66,12 +72,8 @@ export function ToolShell({ active, lang, onToggleLang, title, tagline, children
               >
                 ← {tr("toolTree", lang)}
               </Link>
-              <button
-                onClick={onToggleLang}
-                className="rounded-lg border bg-[var(--paper-raised)] px-3 py-2 text-sm font-medium text-[var(--ink)] transition-colors hover:border-[var(--teal)]"
-              >
-                {lang === "da" ? "Dansk" : "English"}
-              </button>
+              <LangSwitch lang={lang} onToggleLang={onToggleLang} />
+              <AboutTeamLink lang={lang} />
             </div>
           </div>
 

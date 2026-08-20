@@ -6,6 +6,7 @@ import Link from "next/link";
 import type { Lang } from "@/lib/tree/types";
 import { tr } from "@/lib/i18n";
 import { BrandMark, BrandWatermark } from "@/components/BrandMark";
+import { LangSwitch } from "@/components/LangSwitch";
 
 interface Member {
   name: string;
@@ -98,11 +99,15 @@ export function AboutTeamView() {
       <div className="relative z-10 mx-auto max-w-5xl">
         <header className="mb-7 flex flex-wrap items-start justify-between gap-4">
           <div className="flex items-center gap-3">
-            <BrandMark size={34} />
+            <Link href="/" className="shrink-0 transition-opacity hover:opacity-80">
+              <BrandMark size={34} />
+            </Link>
             <div>
-              <h1 className="font-[family-name:var(--font-display)] text-[22px] font-semibold leading-tight tracking-tight text-[var(--ink)]">
-                {tr("aboutTeam", lang)}
-              </h1>
+              <Link href="/" className="transition-opacity hover:opacity-80">
+                <h1 className="font-[family-name:var(--font-display)] text-[22px] font-semibold leading-tight tracking-tight text-[var(--ink)]">
+                  {tr("aboutTeam", lang)}
+                </h1>
+              </Link>
               <p className="font-[family-name:var(--font-mono)] text-xs text-[var(--ink-faint)]">
                 {tr("aboutTeamTagline", lang)}
               </p>
@@ -116,12 +121,7 @@ export function AboutTeamView() {
             >
               ← {tr("toolTree", lang)}
             </Link>
-            <button
-              onClick={() => setLang((l) => (l === "da" ? "en" : "da"))}
-              className="rounded-lg border bg-[var(--paper-raised)] px-3 py-2 text-sm font-medium text-[var(--ink)] transition-colors hover:border-[var(--teal)]"
-            >
-              {lang === "da" ? "Dansk" : "English"}
-            </button>
+            <LangSwitch lang={lang} onToggleLang={() => setLang((l) => (l === "da" ? "en" : "da"))} />
           </div>
         </header>
 
