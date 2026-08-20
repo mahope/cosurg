@@ -1,0 +1,239 @@
+{
+  "id": "frostbite-dk",
+  "version": "0.1.0",
+  "name": {
+    "da": "Forfrysninger — akut vurdering",
+    "en": "Frostbite — acute assessment"
+  },
+  "description": {
+    "da": "Klinisk beslutningstræ for akut vurdering af perifere forfrysninger og systemisk hypotermi. Bygget på Dansk Brandsårsforenings retningslinje (brandsaar.dk/forfrysninger) og Rigshospitalets VIP-instruks PBB - Forfrysninger.",
+    "en": "Clinical decision tree for acute assessment of peripheral frostbite and systemic hypothermia. Built on the Danish Burn Society guideline (brandsaar.dk/forfrysninger) and the Rigshospitalet clinical instruction PBB - Frostbite."
+  },
+  "authors": [
+    "Klinisk grundlag: Dansk Brandsårsforening (brandsaar.dk/forfrysninger)",
+    "Klinisk grundlag: VIP-instruks PBB - Forfrysninger v3, Rikke Holmgaard, Rigshospitalet",
+    "Udkast samlet af CoSurg — afventer klinisk godkendelse"
+  ],
+  "rootNodeId": "hypothermia",
+  "nodes": [
+    {
+      "id": "hypothermia",
+      "question": {
+        "da": "Er der mistanke om systemisk hypotermi — altså kernetemperatur under 35 grader?",
+        "en": "Any suspicion of systemic hypothermia — a core temperature below 35 degrees?"
+      },
+      "orQuestion": {
+        "da": "Hypotermi under 35 grader?",
+        "en": "Hypothermia below 35 degrees?"
+      },
+      "answerType": "boolean",
+      "help": {
+        "da": "Systemisk hypotermi behandles før de perifere forfrysninger, for at mindske den perifere vasokonstriktion og øge blodflowet. Opvarmning kan være passiv (uldtæpper, varme omgivelser), aktiv-ekstern (opvarmet luft, intravenøse væsker) eller aktiv-intern.",
+        "en": "Systemic hypothermia is treated before the peripheral frostbite, to reduce peripheral vasoconstriction and increase blood flow. Rewarming can be passive (blankets, a warm room), active external (forced warm air, IV fluids) or active internal."
+      },
+      "options": [
+        {
+          "value": "yes",
+          "label": { "da": "Ja", "en": "Yes" },
+          "synonyms": {
+            "da": ["ja", "kold", "under 35", "hypoterm"],
+            "en": ["yes", "cold", "below 35", "hypothermic"]
+          }
+        },
+        {
+          "value": "no",
+          "label": { "da": "Nej", "en": "No" },
+          "synonyms": {
+            "da": ["nej", "normal temperatur"],
+            "en": ["no", "normal temperature"]
+          }
+        }
+      ],
+      "redFlags": [
+        {
+          "when": "yes",
+          "message": {
+            "da": "Systemisk hypotermi: kernetemperatur under 35 grader. Følg ABC-principperne og behandl hypotermien før de perifere forfrysninger — passiv, aktiv-ekstern eller aktiv-intern opvarmning.",
+            "en": "Systemic hypothermia: core temperature below 35 degrees. Follow ABC principles and treat the hypothermia before the peripheral frostbite — passive, active external or active internal rewarming."
+          },
+          "goto": "disp-emergency"
+        }
+      ],
+      "edges": [
+        { "when": "*", "goto": "rewarming" }
+      ]
+    },
+    {
+      "id": "rewarming",
+      "question": {
+        "da": "Er hurtig genopvarmning påbegyndt — vævet opvarmes i 37 til 40 grader varmt vand i cirka 30 minutter?",
+        "en": "Has rapid rewarming been started — the tissue warmed in 37 to 40 degree water for about 30 minutes?"
+      },
+      "orQuestion": {
+        "da": "Genopvarmning i 37-40 grader i gang?",
+        "en": "Rewarming at 37-40 degrees running?"
+      },
+      "answerType": "boolean",
+      "help": {
+        "da": "Fjern smykker på berørte fingre og tæer tidligt — der opstår betydelig hævelse af vævet ved optøning. Giv tetanusvaccine, og smertestillende er ofte nødvendig (NSAID og opioid efter behov).",
+        "en": "Remove jewellery from affected fingers and toes early — significant tissue swelling develops on thawing. Give tetanus vaccination; analgesia is often needed (NSAID and opioid as required)."
+      },
+      "options": [
+        { "value": "yes", "label": { "da": "Ja", "en": "Yes" } },
+        { "value": "no", "label": { "da": "Nej", "en": "No" } }
+      ],
+      "edges": [
+        { "when": "*", "goto": "grade" }
+      ]
+    },
+    {
+      "id": "grade",
+      "question": {
+        "da": "Hvordan ser vævet ud kort efter optøning? Rødme uden blærer, klare blærer, blodige blærer — eller dyb nekrose?",
+        "en": "How does the tissue look shortly after thawing? Redness without blisters, clear blisters, bloody blisters — or deep necrosis?"
+      },
+      "orQuestion": {
+        "da": "Grad efter optøning?",
+        "en": "Grade after thawing?"
+      },
+      "answerType": "choice",
+      "help": {
+        "da": "Skadens omfang vurderes kort efter optøning og inddeles i fire grader ud fra vævets udseende.",
+        "en": "The extent of injury is assessed shortly after thawing and graded 1-4 from the appearance of the tissue."
+      },
+      "options": [
+        {
+          "value": "grade-1",
+          "label": {
+            "da": "Hyperæmi og ødem uden vesikler (1. grad)",
+            "en": "Hyperaemia and oedema without vesicles (1st degree)"
+          },
+          "synonyms": {
+            "da": ["rødme", "hævelse", "ingen blærer", "førstegrad"],
+            "en": ["redness", "swelling", "no blisters", "first degree"]
+          }
+        },
+        {
+          "value": "grade-2",
+          "label": {
+            "da": "Vesikler med klart indhold (2. grad)",
+            "en": "Vesicles with clear fluid (2nd degree)"
+          },
+          "synonyms": {
+            "da": ["klare blærer", "vabler", "andengrad"],
+            "en": ["clear blisters", "second degree"]
+          }
+        },
+        {
+          "value": "grade-3",
+          "label": {
+            "da": "Vesikler med hæmoragisk indhold (3. grad)",
+            "en": "Vesicles with haemorrhagic fluid (3rd degree)"
+          },
+          "synonyms": {
+            "da": ["blodige blærer", "hæmoragisk", "tredjegrad"],
+            "en": ["bloody blisters", "haemorrhagic", "third degree"]
+          }
+        },
+        {
+          "value": "grade-4",
+          "label": {
+            "da": "Fuldhudsnekrose med muskler og knogler (4. grad)",
+            "en": "Full-thickness necrosis including muscle and bone (4th degree)"
+          },
+          "synonyms": {
+            "da": ["sort", "nekrose", "knogle", "fjerdegrad"],
+            "en": ["black", "necrosis", "bone", "fourth degree"]
+          }
+        }
+      ],
+      "edges": [
+        { "when": "grade-1", "goto": "disp-treat" },
+        { "when": "*", "goto": "severity" }
+      ]
+    },
+    {
+      "id": "severity",
+      "question": {
+        "da": "Er der tegn på svær skade — bleg hud, nedsat følesans eller manglende håndholdt dopplersignal?",
+        "en": "Any signs of severe injury — pale skin, reduced sensation or an absent handheld Doppler signal?"
+      },
+      "orQuestion": {
+        "da": "Bleg, følelsesløs eller intet dopplersignal?",
+        "en": "Pale, insensate or no Doppler signal?"
+      },
+      "answerType": "boolean",
+      "help": {
+        "da": "Klinisk vurdering af sværhedsgrad: bleg, nedsat følesans, hæmoragiske blærer, manglende håndholdt dopplersignal. Iloprost eller trombolyse med alteplase inden for 24 timer efter skaden kan nedsætte amputationsrisikoen.",
+        "en": "Clinical severity assessment: pale, reduced sensation, haemorrhagic blisters, absent handheld Doppler signal. Iloprost or thrombolysis with alteplase within 24 hours of injury can reduce the risk of amputation."
+      },
+      "options": [
+        { "value": "yes", "label": { "da": "Ja", "en": "Yes" } },
+        { "value": "no", "label": { "da": "Nej", "en": "No" } }
+      ],
+      "redFlags": [
+        {
+          "when": "yes",
+          "message": {
+            "da": "Svær forfrysning med truet væv. Iloprost eller trombolysebehandling inden for 24 timer efter skaden kan nedsætte amputationsrisikoen — henvis akut til hospital med specialistekspertise.",
+            "en": "Severe frostbite with threatened tissue. Iloprost or thrombolysis within 24 hours of injury can reduce the risk of amputation — refer urgently to a hospital with specialist expertise."
+          },
+          "goto": "disp-emergency"
+        }
+      ],
+      "edges": [
+        { "when": "*", "goto": "disp-refer" }
+      ]
+    }
+  ],
+  "dispositions": [
+    {
+      "id": "disp-emergency",
+      "severity": "emergency",
+      "title": {
+        "da": "Akut: specialistbehandling nu",
+        "en": "Emergency: specialist treatment now"
+      },
+      "guidance": {
+        "da": "Følg ABC-principperne og behandl systemisk hypotermi først. Derefter hurtig genopvarmning af vævet i 37 til 40 grader varmt vand i cirka 30 minutter. Fjern smykker tidligt, giv tetanusvaccine og smertestillende. Henvis akut til hospital med specialistekspertise: Iloprost eller trombolyse med alteplase inden for 24 timer efter skaden kan nedsætte amputationsrisikoen. Tag blodprøver: komplet blodbillede, CRP, natrium, kalium, kreatinin, CK, myoglobin, type og forlig samt koagulationsscreening.",
+        "en": "Follow ABC principles and treat systemic hypothermia first. Then rapidly rewarm the tissue in 37 to 40 degree water for about 30 minutes. Remove jewellery early, give tetanus vaccination and analgesia. Refer urgently to a hospital with specialist expertise: iloprost or thrombolysis with alteplase within 24 hours of injury can reduce the risk of amputation. Draw bloods: full blood count, CRP, sodium, potassium, creatinine, CK, myoglobin, type and screen, and a coagulation screen."
+      },
+      "sources": [
+        "brandsaar.dk/forfrysninger",
+        "VIP Rigshospitalet: PBB - Forfrysninger (version 3)"
+      ]
+    },
+    {
+      "id": "disp-refer",
+      "severity": "refer",
+      "title": {
+        "da": "Henvis: grad 2 til 4 til specialistvurdering",
+        "en": "Refer: grade 2 to 4 for specialist assessment"
+      },
+      "guidance": {
+        "da": "Ved grad 2 til 4 bør patienten henvises til et hospital med specialistekspertise. Fortsæt genopvarmningen, giv tetanusvaccine og smertestillende, og fjern smykker på berørte fingre og tæer. Overvej ASA 100 mg dagligt hvis hæmatokrit er over 30 procent, blodplader over 50 og der ikke er tidligere blødning. Kirurgisk intervention foretages først senere i forløbet, når det skadede væv har demarkeret sig — dog kan akut fasciotomi ved mistanke om kompartmentsyndrom være indiceret.",
+        "en": "At grade 2 to 4 the patient should be referred to a hospital with specialist expertise. Continue rewarming, give tetanus vaccination and analgesia, and remove jewellery from affected fingers and toes. Consider ASA 100 mg daily if haematocrit is above 30 percent, platelets above 50 and there is no history of bleeding. Surgical intervention is performed later, once the damaged tissue has demarcated — though acute fasciotomy may be indicated if compartment syndrome is suspected."
+      },
+      "sources": [
+        "brandsaar.dk/forfrysninger",
+        "VIP Rigshospitalet: PBB - Forfrysninger (version 3)"
+      ]
+    },
+    {
+      "id": "disp-treat",
+      "severity": "treat",
+      "title": {
+        "da": "Ambulant: førstegrads forfrysning",
+        "en": "Outpatient: first-degree frostbite"
+      },
+      "guidance": {
+        "da": "Fuldfør genopvarmningen i 37 til 40 grader varmt vand i cirka 30 minutter. Giv tetanusvaccine og smertestillende efter behov. Førstegrads skade — hyperæmi og ødem uden vesikler — kræver ikke henvisning til specialafdeling. Informér patienten om at søge læge igen hvis der kommer blærer, sortfarvning eller nedsat følesans.",
+        "en": "Complete rewarming in 37 to 40 degree water for about 30 minutes. Give tetanus vaccination and analgesia as needed. First-degree injury — hyperaemia and oedema without vesicles — does not require specialist referral. Advise the patient to return if blisters, blackening or reduced sensation develop."
+      },
+      "sources": [
+        "brandsaar.dk/forfrysninger",
+        "VIP Rigshospitalet: PBB - Forfrysninger (version 3)"
+      ]
+    }
+  ]
+}

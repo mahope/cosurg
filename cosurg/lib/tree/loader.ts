@@ -1,6 +1,8 @@
 import type { DecisionTree } from "./types";
 import burns from "@/content/trees/burns.json";
 import dressingHandArm from "@/content/trees/dressing-hand-arm.json";
+import frostbite from "@/content/trees/frostbite.json";
+import bites from "@/content/trees/bites.json";
 
 /**
  * Træ-kilde. I dag: JSON i repoet. På sigt: teamets egen MCP-server koblet på Cortis
@@ -24,6 +26,8 @@ class LocalTreeSource implements TreeSource {
   private trees: DecisionTree[] = [
     burns as unknown as DecisionTree,
     dressingHandArm as unknown as DecisionTree,
+    frostbite as unknown as DecisionTree,
+    bites as unknown as DecisionTree,
   ];
 
   async list(): Promise<TreeSummary[]> {
