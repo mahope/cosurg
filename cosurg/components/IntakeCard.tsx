@@ -488,7 +488,7 @@ export function IntakeCard({
   const errorLine = (
     <div className="mt-2 h-5">
       {attachError && (
-        <p role="status" className="px-1 text-[13px] leading-5 text-[var(--nude-deep)]">
+        <p role="status" className="px-1 text-[13px] leading-5 text-[var(--nude-ink)]">
           {tr(attachError, lang)}
         </p>
       )}

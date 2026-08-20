@@ -230,7 +230,11 @@ export function InterviewView() {
                   {tr(kopieret ? "interviewCopied" : "interviewCopy", lang)}
                 </button>
               </div>
-              <pre className="overflow-x-auto whitespace-pre-wrap rounded-xl border border-[var(--line)] bg-[var(--paper-raised)] p-4 font-[family-name:var(--font-mono)] text-[13px] leading-relaxed text-[var(--ink)]">
+              {/* Maskinens egen udskrift. Den stod hvid på hvidt kort og
+                  lignede derfor almindelig brødtekst med en ramme om. Nu er
+                  fladen sænket et hak — det ældste tegn i tryksager på "her
+                  citeres noget ordret", og den eneste forskel man behøver. */}
+              <pre className="overflow-x-auto whitespace-pre-wrap rounded-xl border border-[var(--line)] bg-[var(--paper-sunken)] p-4 font-[family-name:var(--font-mono)] text-[13px] leading-relaxed text-[var(--ink)]">
                 {resume}
               </pre>
             </section>

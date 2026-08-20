@@ -117,14 +117,20 @@ export function ControlRail({
           )}
 
           {/* Håndfri tilstand kan slås til før et forløb er valgt — lægen skal
-              kunne tale fra første spørgsmål, ikke først når et træ er startet. */}
+              kunne tale fra første spørgsmål, ikke først når et træ er startet.
+
+              Knappen er en KONTAKT, ikke sidens primære handling: slukket står
+              den som de øvrige kontroller i rækken, tændt fyldes den med
+              SurgeonBlue. Den bar før OR-tilstandens Turquoise mens den var
+              tændt — den mørke verdens accent lagt oven på den lyse — og var
+              dermed det stærkeste farvefelt på en ellers rolig skærm. */}
           <button
             onClick={onToggleOrMode}
             aria-pressed={orMode}
-            className={`rounded-lg px-4 py-2 text-sm font-semibold transition-colors disabled:opacity-40 ${
+            className={`rounded-lg border px-4 py-2 text-sm font-semibold transition-colors disabled:opacity-40 ${
               orMode
-                ? "bg-[var(--or-accent)] text-[var(--or-accent-ink)]"
-                : "bg-[var(--teal-deep)] text-white enabled:hover:bg-[var(--teal)]"
+                ? "border-[var(--teal)] bg-[var(--teal)] text-white"
+                : "border-[var(--line-strong)] bg-[var(--paper-raised)] text-[var(--ink)] enabled:hover:border-[var(--teal)] enabled:hover:bg-[var(--teal-tint)]"
             }`}
           >
             <SizeLock variants={widestOf("orMode")}>{tr("orMode", lang)}</SizeLock>

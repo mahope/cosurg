@@ -379,7 +379,7 @@ export function ChatView() {
                     )}
                   </>
                 ) : turn.error ? (
-                  <p className="rounded-2xl border border-dashed border-[var(--nude-deep)] bg-[var(--nude-tint)] px-4 py-3 text-sm leading-relaxed text-[var(--nude-deep)]">
+                  <p className="rounded-2xl border border-dashed border-[var(--nude-deep)] bg-[var(--nude-tint)] px-4 py-3 text-sm leading-relaxed text-[var(--nude-ink)]">
                     {turn.error}
                   </p>
                 ) : (
@@ -395,7 +395,7 @@ export function ChatView() {
       <div className="sticky bottom-0 z-10 border-t bg-[color-mix(in_srgb,var(--paper)_92%,transparent)] backdrop-blur">
         <div className="mx-auto w-full max-w-3xl px-4 py-3 sm:px-6">
           {micNotice && (
-            <p className="mb-2 rounded-lg border border-dashed border-[var(--nude-deep)] bg-[var(--nude-tint)] px-3 py-2 text-[13px] leading-relaxed text-[var(--nude-deep)]">
+            <p className="mb-2 rounded-lg border border-dashed border-[var(--nude-deep)] bg-[var(--nude-tint)] px-3 py-2 text-[13px] leading-relaxed text-[var(--nude-ink)]">
               {micNotice}
             </p>
           )}

@@ -1569,7 +1569,12 @@ export default function Home() {
           {notice && (
             <div
               role="status"
-              className="rounded-lg border border-[var(--nude-deep)] bg-[var(--nude-tint)] px-4 py-3 text-sm font-medium leading-relaxed text-[var(--ink)]"
+              /* Beskeden er driftsmæssig — "klik for at slå lyd til", ikke
+                 klinisk. Den bar en terrakottaramme og råbte derfor lige så
+                 højt som et rødt flag. Nu bærer den kun sin varme flade og en
+                 hårfin kant: den kan ses, men den kan ikke forveksles med
+                 noget der handler om patienten. */
+              className="rounded-lg border border-[var(--line-strong)] bg-[var(--nude-tint)] px-4 py-3 text-sm font-medium leading-relaxed text-[var(--ink)]"
             >
               {notice}
             </div>
