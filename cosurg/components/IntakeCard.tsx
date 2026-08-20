@@ -197,9 +197,12 @@ export function IntakeCard({
             Målelaget. Det er det eneste af de tre lag der fylder noget, og
             derfor det der bestemmer højden. Det måler på BÅDE det skrevne og
             det talte, så feltet allerede har gjort plads når ordene lander.
-            Det ekstra linjeskift holder den sidste linje synlig.
+
+            Feltet starter som ÉN linje — det tomme lag indeholder præcis ét
+            linjeskift — og vokser linje for linje med indholdet. En stor tom
+            flade lovede plads; en linje der vokser viser den.
           */}
-          <div aria-hidden="true" className={`invisible min-h-[12rem] ${fieldType}`}>
+          <div aria-hidden="true" className={`invisible ${fieldType}`}>
             {draft + ghostGap + interim + "\n"}
           </div>
 

@@ -680,6 +680,24 @@ export const t = {
   intakeDropHere: { da: "Slip billedet her", en: "Drop the image here" },
 
   /*
+   * Billedobservationen ved svaret.
+   *
+   * Mærkatet siger UDTRYKKELIGT at teksten er modelgenereret og ikke en
+   * kilde. Alt andet i appens svar bærer et kildenavn, og en beskrivelse af
+   * et foto der stod umærket ville arve den troværdighed uden at have den.
+   */
+  visionLabel: { da: "Billedobservation — modellens beskrivelse, ikke en kilde", en: "Image observation — model-generated, not a source" },
+  visionUncertainty: { da: "Hvad billedet ikke kan afgøre", en: "What the image cannot settle" },
+  visionQuality: { da: "Billedkvalitet", en: "Image quality" },
+  visionFailedLabel: { da: "Billedet indgik ikke i svaret", en: "The image was not part of the answer" },
+
+  /* Triagens statuslinje — det første livstegn på det tunge spor. */
+  triageDeep: { da: "Slår op i litteraturen", en: "Searching the literature" },
+
+  /* Faldgruberne der følger med et chatsvar. Rutens egne, med ordret belæg. */
+  answerPitfalls: { da: "Faldgruber ved dette emne", en: "Pitfalls on this topic" },
+
+  /*
    * Her lå genkendelsens tekster («Jeg læser det som …»), de tre eksempel-
    * ytringer og sporbarhedskortet. De er fjernet sammen med de flader de
    * hørte til: forsiden er ét felt og én mikrofon, og alt andet på den var

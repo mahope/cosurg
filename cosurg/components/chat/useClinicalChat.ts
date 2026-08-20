@@ -3,8 +3,31 @@
 import { useCallback, useRef, useState } from "react";
 import type { ChatAnswer, ChatEvent } from "@/lib/corti/chat";
 import type { Lang } from "@/lib/tree/types";
+import type { Triage } from "@/lib/corti/triage";
+import type { BilledObservationer } from "@/lib/corti/vision";
+import type { LoestFaldgrube } from "@/components/pitfalls/types";
 import { tr } from "@/lib/i18n";
 import type { ChatImage } from "../attachments";
+
+/**
+ * Billedanalysens udfald. `ok: false` betyder at fotoet IKKE indgik i svaret —
+ * og det skal siges højt i UI'et frem for at billedet stille forsvinder.
+ */
+export type VisionResult =
+  | { ok: true; observations: BilledObservationer }
+  | { ok: false; message: string };
+
+/**
+ * Alt ruten kan sende. `ChatEvent` er agentens egne begivenheder; de tre
+ * ekstra er rutens og er additive — kendte vi dem ikke, ville vi kaste dem
+ * væk og opføre os som før. Typen bor HER og ikke i lib/corti, fordi det er
+ * rutens kontrakt med klienten, ikke agentens.
+ */
+type StreamEvent =
+  | ChatEvent
+  | { kind: "triage"; triage: Triage; mode: "fast" | "deep" }
+  | { kind: "pitfalls"; pitfalls: LoestFaldgrube[] }
+  | ({ kind: "vision" } & VisionResult);
 
 /**
  * Samtalens tilstand på klienten.
@@ -33,6 +56,10 @@ export interface Turn {
   restored?: boolean;
   /** Statuslinjer fra agenten mens den arbejder. */
   progress: Array<{ expert: string | null; text: string }>;
+  /** Billedanalysen, når der var fotos med. Kommer FØR svaret. */
+  vision?: VisionResult;
+  /** Faldgruberne for emnet, hver med sit ordrette belæg. Rutens egne, ikke modellens. */
+  pitfalls?: LoestFaldgrube[];
   done: boolean;
 }
 
@@ -180,9 +207,9 @@ export function useClinicalChat(lang: Lang) {
               const payload = line.slice(5).trim();
               if (!payload) continue;
 
-              let event: ChatEvent;
+              let event: StreamEvent;
               try {
-                event = JSON.parse(payload) as ChatEvent;
+                event = JSON.parse(payload) as StreamEvent;
               } catch {
                 continue;
               }
@@ -193,6 +220,25 @@ export function useClinicalChat(lang: Lang) {
                 patch(id, (t) => ({
                   progress: [...t.progress, { expert: event.expert, text: event.text }],
                 }));
+              } else if (event.kind === "triage") {
+                /*
+                 * Triagen er det første livstegn (~1 s). Den bliver til en
+                 * statuslinje i den fremdrift der allerede vises — men kun på
+                 * det tunge spor: hurtigsporet sender sin egen linje i samme
+                 * åndedrag, og to linjer om det samme ville ligne to skridt.
+                 */
+                if (event.mode === "deep") {
+                  const text = `${tr("triageDeep", lang)}: ${event.triage.topic}`;
+                  patch(id, (t) => ({ progress: [...t.progress, { expert: null, text }] }));
+                }
+              } else if (event.kind === "pitfalls") {
+                patch(id, { pitfalls: event.pitfalls });
+              } else if (event.kind === "vision") {
+                patch(id, {
+                  vision: event.ok
+                    ? { ok: true, observations: event.observations }
+                    : { ok: false, message: event.message },
+                });
               } else if (event.kind === "answer") {
                 answer = event.answer;
                 patch(id, { answer: event.answer, done: true });

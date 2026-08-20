@@ -2,9 +2,10 @@
 
 import type { ChatAnswer } from "@/lib/corti/chat";
 import type { Lang } from "@/lib/tree/types";
-import type { Turn } from "@/components/chat/useClinicalChat";
+import type { Turn, VisionResult } from "@/components/chat/useClinicalChat";
 import { AnswerCard } from "@/components/chat/AnswerCard";
 import { ProgressTrail } from "@/components/chat/ProgressTrail";
+import { PitfallCard } from "@/components/pitfalls/PitfallCard";
 import { tr } from "@/lib/i18n";
 import type { GuideSvar } from "./guide";
 import { GuidePanel } from "./GuidePanel";
@@ -115,12 +116,37 @@ export function LookupCard({
           )
         ) : payload.turn.answer ? (
           <>
+            {/*
+              Billedobservationen står FØR svaret, fordi den kom før svaret —
+              og fordi lægen skal vide hvad modellen så, før han læser hvad den
+              konkluderede.
+            */}
+            {payload.turn.vision && <VisionBlock vision={payload.turn.vision} lang={lang} />}
             <AnswerCard
               answer={payload.turn.answer}
               lang={lang}
               speaking={speaking}
               onSpeak={() => onSpeak(payload.turn.answer!)}
             />
+
+            {/*
+              Rutens egne faldgruber for emnet, hver med sit ordrette belæg.
+              De står som deres egen blok og ikke inde i svaret: de er hentet
+              af os uafhængigt af hvad modellen skrev, og den forskel må ikke
+              viskes ud.
+            */}
+            {payload.turn.pitfalls && payload.turn.pitfalls.length > 0 && (
+              <section className="mt-4">
+                <p className="font-[family-name:var(--font-mono)] text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--ink-faint)]">
+                  {tr("answerPitfalls", lang)}
+                </p>
+                <div className="mt-2 space-y-2.5">
+                  {payload.turn.pitfalls.map((f) => (
+                    <PitfallCard key={f.id} faldgrube={f} lang={lang} kompakt />
+                  ))}
+                </div>
+              </section>
+            )}
 
             {/* Samme spørgsmål, anden kilde. Vi valgte litteraturen; kunne
                 behandlingsguiden have svaret bedre, er der ét klik til den. */}
@@ -161,7 +187,13 @@ export function LookupCard({
             {payload.turn.error}
           </p>
         ) : (
-          <ProgressTrail progress={payload.turn.progress} lang={lang} />
+          <>
+            {/* Analysen af fotoet lander ~1 s inde, længe før svaret. Den
+                vises med det samme — det er den slags livstegn der gør at
+                ingen tror at appen hænger. */}
+            {payload.turn.vision && <VisionBlock vision={payload.turn.vision} lang={lang} />}
+            <ProgressTrail progress={payload.turn.progress} lang={lang} />
+          </>
         )}
       </div>
 
@@ -173,6 +205,42 @@ export function LookupCard({
             : tr("chatDisclaimer", lang)}
       </footer>
     </div>
+  );
+}
+
+/**
+ * Billedobservationen — modellens beskrivelse af fotoet, aldrig en kilde.
+ *
+ * Blokken må ikke kunne forveksles med et kildeuddrag: alt andet i svaret
+ * bærer et navngivet dokument, og denne tekst er genereret. Derfor eget
+ * mærkat, egen neutral flade (ingen kilde-ramme, ingen citationstegn) og
+ * usikkerheden vist LIGE så tydeligt som observationen. Fejler analysen,
+ * siges det med samme vægt — et foto der stille ignoreres, ville lade lægen
+ * tro at svaret så det.
+ */
+function VisionBlock({ vision, lang }: { vision: VisionResult; lang: Lang }) {
+  return (
+    <section className="mb-4 rounded-xl border border-[var(--line-strong)] bg-[var(--paper)] p-4">
+      <p className="font-[family-name:var(--font-mono)] text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--ink-faint)]">
+        {tr(vision.ok ? "visionLabel" : "visionFailedLabel", lang)}
+      </p>
+      {vision.ok ? (
+        <>
+          <p className="mt-2 text-sm leading-relaxed text-[var(--ink)]">{vision.observations.observations}</p>
+          <p className="mt-2.5 text-sm leading-relaxed text-[var(--ink-soft)]">
+            <span className="font-semibold">{tr("visionUncertainty", lang)}:</span>{" "}
+            {vision.observations.uncertainty}
+          </p>
+          {vision.observations.qualityIssues && (
+            <p className="mt-1.5 text-[13px] leading-relaxed text-[var(--ink-faint)]">
+              {tr("visionQuality", lang)}: {vision.observations.qualityIssues}
+            </p>
+          )}
+        </>
+      ) : (
+        <p className="mt-2 text-sm leading-relaxed text-[var(--ink-soft)]">{vision.message}</p>
+      )}
+    </section>
   );
 }
 
