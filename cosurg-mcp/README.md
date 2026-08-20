@@ -1,8 +1,13 @@
 # cosurg-mcp
 
-An MCP server holding CoSurg's clinical knowledge about burns. It attaches to
-Corti's agentic framework as an **MCP connector**, so a Corti agent can look
-things up in our own sources instead of answering from general knowledge.
+An MCP server holding CoSurg's clinical knowledge — burns at its core, and plastic
+surgery around them. It attaches to Corti's agentic framework as an **MCP
+connector**, so a Corti agent can look things up in our own sources instead of
+answering from general knowledge.
+
+The sources are named and current: the Capital Region's VIP instructions from
+Rigshospitalet, the Danish Burn Association's guidance, the team's own PlastSurgeon
+handbook, and every peer-reviewed case in the team's own journal.
 
 The server never invents content. Every answer is either a verbatim excerpt with
 its source reference, a piece of a decision tree written by clinicians, a PubMed
@@ -17,25 +22,59 @@ so is the rest of this repository.
 
 ## What it contains
 
+Burns are the core, but the base now covers plastic surgery broadly — because the
+guidelines and the case journal do.
+
 | Source | Source type | Scope | Attribution |
 |---|---|---|---|
-| `data/kilder/brandsaar-dk.md` | guideline | All of brandsaar.dk — the Danish Burn Association / the burn unit at Rigshospitalet. Depth assessment, TBSA/area estimation, Parkland fluid resuscitation, inhalation injury, chemical burns, frostbite, circumferential burns, transfer criteria, outpatient care, analgesia. | URL per section |
-| `data/kilder/magnus-materiale.md` | guideline | The team's own material: the "Burns plast surgeon" document and the dressing guide from Section 6052 at Rigshospitalet. | Document name + chapter path |
-| `data/kilder/plastsurgeon-brandsaar.md` | guideline | The Burn Surgery chapter from the team's own handbook, beta.plastsurgeon.com: anatomy, pathophysiology, depth classification, area estimation, referral to a burn unit, Parkland and the 4:2:1 principle, antibiotics, follow-up, and the five procedures (cleansing, dressing, dressing change, surgical debridement, skin grafting). | URL per chapter page + author list |
-| `data/kilder/jpbrs-cases.md` | **case** | Peer-reviewed burn cases from the team's own journal, beta.jpbrs.com — each with case id, title, authors, institution, step-by-step operative description and follow-up. | URL + case id + author list |
+| `data/kilder/vip-rigshospitalet.md` | guideline | **VIP Guideline Rigshospitalet Copenhagen** — 71 current, versioned instructions and guidelines from the Capital Region's VIP portal, chiefly Rigshospitalet's Department of Plastic Surgery and Burns Treatment. Burns (chemical, electrical, frostbite, inhalation, escharotomy, analgesia, outpatient care, Nexobrid, Matriderm, mucormycosis, TEN) plus melanoma, sarcoma, breast reconstruction and reduction, free flaps, cleft lip and palate, vascular anomalies, pressure sores and bites. | Fixed source name + document title, version, effective date, author, department |
+| `data/kilder/brandsaar-dk.md` | guideline | **Dansk Brandsårsforening** — all of brandsaar.dk, published with the burn unit at Rigshospitalet. Depth assessment, TBSA/area estimation, Parkland fluid resuscitation, inhalation injury, chemical burns, frostbite, circumferential burns, transfer criteria, outpatient care, analgesia. | URL per section |
+| `data/kilder/magnus-materiale.md` | guideline | **Rigshospitalet, Section 6052** — the "Burns" clinical compendium and the step-by-step dressing guide. | Institution + named authors per document |
+| `data/kilder/plastsurgeon-brandsaar.md` | guideline | **PlastSurgeon — Validated expert platform**, the Burn Surgery chapter: anatomy, pathophysiology, depth classification, area estimation, referral to a burn unit, Parkland and the 4:2:1 principle, antibiotics, follow-up, and the five procedures (cleansing, dressing, dressing change, surgical debridement, skin grafting). | URL per chapter page + author list |
+| `data/kilder/plastsurgeon-haandbog.md` | guideline | **PlastSurgeon — Validated expert platform**, the rest of the handbook: microsurgery, facial flaps, wound management, breast surgery, massive weight loss, melanoma and non-melanoma skin cancer, skin transplantation, ER facial trauma, preoperative assessment and the plastic surgery dictionary. | URL per page + chapter path + author list |
+| `data/kilder/plastsurgeon-cases.md` | **case** | **PlastSurgeon — Validated expert platform** — case competition entries not also published in JPBRS. | URL + case id + author list |
+| `data/kilder/jpbrs-cases.md` | **case** | **Journal of Plastic, Breast & Reconstructive Surgery** — every published case from the team's own journal, each with case id, title, authors, institution, step-by-step operative description and follow-up. | URL + case id + author list |
 | `cosurg/content/trees/*.json` | — | The decision trees `burns-dk` (8 nodes, 3 dispositions) and `dressing-hand-arm` (12 steps). | Tree id, version, filename and author list |
 
-At startup the server loads **54 source sections into 323 searchable excerpts**,
-plus both trees: brandsaar.dk 36 sections / 128 excerpts, the team's own material
-2 / 80, the PlastSurgeon handbook 14 / 96 and the JPBRS cases 2 / 19. Everything
-sits in memory; there is no database and no writable state.
+At startup the server loads **592 source sections into 5,420 searchable excerpts**
+(2.8 MB of text, 1,837 illustrations), plus both trees:
+
+| Collection | Sections | Excerpts |
+|---|---|---|
+| PlastSurgeon handbook | 394 | 3,300 |
+| JPBRS cases | 73 | 1,188 |
+| VIP Guideline Rigshospitalet Copenhagen | 71 | 583 |
+| brandsaar.dk | 36 | 128 |
+| PlastSurgeon burn chapter | 14 | 96 |
+| Rigshospitalet Section 6052 | 2 | 81 |
+| PlastSurgeon case competition | 2 | 44 |
+
+Everything sits in memory; there is no database and no writable state. Indexing
+takes ~250 ms at startup and a search answers in 7–40 ms.
+
+### Source names carry authority, not filenames
+
+What a clinician sees quoted is the **institution or platform behind the
+material** — never the file the text was extracted from. `Burns plast surgeon.docx`
+actively undermines the answer it is supposed to support; *PlastSurgeon — Validated
+expert platform* does not. Two rules govern every name: it must be **true** (we do
+not promote a blog into a guideline) and it must be **verifiable** by the reader. A
+name that sounds authoritative without being so is worse than a filename.
+
+`VIP Guideline Rigshospitalet Copenhagen` is fixed and used verbatim. All 71 VIP
+documents share that source name; each document's own title, version and effective
+date ride along in the citation, so the instruction can be looked up in the VIP
+portal.
+
+The same names appear on CoSurg's `/guide` and `/pitfalls` pages, so this is visible
+in the product, not only in the knowledge base.
 
 ### Guideline or case — the difference is stated in the answer
 
-The first sources say *what is recommended*. The JPBRS cases say *what was done
-for one patient*. Those are not the same thing, and a clinician has to be able to
-see which kind of source a statement came from. Every source section therefore
-carries a **source type** (`kildetype`):
+The guidelines say *what is recommended*. The cases say *what was done for one
+patient*. Those are not the same thing, and a clinician has to be able to see which
+kind of source a statement came from. Every source section therefore carries a
+**source type** (`kildetype`):
 
 - Every search hit prints it (`Kildetype: KLINISK CASE …` / `RETNINGSLINJE/HAANDBOG …`),
   and an answer containing at least one case gets an explicit warning not to read
@@ -50,28 +89,47 @@ carries a **source type** (`kildetype`):
 
 ### What is deliberately left out
 
-- **The course modules** `beta.plastsurgeon.com/courses/burns-*` (chemical and
-  electrical burns, inhalation injury, paediatric burns, fluid resuscitation,
-  surgical management and others) require paid membership. Without access they
-  were not fetched — we do not guess at content. If the team gets a login, they
-  are the next source in.
-- **Non-burn cases on JPBRS.** All 73 cases on the site were fetched and
-  searched; only two concern burns, and only those two are included. Three others
-  matched solely on the department name "Department of Burns and Plastic Surgery"
-  and are excluded. The reasoning is at the top of `data/kilder/jpbrs-cases.md`.
-- **Quizzes and MCQ pages** from the handbook. A question with answer options is
-  not clinical guidance, and an excerpt from one could be quoted as though it
-  were.
-- **The Skin Transplantation chapter**, which sits outside the burns chapter.
-  Skin grafting for burns itself is covered by
-  `burns-treatment/procedures/procedure-skin-grafting`, which is included.
+A knowledge base does not get better by getting bigger. A duplicate means the same
+statement takes two slots in one search result, and a case filed among guidelines
+gets quoted as a recommendation. So 140 of the PlastSurgeon platform's 534 exported
+pages are excluded, each for a named reason recorded in the header of
+`data/kilder/plastsurgeon-haandbog.md`:
+
+- **63 pages with no text** — video and document entries whose body is empty.
+- **16 burn pages already covered verbatim** by `plastsurgeon-brandsaar.md`, plus
+  the two aggregate index pages that repeat every one of them a second time.
+- **9 lorem-ipsum placeholders.** Invented filler in a clinical base is the same
+  error as a synthetic patient record, just smaller.
+- **8 pages on the history of the field** and **7 PhD abstracts** — genuine
+  material, but neither a guideline nor a patient case. Labelling a thesis abstract
+  `retningslinje` would make it get quoted as a recommendation.
+- **One quiz page and two navigation pages.** A question with answer options is not
+  clinical guidance, and an excerpt from one could be quoted as though it were.
+- **31 case-competition pages** that are the same cases already in
+  `jpbrs-cases.md`. The 2 that are not are in `plastsurgeon-cases.md`, typed as
+  cases.
+
+**The `courses/burns-*` modules are empty, not paywalled.** This was previously
+recorded as "requires paid membership, could not be fetched". Checked directly in
+the platform's own database on 20 Aug 2026, all 11 burn modules (chemical burns,
+electrical burns, inhalation injury, paediatric burns, fluid resuscitation, surgical
+management, response to burn injury, early management of the burn wound, emergency
+examination and others) have **zero lessons, zero content and zero description**.
+Nothing was hidden behind the paywall. If they are filled in, they are the next
+source in.
+
+The courses that *do* have content — the six `massive-weight-loss` modules — are
+verbatim the same pages the handbook already contains: 35 of 42 lessons match
+character for character and all 42 titles match. There is therefore no separate
+course document.
 
 ## Tools
 
 | Tool | Purpose |
 |---|---|
-| `soeg_klinisk_viden` | Full-text search across the clinical sources. Returns verbatim excerpts with URL/document name, source type, authors, heading path, excerpt id and relevance score. Can be limited to one collection (`brandsaar`, `magnus`, `plastsurgeon`, `jpbrs`) and to one source type (`retningslinje`, `case`). |
-| `hent_kildeafsnit` | The whole page behind a search hit — by section id or URL. For when three lines are not enough context. Shows source type, case id and authors. |
+| `soeg_klinisk_viden` | Full-text search across the clinical sources. Returns verbatim excerpts with URL/document name, source type, authors, heading path, excerpt id and relevance score. Can be limited to one collection (`vip`, `brandsaar`, `magnus`, `plastsurgeon`, `jpbrs`) and to one source type (`retningslinje`, `case`). |
+| `hent_kildeafsnit` | The whole page behind a search hit — by section id or URL. For when three lines are not enough context. Shows source type, case id, authors and how many illustrations the section has. |
+| `hent_billeder` | The illustrations belonging to one source section — operative steps from a JPBRS case, figures from the handbook, dressing photos from Section 6052 — with captions and the full citation, so an answer can point at the right picture. Reachable only through a section you already found; see below. |
 | `list_kilder` | Every source section with id, source type (`[CASE]` / `[retningslinje]`), title and URL. For deciding whether a topic is covered at all. Filterable by collection and source type. |
 | `list_beslutningstraeer` | The trees with id, name, version, authors, root node and node count. |
 | `hent_beslutningstrae` | A whole tree, as a readable overview or as verbatim JSON. |
@@ -84,6 +142,19 @@ The server also sends `instructions` with `initialize`, so the agent gets the ru
 from the start: look it up before you answer, quote the source, recommendations
 come from the tree, say out loud when an excerpt is a clinical case rather than a
 guideline, and report honestly when there is no coverage.
+
+### Illustrations are attached to answers, never returned as answers
+
+The base holds 1,837 image URLs — before/after photographs, operative steps, figures
+and dressing sequences. They are extracted per source section at load time and
+served by `hent_billeder`.
+
+They are deliberately **not searchable**. An excerpt consisting only of an image
+scores highest on precisely the question you asked, because its alt text is usually
+the chapter or case title — so it would answer a clinical question with a photograph.
+Images are therefore reached only through a section a clinician already retrieved,
+and they arrive with the same citation and source type as the text. They supplement
+an answer; they never replace one.
 
 ## Attaching it to a Corti agent
 
@@ -256,7 +327,7 @@ token:
 
 ```json
 {"status":"ok","navn":"cosurg-mcp","version":"1.0.0","mcpSti":"/mcp",
- "transport":"streamable_http","uddrag":323,"afsnit":54,"cases":2,
+ "transport":"streamable_http","uddrag":5420,"afsnit":592,"cases":75,
  "traeer":["burns-dk","dressing-hand-arm"]}
 ```
 
@@ -276,10 +347,17 @@ token:
 
 ## How the search is built
 
-In-memory BM25 over 323 excerpts. No embeddings, no vector database — 221 KB of
-text answers in under a millisecond, and BM25 has the property that matters here:
-it cannot hallucinate. A result is always a verbatim excerpt with its source, or
-else there is no result.
+In-memory BM25 over 5,420 excerpts. No embeddings, no vector database — 2.8 MB of
+text indexes in ~250 ms at startup and answers a query in 7–40 ms, and BM25 has the
+property that matters here: it cannot hallucinate. A result is always a verbatim
+excerpt with its source, or else there is no result.
+
+Growing the base from 323 to 5,420 excerpts did not blunt it. IDF sharpens as the
+corpus grows and diversifies, and the minimum-coverage rule below does the filtering
+that size alone would otherwise undo: burn questions still return brandsaar.dk and
+the VIP instructions at the top, and "kolorektal anastomoselækage stapler" still
+returns nothing. What kept it honest was refusing to add bulk — duplicates,
+placeholders and empty pages — rather than adding a ranking heuristic to compensate.
 
 Three things are adapted to Danish clinical text:
 
@@ -303,7 +381,8 @@ text:
   indexed. The alt text is often the case's or the chapter's title, so such an
   excerpt scores highest on exactly the query you asked — and answers with a
   picture instead of a clinical statement. The images remain in the excerpts that
-  also have body text.
+  also have body text, and all 1,837 of them stay reachable through
+  `hent_billeder`.
 
 Excerpts are bounded by markdown headings, so a hit always carries its chapter
 path. Anything over 1400 characters is split at paragraph boundaries, never
