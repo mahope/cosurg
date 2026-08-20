@@ -90,7 +90,7 @@ export default function Home() {
   const [treeBusy, setTreeBusy] = useState(false);
   /*
    * Sessionen er ikke begyndt før et forløb er valgt. Indtil da står der ét
-   * spørgsmål på skærmen — "Hvad drejer det sig om?" — og træet bagved er blot
+   * spørgsmål på skærmen — "Hvad kan jeg hjælpe dig med?" — og træet bagved er blot
    * det bundtede udgangspunkt, ikke et valg vi har truffet for lægen.
    */
   const [started, setStarted] = useState(false);
