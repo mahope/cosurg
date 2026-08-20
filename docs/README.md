@@ -15,7 +15,10 @@ we built towards, and what we committed to along the way.
 `SPEC.md` and `PLAN.md` are working documents written on the day. The content is kept
 as it was, because its value to a reader is that it shows what we planned before we
 knew how it would turn out; each one closes with a short, honest account of what
-actually happened instead. Both carry the Danish original below the English.
+actually happened instead. The single exception is `SPEC.md`'s **Purpose**, which now
+states what the product turned out to be — the product moved further than anything
+else in that document, and the file says so at the top. Both carry the Danish original
+below the English.
 
 ## Corti's own documentation
 
@@ -46,7 +49,10 @@ men det viser hvad vi byggede efter, og hvad vi lovede undervejs.
 `SPEC.md` og `PLAN.md` er arbejdsdokumenter skrevet undervejs. Indholdet er bevaret
 som det var — værdien for en læser er at de viser hvad vi planlagde, før vi vidste
 hvordan det gik — og hver af dem slutter med en kort, ærlig opgørelse over hvad der
-faktisk skete. Begge har engelsk øverst og den danske original nedenunder.
+faktisk skete. Eneste undtagelse er `SPEC.md`s **Formål**, som nu siger hvad produktet
+endte med at være; produktet flyttede sig længere end noget andet i dokumentet, og
+filen skriver det selv øverst. Begge har engelsk øverst og den danske original
+nedenunder.
 
 ## Cortis egen dokumentation
 

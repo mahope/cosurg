@@ -51,7 +51,7 @@ intent.
 | **Ambient speech-to-text** | Yes | `lib/audio/useTranscribe.ts` | `/transcribe` websocket via `@corti/sdk`, `automaticPunctuation`, interim results. Listens from the first utterance in the field and on through the assessment. |
 | **Dictation speech-to-text** | Yes | `lib/audio/useDictation.ts` | The same `/transcribe` socket, configured for dictation rather than ambient: `spokenPunctuation` (the clinician says "full stop", "new paragraph") and note-oriented number formatting. Wired up in `app/page.tsx`; the dictation is appended to the note. |
 | **Text generation** | Yes | `app/api/note/route.ts` | The clinical note is written by a Corti agent from the decision path, the transcript and the dictation. |
-| **Agentic framework** | Yes | `lib/corti/agent.ts` | Four agents with schema connectors and structured output: answer interpreter (flags doubt instead of guessing) and note writer here, plus an intent router (`app/api/route/agent.ts`) and a guide topic router (`app/api/guide/route.ts`). |
+| **Agentic framework** | Yes | `lib/corti/agent.ts` | Five agents with schema connectors and structured output: answer interpreter (flags doubt instead of guessing) and note writer here, an intent router (`app/api/route/agent.ts`), a guide topic router (`app/api/guide/route.ts`), and the clinical lookup agent (`lib/corti/chat.ts`) with Corti's registry experts and our own MCP server as connectors. `COMMAND_SPEC` is a sixth spec that is deliberately not called — see below. |
 | **Medical coding** | Yes | `lib/corti/coding.ts`, `app/api/coding/route.ts` | Corti Symphony, `POST /v2/tools/coding/`. The codes come from the coding API — the language model may only justify them. |
 
 ### Caveats we are not hiding

@@ -23,9 +23,8 @@ written — it is reached when the criterion has been verified.
 
 ## GOAL 1 — Magnus and Rami can run the demo without Mads
 **Done when:** the two of them have run the whole flow once on Friday morning
-unaided, from live microphone to finished note — and can do so
-the network fails. This goal beats all the others. A prettier app that cannot be
-demonstrated is worthless.
+unaided, from live microphone to finished note. This goal beats all the others. A
+prettier app that cannot be demonstrated is worthless.
 
 ## GOAL 2 — The surgeon can drive the app without touching the screen
 **Done when:** a whole procedure has been completed hands-free in OR mode — the voice
@@ -57,7 +56,7 @@ colour alone.
 | Ambient STT | Delivered — `lib/audio/useTranscribe.ts` |
 | Dictation STT | Delivered — `lib/audio/useDictation.ts`, wired up in `app/page.tsx` |
 | Text generation | Delivered — the clinical note, `app/api/note/route.ts` |
-| Agentic framework | Delivered — five agents with structured output |
+| Agentic framework | Delivered — five agents with structured output, including the clinical lookup agent with our MCP server as a connector |
 | Medical coding | Delivered — Corti Symphony, `lib/corti/coding.ts` |
 
 The rules require three of the five areas. All five are in use. The MCP server, listed
@@ -146,7 +145,7 @@ mere eller mindre. Kliniske træer bærer navngivne faglige kilder.
 | Ambient STT | Leveret — `lib/audio/useTranscribe.ts` |
 | Dictation STT | Leveret — `lib/audio/useDictation.ts`, tilkoblet i `app/page.tsx` |
 | Text generation | Leveret — journalnotatet, `app/api/note/route.ts` |
-| Agentic framework | Leveret — fem agenter med struktureret output |
+| Agentic framework | Leveret — fem agenter med struktureret output, heriblandt opslagsagenten med vores MCP-server som connector |
 | Medical coding | Leveret — Corti Symphony, `lib/corti/coding.ts` |
 
 Reglerne kræver tre af de fem områder. Alle fem er i brug. MCP-serveren, der i
