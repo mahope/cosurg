@@ -56,7 +56,7 @@ export function TranscriptPanel({ lines, interim, listening, status, lang }: Tra
         {interim}
       </p>
 
-      <div ref={scrollRef} className="mt-1 h-[7.25rem] overflow-y-auto">
+      <div ref={scrollRef} className="mt-1 h-[5rem] overflow-y-auto sm:h-[7.25rem]">
         {recent.length > 0 ? (
           /*
             Ét `aria-live`-område for alt der bliver hørt. Skærmlæseren skal

@@ -26,9 +26,16 @@ export function BrandMark({ size = 34, tone = "light", className = "" }: BrandMa
       } ${className}`}
       style={{ width: size, height: size }}
     >
+      {/*
+        Tom alt-tekst med vilje. Mærket står ALTID ved siden af ordet "CoSurg"
+        — i instrumentpanelet, på fejlsiderne, i tillidsbadgen — og en alt-tekst
+        ville få en skærmlæser til at sige navnet to gange i træk. Logoet er
+        her identitet, ikke information.
+      */}
       <Image
         src="/brand-mark.png"
-        alt="CoSurg"
+        alt=""
+        aria-hidden="true"
         width={256}
         height={256}
         className="h-full w-full object-cover"

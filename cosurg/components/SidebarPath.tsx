@@ -55,7 +55,9 @@ export function SidebarPath({ tree, path, progress, stepLabel, lang }: SidebarPa
       {/* Kun nye trin bevæger sig: React genbruger de eksisterende knuder, så
           CSS-animationen udløses alene på det svar der lige kom til. Vejen
           vokser nedad, og bevægelsen kommer nedefra — samme retning. */}
-      <div ref={scrollRef} className="mt-4 h-[11rem] overflow-y-auto pr-1">
+      {/* Fast højde begge steder — kun tallet er mindre på telefon, hvor
+          panelet ligger under indholdet og reserveret plads koster rulning. */}
+      <div ref={scrollRef} className="mt-4 h-[7rem] overflow-y-auto pr-1 sm:h-[11rem]">
       <ol className="space-y-3 text-sm">
         {path.map((s, i) => (
           <li key={`${s.nodeId}-${i}`} className="motion-forward border-l-2 border-[var(--teal)] pl-3">
