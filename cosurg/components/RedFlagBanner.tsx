@@ -9,6 +9,15 @@ interface RedFlagBannerProps {
   lang: Lang;
   orMode: boolean;
   onAcknowledge: () => void;
+  /**
+   * Det forud-formulerede opslag om netop dette flag, skrevet i træet.
+   *
+   * Et rødt flag siger hvad der er galt. Det næste spørgsmål er altid "og hvad
+   * gør jeg så?", og indtil nu skulle lægen selv formulere det. Nu står emnet
+   * der, med navn — ét greb, ikke et spørgsmål man skal opfinde.
+   */
+  lookup?: { label: string; question: string } | null;
+  onElaborate?: (question: string) => void;
 }
 
 /**
@@ -27,8 +36,21 @@ interface RedFlagBannerProps {
  * og fokus flyttes til kvitteringsknappen, så en tastaturbruger står præcis
  * hvor handlingen er.
  */
-export function RedFlagBanner({ message, lang, orMode, onAcknowledge }: RedFlagBannerProps) {
+export function RedFlagBanner({
+  message,
+  lang,
+  orMode,
+  onAcknowledge,
+  lookup,
+  onElaborate,
+}: RedFlagBannerProps) {
   const ackRef = useRef<HTMLButtonElement>(null);
+  /*
+   * Håndfri behøver ingen handler: dér er grebet et ORD kirurgen siger, og
+   * banneret viser kun ordlyden. På den lyse skærm er det et tryk, og så skal
+   * der være noget at trykke PÅ — ellers står der en knap der intet gør.
+   */
+  const kanUddybe = orMode ? !!lookup : !!lookup && !!onElaborate;
 
   useEffect(() => {
     // preventScroll: flaget står allerede øverst; et ryk i scrollen ville
@@ -55,6 +77,16 @@ export function RedFlagBanner({ message, lang, orMode, onAcknowledge }: RedFlagB
         >
           OK
         </button>
+        {/*
+          Håndfri: kirurgen er steril og kan ikke trykke. Grebet er derfor et
+          ORD, og ordet står på skærmen — man skal ikke kunne en kommando
+          udenad for at få den viden der ligger et sekund væk.
+        */}
+        {kanUddybe && (
+          <p className="mt-5 text-xl leading-relaxed text-[var(--or-ink)] opacity-80">
+            {tr("elaborateSay", lang)} — {lookup!.label}
+          </p>
+        )}
       </div>
     );
   }
@@ -72,14 +104,28 @@ export function RedFlagBanner({ message, lang, orMode, onAcknowledge }: RedFlagB
         <p className="mt-2 font-[family-name:var(--font-display)] text-xl font-semibold leading-snug text-[var(--ink)]">
           {message}
         </p>
-        <button
-          ref={ackRef}
-          onClick={onAcknowledge}
-          aria-label={`OK — ${tr("redFlagAnnounce", lang)}`}
-          className="mt-4 rounded-lg border border-[var(--red-line)] bg-[var(--paper-raised)] px-4 py-2 text-sm font-medium text-[var(--ink)] transition-colors hover:bg-white"
-        >
-          OK
-        </button>
+        <div className="mt-4 flex flex-wrap gap-2">
+          <button
+            ref={ackRef}
+            onClick={onAcknowledge}
+            aria-label={`OK — ${tr("redFlagAnnounce", lang)}`}
+            className="rounded-lg border border-[var(--red-line)] bg-[var(--paper-raised)] px-4 py-2 text-sm font-medium text-[var(--ink)] transition-colors hover:bg-white"
+          >
+            OK
+          </button>
+          {/* Grebet ud i kilderne, med træets egen ordlyd om netop dette flag.
+              Det står ved siden af kvitteringen og ikke i stedet for den:
+              flaget skal stadig ses, før noget andet kan ske. */}
+          {kanUddybe && (
+            <button
+              type="button"
+              onClick={() => onElaborate!(lookup!.question)}
+              className="rounded-lg border border-[var(--red-line)] bg-[var(--paper-raised)] px-4 py-2 text-sm font-medium text-[var(--ink-soft)] transition-colors hover:bg-white hover:text-[var(--ink)]"
+            >
+              {lookup!.label}
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );

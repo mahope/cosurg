@@ -68,8 +68,10 @@ export const t = {
     en: "Build on validated expert content",
   },
   orHint: {
-    da: "Sig «næste», «gentag», «tilbage» — eller svar direkte.",
-    en: "Say “next”, “repeat”, “back” — or just answer.",
+    // «uddyb» står med: den viden der ligger et sekund væk, er ubrugelig hvis
+    // man skal kunne kommandoen udenad for at få fat i den.
+    da: "Sig «næste», «gentag», «tilbage», «uddyb» — eller svar direkte.",
+    en: "Say “next”, “repeat”, “back”, “elaborate” — or just answer.",
   },
   step: { da: "Trin", en: "Step" },
   answerPlaceholder: {
@@ -388,6 +390,13 @@ export const t = {
   },
   elaborateFromSources: { da: "Uddyb fra kilderne", en: "Elaborate from the sources" },
   elaboratePitfall: { da: "Hvad siger kilderne om", en: "What do the sources say about" },
+  /* Håndfri: kirurgen er steril og kan ikke trykke. Så står grebet som et ord. */
+  elaborateSay: { da: "Sig «uddyb»", en: "Say “elaborate”" },
+  ackElaborate: { da: "Slår det op i kilderne.", en: "Looking it up in the sources." },
+  elaborateNothing: {
+    da: "Der er ikke et opslag knyttet til det her sted.",
+    en: "There is no lookup attached to this point.",
+  },
 
   // Behandlingsguide
   guideTitle: { da: "Behandlingsguide", en: "Treatment guide" },

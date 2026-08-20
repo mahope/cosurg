@@ -1,5 +1,6 @@
-import type { Disposition, Lang } from "@/lib/tree/types";
+import type { AnsweredStep, Disposition, Lang } from "@/lib/tree/types";
 import { tr } from "@/lib/i18n";
+import { EscalationPanel } from "./escalation/EscalationPanel";
 import { StepImages } from "./StepImages";
 import { ResponseBar } from "./ResponseBar";
 import { NoteSkeleton } from "./ui/Skeleton";
@@ -9,6 +10,12 @@ import { SizeLock, widestOf } from "./ui/SizeLock";
 interface DispositionCardProps {
   disposition: Disposition;
   lang: Lang;
+  /** Træet anbefalingen kom fra — eskalationens handlingstrin hentes derfra. */
+  treeId?: string;
+  /** Den besvarede sti. Afgør hvilke handlingstrin der gælder denne patient. */
+  path?: AnsweredStep[];
+  /** Uddyb fra kilderne — sender det forud-formulerede spørgsmål som lægens ord. */
+  onElaborate?: (question: string) => void;
   /** Tillægsfeltet er åbnet. Uafhængigt af om mikrofonen faktisk kom op. */
   addendumOpen: boolean;
   /** Diktat kører — Cortis dictation-strøm, ikke den ambiente lytning. */
@@ -45,6 +52,9 @@ const severityStyle: Record<Disposition["severity"], { border: string; bg: strin
 export function DispositionCard({
   disposition,
   lang,
+  treeId,
+  path,
+  onElaborate,
   addendumOpen,
   dictating,
   dictation,
@@ -89,6 +99,25 @@ export function DispositionCard({
         </p>
       )}
       <p className="mt-1 text-xs font-medium text-[var(--ink-soft)]">{tr("sourceNote", lang)}</p>
+
+      {/*
+        HVAD MAN GØR IMENS — OG HVIS MAN SELV ER MODTAGEREN.
+
+        Anbefalingen ovenover kan lyde "ring til vagthavende brandsårslæge".
+        Det er rigtigt for den yngre læge og cirkulært for specialisten, der
+        selv ER den vagthavende. Panelet holder derfor begge roller åbne og
+        henter de konkrete trin frem, hver med sin instruks og sit ordrette
+        belæg. Telefonnummeret ovenfor bliver stående — det suppleres.
+      */}
+      {treeId && (disposition.severity === "emergency" || disposition.severity === "refer") && (
+        <EscalationPanel
+          treeId={treeId}
+          dispositionId={disposition.id}
+          path={path}
+          lang={lang}
+          onElaborate={onElaborate}
+        />
+      )}
 
       <StepImages images={disposition.images ?? []} lang={lang} />
 

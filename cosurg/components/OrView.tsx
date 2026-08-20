@@ -17,6 +17,14 @@ interface OrViewProps {
   questionText: string;
   disposition?: Disposition;
   flash: string | null;
+  /**
+   * Det forud-formulerede opslag om flaget, skrevet i træet.
+   *
+   * Kirurgen er steril og kan ikke trykke, så grebet vises som det ORD han kan
+   * sige — man skal ikke kunne en kommando udenad for at få den viden der
+   * ligger et sekund væk.
+   */
+  flashLookup?: { label: string; question: string } | null;
   onAcknowledgeFlash: () => void;
   stepNumber: number;
   totalNodes: number;
@@ -66,6 +74,7 @@ export function OrView({
   questionText,
   disposition,
   flash,
+  flashLookup,
   onAcknowledgeFlash,
   stepNumber,
   totalNodes,
@@ -189,7 +198,15 @@ export function OrView({
 
       <div ref={stageRef} className="flex min-h-0 flex-1 flex-col justify-center py-6">
         {flash ? (
-          <RedFlagBanner message={flash} lang={lang} orMode onAcknowledge={onAcknowledgeFlash} />
+          <RedFlagBanner
+            message={flash}
+            lang={lang}
+            orMode
+            onAcknowledge={onAcknowledgeFlash}
+            /* Håndfri: grebet er et ord, ikke et tryk. Banneret viser derfor
+               kun ordlyden — selve opslaget udløses af stemmekommandoen. */
+            lookup={flashLookup}
+          />
         ) : disposition ? (
           <div
             className="motion-settle overflow-y-auto rounded-2xl border-2 p-5 sm:p-8 md:p-10"

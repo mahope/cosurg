@@ -20,6 +20,7 @@ import { OrView } from "@/components/OrView";
 import type { TreeSummary } from "@/components/TreePicker";
 import { BrandWatermark } from "@/components/BrandMark";
 import { isEcho, matchCommand, type VoiceCommand } from "@/components/voiceCommands";
+import { stedetsOpslag } from "@/components/escalation/lookup";
 import { IntakeCard } from "@/components/IntakeCard";
 import { followUpTreeId } from "@/components/treeRouting";
 import type { SessionUsage } from "@/components/UsagePanel";
@@ -631,6 +632,30 @@ export default function Home() {
         return;
       }
 
+      /*
+       * "Uddyb" — grebet ud i kilderne, sagt i stedet for trykket.
+       *
+       * Den står FØR kvitteringen af det røde flag, fordi den ellers ville
+       * blive slugt af den: enhver kommando tæller som kvittering, og "uddyb"
+       * ville dermed lukke flaget uden at slå noget op. Rækkefølgen her gør
+       * begge dele — flaget kvitteres, og flagets EGET emne slås op.
+       *
+       * Hvad der slås op bestemmes af hvor i træet man står, ikke af hvad der
+       * blev sagt. Kommandoen kan derfor ikke bruges til at stille et frit
+       * spørgsmål, og ordlyden kommer fra træet som alt andet klinisk indhold.
+       */
+      if (cmd === "elaborate") {
+        const opslag = stedetsOpslag(tree, state, lang, !!flash);
+        if (flash) await acknowledgeFlash();
+        if (!opslag) {
+          if (speakAll) await say(tr("elaborateNothing", lang));
+          return;
+        }
+        if (speakAll) void say(tr("ackElaborate", lang));
+        void runLookup(opslag.question, null, "chat");
+        return;
+      }
+
       // Et rødt flag spærrer alt indtil det er kvitteret — og kirurgen kan
       // ikke trykke OK sterilt, så enhver kommando tæller som kvittering.
       if (flash) {
@@ -665,7 +690,19 @@ export default function Home() {
       }
       await acknowledgeAndAdvance();
     },
-    [orMode, flash, state, tree, lang, speakAll, askCurrent, acknowledgeAndAdvance, acknowledgeFlash, say],
+    [
+      orMode,
+      flash,
+      state,
+      tree,
+      lang,
+      speakAll,
+      askCurrent,
+      acknowledgeAndAdvance,
+      acknowledgeFlash,
+      runLookup,
+      say,
+    ],
   );
 
   /**
@@ -1492,6 +1529,7 @@ export default function Home() {
         questionText={node ? questionText(node, lang, orMode) : ""}
         disposition={disposition}
         flash={flash}
+        flashLookup={flash ? stedetsOpslag(tree, state, lang, true) : null}
         onAcknowledgeFlash={() => void acknowledgeFlash()}
         stepNumber={state.path.length + 1}
         totalNodes={tree.nodes.length}
@@ -1592,7 +1630,14 @@ export default function Home() {
         */}
         {flash && !started && (
           <div className="mb-6">
-            <RedFlagBanner message={flash} lang={lang} orMode={false} onAcknowledge={() => void acknowledgeFlash()} />
+            <RedFlagBanner
+              message={flash}
+              lang={lang}
+              orMode={false}
+              onAcknowledge={() => void acknowledgeFlash()}
+              lookup={stedetsOpslag(tree, state, lang, true)}
+              onElaborate={(q) => void runLookup(q, null, "chat")}
+            />
           </div>
         )}
 
@@ -1705,6 +1750,10 @@ export default function Home() {
                 lang={lang}
                 orMode={false}
                 onAcknowledge={() => void acknowledgeFlash()}
+                /* Flaget siger hvad der er galt. Det næste spørgsmål er altid
+                   "og hvad gør jeg så?" — så det står der, formuleret. */
+                lookup={stedetsOpslag(tree, state, lang, true)}
+                onElaborate={(q) => void runLookup(q, null, "chat")}
               />
             ) : node ? (
               <QuestionCard
@@ -1729,6 +1778,12 @@ export default function Home() {
                 <DispositionCard
                   disposition={disposition}
                   lang={lang}
+                  /* Eskalationen skal kunne læses af BEGGE roller — også af
+                     den vagthavende brandsårslæge, som ikke kan ringe til
+                     sig selv. Stien afgør hvilke trin der gælder patienten. */
+                  treeId={tree.id}
+                  path={state.path}
+                  onElaborate={(q) => void runLookup(q, null, "chat")}
                   addendumOpen={addendumOpen}
                   dictating={dictating}
                   dictation={dictation}
