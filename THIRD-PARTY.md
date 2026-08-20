@@ -118,7 +118,7 @@ faglige referencer i teksten, ikke systemer vi integrerer med.
 | | |
 |---|---|
 | **Hvad** | `beta.plastsurgeon.com` — holdets egen kliniske håndbog, kapitlet Burn Surgery. Og `beta.jpbrs.com` — Journal of Plastic, Breast & Reconstructive Surgery, holdets eget peer-reviewede open access-tidsskrift, brandsårscases. |
-| **Hvor** | `cosurg-mcp/data/kilder/plastsurgeon-brandsaar.md` og `cosurg-mcp/data/kilder/jpbrs-cases.md` |
+| **Hvor** | `cosurg-mcp/data/kilder/` — den aktuelle kildeliste med kildetype pr. fil står i `cosurg-mcp/data/README.md` |
 | **Forfattere** | Håndbogskapitlet: Rami Mossad Ibrahim MD, Elisabeth Lauritzen MD, Frederik Gulmark Hansen med.stud., Anne Mosebo med.stud., Magnus Balslev Avnstorp MD og Rikke Holmgaard, Consultant, Burns Specialist, MD, PhD. Cases: navngivne forfattere med institution pr. case. |
 | **Vilkår** | Begge sites drives af holdet selv. Kun frit tilgængeligt indhold er hentet — kursusmodulerne under `/courses/burns-*` kræver betalt medlemskab og er ikke med, hvilket er noteret i selve kildefilen. |
 
@@ -348,7 +348,7 @@ professional references within the text, not systems we integrate with.
 | | |
 |---|---|
 | **What** | `beta.plastsurgeon.com` — the team's own clinical handbook, the Burn Surgery chapter. And `beta.jpbrs.com` — the Journal of Plastic, Breast & Reconstructive Surgery, the team's own peer-reviewed open access journal, burn cases. |
-| **Where** | `cosurg-mcp/data/kilder/plastsurgeon-brandsaar.md` and `cosurg-mcp/data/kilder/jpbrs-cases.md` |
+| **Where** | `cosurg-mcp/data/kilder/` — the current source list with a source type per file is in `cosurg-mcp/data/README.md` |
 | **Authors** | Handbook chapter: Rami Mossad Ibrahim MD, Elisabeth Lauritzen MD, Frederik Gulmark Hansen med.stud., Anne Mosebo med.stud., Magnus Balslev Avnstorp MD and Rikke Holmgaard, Consultant, Burns Specialist, MD, PhD. Cases: named authors with institution per case. |
 | **Terms** | Both sites are run by the team itself. Only freely accessible content was fetched — the course modules under `/courses/burns-*` require paid membership and are not included, which is noted in the source file itself. |
 
