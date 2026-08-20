@@ -85,6 +85,73 @@ export interface GuideAfsnit {
   excerpts: KildeUddrag[];
 }
 
+/** Ét uddrag med sin plads i det felt det blev fundet i. */
+interface Kandidat {
+  uddrag: KildeUddrag;
+  /**
+   * Scoren i forhold til feltets egen bedste træffer.
+   *
+   * BM25-tal fra to forskellige søgninger kan ikke sammenlignes direkte — en
+   * søgning på sjældne ord giver høje tal, en søgning på almindelige ord lave.
+   * Den normaliserede score kan, og den er derfor det eneste vi bruger når et
+   * uddrag skal placeres i ét af flere afsnit.
+   */
+  norm: number;
+}
+
+function normaliser(uddrag: KildeUddrag[]): Kandidat[] {
+  if (uddrag.length === 0) return [];
+  const top = uddrag[0].relevans || 1;
+  return uddrag.map((u) => ({ uddrag: u, norm: u.relevans / top }));
+}
+
+/**
+ * Kandidater til ét afsnit.
+ *
+ * To søgninger, ikke én, fordi de fanger hver sin fejl:
+ *
+ * - Søger vi kun på EMNET plus afsnittets ord, dominerer emnet. En guide om en
+ *   cirkulær forbrænding fik "aflastende incisioner" ind under
+ *   *Smertebehandling*, fordi de ord rammer hårdere end "analgesi" gør.
+ * - Søger vi kun på AFSNITTETS ord, bliver guiden den samme uanset hvilken
+ *   tilstand man slog op. Så er det ikke et opslag, det er en forside.
+ *
+ * Derfor rangeres SNITTET højest: et uddrag der både handler om emnet og om
+ * afsnittet. Derefter det afsnits-kanoniske. Et uddrag der kun blev fundet af
+ * emnesøgningen kommer først i spil hvis afsnittet ellers ville stå næsten tomt
+ * — det er dér risikoen for at vise noget malplaceret er mindre end risikoen
+ * for at vise ingenting.
+ */
+async function kandidater(emneTermer: string, afsnitTermer: string): Promise<Kandidat[]> {
+  const [emne, generel] = await Promise.all([
+    soegKliniskViden(`${emneTermer} ${afsnitTermer}`, { antal: 5, fuldt: true })
+      .then((s) => filtrerRelevante(s.uddrag))
+      .catch(() => [] as KildeUddrag[]),
+    soegKliniskViden(afsnitTermer, { antal: 5, fuldt: true })
+      .then((s) => filtrerRelevante(s.uddrag))
+      .catch(() => [] as KildeUddrag[]),
+  ]);
+
+  const emneNorm = new Map(normaliser(emne).map((k) => [k.uddrag.id, k.norm]));
+  const generelNorm = new Map(normaliser(generel).map((k) => [k.uddrag.id, k.norm]));
+
+  const alle = new Map<string, KildeUddrag>();
+  [...emne, ...generel].forEach((u) => alle.set(u.id, u));
+
+  const vurder = (u: KildeUddrag): Kandidat => {
+    const e = emneNorm.get(u.id) ?? 0;
+    const g = generelNorm.get(u.id) ?? 0;
+    // Snittet lægges oveni, så det altid slår et enkeltstående træf.
+    return { uddrag: u, norm: e && g ? 1 + (e + g) / 2 : Math.max(e, g) };
+  };
+
+  const kandidater = [...alle.values()].map(vurder).sort((a, b) => b.norm - a.norm);
+  const baerende = kandidater.filter((k) => k.norm > 1 || generelNorm.has(k.uddrag.id));
+  // Emne-kun-træffere fylder først op når afsnittet ellers stod med under to.
+  const kunEmne = kandidater.filter((k) => !baerende.includes(k));
+  return [...baerende, ...kunEmne.slice(0, Math.max(0, 2 - baerende.length))];
+}
+
 export interface GuideSvar {
   topic: Record<Lang, string>;
   /** Hvem der fandt søgeordene: Cortis agent eller vores lokale reserve. */
@@ -170,39 +237,45 @@ export async function POST(req: Request) {
     // afsnittets egne søgeord.
     const emneTermer = terms.slice(0, 4).join(" ");
 
-    const soegninger = await Promise.all(
-      AFSNIT.map(async (a) => {
-        try {
-          const svar = await soegKliniskViden(`${emneTermer} ${a.terms}`, { antal: 4, fuldt: true });
-          return { key: a.key, uddrag: filtrerRelevante(svar.uddrag) };
-        } catch {
-          // Ét fejlet afsnit må ikke tage hele guiden med sig. Afsnittet står
-          // tomt, og siden fortæller at der ikke var dækning her.
-          return { key: a.key, uddrag: [] as KildeUddrag[] };
-        }
-      }),
+    // Ét fejlet afsnit må ikke tage hele guiden med sig; kandidater() sluger
+    // sine egne fejl, så afsnittet blot står uden dækning.
+    const felter = await Promise.all(
+      AFSNIT.map(async (a) => ({ key: a.key, kandidater: await kandidater(emneTermer, a.terms) })),
     );
 
     /*
      * Samme uddrag kan vinde i to afsnit — overflytningskriterier rammer både
      * "henvisning" og "vurdering". Et opslagsværk der gentager sig selv er
-     * ulæseligt, så hvert uddrag lander ét sted: dér hvor det scorede højest.
+     * ulæseligt, så hvert uddrag lander ét sted: dér hvor det passede bedst.
+     * Ved uafgjort vinder det tidligste afsnit, fordi rækkefølgen er den
+     * kliniske arbejdsgang — man vurderer før man henviser.
      */
-    const bedste = new Map<string, { key: string; relevans: number }>();
-    for (const s of soegninger) {
-      for (const u of s.uddrag) {
-        const nu = bedste.get(u.id);
-        if (!nu || u.relevans > nu.relevans) bedste.set(u.id, { key: s.key, relevans: u.relevans });
+    const ejer = new Map<string, { key: string; norm: number }>();
+    for (const f of felter) {
+      for (const k of f.kandidater) {
+        const nu = ejer.get(k.uddrag.id);
+        if (!nu || k.norm > nu.norm) ejer.set(k.uddrag.id, { key: f.key, norm: k.norm });
       }
     }
 
     const sections: GuideAfsnit[] = AFSNIT.map((a) => {
-      const fundet = soegninger.find((s) => s.key === a.key);
+      const f = felter.find((x) => x.key === a.key);
+      const egne = (f?.kandidater ?? []).filter((k) => ejer.get(k.uddrag.id)?.key === a.key);
+      /*
+       * Blev afsnittets eneste træffer taget af et andet afsnit, står det tomt
+       * — og et tomt "Smertebehandling" læses som "der står intet om smerter",
+       * hvilket er usandt. Afsnittet beholder derfor altid sin bedste træffer.
+       */
+      const grundlag = egne.length > 0 ? egne : (f?.kandidater ?? []).slice(0, 1);
+      // Halen skæres af: et uddrag der scorer under halvdelen af afsnittets
+      // bedste handler næsten altid om noget andet. Den bedste beholdes altid,
+      // så en streng grænse ikke kan tømme et afsnit der faktisk har dækning.
+      const valgte = grundlag.filter((k, i) => i === 0 || k.norm >= 0.45);
       return {
         key: a.key,
         label: a.label,
         intent: a.intent,
-        excerpts: (fundet?.uddrag ?? []).filter((u) => bedste.get(u.id)?.key === a.key).slice(0, 3),
+        excerpts: valgte.slice(0, 3).map((k) => k.uddrag),
       };
     });
 

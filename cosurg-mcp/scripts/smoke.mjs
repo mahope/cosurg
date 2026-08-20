@@ -131,6 +131,41 @@ for (const q of ["Parkland", "cirkulær forbrænding", "inhalationsskade"]) {
   paastaa(/Kilde:\s*\S+/.test(tekst), `"${q}" gav kildehenvisning`);
 }
 
+overskrift("SOEGNING — det nye materiale (PlastSurgeon-haandbogen og JPBRS-cases)");
+{
+  // Findes kun i PlastSurgeon-haandbogens brandsaarskapitel.
+  const r = await klient.callTool({
+    name: "soeg_klinisk_viden",
+    arguments: { forespoergsel: "4:2:1 principle children fluid", antal: 3, samling: "plastsurgeon" },
+  });
+  const t = vis("soeg_klinisk_viden(4:2:1, samling=plastsurgeon)", r, 1600);
+  paastaa(!t.includes("INGEN DAEKNING"), "PlastSurgeon-haandbogen er indlaest og soegbar");
+  paastaa(t.includes("beta.plastsurgeon.com"), "traefferen baerer sin URL paa beta.plastsurgeon.com");
+  paastaa(t.includes("RETNINGSLINJE"), "haandbogskapitlet er maerket som retningslinje");
+}
+{
+  // Findes kun i JPBRS-casen om brandsaar paa hypothenar.
+  const r = await klient.callTool({
+    name: "soeg_klinisk_viden",
+    arguments: { forespoergsel: "reverse radial forearm flap hypothenar burn", antal: 3, kildetype: "case" },
+  });
+  const t = vis("soeg_klinisk_viden(hypothenar-burn, kildetype=case)", r, 1800);
+  paastaa(!t.includes("INGEN DAEKNING"), "JPBRS-caserne er indlaest og soegbare");
+  paastaa(t.includes("beta.jpbrs.com"), "casen baerer sin URL paa beta.jpbrs.com");
+  paastaa(/Case\s*\d+/.test(t), "casen baerer sit case-id");
+  paastaa(t.includes("KLINISK CASE"), "casen er tydeligt maerket som case, ikke som retningslinje");
+}
+{
+  // Kildetype-filteret skal virke begge veje: en ren retningslinje-soegning
+  // maa ikke returnere cases.
+  const r = await klient.callTool({
+    name: "soeg_klinisk_viden",
+    arguments: { forespoergsel: "reverse radial forearm flap hypothenar burn", antal: 5, kildetype: "retningslinje" },
+  });
+  const t = vis("samme soegning, kildetype=retningslinje", r, 800);
+  paastaa(!t.includes("KLINISK CASE"), "kildetype=retningslinje filtrerer cases fra");
+}
+
 overskrift("SOEGNING — emne uden daekning (skal sige det aerligt)");
 {
   const r = await klient.callTool({
@@ -152,7 +187,18 @@ vis(
 );
 
 overskrift("list_kilder");
-vis("list_kilder", await klient.callTool({ name: "list_kilder", arguments: {} }), 2500);
+{
+  const t = vis("list_kilder", await klient.callTool({ name: "list_kilder", arguments: {} }), 3500);
+  for (const kilde of ["brandsaar.dk", "beta.plastsurgeon.com", "beta.jpbrs.com"]) {
+    paastaa(t.includes(kilde), `${kilde} er med i vidensbasen`);
+  }
+  const cases = vis(
+    "list_kilder(kildetype=case)",
+    await klient.callTool({ name: "list_kilder", arguments: { kildetype: "case" } }),
+    1500,
+  );
+  paastaa(!cases.includes("brandsaar.dk"), "kildetype=case viser kun cases, ikke retningslinjer");
+}
 
 overskrift("list_beslutningstraeer");
 vis("list_beslutningstraeer", await klient.callTool({ name: "list_beslutningstraeer", arguments: {} }), 2000);
