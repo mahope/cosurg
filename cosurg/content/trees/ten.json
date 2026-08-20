@@ -1,0 +1,217 @@
+{
+  "id": "ten-dk",
+  "version": "0.1.0",
+  "name": {
+    "da": "Toksisk epidermal nekrolyse — akut vurdering",
+    "en": "Toxic epidermal necrolysis — acute assessment"
+  },
+  "description": {
+    "da": "Klinisk beslutningstræ for akut vurdering af toksisk epidermal nekrolyse (TEN, Lyells syndrom). Bygget på Rigshospitalets VIP-instruks PBB - Toksisk Epidermal Nekrolyse.",
+    "en": "Clinical decision tree for acute assessment of toxic epidermal necrolysis (TEN, Lyell's syndrome). Built on the Rigshospitalet clinical instruction PBB - Toxic Epidermal Necrolysis."
+  },
+  "authors": [
+    "Klinisk grundlag: VIP-instruks PBB - Toksisk Epidermal Nekrolyse v1, Rikke Holmgaard, Rigshospitalet",
+    "Udkast samlet af CoSurg — afventer klinisk godkendelse"
+  ],
+  "rootNodeId": "nikolsky",
+  "nodes": [
+    {
+      "id": "nikolsky",
+      "question": {
+        "da": "Er der udbredt afløsning af epidermis med positivt Nikolskys fænomen — løsner let gnidning mod huden epidermis?",
+        "en": "Is there widespread epidermal detachment with a positive Nikolsky sign — does light rubbing loosen the epidermis?"
+      },
+      "orQuestion": {
+        "da": "Positivt Nikolskys fænomen?",
+        "en": "Positive Nikolsky sign?"
+      },
+      "answerType": "boolean",
+      "help": {
+        "da": "TEN ligner initialt influenza eller øvre luftvejsinfektion; efter et par dage kommer rødligt udslæt i ansigt, på hals og krop, som hurtigt spreder sig. Slimhinderne er tidligt involveret, og huden er øm og brændende med blærer der brister til smertefulde sår som ved andengrads forbrænding.",
+        "en": "TEN initially resembles influenza or an upper airway infection; after a few days a red rash appears on the face, neck and trunk and spreads rapidly. Mucosa is involved early, and the skin is tender and burning with blisters that rupture into painful wounds resembling a second-degree burn."
+      },
+      "options": [
+        {
+          "value": "yes",
+          "label": { "da": "Ja", "en": "Yes" },
+          "synonyms": {
+            "da": ["ja", "afløsning", "huden løsner"],
+            "en": ["yes", "detachment", "skin sloughing"]
+          }
+        },
+        { "value": "no", "label": { "da": "Nej", "en": "No" } }
+      ],
+      "edges": [
+        { "when": "no", "goto": "disp-confer" },
+        { "when": "*", "goto": "drug" }
+      ]
+    },
+    {
+      "id": "drug",
+      "question": {
+        "da": "Er patienten startet på nyt lægemiddel inden for de seneste uger — for eksempel allopurinol, antiepileptika, sulfonamider, nevirapin, NSAID eller kortikosteroider?",
+        "en": "Has the patient started a new drug within recent weeks — for example allopurinol, antiepileptics, sulfonamides, nevirapine, NSAIDs or corticosteroids?"
+      },
+      "orQuestion": {
+        "da": "Nyt lægemiddel de seneste uger?",
+        "en": "New drug in recent weeks?"
+      },
+      "answerType": "boolean",
+      "help": {
+        "da": "Cirka 75 procent af tilfældene er lægemiddelinducerede; der går ofte 2 til 4 uger fra opstart til symptomdebut, men kortere tid er set. Cirka 25 procent udløses af et stafylokok-toksin, hyppigst hos børn.",
+        "en": "About 75 percent of cases are drug-induced; onset is typically 2 to 4 weeks after starting the drug, though shorter intervals occur. About 25 percent are triggered by a staphylococcal toxin, most often in children."
+      },
+      "options": [
+        { "value": "yes", "label": { "da": "Ja", "en": "Yes" } },
+        { "value": "no", "label": { "da": "Nej", "en": "No" } }
+      ],
+      "redFlags": [
+        {
+          "when": "yes",
+          "message": {
+            "da": "Seponér straks det mistænkte medikament efter omhyggelig medicinanamnese. Får patienten medikamentet igen og udvikler TEN, er dødeligheden væsentligt højere næste gang.",
+            "en": "Stop the suspected drug immediately after a careful medication history. If the patient receives the drug again and develops TEN, mortality is substantially higher the next time."
+          }
+        }
+      ],
+      "edges": [
+        { "when": "*", "goto": "bsa" }
+      ]
+    },
+    {
+      "id": "bsa",
+      "question": {
+        "da": "Hvor stor en andel af kropsoverfladen er afficeret, i procent?",
+        "en": "How much of the body surface is affected, in percent?"
+      },
+      "orQuestion": {
+        "da": "Afficeret areal i procent?",
+        "en": "Affected area in percent?"
+      },
+      "answerType": "number",
+      "unit": "% BSA",
+      "min": 0,
+      "max": 100,
+      "help": {
+        "da": "SCORTEN giver ét point for hver af: alder over 40, puls over 120, kendt cancer, epidermisafløsning over 10 procent på dag 1, karbamid over 28 mg/dL, glukose over 252 mg/dL og bikarbonat under 20 mEq/L. Mortalitet: 0-1 point 3 procent, 2 point 12 procent, 3 point 35 procent, 4 point 58 procent, 5 eller flere point 90 procent. Scoren kan undervurdere mortaliteten ved respiratoriske symptomer.",
+        "en": "SCORTEN scores one point for each of: age over 40, heart rate over 120, known cancer, epidermal detachment over 10 percent on day 1, urea over 28 mg/dL, glucose over 252 mg/dL and bicarbonate below 20 mEq/L. Mortality: 0-1 points 3 percent, 2 points 12 percent, 3 points 35 percent, 4 points 58 percent, 5 or more 90 percent. The score can underestimate mortality with respiratory symptoms."
+      },
+      "edges": [
+        { "when": "*", "goto": "airway" }
+      ]
+    },
+    {
+      "id": "airway",
+      "question": {
+        "da": "Udvikler patienten dyspnø eller bronkial hypersekretion?",
+        "en": "Is the patient developing dyspnoea or bronchial hypersecretion?"
+      },
+      "orQuestion": {
+        "da": "Dyspnø eller hypersekretion?",
+        "en": "Dyspnoea or hypersecretion?"
+      },
+      "answerType": "boolean",
+      "help": {
+        "da": "Luftvejsepitelet kan være involveret. SCORTEN kan undervurdere mortaliteten hos patienter med respiratoriske symptomer.",
+        "en": "The airway epithelium can be involved. SCORTEN can underestimate mortality in patients with respiratory symptoms."
+      },
+      "options": [
+        { "value": "yes", "label": { "da": "Ja", "en": "Yes" } },
+        { "value": "no", "label": { "da": "Nej", "en": "No" } }
+      ],
+      "redFlags": [
+        {
+          "when": "yes",
+          "message": {
+            "da": "Respiratoriske symptomer ved TEN: luftvejsepitelet kan være involveret, og SCORTEN undervurderer mortaliteten i denne gruppe. Intensiv vurdering nu.",
+            "en": "Respiratory symptoms in TEN: the airway epithelium can be involved, and SCORTEN underestimates mortality in this group. Intensive care assessment now."
+          },
+          "goto": "disp-icu"
+        }
+      ],
+      "edges": [
+        { "when": "*", "goto": "sepsis" }
+      ]
+    },
+    {
+      "id": "sepsis",
+      "question": {
+        "da": "Er der tegn på sepsis?",
+        "en": "Any signs of sepsis?"
+      },
+      "orQuestion": {
+        "da": "Tegn på sepsis?",
+        "en": "Signs of sepsis?"
+      },
+      "answerType": "boolean",
+      "help": {
+        "da": "Dødsfald ved TEN — cirka 30 procent — ses oftest når sygdommen udvikler sig til en septisk tilstand. Giv antibiotika ved mistanke om sepsis, og husk at TEN kan være lægemiddelinduceret.",
+        "en": "Death in TEN — about 30 percent — is most often seen when the disease progresses to sepsis. Give antibiotics on suspicion of sepsis, remembering that TEN can be drug-induced."
+      },
+      "options": [
+        { "value": "yes", "label": { "da": "Ja", "en": "Yes" } },
+        { "value": "no", "label": { "da": "Nej", "en": "No" } }
+      ],
+      "redFlags": [
+        {
+          "when": "yes",
+          "message": {
+            "da": "Tegn på sepsis ved TEN — den hyppigste dødsårsag. Antibiotika ved mistanke, dyrkning fra hud og blod, og intensiv vurdering nu.",
+            "en": "Signs of sepsis in TEN — the most frequent cause of death. Antibiotics on suspicion, cultures from skin and blood, and intensive care assessment now."
+          },
+          "goto": "disp-icu"
+        }
+      ],
+      "edges": [
+        { "when": "*", "goto": "disp-admit" }
+      ]
+    }
+  ],
+  "dispositions": [
+    {
+      "id": "disp-icu",
+      "severity": "emergency",
+      "title": {
+        "da": "Akut: intensivbehandling",
+        "en": "Emergency: intensive care"
+      },
+      "guidance": {
+        "da": "Indlæg på intensivstue. TEN er en medicinsk tilstand og kræver aldrig kirurgi — overflytning til Rigshospitalet kan ske efter aftale med intensiv afdeling, med Afdeling for Plastikkirurgi og Brandsårsbehandling som stamafdeling og dermatologisk afdeling med behandlingsansvar. Seponér det mistænkte medikament. Dyrkning fra hud og blod inklusive to stansebiopsier — den ene fikseret i formalin, begge på køl til Afdeling for Patologi. Oftalmologisk tilsyn og kloramfenikol til øjnene. Væske administreres så en timediurese på 1 ml pr. kg pr. time opretholdes — regelret skemaudregning er ikke hensigtsmæssig.",
+        "en": "Admit to an intensive care bed. TEN is a medical condition and never requires surgery — transfer to Rigshospitalet can be arranged with the intensive care unit, with the Department of Plastic Surgery and Burn Treatment as the home department and dermatology holding treatment responsibility. Stop the suspected drug. Cultures from skin and blood including two punch biopsies — one fixed in formalin, both kept cold for Pathology. Ophthalmological review and chloramphenicol for the eyes. Give fluids to maintain a urine output of 1 ml per kg per hour — formula-based calculation is not appropriate."
+      },
+      "sources": [
+        "VIP Rigshospitalet: PBB - Toksisk Epidermal Nekrolyse (version 1)"
+      ]
+    },
+    {
+      "id": "disp-admit",
+      "severity": "refer",
+      "title": {
+        "da": "Indlæg: medicinsk behandling lokalt",
+        "en": "Admit: medical treatment locally"
+      },
+      "guidance": {
+        "da": "TEN behandles som udgangspunkt lokalt af relevante specialer — overflyt kun hvis udbredelsen kræver intensivbehandling. Omhyggelig medicinanamnese, sporing og seponering af det mistænkte medikament. Dyrkning fra hud og blod inklusive to stansebiopsier, den ene fikseret i formalin, begge på køl til patologi. Bullae kan punkteres men skal ikke afklippes. Oftalmologisk tilsyn og kloramfenikol til øjnene. Antistress-ulcusbehandling. Væske til en timediurese på 1 ml pr. kg pr. time. Følg SCORTEN på dag 1 og dag 3.",
+        "en": "TEN is treated locally by the relevant specialties — transfer only if the extent requires intensive care. Careful medication history, tracing and cessation of the suspected drug. Cultures from skin and blood including two punch biopsies, one fixed in formalin, both kept cold for pathology. Bullae may be punctured but should not be cut away. Ophthalmological review and chloramphenicol for the eyes. Stress ulcer prophylaxis. Fluids to a urine output of 1 ml per kg per hour. Score SCORTEN on day 1 and day 3."
+      },
+      "sources": [
+        "VIP Rigshospitalet: PBB - Toksisk Epidermal Nekrolyse (version 1)"
+      ]
+    },
+    {
+      "id": "disp-confer",
+      "severity": "refer",
+      "title": {
+        "da": "Konferér: billedet er ikke typisk for TEN",
+        "en": "Confer: the picture is not typical of TEN"
+      },
+      "guidance": {
+        "da": "Uden udbredt epidermisafløsning med positivt Nikolskys fænomen er TEN mindre sandsynlig — sygdommen er sjælden, cirka ét tilfælde pr. million årligt, og er beslægtet med Stevens-Johnsons syndrom. Konferér med dermatologisk afdeling, og gentag vurderingen ved progression: maksimal udvikling ses efter 3 til 4 dage, og 100 procent tab af epidermis kan forekomme i løbet af et døgn.",
+        "en": "Without widespread epidermal detachment and a positive Nikolsky sign, TEN is less likely — the disease is rare, about one case per million per year, and is related to Stevens-Johnson syndrome. Confer with dermatology, and reassess on progression: maximal development is seen after 3 to 4 days, and 100 percent epidermal loss can occur within 24 hours."
+      },
+      "sources": [
+        "VIP Rigshospitalet: PBB - Toksisk Epidermal Nekrolyse (version 1)"
+      ]
+    }
+  ]
+}

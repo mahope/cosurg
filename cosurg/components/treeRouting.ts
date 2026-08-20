@@ -91,6 +91,45 @@ const KEYWORDS: Record<string, string[]> = {
     "bite",
     "bitten",
   ],
+  /**
+   * Bevidste overlap med burns-dk ("ætsning", "syre", "kemisk") og med
+   * røgforgiftning: rammer en ytring begge lister, er der ingen klar vinder,
+   * og appen spørger — det er den ønskede adfærd, for en ætsning KAN vurderes
+   * både som brandsår og i det dedikerede ætsningsforløb.
+   */
+  "chemical-dk": [
+    "ætsning",
+    "ætset",
+    "syre",
+    "kemisk",
+    "flussyre",
+    "fenol",
+    "cement",
+    "kaustisk",
+    "afløbsrens",
+    "chemical",
+    "caustic",
+    "alkali",
+    "hydrofluoric",
+  ],
+  "co-poisoning-dk": [
+    "kulilte",
+    "kulilteforgiftning",
+    "kulmonooxid",
+    "carbonmonoxid",
+    "røgforgiftning",
+    "hyperbar",
+    "trykkammer",
+    "cohb",
+    "carbon monoxide",
+  ],
+  "ten-dk": [
+    "nekrolyse",
+    "lyell",
+    "stevens",
+    "nikolsky",
+    "necrolysis",
+  ],
 };
 
 /**
@@ -237,6 +276,11 @@ export function suggestTreeId(utterance: string, trees: TreeSummary[], lang: Lan
  */
 const FOLLOW_UPS: Record<string, Record<string, string>> = {
   "burns-dk": {
+    "disp-treat": "dressing-hand-arm",
+  },
+  // Kilden siger det selv: "Bandagering efter endt skylning følger samme
+  // standard som forbrændingerne" (VIP PBB - Ætsninger).
+  "chemical-dk": {
     "disp-treat": "dressing-hand-arm",
   },
 };
