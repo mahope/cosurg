@@ -131,7 +131,7 @@ export function ChatThread({
           </p>
           <div className="mt-2">
             {guide.guide ? (
-              <div className="rounded-2xl border bg-[var(--paper-raised)] p-5 shadow-[0_1px_2px_rgba(16,32,30,0.04)] sm:p-6">
+              <div className="rounded-2xl border bg-[var(--paper-raised)] p-5 shadow-[var(--shadow-raised)] sm:p-6">
                 <GuidePanel guide={guide.guide} lang={lang} topic={guide.question} onAskInstead={onSwitch} />
               </div>
             ) : guide.error ? (

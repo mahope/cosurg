@@ -90,7 +90,7 @@ export function TreePicker({
       {open && (
         <div
           role="listbox"
-          className="absolute left-0 top-full z-20 mt-2 w-[min(22rem,calc(100vw-2rem))] overflow-hidden rounded-xl border border-[var(--line)] bg-[var(--paper-raised)] shadow-[0_12px_32px_rgba(0,83,85,0.14)]"
+          className="absolute left-0 top-full z-20 mt-2 w-[min(22rem,calc(100vw-2rem))] overflow-hidden rounded-xl border border-[var(--line)] bg-[var(--paper-raised)] shadow-[var(--shadow-lifted)]"
         >
           <p className="border-b border-[var(--line)] px-3 py-2 font-[family-name:var(--font-mono)] text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--ink-faint)]">
             {tr("tree", lang)}

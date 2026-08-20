@@ -124,7 +124,7 @@ export function InterviewView() {
       title={tr("interviewTitle", lang)}
       tagline={tr("interviewTagline", lang)}
     >
-      <div className="rounded-2xl border bg-[var(--paper-raised)] p-5 shadow-[0_1px_2px_rgba(16,32,30,0.04)] sm:p-6">
+      <div className="rounded-2xl border bg-[var(--paper-raised)] p-5 shadow-[var(--shadow-raised)] sm:p-6">
         <ResponseBar
           lang={lang}
           placeholder={tr("interviewPlaceholder", lang)}

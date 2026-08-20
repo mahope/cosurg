@@ -132,7 +132,7 @@ export function GuideView() {
       title={tr("guideTitle", lang)}
       tagline={tr("guideTagline", lang)}
     >
-      <div className="rounded-2xl border bg-[var(--paper-raised)] p-6 shadow-[0_1px_2px_rgba(16,32,30,0.04)] sm:p-8">
+      <div className="rounded-2xl border bg-[var(--paper-raised)] p-6 shadow-[var(--shadow-raised)] sm:p-8">
         <h2 className="font-[family-name:var(--font-display)] text-2xl font-semibold leading-snug tracking-tight text-[var(--ink)] sm:text-[28px]">
           {tr("guideQuestion", lang)}
         </h2>

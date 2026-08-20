@@ -91,7 +91,7 @@ export function UsagePanel({ lang, usage }: UsagePanelProps) {
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full z-30 mt-2 w-[min(24rem,calc(100vw-2rem))] rounded-xl border border-[var(--line)] bg-[var(--paper-raised)] p-4 text-left shadow-[0_12px_32px_rgba(0,83,85,0.14)]">
+        <div className="absolute right-0 top-full z-30 mt-2 w-[min(24rem,calc(100vw-2rem))] rounded-xl border border-[var(--line)] bg-[var(--paper-raised)] p-4 text-left shadow-[var(--shadow-lifted)]">
           <p className="font-[family-name:var(--font-mono)] text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--ink-faint)]">
             {tr("usageTitle", lang)}
           </p>

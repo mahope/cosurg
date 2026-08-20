@@ -130,7 +130,7 @@ interface AnswerCardProps {
 
 export function AnswerCard({ answer, lang, speaking, onSpeak }: AnswerCardProps) {
   return (
-    <div className="rounded-2xl border bg-[var(--paper-raised)] p-5 sm:p-6 shadow-[0_1px_2px_rgba(16,32,30,0.04)]">
+    <div className="rounded-2xl border bg-[var(--paper-raised)] p-5 sm:p-6 shadow-[var(--shadow-raised)]">
       <div className="mb-3 flex flex-wrap items-center gap-2">
         <EvidenceBadge evidence={answer.evidence} lang={lang} />
         <button

@@ -71,7 +71,7 @@ export function LookupCard({
   const question = payload.kind === "chat" ? payload.turn.question : payload.question;
 
   return (
-    <div className="motion-forward flex h-[26rem] flex-col overflow-hidden rounded-2xl border bg-[var(--paper-raised)] shadow-[0_1px_2px_rgba(16,32,30,0.04)]">
+    <div className="motion-forward flex h-[26rem] flex-col overflow-hidden rounded-2xl border bg-[var(--paper-raised)] shadow-[var(--shadow-raised)]">
       <header className="flex shrink-0 items-start gap-3 border-b border-[var(--line)] px-5 py-3.5 sm:px-6">
         <div className="min-w-0 flex-1">
           {/*
