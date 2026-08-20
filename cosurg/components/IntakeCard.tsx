@@ -4,6 +4,7 @@ import type { Lang } from "@/lib/tree/types";
 import { tr } from "@/lib/i18n";
 import { ResponseBar } from "./ResponseBar";
 import type { TreeSummary } from "./TreePicker";
+import { SizeLock, widestOf } from "./ui/SizeLock";
 
 interface IntakeCardProps {
   lang: Lang;
@@ -49,7 +50,7 @@ export function IntakeCard({
   const choices = ambiguous.length > 0 ? trees.filter((t) => ambiguous.includes(t.id)) : trees;
 
   return (
-    <div className="rounded-2xl border bg-[var(--paper-raised)] p-6 sm:p-8 shadow-[0_1px_2px_rgba(16,32,30,0.04)]">
+    <div className="motion-fade rounded-2xl border bg-[var(--paper-raised)] p-6 sm:p-8 shadow-[0_1px_2px_rgba(16,32,30,0.04)]">
       <h2 className="font-[family-name:var(--font-display)] text-2xl sm:text-[28px] font-semibold leading-snug tracking-tight text-[var(--ink)]">
         {tr("intakeQuestion", lang)}
       </h2>
@@ -67,8 +68,15 @@ export function IntakeCard({
         />
       </div>
 
+      {/* Vi spørger igen — det er en besked der KRÆVER noget af lægen, så den
+          skal både ses og læses op. Nude og ikke rød: at have brug for et
+          ekstra ord er ikke en klinisk alvor. */}
       {unresolved && (
-        <p className="mt-4 rounded-lg border border-[var(--nude-deep)] bg-[var(--nude-tint)] px-4 py-3 text-sm font-medium leading-relaxed text-[var(--ink)]">
+        <p
+          role="status"
+          aria-live="polite"
+          className="motion-forward mt-4 rounded-lg border border-[var(--nude-deep)] bg-[var(--nude-tint)] px-4 py-3 text-sm font-medium leading-relaxed text-[var(--ink)]"
+        >
           {tr(ambiguous.length > 0 ? "intakeAmbiguous" : "intakeUnknown", lang)}
           <span className="mt-1 block font-normal text-[var(--ink-soft)]">&ldquo;{unresolved}&rdquo;</span>
         </p>
@@ -85,7 +93,10 @@ export function IntakeCard({
               onClick={() => onSelectTree(t.id)}
               className="rounded-lg border px-3.5 py-2 text-sm font-medium text-[var(--ink)] transition-colors hover:border-[var(--teal)] hover:bg-[var(--teal-tint)]"
             >
-              {t.name[lang]}
+              {/* Forløbsnavnene er oversat indhold og har hver sin længde på
+                  de to sprog. Knappen får plads til den længste, så rækken
+                  ikke pakker om sig selv ved et sprogskift. */}
+              <SizeLock variants={[t.name.da, t.name.en]}>{t.name[lang]}</SizeLock>
             </button>
           ))}
         </div>
@@ -98,7 +109,9 @@ export function IntakeCard({
           aria-busy={noteBusy}
           className="rounded-lg bg-[var(--teal-deep)] px-4 py-2 text-sm font-semibold text-white transition-colors enabled:hover:bg-[var(--teal)] disabled:opacity-50"
         >
-          {noteBusy ? tr("noteWorking", lang) : tr("intakeGenerateNote", lang)}
+          <SizeLock variants={widestOf("noteWorking", "intakeGenerateNote")}>
+            {noteBusy ? tr("noteWorking", lang) : tr("intakeGenerateNote", lang)}
+          </SizeLock>
         </button>
       </div>
     </div>

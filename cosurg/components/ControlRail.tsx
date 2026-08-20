@@ -7,6 +7,7 @@ import { BrandMark } from "./BrandMark";
 import { Flag } from "./Flag";
 import { TreePicker, type TreeSummary } from "./TreePicker";
 import { UsagePanel, type SessionUsage } from "./UsagePanel";
+import { SizeLock, widestOf } from "./ui/SizeLock";
 
 interface ControlRailProps {
   lang: Lang;
@@ -63,29 +64,40 @@ export function ControlRail({
               </h1>
             </Link>
             {/* Før et forløb er valgt, ville trænavnet være et valg vi havde
-                truffet for lægen. Der står linjen om hvad appen er i stedet. */}
-            {started ? (
-              <TreePicker
-                lang={lang}
-                trees={trees}
-                activeId={treeId}
-                activeName={treeName}
-                activeVersion={treeVersion}
-                busy={treeBusy}
-                onSelect={onSelectTree}
-              />
-            ) : (
-              <p className="font-[family-name:var(--font-mono)] text-xs text-[var(--ink-faint)]">
-                {tr("tagline", lang)}
-              </p>
-            )}
+                truffet for lægen. Der står linjen om hvad appen er i stedet.
+                Linjen har fast højde: træ-vælgeren er en knap og taglinen et
+                afsnit, og uden en fælles højde ville hele instrumentpanelet
+                rykke fire pixel i det øjeblik forløbet starter. */}
+            <div className="flex h-5 items-center">
+              {started ? (
+                <TreePicker
+                  lang={lang}
+                  trees={trees}
+                  activeId={treeId}
+                  activeName={treeName}
+                  activeVersion={treeVersion}
+                  busy={treeBusy}
+                  onSelect={onSelectTree}
+                />
+              ) : (
+                <p className="font-[family-name:var(--font-mono)] text-xs text-[var(--ink-faint)]">
+                  {tr("tagline", lang)}
+                </p>
+              )}
+            </div>
           </div>
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
           <UsagePanel lang={lang} usage={usage} />
 
-          <div className="flex items-center gap-1 rounded-lg border bg-[var(--paper-raised)] p-0.5">
+          {/* To flag uden fælles etiket læses op som "Dansk knap, English knap"
+              uden at sige hvad valget handler om. Gruppen bærer betydningen. */}
+          <div
+            role="group"
+            aria-label={lang === "da" ? "Sprog" : "Language"}
+            className="flex items-center gap-1 rounded-lg border bg-[var(--paper-raised)] p-0.5"
+          >
             <button
               type="button"
               onClick={() => lang !== "da" && onToggleLang()}
@@ -119,7 +131,12 @@ export function ControlRail({
                 fullVoice ? "bg-[var(--teal-tint)] text-[var(--teal-deep)]" : "text-[var(--ink-soft)]"
               }`}
             >
-              {fullVoice ? tr("voiceFull", lang) : tr("voiceKey", lang)}
+              {/* "Oplæsning fra" er bredere end "Speech off" — uden en låst
+                  bredde flytter knapperne til højre sig hver gang man skifter
+                  sprog eller slår oplæsning til. */}
+              <SizeLock variants={widestOf("voiceFull", "voiceKey")}>
+                {fullVoice ? tr("voiceFull", lang) : tr("voiceKey", lang)}
+              </SizeLock>
             </button>
           </div>
 
@@ -135,14 +152,14 @@ export function ControlRail({
                 : "bg-[var(--teal-deep)] text-white enabled:hover:bg-[var(--teal)]"
             }`}
           >
-            {tr("orMode", lang)}
+            <SizeLock variants={widestOf("orMode")}>{tr("orMode", lang)}</SizeLock>
           </button>
 
           <Link
             href="/aboutandteam"
             className="rounded-lg border bg-[var(--paper-raised)] px-4 py-2 text-sm font-medium text-[var(--ink)] transition-colors hover:border-[var(--teal)] hover:bg-[var(--teal-tint)]"
           >
-            {tr("aboutTeam", lang)}
+            <SizeLock variants={widestOf("aboutTeam")}>{tr("aboutTeam", lang)}</SizeLock>
           </Link>
         </div>
       </div>
