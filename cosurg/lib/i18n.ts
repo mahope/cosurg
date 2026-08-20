@@ -9,8 +9,8 @@ export const t = {
   start: { da: "Start vurdering", en: "Start assessment" },
   listening: { da: "Lytter", en: "Listening" },
   micOff: { da: "Mikrofon slukket", en: "Microphone off" },
-  orMode: { da: "Handsfree mode", en: "Handsfree mode" },
-  orModeOn: { da: "OR-tilstand AKTIV", en: "OR MODE ACTIVE" },
+  orMode: { da: "Håndfri tilstand", en: "Handsfree mode" },
+  orModeOn: { da: "HÅNDFRI TILSTAND AKTIV", en: "HANDSFREE MODE ACTIVE" },
   // "Fra" skal betyde fra: netværks-TTS afregnes pr. tegn, så en tvetydig
   // mærkat koster penge hos enhver der tror den er slukket.
   voiceFull: { da: "Oplæsning til", en: "Speech on" },
@@ -22,7 +22,7 @@ export const t = {
   generateNote: { da: "Generér journalnotat", en: "Generate note" },
   intakeGenerateNote: {
     da: "Skriv notat og indsæt ICD-10 kode",
-    en: "Skriv notat og indsæt ICD-10 kode",
+    en: "Write note and insert ICD-10 code",
   },
   note: { da: "Journalnotat", en: "Clinical note" },
   codes: { da: "Koder", en: "Codes" },
@@ -49,7 +49,7 @@ export const t = {
   thinking: { da: "Fortolker…", en: "Interpreting…" },
   sources: { da: "Kilder", en: "Sources" },
   sourceNote: {
-    da: "Build on validated expert content",
+    da: "Bygget på valideret faglig viden",
     en: "Build on validated expert content",
   },
   orHint: {
@@ -65,7 +65,7 @@ export const t = {
     da: "Skriv eller diktér tillægget…",
     en: "Type or dictate the addendum…",
   },
-  orExit: { da: "Afslut OR-tilstand", en: "Exit OR mode" },
+  orExit: { da: "Afslut håndfri tilstand", en: "Exit handsfree mode" },
 
   // Trin-noder (procedureguide): der er intet svar, kun en kvittering.
   nextStep: { da: "Næste trin", en: "Next step" },
@@ -81,7 +81,7 @@ export const t = {
   ackRepeat: { da: "Gentager.", en: "Repeating." },
   ackBack: { da: "Går et trin tilbage.", en: "Going one step back." },
   ackFlag: { da: "Kvitteret.", en: "Acknowledged." },
-  ackOrMode: { da: "OR-tilstand aktiv.", en: "OR mode active." },
+  ackOrMode: { da: "Håndfri tilstand aktiv.", en: "Handsfree mode active." },
   needAnswer: {
     da: "Jeg mangler et svar først.",
     en: "I need an answer first.",
