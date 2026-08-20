@@ -34,6 +34,7 @@ import {
   startsWithTreatmentIntent,
 } from "@/components/unified/intent";
 import { IntentChoiceCard, LookupCard, type LookupPayload } from "@/components/unified/LookupCard";
+import { ChatThread } from "@/components/unified/ChatThread";
 import { fetchGuide, type GuideSvar } from "@/components/unified/guide";
 import { spokenText } from "@/components/unified/spoken";
 import { PitfallRail } from "@/components/pitfalls/PitfallRail";
@@ -1188,6 +1189,14 @@ export default function Home() {
    * hver ny `runLookup` rydder den anden slags væk.
    */
   const activeTurn = lookupTurns.length > 0 ? lookupTurns[lookupTurns.length - 1] : null;
+
+  /*
+   * Er samtalen i gang? Fra det øjeblik det første spørgsmål er sendt, viser
+   * forsiden tråden i stedet for indgangskortet. `ask` opretter turen straks
+   * — også mens svaret stadig arbejder — så skiftet sker i samme sekund der
+   * trykkes send, ikke først når svaret lander.
+   */
+  const hasThread = !started && (lookupTurns.length > 0 || guideLookup !== null);
   const lookupPayload: LookupPayload | null = guideLookup
     ? { kind: "guide", ...guideLookup }
     : activeTurn
@@ -1414,7 +1423,7 @@ export default function Home() {
   }
 
   return (
-    <main className="app-gradient-bg relative min-h-screen px-4 py-6 text-[var(--ink)] sm:px-6 sm:py-8">
+    <main className="app-gradient-bg relative min-h-screen px-4 pb-6 pt-4 text-[var(--ink)] sm:px-6 sm:pb-8 sm:pt-5">
       <BrandWatermark />
       <div className="relative z-10 mx-auto max-w-5xl">
         <ControlRail
@@ -1457,7 +1466,10 @@ export default function Home() {
           sekund han havde mest brug for at holde fast i det. Prisen er én
           tom linje under instrumentpanelet; den betaler vi gerne.
         */}
-        <div className="mb-4 min-h-[3.25rem]">
+        {/* Reservationen er målt til beskedens faktiske højde (py-3 + én
+            tekstlinje ≈ 2,875 rem) — rundhåndet plads her skubbede hele
+            indholdet længere ned end nødvendigt. */}
+        <div className="mb-2 min-h-[3rem]">
           {notice && (
             <div
               role="status"
@@ -1481,8 +1493,60 @@ export default function Home() {
           </div>
         )}
 
-        {!started && (
-          <>
+        {/*
+          Forsidens to ansigter.
+
+          FØR det første spørgsmål: indgangskortet — overskrift, felt, stor
+          mikrofon. EFTER: samtalen har skærmen. Tråden vokser frit nedad
+          (siden ruller, ikke en boks), og indgangen er skrumpet til en
+          komposer der følger med i bunden af viewportet, så næste spørgsmål
+          altid er i rækkevidde uden at skygge for svaret.
+        */}
+        {!started &&
+          (hasThread ? (
+            <>
+              <div className="pb-6">
+                <ChatThread
+                  lang={lang}
+                  turns={lookupTurns}
+                  guide={guideLookup}
+                  speakingTurn={speakingTurn}
+                  onSpeak={toggleSpeakAnswer}
+                  onSwitch={switchLookup}
+                  offer={
+                    offer
+                      ? {
+                          name: offer.name,
+                          onAccept: () => {
+                            const id = offer.treeId;
+                            setOffer(null);
+                            void beginTree(id);
+                          },
+                          onDismiss: () => setOffer(null),
+                        }
+                      : null
+                  }
+                />
+              </div>
+              <div className="sticky bottom-4 z-20">
+                <IntakeCard
+                  lang={lang}
+                  trees={trees}
+                  ambiguous={intakeMiss?.candidates ?? []}
+                  unresolved={intakeMiss?.text ?? null}
+                  listening={listening}
+                  starting={micStarting}
+                  interim={interim}
+                  draft={draft}
+                  onDraftChange={setDraft}
+                  onToggleMic={toggleMic}
+                  onSubmit={(t, images) => void handleUtterance(t, images)}
+                  onSelectTree={(id) => void beginTree(id)}
+                  compact
+                />
+              </div>
+            </>
+          ) : (
             <IntakeCard
               lang={lang}
               trees={trees}
@@ -1497,21 +1561,14 @@ export default function Home() {
               onSubmit={(t, images) => void handleUtterance(t, images)}
               onSelectTree={(id) => void beginTree(id)}
             />
+          ))}
 
-            {/* Kun mens agenten afgør om ytringen var et spørgsmål. Linjen
-                erstatter intet og skubber intet — den lægger sig under kortet. */}
-            {intakeBusy && (
-              <p
-                role="status"
-                aria-live="polite"
-                className="mt-4 text-sm leading-relaxed text-[var(--ink-soft)]"
-              >
-                {tr("intakeThinking", lang)}
-              </p>
-            )}
-
-            {lookupSlot && <div className="mt-6">{lookupSlot}</div>}
-          </>
+        {/* Kun mens agenten afgør om ytringen var et spørgsmål. Linjen
+            erstatter intet og skubber intet — den lægger sig under kortet. */}
+        {!started && intakeBusy && (
+          <p role="status" aria-live="polite" className="mt-4 text-sm leading-relaxed text-[var(--ink-soft)]">
+            {tr("intakeThinking", lang)}
+          </p>
         )}
 
         {/*
