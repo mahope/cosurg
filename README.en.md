@@ -155,15 +155,17 @@ change to the engine.
 and answers only with verbatim excerpts carrying their source. Nine tools: full-text
 search across the sources, retrieval of whole source sections, lookups into the
 decision trees, PubMed search, and a status view. No database, no writable state —
-everything is loaded at startup, so an answer can always be traced to a file.
-Currently 211 excerpts across 38 source sections.
+everything is loaded at startup, so an answer can always be traced to a file. Current
+figures are on [`/health`](https://mcp.cosurg.com/health).
 
-The server is also where we keep the **boundary between clinical knowledge and test
-data**: `data/kilder/` becomes the knowledge base and may be quoted; the organiser's
-synthetic patient records sit in `test-data/`, where the server physically cannot
-reach them. A fictional patient quoted as a clinical source would look entirely
-credible — which is why the separation is physical and not merely a label. See
-[`cosurg-mcp/data/README.md`](cosurg-mcp/data/README.md).
+The server is also where we maintain two distinctions a clinician must not be able to
+miss. **Clinical knowledge versus test data:** `data/kilder/` becomes the knowledge
+base and may be quoted; the organiser's synthetic patient records sit in `test-data/`,
+where the server physically cannot reach them. A fictional patient quoted as a clinical
+source would look entirely credible — which is why the separation is physical and not
+merely a label. **Guideline versus case:** every source section carries a `kildetype`,
+so a single patient's course cannot come to sound like a recommendation. The source
+list and the rules are in [`cosurg-mcp/data/README.md`](cosurg-mcp/data/README.md).
 
 **The deployment** runs on Nordic Surgery Lab's own server (Hetzner, Falkenstein)
 under Openship with Traefik and Let's Encrypt. The app is a Next.js standalone image

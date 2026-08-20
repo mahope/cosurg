@@ -152,14 +152,17 @@ ingen ændring i motoren.
 svarer kun med ordrette uddrag der bærer deres kilde. Ni værktøjer: fritekstsøgning
 i kilderne, hentning af hele kildeafsnit, opslag i beslutningstræerne, PubMed-søgning
 og statusvisning. Ingen database, ingen skrivbar tilstand — alt indlæses ved opstart,
-så et svar altid kan spores til en fil. Lige nu 211 uddrag fordelt på 38 kildeafsnit.
+så et svar altid kan spores til en fil. Aktuelle tal står på
+[`/health`](https://mcp.cosurg.com/health).
 
-Serveren er også hvor vi holder **skellet mellem klinisk viden og testdata**:
-`data/kilder/` bliver til vidensbasen og kan citeres; arrangørens syntetiske
-patientjournaler ligger i `test-data/` hvor serveren fysisk ikke kan nå dem. En
-opdigtet patient citeret som klinisk kilde ville se fuldstændig troværdig ud —
-derfor er adskillelsen fysisk og ikke bare en mærkat. Se
-[`cosurg-mcp/data/README.md`](cosurg-mcp/data/README.md).
+Serveren er også hvor vi holder to skel som en læge ikke skal kunne overse.
+**Klinisk viden mod testdata:** `data/kilder/` bliver til vidensbasen og kan citeres;
+arrangørens syntetiske patientjournaler ligger i `test-data/` hvor serveren fysisk
+ikke kan nå dem. En opdigtet patient citeret som klinisk kilde ville se fuldstændig
+troværdig ud — derfor er adskillelsen fysisk og ikke bare en mærkat.
+**Retningslinje mod case:** hvert kildeafsnit bærer en `kildetype`, så et enkelt
+patientforløb ikke kan komme til at lyde som en anbefaling. Kildelisten og reglerne
+står i [`cosurg-mcp/data/README.md`](cosurg-mcp/data/README.md).
 
 **Deployet** kører på Nordic Surgery Labs egen server (Hetzner, Falkenstein) under
 Openship med Traefik og Let's Encrypt. Appen er et Next.js standalone-image der kører
