@@ -21,11 +21,15 @@ RUN npm run build
 RUN npm ci --omit=dev
 
 # ---------- data ----------
-# Kildefilerne kopieres ind i et fladt /app/data, saa serveren ikke afhaenger af
-# repoets mappestruktur i drift.
+# Vidensbasen ligger i cosurg-mcp/data/kilder/ og kopieres til /app/data/kilder,
+# saa stien er den samme i udvikling og i drift.
+#
+# KUN filer herfra bliver til vidensbasen. Arrangoerens syntetiske patientjournaler
+# ligger i cosurg-mcp/test-data/ og maa ALDRIG kopieres ind her — se
+# cosurg-mcp/data/README.md.
 FROM alpine:3.20 AS data
 WORKDIR /data
-COPY kilder/*.md ./kilder/
+COPY cosurg-mcp/data/kilder/*.md ./kilder/
 COPY cosurg/content/trees/*.json ./trees/
 
 # ---------- koer ----------

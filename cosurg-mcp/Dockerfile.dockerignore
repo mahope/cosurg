@@ -8,11 +8,12 @@ node_modules
 **/.env.*
 cosurg-mcp/dist
 cosurg-mcp/node_modules
-kilder/magnus-materiale
-kilder/*.pdf
+# Primaerkilder og syntetisk testdata skal IKKE med i imaget — kun
+# cosurg-mcp/data/kilder/*.md bliver til vidensbasen.
+cosurg-mcp/data/originaler
+cosurg-mcp/test-data
 brainstorm
 burntree
-datasets
 docs
 worktrees
 *.mp4
