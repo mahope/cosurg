@@ -182,27 +182,18 @@
   --font-body: var(--font-body), Roboto, ui-sans-serif, sans-serif;
   --font-mono: var(--font-mono), "Roboto Mono", ui-monospace, monospace;
 
-  /*
-   * Sidebaggrunden. Den var en farvet flade — Turquoise ned i LightBlue — og
-   * dermed det første man så på hver eneste skærm. Nu er den papir: et næsten
-   * umærkeligt fald fra lys top til en tanke varmere bund, hentet fra
-   * nude-familien. Baggrunden skal ikke kunne beskrives; den skal bære.
-   *
-   * Følgen er at kort ikke længere skiller sig ud ved at være LYSERE end
-   * fladen omkring dem. Adskillelsen bæres i stedet af --shadow-raised og en
-   * hårfin ramme. Bruges KUN til den fulde sidebaggrund.
-   */
-  --app-gradient: linear-gradient(180deg, #fdfcfb 0%, #fbf9f6 45%, #f7f4f0 100%);
-
-  /*
-   * ELEVATION. Kortet løftes af lys og en hårfin kant, aldrig af en mørkere
-   * baggrund omkring det. Skyggerne er varme (samme sorte som blækket, ikke
-   * en blå), og de er svage nok til at man ser kanten før man ser skyggen.
-   */
-  --shadow-raised:
-    0 1px 2px rgba(32, 28, 24, 0.04), 0 1px 3px -1px rgba(32, 28, 24, 0.05);
-  --shadow-lifted:
-    0 2px 4px -2px rgba(32, 28, 24, 0.06), 0 10px 26px -14px rgba(32, 28, 24, 0.22);
+  /* Sidebaggrunden: et let optonet hjørne → dæmpet Turquoise → LightBlue,
+     øverst venstre til nederst højre. Samme brandtoner som
+     --turquoise/--teal-tint, her som gradient i stedet for fladt papir og
+     hvidt blandet ind hele vejen, så hele fladen — ikke kun hjørnet — er
+     lysere. Bruges KUN til den fulde sidebaggrund — kort, knapper og badges
+     beholder deres flade --paper. */
+  --app-gradient: linear-gradient(
+    135deg,
+    color-mix(in srgb, #00bacd 10%, white) 0%,
+    color-mix(in srgb, #00bacd 35%, white) 45%,
+    #e6f5f8 100%
+  );
 }
 
 @theme inline {

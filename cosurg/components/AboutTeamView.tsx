@@ -48,14 +48,11 @@ const OUR_TEAM: Member[] = [
   { name: "Mia Demant, MD", role: "Certification training, MCQs", img: "/our-team/mia-demant.png" },
   { name: "Rami Ibrahim, MD, Specialist", role: "Surgical Videos", img: "/our-team/rami-ibrahim.png" },
   { name: "Christian Paaskesen, MD", role: "Illustrator, Case content, Journal", img: "/our-team/christian-paaskesen.jpeg" },
-  { name: "Hannah Trøstrup, MD, PhD", role: "Journal Editor", img: "/our-team/hannah-trostrup.jpg" },
   { name: "Frederik Mamsen, MD, PhD", role: "Case Competition, Funding, Journal", img: "/our-team/frederik-mamsen.jpg" },
   { name: "Cammila Christiansen, MD", role: "Certification training, MCQs", img: "/our-team/cammila-christiansen.png" },
-  { name: "Emma Tubæk Nielsen, MD", role: "Illustrator, Content Developer", img: "/our-team/emma-tubaek-nielsen.jpg" },
-  { name: "Harald Welling, MD", role: "Promotion, Content Developer", img: "/our-team/harald-welling.jpg" },
   { name: "Caroline Kümmel Skaarup", role: "SoMe, Instagram", img: "/our-team/caroline-kummel-skaarup.png" },
-  { name: "David Salim, MD", role: "Certification Training, MCQs", img: "/our-team/david-salim.jpg" },
   { name: "Nizar Hamrouni, MD", role: "Surgical Videos", img: "/our-team/nizar-hamrouni.jpg" },
+  { name: "Kristian Madsen", role: "", img: "/our-team/kristian-madsen.png" },
   { name: "Annika Gottholt Hansen, MD", role: "Database handling", img: "/our-team/annika-gottholt-hansen.jpg" },
   { name: "Christina Krogerus, MD", role: "Design, Flyers", img: "/our-team/christina-krogerus.png" },
   { name: "Tine Lorentzen", role: "Certification training, Videos", img: "/our-team/tine-lorentzen.jpeg" },
@@ -79,7 +76,7 @@ function TeamGrid({ members }: { members: Member[] }) {
             />
           </div>
           <p className="mt-3 text-sm font-medium leading-snug text-[var(--ink)]">{m.name}</p>
-          <p className="text-xs text-[var(--ink-faint)]">{m.role}</p>
+          {m.role && <p className="text-xs text-[var(--ink-faint)]">{m.role}</p>}
         </li>
       ))}
     </ul>
@@ -119,7 +116,7 @@ export function AboutTeamView() {
               href="/"
               className="rounded-lg border bg-[var(--paper-raised)] px-3 py-2 text-sm font-medium text-[var(--ink)] transition-colors hover:border-[var(--teal)] hover:bg-[var(--teal-tint)]"
             >
-              ← {tr("toolTree", lang)}
+              ← {tr("aboutTeamBackLink", lang)}
             </Link>
             <LangSwitch lang={lang} onToggleLang={() => setLang((l) => (l === "da" ? "en" : "da"))} />
           </div>
