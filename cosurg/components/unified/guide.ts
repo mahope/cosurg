@@ -1,4 +1,5 @@
 import type { KildeUddrag } from "@/lib/corti/mcp";
+import type { GuideBillede } from "@/content/dressing-images";
 import type { Lang } from "@/lib/tree/types";
 
 /**
@@ -14,6 +15,8 @@ export interface GuideAfsnit {
   label: Record<Lang, string>;
   intent: Record<Lang, string>;
   excerpts: KildeUddrag[];
+  /** Procedurefotos kortlagt som data på serveren — tom eller udeladt når intet matcher. */
+  images?: GuideBillede[];
 }
 
 export interface GuideSvar {

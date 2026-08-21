@@ -8,6 +8,8 @@ import { useTranscribe } from "@/lib/audio/useTranscribe";
 import { failureMessage, micMessage, tr } from "@/lib/i18n";
 import { ResponseBar } from "@/components/ResponseBar";
 import { PitfallRail } from "@/components/pitfalls/PitfallRail";
+import { GuideImages } from "@/components/unified/GuideImages";
+import type { GuideBillede } from "@/content/dressing-images";
 import { ToolShell } from "./ToolShell";
 import { SourceCard } from "./SourceCard";
 
@@ -28,6 +30,8 @@ interface GuideAfsnit {
   label: Record<Lang, string>;
   intent: Record<Lang, string>;
   excerpts: KildeUddrag[];
+  /** Procedurefotos kortlagt som data på serveren — tom eller udeladt når intet matcher. */
+  images?: GuideBillede[];
 }
 
 interface GuideSvar {
@@ -241,6 +245,11 @@ export function GuideView() {
                         {s.excerpts.map((u) => (
                           <SourceCard key={u.id} uddrag={u} lang={lang} />
                         ))}
+                        {/* Procedurefotos når afsnittet omtaler den konkrete
+                            forbinding — kortlagt som data, aldrig som modelskøn. */}
+                        {s.images && s.images.length > 0 && (
+                          <GuideImages images={s.images} lang={lang} />
+                        )}
                       </div>
                     )}
                   </section>

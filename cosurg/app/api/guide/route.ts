@@ -9,6 +9,7 @@ import {
 } from "@/lib/corti/mcp";
 import type { Lang } from "@/lib/tree/types";
 import { AFSNIT, erIndenforOmraadet, hoererTil, type AfsnitDef } from "./sections";
+import { emnetTaalerBilleder, findAfsnitsBilleder, type GuideBillede } from "@/content/dressing-images";
 
 export const dynamic = "force-dynamic";
 
@@ -83,6 +84,12 @@ export interface GuideAfsnit {
   label: Record<Lang, string>;
   intent: Record<Lang, string>;
   excerpts: KildeUddrag[];
+  /**
+   * Procedurefotos der hører til afsnittets indhold — kortlagt som data i
+   * `content/dressing-images.ts`, aldrig som modelskøn. Feltet er additivt:
+   * mangler der dækning, er listen bare tom.
+   */
+  images?: GuideBillede[];
 }
 
 /** Ét uddrag med sin plads i det felt det blev fundet i. */
@@ -287,6 +294,10 @@ export async function POST(req: Request) {
      * Ved uafgjort vinder det tidligste afsnit, fordi rækkefølgen er den
      * kliniske arbejdsgang — man vurderer før man henviser.
      */
+    // Emneporten for procedurefotos: serien viser en hånd og Mepilex Transfer
+    // og må aldrig illustrere fx en ætsning i ansigtet.
+    const medBilleder = emnetTaalerBilleder(`${topic} ${terms.join(" ")}`);
+
     const ejer = new Map<string, { key: string; norm: number }>();
     for (const f of felter) {
       for (const k of f.kandidater) {
@@ -308,11 +319,24 @@ export async function POST(req: Request) {
       // bedste handler næsten altid om noget andet. Den bedste beholdes altid,
       // så en streng grænse ikke kan tømme et afsnit der faktisk har dækning.
       const valgte = grundlag.filter((k, i) => i === 0 || k.norm >= 0.45);
+      const excerpts = valgte.slice(0, 3).map((k) => k.uddrag);
+      /*
+       * Fotos følger to porte: emnet skal handle om hånd/finger/arm eller
+       * Mepilex, og gruppens egne ord skal stå i afsnittets faktiske tekst.
+       * Matcher intet, er feltet en tom liste — hellere ingen end forkerte.
+       */
+      const images = medBilleder
+        ? findAfsnitsBilleder(
+            a.key,
+            excerpts.map((u) => `${u.overskrifter.join(" ")} ${u.tekst}`).join(" "),
+          )
+        : [];
       return {
         key: a.key,
         label: a.label,
         intent: a.intent,
-        excerpts: valgte.slice(0, 3).map((k) => k.uddrag),
+        excerpts,
+        images,
       };
     });
 

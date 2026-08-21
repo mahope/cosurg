@@ -5,6 +5,7 @@ import type { Lang } from "@/lib/tree/types";
 import { tr } from "@/lib/i18n";
 import { SourceCard } from "@/components/guide/SourceCard";
 import { PitfallRail } from "@/components/pitfalls/PitfallRail";
+import { GuideImages } from "./GuideImages";
 import type { GuideSvar } from "./guide";
 
 /**
@@ -70,6 +71,11 @@ export function GuidePanel({ guide, lang, topic, onAskInstead }: GuidePanelProps
             {afsnit.label[lang]}
           </p>
           <SourceCard uddrag={afsnit.excerpts[0]} lang={lang} tæt />
+          {/* Procedurefotos når afsnittet omtaler den konkrete forbinding —
+              kortlagt som data på serveren, aldrig som modelskøn. */}
+          {afsnit.images && afsnit.images.length > 0 && (
+            <GuideImages images={afsnit.images} lang={lang} />
+          )}
         </section>
       ))}
 
