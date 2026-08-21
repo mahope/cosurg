@@ -131,15 +131,6 @@ export function AboutTeamView() {
           <p className="mt-2 max-w-2xl text-sm text-[var(--ink-soft)]">{tr("aboutOurTeamIntro", lang)}</p>
 
           <TeamGrid members={OUR_TEAM} />
-
-          <address className="mt-8 not-italic text-sm leading-relaxed text-[var(--ink-soft)]">
-            <span className="block text-xs font-medium uppercase tracking-wide text-[var(--ink-faint)]">
-              {tr("aboutAddressTitle", lang)}
-            </span>
-            <span className="mt-1 block font-medium text-[var(--ink)]">{tr("aboutAddressCompany", lang)}</span>
-            <span className="block">{tr("aboutAddressStreet", lang)}</span>
-            <span className="block">{tr("aboutAddressCity", lang)}</span>
-          </address>
         </section>
 
         <section className="mt-14">
