@@ -13,7 +13,7 @@ export const t = {
     da: "CoSurg er et stemmestyret klinisk beslutningsværktøj til udredning og behandling af kirurgiske problemstillinger og brandsårspatienter.",
     en: "CoSurg is a voice-driven clinical decision-support tool for assessment and treatment of surgical and burns patients.",
   },
-  aboutTeamSectionTitle: { da: "Teamet bag CoSurg", en: "Our International Expert Panel" },
+  aboutTeamSectionTitle: { da: "International Expert Panel", en: "International Expert Panel" },
   aboutTeamSectionIntro: {
     da: "CoSurgs kliniske grundlag er valideret af Nordic Surgery Labs internationale ekspertpanel.",
     en: "",
@@ -21,7 +21,7 @@ export const t = {
   aboutOurTeamTitle: { da: "Vores team", en: "Our Team" },
   aboutOurTeamIntro: {
     da: "Redaktører, bidragydere og skabere bag Nordic Surgery Labs platforme.",
-    en: "The editors, contributors and creators who build and maintain Nordic Surgery Lab's platforms.",
+    en: "Our editors, contributors and creators building CoSurg.",
   },
   aboutAddressTitle: { da: "Adresse", en: "Address" },
   aboutAddressCompany: { da: "Nordic Surgery Lab", en: "Nordic Surgery Lab" },
