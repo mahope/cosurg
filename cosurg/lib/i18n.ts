@@ -688,7 +688,7 @@ export const t = {
    * invitationen til «beskriv en patient»; alle tre veje skal nævnes hver gang.
    * ================================================================== */
 
-  intakeQuestion: { da: "Sig hvad du står med.", en: "Say what you are looking at." },
+  intakeQuestion: { da: "Fortæl mig om patienten", en: "Tell me about our patient" },
   intakeHelp: {
     da: "Tal eller skriv. Jeg finder selv ud af resten.",
     en: "Talk or type. I work out the rest myself.",
