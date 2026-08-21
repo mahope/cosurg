@@ -131,15 +131,6 @@ export function AboutTeamView() {
           <p className="mt-2 max-w-2xl text-sm text-[var(--ink-soft)]">{tr("aboutOurTeamIntro", lang)}</p>
 
           <TeamGrid members={OUR_TEAM} />
-
-          <address className="mt-8 not-italic text-sm leading-relaxed text-[var(--ink-soft)]">
-            <span className="block text-xs font-medium uppercase tracking-wide text-[var(--ink-faint)]">
-              {tr("aboutAddressTitle", lang)}
-            </span>
-            <span className="mt-1 block font-medium text-[var(--ink)]">{tr("aboutAddressCompany", lang)}</span>
-            <span className="block">{tr("aboutAddressStreet", lang)}</span>
-            <span className="block">{tr("aboutAddressCity", lang)}</span>
-          </address>
         </section>
 
         <section className="mt-14">
@@ -152,6 +143,20 @@ export function AboutTeamView() {
 
           <TeamGrid members={EXPERT_PANEL} />
         </section>
+
+        {/*
+          Firmaets underskrift. Den står i logoets egen tone og ikke i
+          brødtekstens: navn og adresse er det ene sted på siden hvor CoSurg
+          taler som virksomhed frem for som værktøj, og tonen er den samme
+          man netop har set i mærket øverst.
+        */}
+        <footer className="mt-16 border-t border-[var(--line)] pt-6">
+          <address className="not-italic text-sm leading-relaxed text-[var(--brand-mark)]">
+            <span className="block font-medium">{tr("aboutAddressCompany", lang)}</span>
+            <span className="block">{tr("aboutAddressStreet", lang)}</span>
+            <span className="block">{tr("aboutAddressCity", lang)}</span>
+          </address>
+        </footer>
       </div>
     </main>
   );

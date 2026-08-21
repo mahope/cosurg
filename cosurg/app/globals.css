@@ -83,6 +83,15 @@
   --teal: #005355; /* SurgeonBlue */
   --teal-deep: #003a3c;
   --teal-tint: #edf3f2;
+  /*
+   * Logoets egen grundtone, aflæst direkte af brand-mark.png. Den ligger
+   * mellem --teal og --teal-deep og er hverken af dem: skal noget stå i
+   * SAMME nuance som mærket — foden af siden, hvor firmaet skriver under
+   * med navn og adresse — er det denne værdi og ikke en nabo, der gør at
+   * de to kan stå over for hinanden uden at det ses.
+   * 10,6:1 mod papiret.
+   */
+  --brand-mark: #01424a;
   --turquoise: #00bacd; /* Turquoise — energi, aldrig klinisk */
   /* Prikken foran hvert punkt i kildeprosa. Den stod i mintgrøn og satte
      dermed farve på hver eneste linje i et citat. Nu er den blæk, dæmpet:

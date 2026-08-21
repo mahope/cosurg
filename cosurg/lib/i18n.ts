@@ -23,7 +23,6 @@ export const t = {
     da: "Redaktører, bidragydere og skabere bag Nordic Surgery Labs platforme.",
     en: "Our editors, contributors and creators building CoSurg.",
   },
-  aboutAddressTitle: { da: "Adresse", en: "Address" },
   aboutAddressCompany: { da: "Nordic Surgery Lab", en: "Nordic Surgery Lab" },
   // Gadelinjen er den samme i begge sprog; kun etagen skrives om, så et
   // engelsksproget brev stadig kan skrives af på en dansk konvolut.
