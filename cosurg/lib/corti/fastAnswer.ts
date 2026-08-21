@@ -24,7 +24,46 @@ import { kildeEtiket, type KildeUddrag } from "./mcp";
  * kan altså ikke opstå, fordi mærkatet ikke er modellens at vælge frit.
  */
 
-const SYSTEM = [
+/**
+ * To stilarter, én kontrakt.
+ *
+ * CASE-stilen bruges når lægen står med en patient: kort, førende, vurdering
+ * før afhandling — en ældre kollega ved sengen, ikke et opslagsværk. REFERENCE-
+ * stilen er det fulde kildesvar og bruges kun til eksplicitte opslag uden
+ * patient. Mærknings- og kildereglerne er IDENTISKE i begge: stilen ændrer
+ * hvordan der skrives, aldrig hvad der må påstås.
+ */
+function stilBlok(caseMode: boolean): string {
+  if (!caseMode) {
+    return [
+      "HOW TO WRITE THE ANSWER — this is the part that makes it useful:",
+      "Answer like a colleague standing next to them, not like a reference work answering the exact question asked.",
+      "- Give the management in clinical order: what to do first, then next, then what to watch.",
+      "- WORK THE PITFALLS IN where they belong in that order. A pitfall is not a warning box at the end;",
+      "  it is the sentence that says 'and this is where people get it wrong'. Include the relevant ones even",
+      "  though the clinician did not ask about them — that is the whole reason they were retrieved for you.",
+      "- Say what would change the plan: a finding, a threshold, a time limit.",
+      "- Be brief. A clinician is reading this between patients. Plain text, '- ' bullets, **bold** where it helps, no headings.",
+    ].join("\n");
+  }
+  return [
+    "HOW TO WRITE THE ANSWER — the clinician is standing with a PATIENT, so lead:",
+    "- You are the senior colleague at the bedside. Assessment before exposition — never an essay.",
+    "- UNDER 200 WORDS. Short sentences. '- ' bullets and numbered steps, **bold** for the few words that matter.",
+    "- Open with one short line acknowledging the case (injury, site, what stage they are at). Never ask what they want help with.",
+    "- If a can't-miss finding is relevant, add a block: '**Røde flag:**' followed by 2-5 items, ONE line each.",
+    "  Only genuine can't-miss items for THIS injury. Never pad the list.",
+    "- Treatment as NUMBERED steps in the order they are done. Then, when they earn their place, one line each:",
+    "  '**Pearls:**', '**Pitfalls:**', '**Opfølgning:**'.",
+    "- Do NOT paste excerpt text into the answer. The sources are attached separately under the answer;",
+    "  write the clinical point in your own words and let usedIds carry the reference.",
+    "- If a decisive clinical detail is missing, END with the single most important question — one question, not a list.",
+    "- If the situation is beyond what the excerpts support, say so and recommend conferring with the on-call",
+    "  senior/burn unit — never a fluent guess.",
+  ].join("\n");
+}
+
+const SYSTEM_BASE = [
   "You are a clinical reference assistant for emergency physicians and plastic surgeons, answering about burns.",
   "You are answering from a FIXED set of excerpts given to you. You have no search tools and no memory to fall back on.",
   "",
@@ -32,14 +71,7 @@ const SYSTEM = [
   '{"answer":"...","evidence":"sourced|partial|extrapolated","reasoning":"...","limitations":"...",',
   '"spokenSummary":"...","usedIds":["excerpt ids you actually used"]}',
   "",
-  "HOW TO WRITE THE ANSWER — this is the part that makes it useful:",
-  "Answer like a colleague standing next to them, not like a reference work answering the exact question asked.",
-  "- Give the management in clinical order: what to do first, then next, then what to watch.",
-  "- WORK THE PITFALLS IN where they belong in that order. A pitfall is not a warning box at the end;",
-  "  it is the sentence that says 'and this is where people get it wrong'. Include the relevant ones even",
-  "  though the clinician did not ask about them — that is the whole reason they were retrieved for you.",
-  "- Say what would change the plan: a finding, a threshold, a time limit.",
-  "- Be brief. A clinician is reading this between patients. Plain text, '- ' bullets, **bold** where it helps, no headings.",
+  "%STIL%",
   "",
   "MARKING — this must never slip:",
   "- 'answer' holds what the excerpts support. Every clinical claim there must trace to an excerpt you list in usedIds.",
@@ -59,6 +91,10 @@ const SYSTEM = [
   "or a diagnosis — burn depth takes capillary refill and sensation testing, which no photograph contains.",
 ].join("\n");
 
+function byggSystem(caseMode: boolean): string {
+  return SYSTEM_BASE.replace("%STIL%", stilBlok(caseMode));
+}
+
 export interface HurtigtSvarInput {
   question: string;
   lang: Lang;
@@ -74,6 +110,8 @@ export interface HurtigtSvarInput {
    * står fast: hvad den konkluderer af et billede er ræsonnement, aldrig kilde.
    */
   images?: ModelBillede[];
+  /** Sand når lægen står med en patient: kort, førende svar i vurderingsrækkefølge. */
+  caseMode?: boolean;
   signal?: AbortSignal;
 }
 
@@ -101,6 +139,7 @@ export async function hurtigtSvar({
   patientContext,
   recap,
   images,
+  caseMode,
   signal,
 }: HurtigtSvarInput): Promise<ChatAnswer> {
   const language = lang === "da" ? "Danish" : "English";
@@ -123,7 +162,7 @@ export async function hurtigtSvar({
 
   const raw = await kaldModelJson<RaatSvar>({
     model: MODELS.synthesis,
-    system: SYSTEM,
+    system: byggSystem(!!caseMode),
     user: bruger,
     images,
     maxTokens: 1_800,

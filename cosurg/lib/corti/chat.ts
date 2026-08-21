@@ -337,10 +337,16 @@ export interface ChatRequest {
    * op, og vores egne opslag tager 40-60 ms mod agentens 35-72 sekunder.
    */
   grounding?: string;
+  /**
+   * Lægen står med en patient. Så skal svaret være en kollega ved sengen —
+   * kort, førende, vurdering før afhandling — ikke et litteraturreferat.
+   * Mærknings- og kildereglerne er uændrede; kun formen strammes.
+   */
+  caseMode?: boolean;
   signal?: AbortSignal;
 }
 
-function buildPrompt({ question, lang, recap, patientContext, grounding }: ChatRequest): string {
+function buildPrompt({ question, lang, recap, patientContext, grounding, caseMode }: ChatRequest): string {
   const language = lang === "da" ? "Danish" : "English";
   const lines = [`Answer in ${language}. The clinician asks:`, "", question];
 
@@ -375,6 +381,19 @@ function buildPrompt({ question, lang, recap, patientContext, grounding }: ChatR
     "Do not stop at 'no coverage in the knowledge base' — that is the first rung, not the answer.",
     "Anything you conclude rather than retrieve belongs in 'reasoning', never unmarked in 'answer'.",
   );
+
+  if (caseMode) {
+    lines.push(
+      "",
+      "STYLE — the clinician is standing with a PATIENT, so answer like the senior colleague at the bedside:",
+      "- UNDER 200 words. Short sentences, '- ' bullets, numbered steps for treatment. Never an essay.",
+      "- Open with one line acknowledging the case, then lead. Never ask what they want help with.",
+      "- Add a '**Røde flag:**' block (2-5 one-line items) when can't-miss findings are relevant to this injury.",
+      "- Treatment as numbered steps, then one line each of '**Pearls:**', '**Pitfalls:**', '**Opfølgning:**' where they earn their place.",
+      "- Do not paste quotations into the answer text — the sources are listed separately; write the point in your own words.",
+      "- If a decisive detail is missing, end with the single most important question. If beyond the evidence, recommend conferring.",
+    );
+  }
   return lines.join("\n");
 }
 

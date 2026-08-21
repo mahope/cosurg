@@ -105,7 +105,13 @@ interface Body {
 type UdgaaendeEvent =
   | ChatEvent
   /** Hvad lægen ville, hvilket spor der køres, og hvorfor. Kommer efter ~1 sekund. */
-  | { kind: "triage"; triage: Triage; mode: "fast" | "deep" | "workup" }
+  | {
+      kind: "triage";
+      triage: Triage;
+      mode: "fast" | "deep" | "workup";
+      /** "case": kort, førende svar (patient til stede). "reference": fuldt kildesvar. */
+      style?: "case" | "reference";
+    }
   /** Faldgruberne med deres ORDRETTE belæg, uafhængigt af hvad modellen skriver. */
   | { kind: "pitfalls"; pitfalls: LoestFaldgrube[] }
   /**
@@ -699,7 +705,17 @@ export async function POST(req: Request) {
           triage.routedBy === "corti-models" &&
           harGrundlag;
 
-        send({ kind: "triage", triage, mode: kanHurtigt ? "fast" : "deep" });
+        /*
+         * Stilvalget: en patientcase udløser ALDRIG et litteraturreferat.
+         * Case-stilen er kort og førende — vurdering før afhandling. Kun et
+         * EKSPLICIT opslag ("hvad siger guidelines om…", "litteratur om…")
+         * eller et spørgsmål uden patient får det fulde kildesvar.
+         */
+        const eksplicitOpslag =
+          /guideline|retningslin|litteratur|evidens|studie|pubmed|hvad siger|what (does|do) the/i.test(question);
+        const caseMode = triage.hasPatient && !eksplicitOpslag;
+
+        send({ kind: "triage", triage, mode: kanHurtigt ? "fast" : "deep", style: caseMode ? "case" : "reference" });
         if (faldgruber.length > 0) send({ kind: "pitfalls", pitfalls: faldgruber });
 
         if (kanHurtigt) {
@@ -719,6 +735,7 @@ export async function POST(req: Request) {
               // Synthesemodellen kan selv se — den får fotoene oveni
               // observationerne, og reglen om mærkning står i dens systemprompt.
               images: billeder.length > 0 ? billeder : undefined,
+              caseMode,
               signal: req.signal,
             });
             if (answer.answer) {
@@ -741,6 +758,7 @@ export async function POST(req: Request) {
           // Det agentiske framework kan ikke modtage billeder — det får
           // observationsblokken i stedet, med sin mærkningsregel intakt.
           grounding: promptBlok || undefined,
+          caseMode,
           signal: req.signal,
         })) {
           send(event);

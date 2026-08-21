@@ -35,6 +35,12 @@ export type TriageKind =
 export interface Triage {
   kind: TriageKind;
   /**
+   * Står lægen med en KONKRET patient — i ytringen eller i den medsendte
+   * kontekst? Det afgør svarstilen: en patientcase får et kort, førende svar
+   * i vurderingsrækkefølge; et opslag uden patient får det fulde kildesvar.
+   */
+  hasPatient: boolean;
+  /**
    * Rækker vores egne kilder, eller skal Cortis litteratur-eksperter i sving?
    *
    * Sand er det dyre svar (35-72 s). Reserven sætter den derfor altid sand:
@@ -58,9 +64,13 @@ const SYSTEM = [
   "You never answer the utterance and you never write clinical advice.",
   "",
   "Reply with ONLY a JSON object, no prose and no code fence:",
-  '{"kind":"treatment|fact|patient|other","needsLiterature":true|false,',
+  '{"kind":"treatment|fact|patient|other","needsLiterature":true|false,"hasPatient":true|false,',
   '"topic":"short Danish topic title","terms":["danish","clinical","search","terms"],',
   '"pitfallContext":"short Danish phrase naming the clinical situation","reason":"one short sentence"}',
+  "",
+  "hasPatient: true when the utterance (or the patient context you are given) describes a CONCRETE patient",
+  "the clinician is handling right now — an age, a mechanism, 'min patient', findings. False for abstract",
+  "questions, guideline lookups and curiosity without a case.",
   "",
   "kind:",
   "- 'treatment': asks how a condition is managed — the whole course is wanted.",
@@ -119,6 +129,9 @@ export function lokalTriage(utterance: string): Triage {
   return {
     kind: behandling ? "treatment" : "fact",
     needsLiterature: litteratur || !behandling,
+    // Reserven kan ikke se en patient i fri tekst — kalderen opgraderer den
+    // ud fra patientkonteksten, som er et sikrere signal end et regex.
+    hasPatient: false,
     topic: utterance.slice(0, 120),
     terms: termer.length > 0 ? termer : [utterance.slice(0, 60)],
     pitfallContext: utterance.slice(0, 200),
@@ -154,7 +167,11 @@ export interface TriageInput {
  */
 export async function triagér({ utterance, lang, patientContext, signal }: TriageInput): Promise<Triage> {
   if (!cortiModelsKonfigureret()) {
-    return { ...lokalTriage(utterance), reason: "CORTI_MODELS_KEY ikke sat — lokal reserve" };
+    return {
+      ...lokalTriage(utterance),
+      hasPatient: !!patientContext,
+      reason: "CORTI_MODELS_KEY ikke sat — lokal reserve",
+    };
   }
 
   const bruger = [
@@ -185,6 +202,8 @@ export async function triagér({ utterance, lang, patientContext, signal }: Tria
       // manglende felt, en streng, en model der svarede skævt — skal koste tid
       // frem for grundighed.
       needsLiterature: raw.needsLiterature !== false,
+      // En medsendt patientkontekst ER en patient, uanset hvad modellen siger.
+      hasPatient: raw.hasPatient === true || !!patientContext,
       topic: typeof raw.topic === "string" && raw.topic.trim() ? raw.topic.trim().slice(0, 120) : reserve.topic,
       terms: terms.length > 0 ? terms : reserve.terms,
       pitfallContext:
@@ -195,7 +214,7 @@ export async function triagér({ utterance, lang, patientContext, signal }: Tria
       routedBy: "corti-models",
     };
   } catch {
-    return lokalTriage(utterance);
+    return { ...lokalTriage(utterance), hasPatient: !!patientContext };
   }
 }
 
