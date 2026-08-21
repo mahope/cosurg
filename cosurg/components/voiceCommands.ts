@@ -181,6 +181,68 @@ export function matchCommand(text: string, ctx: CommandContext): VoiceCommand | 
   return null;
 }
 
+/* ------------------------------------------------------------------ *
+ * "Send" — dikteringens afsendelseskommando
+ * ------------------------------------------------------------------ */
+
+/*
+ * "Send" er en anden slags kommando end "næste": den står typisk SIDST i en
+ * lang ytring ("…blærer på underarmen. Send"), så det eksakte helheds-match
+ * ovenfor kan ikke bruges. I stedet strippes en send-vending fra HALEN af
+ * ytringen, og resten er det der skal sendes.
+ *
+ * Konservativiteten ligger i tokenet, ikke i konteksten: kun ordformen "send"
+ * (og "afsend"/"submit") tæller, aldrig "sende", "sendes" eller "sender" —
+ * "prøven skal sendes til afdelingen" rører derfor ingenting. "Sendt" (STT'ens
+ * hyppigste fejlhøring af "send") accepteres KUN som hel ytring: som hale
+ * kunne den ramme "henvisningen er sendt".
+ */
+
+/** Kerneord der kan stå som hale-kommando. Eksakte former — aldrig bøjninger. */
+const SEND_CORE = new Set(["send", "afsend", "submit"]);
+/** Hele ytringer der betyder send — her er STT-støjen "sendt" acceptabel. */
+const SEND_WHOLE = new Set(["send", "sendt", "afsend", "submit"]);
+/** Ord der må hænge EFTER kommandoen uden at ændre den ("send det nu"). */
+const SEND_TAIL = new Set(["det", "den", "nu", "tak", "besked", "beskeden", "it", "now", "message", "please"]);
+/** Bindeord der må stå lige FØR ("…og send"). */
+const SEND_LEAD = new Set(["og", "saa", "and", "then", "ok", "okay"]);
+
+export interface SendCommand {
+  hasSend: boolean;
+  /** Ytringen med kommandoen strippet — det der faktisk skal sendes. */
+  rest: string;
+}
+
+/**
+ * Find og strip en send-kommando i halen af en ytring.
+ *
+ * Virker på både interim- og final-transskription: den ser kun på ordformer,
+ * ikke på om segmentet er færdigstemplet.
+ */
+export function stripSendCommand(text: string): SendCommand {
+  const raw = text.trim().split(/\s+/).filter(Boolean);
+  if (raw.length === 0) return { hasSend: false, rest: text };
+  const norm = raw.map(normalize);
+
+  // Hele ytringen er kommandoen — også "sendt", som kun tælles her.
+  if (SEND_WHOLE.has(norm.filter(Boolean).join(" "))) return { hasSend: true, rest: "" };
+
+  // Fra halen: spring tom interpunktion over, slug op til to efterhængsord,
+  // og kræv så et eksakt kerneord.
+  let i = raw.length - 1;
+  while (i >= 0 && norm[i] === "") i -= 1;
+  let tail = 0;
+  while (i >= 0 && tail < 2 && SEND_TAIL.has(norm[i])) {
+    i -= 1;
+    tail += 1;
+  }
+  if (i < 0 || !SEND_CORE.has(norm[i])) return { hasSend: false, rest: text };
+
+  let j = i - 1;
+  if (j >= 0 && SEND_LEAD.has(norm[j])) j -= 1;
+  return { hasSend: true, rest: raw.slice(0, j + 1).join(" ") };
+}
+
 /**
  * Er ytringen appens egen stemme der er løbet retur gennem den åbne mikrofon?
  *
