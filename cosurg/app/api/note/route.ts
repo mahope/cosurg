@@ -9,6 +9,8 @@ import {
   type CodingStatus,
   type PredictedCode,
 } from "@/lib/corti/coding";
+import { rensAnamnese } from "@/lib/corti/anamnese";
+import { byggEpicNote, type EpicNoteResultat } from "@/lib/corti/epicNote";
 import { treeSource } from "@/lib/tree/loader";
 import { getDisposition, getNode } from "@/lib/tree/engine";
 import type { DecisionTree } from "@/lib/tree/types";
@@ -24,6 +26,13 @@ interface Body {
   transcript?: string;
   dictation?: string;
   system?: string;
+  /**
+   * Epic-klart notat: udfyld Rigshospitalets AOP-skabelon deterministisk af
+   * udredningens svar. Kræver `anamnese` fra workup-flowet for de felter
+   * træet ikke kender (CAVE, medicin, vægt, skadestidspunkt …).
+   */
+  epic?: boolean;
+  anamnese?: Record<string, unknown>;
 }
 
 interface ScribeResult {
@@ -129,6 +138,21 @@ export async function POST(req: Request) {
 
     const disposition = dispositionId ? getDisposition(tree, dispositionId) : undefined;
 
+    /*
+     * Epic-notatet bygges FØR de dyre kald: det er ren kode over skabelonen og
+     * udredningens svar. Fejler skabelonlæsningen, siges det ærligt i sit eget
+     * felt — det almindelige notat og koderne leveres stadig.
+     */
+    let epicNote: EpicNoteResultat | null = null;
+    let epicNoteError: string | null = null;
+    if (raw.epic === true) {
+      try {
+        epicNote = byggEpicNote({ tree, path, anamnese: rensAnamnese(raw.anamnese) });
+      } catch (err) {
+        epicNoteError = err instanceof Error ? err.message : "Skabelonen kunne ikke udfyldes";
+      }
+    }
+
     const pathText = path.map((s, i) => `${i + 1}. ${stepLine(tree, s, lang, true)}`).join("\n");
     const clinicalPathText = path.map((s) => stepLine(tree, s, lang, false)).join(" ");
 
@@ -197,6 +221,20 @@ export async function POST(req: Request) {
 
     return NextResponse.json({
       note: result.note,
+      /**
+       * Epic-klart AOP-notat, kun når `epic: true` blev bedt om. Deterministisk
+       * udfyldt — Epic-koder ordret bevaret, ukendt = ***. Se lib/corti/epicNote.ts.
+       */
+      epicNote: epicNote
+        ? {
+            note: epicNote.note,
+            udfyldte: epicNote.udfyldte,
+            udeladteBlokke: epicNote.udeladteBlokke,
+            aabneFelter: epicNote.aabneFelter,
+            parkland: epicNote.parkland,
+          }
+        : null,
+      epicNoteError,
       /** Koder Corti mener SKAL med. Kilde: /v2/tools/coding/ — ikke sprogmodellen. */
       codes: coding.codes.map((c) => toNoteCode(c, ctx, rationales)),
       /** Klinisk relevante, men valgfrie koder — til menneskelig gennemgang. */

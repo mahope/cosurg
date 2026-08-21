@@ -9,6 +9,7 @@ import type {
   TreeNode,
 } from "@/lib/tree/types";
 import { INTERPRETER_SPEC, askAgent, ensureAgent } from "./agent";
+import { rensAnamnese } from "./anamnese";
 import { MODELS, kaldModelJson } from "./models";
 
 /**
@@ -52,6 +53,12 @@ export interface WorkupKlientState {
   treeId: string;
   path: Array<{ nodeId: string; value: string; rawAnswer?: string }>;
   pending?: UdtrukketSvar[];
+  /**
+   * Anamnesen fanget undervejs (CAVE, medicin, vægt, skadestidspunkt …).
+   * Samme kontrakt som pending: klienten bærer den, serveren validerer den,
+   * og et nyere udsagn om samme felt vinder.
+   */
+  anamnese?: Record<string, string>;
 }
 
 const MAX_STI = 40;
@@ -87,7 +94,7 @@ export function validerWorkup(raw: unknown): WorkupKlientState | null {
       });
     }
   }
-  return { treeId: o.treeId.slice(0, 64), path, pending };
+  return { treeId: o.treeId.slice(0, 64), path, pending, anamnese: rensAnamnese(o.anamnese) };
 }
 
 /**
@@ -429,7 +436,8 @@ export function fremskridt(tree: DecisionTree, state: SessionState): { answered:
 export interface WorkupSpoergsmaal {
   nodeId: string;
   question: string;
-  answerType: TreeNode["answerType"];
+  /** "text" er anamnese-spørgsmålene: frit svar, gemt med lægens egne ord. */
+  answerType: TreeNode["answerType"] | "text";
   options?: Array<{ value: string; label: string }>;
   unit?: string;
   help?: string;

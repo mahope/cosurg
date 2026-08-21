@@ -29,6 +29,7 @@ import {
   type UdtrukketSvar,
   type WorkupSpoergsmaal,
 } from "@/lib/corti/workup";
+import { manglendeFelter, udtraekAnamnese, type AnamneseFelt } from "@/lib/corti/anamnese";
 import { getDisposition, getNode, startSession } from "@/lib/tree/engine";
 import { treeSource } from "@/lib/tree/loader";
 import type { AnsweredStep, DecisionTree, SessionState } from "@/lib/tree/types";
@@ -128,6 +129,8 @@ type UdgaaendeEvent =
       question?: WorkupSpoergsmaal;
       prefilled?: AnsweredStep[];
       pending?: UdtrukketSvar[];
+      /** Anamnesen fanget indtil nu — klienten gemmer og sender den tilbage. */
+      anamnese?: Record<string, string>;
       clarification?: string;
     }
   /** Et rødt flag fra træet — afbryder med besked, kilde og telefonnummer hvor træet har det. */
@@ -142,8 +145,19 @@ type UdgaaendeEvent =
       redFlags: string[];
       source: string;
     }
-  /** Tilbud om journalnotat: klienten kalder POST /api/note med {treeId, path, lang}. */
-  | { kind: "noteOffer"; treeId: string; path: AnsweredStep[] };
+  /**
+   * Tilbud om journalnotat: klienten kalder POST /api/note med
+   * {treeId, path, dispositionId, anamnese, epic: true, lang}. Sendes når både
+   * træet OG anamnesen er i mål — eller straks ved disposition hvis anamnesen
+   * allerede er dækket.
+   */
+  | {
+      kind: "noteOffer";
+      treeId: string;
+      path: AnsweredStep[];
+      dispositionId?: string;
+      anamnese?: Record<string, string>;
+    };
 
 /** Hvilke eksperter chatten faktisk har koblet på. Bruges til at være ærlig i UI'et. */
 export async function GET(req: Request) {
@@ -201,6 +215,7 @@ export async function POST(req: Request) {
   let workupTree: DecisionTree | null = null;
   let workupState: SessionState | null = null;
   let workupPending: UdtrukketSvar[] = [];
+  let workupAnamnese: Record<string, string> = {};
   if (body.workup !== undefined && body.workup !== null) {
     const kw = validerWorkup(body.workup);
     if (!kw) return NextResponse.json({ error: "Ugyldig udredningstilstand" }, { status: 400 });
@@ -216,6 +231,7 @@ export async function POST(req: Request) {
     workupTree = tree;
     workupState = state;
     workupPending = kw.pending ?? [];
+    workupAnamnese = kw.anamnese ?? {};
   }
 
   const encoder = new TextEncoder();
@@ -279,11 +295,34 @@ export async function POST(req: Request) {
          * det næste spørgsmål. Dispositionen kommer fra motorens kanter; denne
          * funktion FORMIDLER kun.
          */
+        /** Anamnese-spørgsmål i samme facon som træets — UI'et kender kun én form. */
+        const anamneseSpoergsmaal = (f: AnamneseFelt): WorkupSpoergsmaal => ({
+          nodeId: `anamnese:${f.id}`,
+          question: f.question[lang],
+          answerType: "text",
+        });
+
+        /**
+         * Samlet fremdrift: træets spørgsmål + de anamnese-felter der stadig
+         * spørges om. Skabelonen er målet, så anamnesen tæller med i "hvor
+         * langt er vi".
+         */
+        const samletFremskridt = (
+          tree: DecisionTree,
+          state: SessionState,
+          anamnese: Record<string, string>,
+        ) => {
+          const f = fremskridt(tree, state);
+          const mangler = manglendeFelter(anamnese).length;
+          return { answered: f.answered, total: f.total + mangler };
+        };
+
         const sendFremdrift = (
           tree: DecisionTree,
           frem: ReturnType<typeof rykFrem>,
           phase: "started" | "question",
           alleSvar: UdtrukketSvar[],
+          anamnese: Record<string, string>,
         ) => {
           for (const flag of frem.redFlags) {
             send({
@@ -306,7 +345,33 @@ export async function POST(req: Request) {
                 redFlags: frem.state.redFlags,
                 source: traeKilde(tree),
               });
-              send({ kind: "noteOffer", treeId: tree.id, path: frem.state.path });
+            }
+            /*
+             * Dispositionen venter aldrig på anamnesen — men journalen gør.
+             * Mangler der spurgte felter (CAVE, medicin …), fortsætter
+             * udredningen med dem. Først når alt er inde, tilbydes notatet.
+             */
+            const mangler = manglendeFelter(anamnese);
+            if (mangler.length > 0) {
+              send({
+                kind: "workup",
+                phase: "question",
+                treeId: tree.id,
+                treeName: tree.name[lang],
+                path: frem.state.path,
+                progress: samletFremskridt(tree, frem.state, anamnese),
+                question: anamneseSpoergsmaal(mangler[0]),
+                prefilled: frem.taget.length > 0 ? frem.taget : undefined,
+                anamnese,
+              });
+            } else {
+              send({
+                kind: "noteOffer",
+                treeId: tree.id,
+                path: frem.state.path,
+                dispositionId: frem.state.dispositionId,
+                anamnese,
+              });
             }
             return;
           }
@@ -321,10 +386,11 @@ export async function POST(req: Request) {
             treeId: tree.id,
             treeName: tree.name[lang],
             path: frem.state.path,
-            progress: fremskridt(tree, frem.state),
+            progress: samletFremskridt(tree, frem.state, anamnese),
             question: somSpoergsmaal(node, lang),
             prefilled: frem.taget.length > 0 ? frem.taget : undefined,
             pending: pending.length > 0 ? pending : undefined,
+            anamnese: Object.keys(anamnese).length > 0 ? anamnese : undefined,
           });
         };
 
@@ -352,12 +418,13 @@ export async function POST(req: Request) {
             const aabne = tree.nodes.filter(
               (n) => n.id === node.id || !state.path.some((p) => p.nodeId === n.id),
             );
-            const nye = await udtraekSvar(
-              question,
-              [node, ...aabne.filter((n) => n.id !== node.id)],
-              lang,
-              req.signal,
-            );
+            // Træ-svar og anamnese fanges parallelt: "det var skoldning, og han
+            // tager i øvrigt Eliquis" er ét træ-svar OG ét medicin-felt.
+            const [nye, anamneseNyt] = await Promise.all([
+              udtraekSvar(question, [node, ...aabne.filter((n) => n.id !== node.id)], lang, req.signal),
+              udtraekAnamnese(question, lang, req.signal),
+            ]);
+            const anamnese = { ...workupAnamnese, ...anamneseNyt };
 
             /*
              * De huskede svar fra tidligere ture lægges under de nye: et nyere
@@ -386,9 +453,10 @@ export async function POST(req: Request) {
                   treeId: tree.id,
                   treeName: tree.name[lang],
                   path: state.path,
-                  progress: fremskridt(tree, state),
+                  progress: samletFremskridt(tree, state, anamnese),
                   question: somSpoergsmaal(node, lang),
                   pending: workupPending.length > 0 ? workupPending : undefined,
+                  anamnese: Object.keys(anamnese).length > 0 ? anamnese : undefined,
                 });
                 // Falder igennem til det almindelige svar-flow nedenfor.
               } else {
@@ -404,9 +472,10 @@ export async function POST(req: Request) {
                     treeId: tree.id,
                     treeName: tree.name[lang],
                     path: state.path,
-                    progress: fremskridt(tree, state),
+                    progress: samletFremskridt(tree, state, anamnese),
                     question: somSpoergsmaal(node, lang),
                     pending: workupPending.length > 0 ? workupPending : undefined,
+                    anamnese: Object.keys(anamnese).length > 0 ? anamnese : undefined,
                     clarification: f.clarification,
                   });
                   return;
@@ -415,12 +484,79 @@ export async function POST(req: Request) {
             }
 
             if (svar.some((s) => s.nodeId === node.id)) {
-              sendFremdrift(tree, rykFrem(tree, state, svar, question), "question", svar);
+              sendFremdrift(tree, rykFrem(tree, state, svar, question), "question", svar, anamnese);
               return;
             }
           }
-          // Enten er dispositionen allerede nået, eller ytringen var et opslag:
-          // videre til svar-flowet med patientkonteksten fra stien.
+          if (!node && state.dispositionId) {
+            /*
+             * ANAMNESE-FASEN: træet er i mål, journalen er ikke. Vi spørger de
+             * manglende felter ét ad gangen — det først-manglende felt i
+             * katalogets rækkefølge ER det vi spurgte om sidst, så der er
+             * ingen ekstra tilstand at bære.
+             *
+             * Svaret gemmes med lægens egne ord. Fanger udtrækket ikke det
+             * spurgte felt, og er ytringen ikke et opslag, gemmes den ordret:
+             * det er lægens svar på lægens journalfelt, ikke vores fortolkning.
+             */
+            const anamneseNyt = await udtraekAnamnese(question, lang, req.signal);
+            const anamnese = { ...workupAnamnese, ...anamneseNyt };
+            const spurgt = manglendeFelter(workupAnamnese)[0];
+
+            if (spurgt && !anamnese[spurgt.id]) {
+              forudTriage = await triagér({
+                utterance: question,
+                lang,
+                patientContext: effektivKontekst,
+                signal: req.signal,
+              });
+              if (
+                forudTriage.routedBy === "corti-models" &&
+                (forudTriage.kind === "fact" || forudTriage.kind === "treatment")
+              ) {
+                send({
+                  kind: "workup",
+                  phase: "held",
+                  treeId: tree.id,
+                  treeName: tree.name[lang],
+                  path: state.path,
+                  progress: samletFremskridt(tree, state, anamnese),
+                  question: anamneseSpoergsmaal(spurgt),
+                  anamnese,
+                });
+                // Falder igennem til svar-flowet.
+              } else {
+                anamnese[spurgt.id] = question.slice(0, 300);
+              }
+            }
+
+            if (!forudTriage || anamnese[spurgt?.id ?? ""]) {
+              const mangler = manglendeFelter(anamnese);
+              if (mangler.length > 0) {
+                send({
+                  kind: "workup",
+                  phase: "question",
+                  treeId: tree.id,
+                  treeName: tree.name[lang],
+                  path: state.path,
+                  progress: samletFremskridt(tree, state, anamnese),
+                  question: anamneseSpoergsmaal(mangler[0]),
+                  anamnese,
+                });
+              } else {
+                send({
+                  kind: "noteOffer",
+                  treeId: tree.id,
+                  path: state.path,
+                  dispositionId: state.dispositionId,
+                  anamnese,
+                });
+              }
+              return;
+            }
+          }
+          // Ytringen var et opslag: videre til svar-flowet med
+          // patientkonteksten fra stien.
         }
 
         /*
@@ -452,8 +588,14 @@ export async function POST(req: Request) {
               const fg = await faldgruberTilEmne(`${triage.pitfallContext} ${triage.topic} ${question}`);
               if (fg.length > 0) send({ kind: "pitfalls", pitfalls: fg });
             }
-            const svar = await udtraekSvar(question, tree.nodes, lang, req.signal);
-            sendFremdrift(tree, rykFrem(tree, startSession(tree, lang), svar, question), "started", svar);
+            // Træ-prefill og anamnese fanges parallelt af samme beskrivelse:
+            // "54-årig mand, skoldning for 2 timer siden, tager Eliquis, 90 kg"
+            // besvarer både mekanismen, skadestidspunktet, medicinen og vægten.
+            const [svar, anamnese] = await Promise.all([
+              udtraekSvar(question, tree.nodes, lang, req.signal),
+              udtraekAnamnese(question, lang, req.signal),
+            ]);
+            sendFremdrift(tree, rykFrem(tree, startSession(tree, lang), svar, question), "started", svar, anamnese);
             return;
           }
         }

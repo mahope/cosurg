@@ -1,0 +1,101 @@
+AOP
+Indledning
+@ALDERÅRIG@ @KØN@, tidligere ***, indlægges med *** % Brandsår pga {RHPBBbrandmekanisme:92534},
+Ulykkessted {RHPBBUlykkessted:33508} i forbindelse med ***.
+Ulykkestid tid og dato ***.
+
+Behandling på skadestedet/under transport:
+Skyllet med det samme {absent/present:44040}
+
+Inhalationsskade: {RHPBBinhalationsskade (Valgfri):33519}
+
+CAVE
+@CAVE@
+
+Tidligere sygdomme
+@ANAMNESE@
+@HISTORIE@
+@VAC@
+Følger børnevaccinationsprogrammet: {absent/present:44040}
+
+Aktuelle
+***
+
+Øvrige organsystemer
+{øvrigeorgansys:27526}.
+
+Medicin
+@FMKAKTUELMEDICINHENV@
+
+Alkohol
+@ALKHIST@
+
+Tobak
+@HISTOBAK@
+
+Socialt
+Bor med ***, Forældremyndighed: {Beskrivelse; forældremyndighed:32632}
+
+Objektivt
+@V@ @BMI@ Vejrtrækning
+Højde *** cm
+Vægt: *** kg
+{PBBRHBRANDvægt:92535}
+Almentilstand
+Cavum oris: ***
+Nares: ***
+St. c.: {plast_st c:40156}
+St. p.: {st p :40159}
+
+Hud
+Arealberegner udfyldt:
+Hoved/hals: ***%
+OE: ***%
+Truncus: ***%
+UE: ***%
+Genitalia: ***%
+I alt  ***% af TSBA
+
+Forbrændingsgrad ***
+Cirkulære forbrændinger ***
+
+Diagnoser
+{brandsårskoder:35480}
+Areal af brandsår: {TBSA brand:36628}
+@PROBPW@
+
+@PROBL@
+
+Konklusion og plan
+Således @ALDERÅRIG@ @KØN@ kendt med *** indlægges med *** % ***.-gradsforbrænding efter ***. Ikke*** akut påvirket. Ingen *** inhalationsskade.
+
+Ordinationer i TC
+rp               i.v. adgang (PVK/CVK)
+rp               Vask og afklipning af bullae
+rp               Podning iht. instruks
+rp               Forbindes med Mepilex transfer, gaze og brandsårsbind
+
+På mistanke om torniquet effekt sv.t. ***
+rp               akut aflastende incisioner
+efter konf med ***
+
+Ingen *** inhalationsskade, hvorfor der ikke findes indikation for akut fiberskopi/BAL.
+
+Med et TSBA *** % og ringe peroral hydrering vurderes det relevant med
+{Væsketerapi:119487}
+
+Smertebehandling
+rp               tbl Paracetamol ***
+rp               tbl Ibuprofen ***
+rp               tbl Morfin ***
+
+Vitaminpakke:***
+
+Pt er kendt med DM, hvorfor***
+sep             tbl Metformin
+rp               s.c. Novorapid efter skema
+
+Patienten indlægges til ***, informeret om risiko for ***.
+
+Yderligere ordinationer:
+{plast_brand_ord:36629}
