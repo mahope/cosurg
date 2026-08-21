@@ -206,6 +206,8 @@ export default function Home() {
     question: string;
     guide: GuideSvar | null;
     error: string | null;
+    /** Turen opslaget blev hentet ved — dets plads i trådens kronologi. */
+    afterTurnId: string | null;
   } | null>(null);
   const [speakingTurn, setSpeakingTurn] = useState<string | null>(null);
   /** Ytringen vi ikke turde afgøre — vist som et valg frem for et gæt. */
@@ -219,8 +221,28 @@ export default function Home() {
    * opslagsværk lægen bad om at få vist. Kun ét ad gangen; en ny anmodning
    * afløser den forrige.
    */
-  const [procedure, setProcedure] = useState<{ question: string; tree: DecisionTree } | null>(null);
+  const [procedure, setProcedure] = useState<{
+    question: string;
+    tree: DecisionTree;
+    /** Samme anker som guiden — proceduren står hvor den blev bedt om. */
+    afterTurnId: string | null;
+  } | null>(null);
   const lookupBusyRef = useRef(false);
+  /*
+   * Den nyeste turliste, nået gennem et ref. `runLookup` og `showProcedure`
+   * skal kunne aflæse HVOR i tråden vi står i det øjeblik et opslag hentes —
+   * men de må ikke genskabes hver gang en tur kommer til, så de kan ikke have
+   * listen som afhængighed.
+   */
+  const turnsRef = useRef(lookupTurns);
+  useEffect(() => {
+    turnsRef.current = lookupTurns;
+  }, [lookupTurns]);
+  /** Id på den tur der står sidst lige nu — et opslags plads i kronologien. */
+  const aktueltAnker = useCallback(
+    () => turnsRef.current[turnsRef.current.length - 1]?.id ?? null,
+    [],
+  );
   /**
    * Notatfunktionen, nået gennem et ref.
    *
@@ -400,15 +422,23 @@ export default function Home() {
 
       try {
         if (useGuide) {
-          setGuideLookup({ question, guide: null, error: null });
+          // Ankeret sættes NU — ikke når svaret lander. Opslaget hører til
+          // dér hvor lægen bad om det, uanset hvor længe hentningen tager.
+          const anker = aktueltAnker();
+          setGuideLookup({ question, guide: null, error: null, afterTurnId: anker });
           try {
             const guide = await fetchGuide(question, lang);
-            setGuideLookup({ question, guide, error: null });
+            setGuideLookup({ question, guide, error: null, afterTurnId: anker });
             // Guiden har intet talt resumé — otte afsnit ordret fra kilderne kan
             // ikke læses højt. Vi siger at den står der, og lader øjnene om det.
             await finish(guide.covered > 0 ? tr("guideSpokenFound", lang) : tr("guideEmpty", lang));
           } catch (err) {
-            setGuideLookup({ question, guide: null, error: failureMessage(err, "tree", lang) });
+            setGuideLookup({
+              question,
+              guide: null,
+              error: failureMessage(err, "tree", lang),
+              afterTurnId: anker,
+            });
           }
           return;
         }
@@ -437,7 +467,7 @@ export default function Home() {
         setLookupStatus(null);
       }
     },
-    [lang, orMode, speakAll, say, askCurrent, askLookup, trees],
+    [lang, orMode, speakAll, say, askCurrent, askLookup, trees, aktueltAnker],
   );
 
   /**
@@ -1465,8 +1495,18 @@ export default function Home() {
    * svarets spørgsmål der venter.
    */
   const sidsteTur = lookupTurns[lookupTurns.length - 1];
-  const forslagVedKomposer =
-    !guideLookup && !procedure ? (sidsteTur?.answer?.suggestions ?? []) : [];
+  /*
+   * Chips viger kun når et opslag står NEDERST i tråden — altså når guiden
+   * eller proceduren er hentet ved den seneste tur og dermed er det sidste
+   * man læste. Er man gået videre bagefter, står svaret nederst igen, og så
+   * er det dets forslag der gælder.
+   */
+  const sidsteTurId = sidsteTur?.id ?? null;
+  const opslagNederst =
+    (guideLookup?.afterTurnId ?? null) === sidsteTurId && guideLookup !== null
+      ? true
+      : (procedure?.afterTurnId ?? null) === sidsteTurId && procedure !== null;
+  const forslagVedKomposer = opslagNederst ? [] : (sidsteTur?.answer?.suggestions ?? []);
 
   /**
    * Vis forbindingsproceduren — samme to veje som når der spørges om den.
@@ -1484,11 +1524,11 @@ export default function Home() {
     }
     try {
       const t = await loadTree(id);
-      setProcedure({ question: tr("procedureShow", lang), tree: t });
+      setProcedure({ question: tr("procedureShow", lang), tree: t, afterTurnId: aktueltAnker() });
     } catch (err) {
       setStatus(failureMessage(err, "tree", lang));
     }
-  }, [orMode, beginTree, loadTree, lang]);
+  }, [orMode, beginTree, loadTree, lang, aktueltAnker]);
 
   /*
    * UDREDNINGEN LÆST OP.

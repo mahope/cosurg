@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import type { ChatAnswer } from "@/lib/corti/chat";
 import type { DecisionTree, Lang } from "@/lib/tree/types";
 import type {
@@ -39,15 +39,32 @@ export interface GuideEntry {
   question: string;
   guide: GuideSvar | null;
   error: string | null;
+  /**
+   * Id på den tur der stod sidst da opslaget blev hentet — opslagets plads i
+   * kronologien. `null` betyder "før alle ture" (hentet som det allerførste).
+   *
+   * Ankeret findes fordi guide og procedure IKKE er ture i listen: de bor i
+   * hver sin state hos forælderen. Uden anker blev de tegnet efter hele
+   * turlisten, og så landede ethvert nyt svar OVER dem — proceduren blev
+   * hængende nederst som et fastlåst panel, og rækkefølgen løj.
+   */
+  afterTurnId?: string | null;
+}
+
+export interface ProcedureEntry {
+  question: string;
+  tree: DecisionTree;
+  /** Samme anker som GuideEntry — se dér. */
+  afterTurnId?: string | null;
 }
 
 interface ChatThreadProps {
   lang: Lang;
   turns: Turn[];
-  /** Behandlingsopslaget. Højst ét ad gangen, og altid det seneste ærinde. */
+  /** Behandlingsopslaget. Højst ét ad gangen; står hvor det blev hentet. */
   guide: GuideEntry | null;
   /** Proceduren vist i fuld længde — alle trin med fotos. */
-  procedure: { question: string; tree: DecisionTree } | null;
+  procedure: ProcedureEntry | null;
   speakingTurn: string | null;
   onSpeak: (answer: ChatAnswer, turnId: string) => void;
   /** Skift kilde for det seneste opslag (litteratur ↔ vidensbase). */
@@ -100,66 +117,98 @@ export function ChatThread({
 
   const lastTurnId = turns.length > 0 ? turns[turns.length - 1].id : null;
 
+  /*
+   * Ankeret normaliseres ét sted. Mangler det (ældre tilstand, fx en samtale
+   * hentet frem fra historikken), regnes opslaget som hentet ved den seneste
+   * tur — samme plads som før, bare uden at kunne fastlåse sig nederst.
+   */
+  const guideAnker = guide ? (guide.afterTurnId !== undefined ? guide.afterTurnId : lastTurnId) : undefined;
+  const procedureAnker = procedure
+    ? procedure.afterTurnId !== undefined
+      ? procedure.afterTurnId
+      : lastTurnId
+    : undefined;
+
+  const guideBlok = guide ? (
+    <section key="guide">
+      <QuestionBubble text={guide.question} />
+      <p className="mt-3 font-[family-name:var(--font-mono)] text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--ink-faint)]">
+        {tr("lookupTitle", lang)} · <span className="text-[var(--teal)]">{tr("originKnowledgeBase", lang)}</span>
+      </p>
+      <div className="mt-2">
+        {guide.guide ? (
+          <div className="rounded-2xl border bg-[var(--paper-raised)] p-5 shadow-[var(--shadow-raised)] sm:p-6">
+            <GuidePanel guide={guide.guide} lang={lang} topic={guide.question} onAskInstead={onSwitch} />
+          </div>
+        ) : guide.error ? (
+          <p className="rounded-2xl border border-dashed border-[var(--nude-deep)] bg-[var(--nude-tint)] px-4 py-3 text-sm leading-relaxed text-[var(--nude-ink)]">
+            {guide.error}
+          </p>
+        ) : (
+          <ProgressTrail progress={[{ expert: null, text: tr("guideFetching", lang) }]} lang={lang} />
+        )}
+      </div>
+    </section>
+  ) : null;
+
+  /*
+   * Proceduren står dér hvor den blev bedt om — ikke nederst. Bad lægen om
+   * den midt i en samtale, og spørger han videre bagefter, skal svaret stå
+   * UNDER proceduren, ligesom alt andet i en tråd.
+   */
+  const procedureBlok = procedure ? (
+    <section key="procedure">
+      <QuestionBubble text={procedure.question} />
+      <div className="mt-3">
+        <ProcedureSteps tree={procedure.tree} lang={lang} />
+      </div>
+    </section>
+  ) : null;
+
+  /** Opslagene der hører til lige EFTER denne tur (null = før alle ture). */
+  const ankret = (id: string | null) => (
+    <>
+      {guideAnker === id && guideBlok}
+      {procedureAnker === id && procedureBlok}
+    </>
+  );
+
+  /*
+   * Er et opslag det SIDSTE i tråden? Så er den seneste tur ikke længere det
+   * nederste — og dens knapper (kildeskift, forløbstilbud) hører til et svar
+   * man er gået videre fra.
+   */
+  const opslagSidst = guideAnker === lastTurnId || procedureAnker === lastTurnId;
+
   return (
     <div className="mx-auto max-w-3xl space-y-6">
+      {ankret(null)}
+
       {turns.map((turn) => (
-        <TurnEntry
-          key={turn.id}
-          turn={turn}
-          lang={lang}
-          speaking={speakingTurn === turn.id}
-          onSpeak={(answer) => onSpeak(answer, turn.id)}
-          /* Kildeskiftet og forløbstilbuddet hører kun til det SENESTE svar —
-             et ældre svar er læst og afgjort, og en knap der skiftede kilden
-             på det ville i virkeligheden stille spørgsmålet forfra. */
-          isLatest={!guide && turn.id === lastTurnId}
-          onSwitch={onSwitch}
-          offer={!guide && turn.id === lastTurnId ? offer : null}
-          /* Hurtig-svar og notat-tilbud hører kun til den SENESTE tur: en
-             ældre udredning er allerede besvaret, og knapper der stadig
-             kunne trykkes ville sende samtalen tilbage i tiden. */
-          interactive={turn.id === lastTurnId}
-          onQuickReply={onQuickReply}
-          onWriteNote={onWriteNote}
-          noteBusy={noteBusy}
-          onShowProcedure={onShowProcedure}
-        />
+        <Fragment key={turn.id}>
+          <TurnEntry
+            turn={turn}
+            lang={lang}
+            speaking={speakingTurn === turn.id}
+            onSpeak={(answer) => onSpeak(answer, turn.id)}
+            /* Kildeskiftet og forløbstilbuddet hører kun til det SENESTE svar —
+               et ældre svar er læst og afgjort, og en knap der skiftede kilden
+               på det ville i virkeligheden stille spørgsmålet forfra. */
+            isLatest={!opslagSidst && turn.id === lastTurnId}
+            onSwitch={onSwitch}
+            offer={!opslagSidst && turn.id === lastTurnId ? offer : null}
+            /* Hurtig-svar og notat-tilbud hører kun til den SENESTE tur: en
+               ældre udredning er allerede besvaret, og knapper der stadig
+               kunne trykkes ville sende samtalen tilbage i tiden. */
+            interactive={turn.id === lastTurnId}
+            onQuickReply={onQuickReply}
+            onWriteNote={onWriteNote}
+            noteBusy={noteBusy}
+            onShowProcedure={onShowProcedure}
+          />
+          {ankret(turn.id)}
+        </Fragment>
       ))}
-
-      {guide && (
-        <section>
-          <QuestionBubble text={guide.question} />
-          <p className="mt-3 font-[family-name:var(--font-mono)] text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--ink-faint)]">
-            {tr("lookupTitle", lang)} · <span className="text-[var(--teal)]">{tr("originKnowledgeBase", lang)}</span>
-          </p>
-          <div className="mt-2">
-            {guide.guide ? (
-              <div className="rounded-2xl border bg-[var(--paper-raised)] p-5 shadow-[var(--shadow-raised)] sm:p-6">
-                <GuidePanel guide={guide.guide} lang={lang} topic={guide.question} onAskInstead={onSwitch} />
-              </div>
-            ) : guide.error ? (
-              <p className="rounded-2xl border border-dashed border-[var(--nude-deep)] bg-[var(--nude-tint)] px-4 py-3 text-sm leading-relaxed text-[var(--nude-ink)]">
-                {guide.error}
-              </p>
-            ) : (
-              <ProgressTrail progress={[{ expert: null, text: tr("guideFetching", lang) }]} lang={lang} />
-            )}
-          </div>
-        </section>
-      )}
-
-      {/*
-        Proceduren. Den står nederst fordi den altid er det seneste ærinde:
-        lægen bad om at få den vist, og en anmodning afløser den forrige.
-      */}
-      {procedure && (
-        <section>
-          <QuestionBubble text={procedure.question} />
-          <div className="mt-3">
-            <ProcedureSteps tree={procedure.tree} lang={lang} />
-          </div>
-        </section>
-      )}
 
       <div ref={endRef} aria-hidden="true" />
     </div>
