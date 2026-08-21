@@ -109,6 +109,32 @@ const STOPORD = new Set([
   "and", "or", "with", "to", "on", "in", "of", "how", "what", "do", "does", "is", "are", "should", "my",
 ]);
 
+/*
+ * Deterministiske patient-signaler til reserven.
+ *
+ * Produktionsfund 21/8: "55-årig kvinde med skoldning på underarmen, blærer,
+ * kom efter 2 timer" blev triageret som opslag da Models ikke svarede — og
+ * lægen ved sengen fik et litteraturreferat i stedet for case-formatet.
+ * En alder, et "pt.", eller en skadesmekanisme sammen med person/kropsdel/
+ * fund/fremmøde ER en patient, og det kan et regex se uden en model.
+ */
+const ALDER = /\b\d{1,3}\s*[-–]?\s*(årig|aarig|år|aar|year[s]?[- ]old|y\/?o)\b/i;
+const PATIENTORD = /\b(pt|patienten?|min patient|my patient)\b\.?/i;
+const PERSON = /\b(mand|kvinde|barn|dreng|pige|man|woman|child|boy|girl)\b/i;
+const MEKANISME =
+  /\b(skoldning|skoldet|forbrænding|forbraending|forbrændt|forbraendt|brandsår|brandsaar|flamme|el-?skade|elektrisk|strømskade|stroemskade|kemisk|ætsning|aetsning|scald(ed|ing)?|burn(ed|t|s)?)\b/i;
+const KROPSDEL =
+  /\b(underarm(en)?|overarm(en)?|arm(en)?|hånd(en)?|haand(en)?|hand|finger|ansigt(et)?|face|ben(et)?|lår(et)?|laar(et)?|fod(en)?|foot|bryst(et)?|ryg(gen)?|hals(en)?|thorax|torso)\b/i;
+const FUND = /\b(blærer|blaerer|bullae|blister[s]?|væskende|vaeskende)\b/i;
+const FREMMOEDE = /\b(kom|mødte|moedte|ankom|henvendte?|presented|arrived|came)\b/i;
+
+/** Står der en konkret patient i ytringen? Bevidst konservativ — men aldrig blind. */
+export function erPatientBeskrivelse(tekst: string): boolean {
+  if (ALDER.test(tekst) || PATIENTORD.test(tekst)) return true;
+  if (!MEKANISME.test(tekst)) return false;
+  return PERSON.test(tekst) || KROPSDEL.test(tekst) || FUND.test(tekst) || FREMMOEDE.test(tekst);
+}
+
 function lokaleTermer(tekst: string): string[] {
   return tekst
     .toLowerCase()
@@ -126,16 +152,24 @@ export function lokalTriage(utterance: string): Triage {
   const termer = lokaleTermer(utterance);
   const behandling = BEHANDLINGSORD.test(utterance);
   const litteratur = LITTERATUR_ORD.test(utterance);
+  /*
+   * En patientbeskrivelse skal give case-formatet OGSÅ når Models er nede.
+   * Kind sættes til "treatment": lægen ved sengen vil have forløbet, ikke et
+   * enkeltstående faktum — og det er kind der udløser behandlingsgrundlaget.
+   * (Workup-åbning kræver fortsat routedBy "corti-models"; reserven åbner
+   * aldrig et træ på et regex.)
+   */
+  const patient = erPatientBeskrivelse(utterance);
   return {
-    kind: behandling ? "treatment" : "fact",
-    needsLiterature: litteratur || !behandling,
-    // Reserven kan ikke se en patient i fri tekst — kalderen opgraderer den
-    // ud fra patientkonteksten, som er et sikrere signal end et regex.
-    hasPatient: false,
+    kind: patient || behandling ? "treatment" : "fact",
+    needsLiterature: litteratur || !(patient || behandling),
+    hasPatient: patient,
     topic: utterance.slice(0, 120),
     terms: termer.length > 0 ? termer : [utterance.slice(0, 60)],
     pitfallContext: utterance.slice(0, 200),
-    reason: "Corti Models svarede ikke — lokal reserve",
+    reason: patient
+      ? "Corti Models svarede ikke — lokal reserve, patient-signaler i ytringen"
+      : "Corti Models svarede ikke — lokal reserve",
     routedBy: "lokal",
   };
 }
@@ -167,9 +201,12 @@ export interface TriageInput {
  */
 export async function triagér({ utterance, lang, patientContext, signal }: TriageInput): Promise<Triage> {
   if (!cortiModelsKonfigureret()) {
+    const reserve = lokalTriage(utterance);
     return {
-      ...lokalTriage(utterance),
-      hasPatient: !!patientContext,
+      ...reserve,
+      // En medsendt patientkontekst ER en patient — men den må aldrig
+      // NEDGRADERE hvad reserven selv så i ytringen.
+      hasPatient: reserve.hasPatient || !!patientContext,
       reason: "CORTI_MODELS_KEY ikke sat — lokal reserve",
     };
   }
@@ -189,7 +226,10 @@ export async function triagér({ utterance, lang, patientContext, signal }: Tria
       system: SYSTEM,
       user: bruger,
       maxTokens: 350,
-      timeoutMs: 6_000,
+      // Målt 0,7-2,0 s — men set i prod at 6 s ikke rakte (koldt token-fetch
+      // eller langsom opstart). 9 s er stadig billigt mod de 35-72 s et
+      // fejlrutet svar koster, og reserven ruter nu rigtigt uanset.
+      timeoutMs: 9_000,
       signal,
     });
 
@@ -214,7 +254,8 @@ export async function triagér({ utterance, lang, patientContext, signal }: Tria
       routedBy: "corti-models",
     };
   } catch {
-    return { ...lokalTriage(utterance), hasPatient: !!patientContext };
+    const reserve = lokalTriage(utterance);
+    return { ...reserve, hasPatient: reserve.hasPatient || !!patientContext };
   }
 }
 
