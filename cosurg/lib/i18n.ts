@@ -690,7 +690,7 @@ export const t = {
 
   intakeQuestion: { da: "Fortæl mig om patienten", en: "Tell me about our patient" },
   intakeHelp: {
-    da: "Tal eller skriv. Jeg hjælper dig med at udrede og behandle.",
+    da: "Tal eller skriv. Jeg hjælper dig med udredning og behandling.",
     en: "Talk or type. I help you assess and treat.",
   },
   intakePlaceholder: {
