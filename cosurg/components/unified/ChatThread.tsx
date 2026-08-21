@@ -20,6 +20,7 @@ import { tr } from "@/lib/i18n";
 import type { GuideSvar } from "./guide";
 import { GuidePanel } from "./GuidePanel";
 import { ProcedureSteps } from "./ProcedureSteps";
+import { TurnImages } from "./TurnImages";
 
 /**
  * SAMTALEN — forsiden efter det første spørgsmål.
@@ -283,6 +284,14 @@ function TurnEntry({
           {tr("chatRestored", lang)}
         </p>
       )}
+
+      {/*
+        Fotoet lægen spurgte MED. Det står ved hans egen ytring — samme side
+        af tråden som boblen — og bliver siddende, så man bagefter kan se
+        hvad spørgsmålet handlede om. Miniaturen er nedskaleret (320 px);
+        det fulde billede rejste med POST'en og gemmes ingen steder.
+      */}
+      {turn.images && turn.images.length > 0 && <TurnImages images={turn.images} lang={lang} />}
 
       <div className="mt-3">
         {/* Billedobservationen står FØR svaret: lægen skal vide hvad modellen

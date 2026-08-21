@@ -12,6 +12,7 @@ import type { ChatAnswer } from "@/lib/corti/chat";
 import type { Lang } from "@/lib/tree/types";
 import { spokenText } from "@/components/unified/spoken";
 import { VisionBlock } from "@/components/unified/ChatThread";
+import { TurnImages } from "@/components/unified/TurnImages";
 import { PitfallCard } from "@/components/pitfalls/PitfallCard";
 import { AnswerCard } from "./AnswerCard";
 import { ChatComposer } from "./ChatComposer";
@@ -352,6 +353,10 @@ export function ChatView() {
                     {tr("chatRestored", lang)}
                   </p>
                 )}
+
+                {/* Fotoet ved ytringen — samme blok som forsidens tråd. De to
+                    flader skal vise det samme spørgsmål på samme måde. */}
+                {turn.images && turn.images.length > 0 && <TurnImages images={turn.images} lang={lang} />}
 
                 {/*
                   Samme blokke som forsidens tråd — de to flader skal give det

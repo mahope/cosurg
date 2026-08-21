@@ -102,9 +102,18 @@ function writeAll(all: SavedConversation[]): void {
  * En gemt tur er altid FÆRDIG. Fremdriftslinjerne var live-status fra et kald
  * der ikke længere kører, og `done: false` ville få en genåbnet samtale til at
  * stå med en evig spinner over en tur der for længst er landet.
+ *
+ * Billedminiaturerne ryger også. De er data-URL'er på titusinder af tegn, og
+ * localStorage har få megabyte til FEMTEN samtaler — et par fototure ville
+ * æde kvoten og få writeAll til at smide ældre samtaler væk for at få plads.
+ * Miniaturen lever i sessionen, hvor den hører til; historikken bærer ordene.
+ * Billedanalysens observationer bliver derimod stående — de er tekst, og de er
+ * det klinisk brugbare ved fotoet.
  */
 function sanitizeTurn(turn: Turn): Turn {
-  return { ...turn, progress: [], done: true };
+  const { images, ...rest } = turn;
+  void images;
+  return { ...rest, progress: [], done: true };
 }
 
 /** Titlen er første ytring, klippet ved et ordskel så den ikke ender midt i et ord. */

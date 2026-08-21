@@ -78,3 +78,66 @@ export async function readAttachment(file: File): Promise<Attachment | AttachErr
 export function toChatImages(attachments: Attachment[]): ChatImage[] {
   return attachments.map(({ mediaType, data, name }) => ({ mediaType, data, name }));
 }
+
+/* ------------------------------------------------------------------ *
+ * Miniaturen der bliver i tråden
+ * ------------------------------------------------------------------ */
+
+/**
+ * Fotoet skal kunne SES bagefter.
+ *
+ * Et spørgsmål med et billede er halvt uforståeligt uden billedet — "hvad ser
+ * du her?" giver ingen mening ved siden af et svar, hvis fotoet forsvandt i
+ * det sekund det blev sendt. Men det fulde foto er 1-8 MB base64, og fire af
+ * dem i en samtale ville fylde hukommelsen med data ingen kigger på i fuld
+ * opløsning.
+ *
+ * Derfor gemmes en NEDSKALERET kopi til visning. 320 px er nok til en
+ * miniature og til lysbordet på en telefon, og JPEG q0.72 bringer en typisk
+ * sårfoto ned i størrelsesordenen 15-25 kB — tre størrelsesordner mindre.
+ */
+const PREVIEW_MAX_PX = 320;
+const PREVIEW_QUALITY = 0.72;
+
+/** Miniaturen som tråden holder på: en data-URL, ikke det fulde billede. */
+export interface TurnImage {
+  url: string;
+  name?: string;
+}
+
+/**
+ * Nedskalér ét billede til en miniature.
+ *
+ * Kan browseren ikke tegne det (manglende canvas-kontekst, korrupt fil),
+ * returneres null — en manglende miniature må aldrig vælte turen.
+ */
+export function makePreview(image: ChatImage): Promise<TurnImage | null> {
+  return new Promise((resolve) => {
+    if (typeof document === "undefined") return resolve(null);
+    const img = new window.Image();
+    img.onload = () => {
+      try {
+        const skala = Math.min(1, PREVIEW_MAX_PX / Math.max(img.width, img.height));
+        const w = Math.max(1, Math.round(img.width * skala));
+        const h = Math.max(1, Math.round(img.height * skala));
+        const canvas = document.createElement("canvas");
+        canvas.width = w;
+        canvas.height = h;
+        const ctx = canvas.getContext("2d");
+        if (!ctx) return resolve(null);
+        ctx.drawImage(img, 0, 0, w, h);
+        resolve({ url: canvas.toDataURL("image/jpeg", PREVIEW_QUALITY), name: image.name });
+      } catch {
+        resolve(null);
+      }
+    };
+    img.onerror = () => resolve(null);
+    img.src = `data:${image.mediaType};base64,${image.data}`;
+  });
+}
+
+/** Miniaturer for en hel vedhæftning, parallelt. Dem der fejler falder bort. */
+export async function makePreviews(images: ChatImage[]): Promise<TurnImage[]> {
+  const alle = await Promise.all(images.map(makePreview));
+  return alle.filter((p): p is TurnImage => p !== null);
+}

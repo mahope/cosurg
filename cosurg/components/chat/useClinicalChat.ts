@@ -15,7 +15,7 @@ import {
   saveConversation,
   type SavedConversation,
 } from "@/lib/history";
-import type { ChatImage } from "../attachments";
+import { makePreviews, type ChatImage, type TurnImage } from "../attachments";
 
 /**
  * Billedanalysens udfald. `ok: false` betyder at fotoet IKKE indgik i svaret —
@@ -177,6 +177,15 @@ export interface Turn {
   restored?: boolean;
   /** Statuslinjer fra agenten mens den arbejder. */
   progress: Array<{ expert: string | null; text: string }>;
+  /**
+   * Fotoet lægen sendte med, som nedskaleret miniature.
+   *
+   * Det fulde billede rejser med POST'en og gemmes ingen steder — men
+   * SPØRGSMÅLET er halvt uforståeligt uden det billede det handlede om, så
+   * miniaturen bliver i turen resten af sessionen. Den persisteres ikke:
+   * lib/history.ts skræller den af inden localStorage.
+   */
+  images?: TurnImage[];
   /** Billedanalysen, når der var fotos med. Kommer FØR svaret. */
   vision?: VisionResult;
   /** Faldgruberne for emnet, hver med sit ordrette belæg. Rutens egne, ikke modellens. */
@@ -359,6 +368,18 @@ export function useClinicalChat(lang: Lang) {
         { id, question: text, progress: [], done: false, restored: Boolean(recap) },
       ]);
       setBusy(true);
+
+      /*
+       * Miniaturen laves ved siden af kaldet, ikke før det. Nedskaleringen
+       * koster nogle hundrede millisekunder på et stort foto, og spørgsmålet
+       * må ikke vente på et billede der kun skal SES: turen står allerede på
+       * skærmen, og miniaturen falder på plads når den er klar.
+       */
+      if (images && images.length > 0) {
+        void makePreviews(images).then((previews) => {
+          if (previews.length > 0) patch(id, { images: previews });
+        });
+      }
 
       const controller = new AbortController();
       abortRef.current = controller;
