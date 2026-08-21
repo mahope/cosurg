@@ -11,7 +11,7 @@ import {
 } from "@/lib/corti/coding";
 import { rensAnamnese } from "@/lib/corti/anamnese";
 import { byggEpicNote, type EpicNoteResultat } from "@/lib/corti/epicNote";
-import { udfyldEpicNoteMedAi } from "@/lib/corti/epicUdtraek";
+import { findManglende, udfyldEpicNoteMedAi } from "@/lib/corti/epicUdtraek";
 import { treeSource } from "@/lib/tree/loader";
 import { getDisposition, getNode } from "@/lib/tree/engine";
 import type { DecisionTree } from "@/lib/tree/types";
@@ -20,7 +20,8 @@ import type { AnsweredStep, Lang } from "@/lib/tree/types";
 export const dynamic = "force-dynamic";
 
 interface Body {
-  treeId: string;
+  /** Valgfrit: uden træ bygges Epic-notatet fra rå samtalehistorik alene. */
+  treeId?: string;
   lang: Lang;
   path: AnsweredStep[];
   dispositionId: string | null;
@@ -130,18 +131,28 @@ export async function POST(req: Request) {
     const transcript = cap(raw.transcript, LIMITS.transcript);
     const dictation = cap(raw.dictation, LIMITS.dictation);
     const system = isKnownSystem(raw.system) ? raw.system : DEFAULT_CODING_SYSTEM;
-    // Stien kommer fra vores eget træ — begræns længden så en forfalsket klient
-    // ikke kan sende en uendelig prompt afsted på vores regning.
-    const path = Array.isArray(raw.path) ? raw.path.slice(0, 40) : [];
+    /*
+     * Uden treeId bygges notatet fra RÅ samtale alene — AI-udtrækket henter
+     * hvad den kan af transskript, anamnese og diktat, og skabelonens ***
+     * siger ærligt hvad der mangler. Et OPGIVET men ukendt treeId er derimod
+     * stadig en fejl: klienten troede den havde træ-state, og et notat uden
+     * dens svar ville lyve om hvad der blev bedt om.
+     */
+    const tree = treeId ? ((await treeSource.get(treeId)) ?? null) : null;
+    if (treeId && !tree) return NextResponse.json({ error: "Ukendt træ" }, { status: 404 });
 
-    const tree = await treeSource.get(treeId);
-    if (!tree) return NextResponse.json({ error: "Ukendt træ" }, { status: 404 });
+    // Stien kommer fra vores eget træ — uden træ er den meningsløs, og med træ
+    // begrænses længden så en forfalsket klient ikke kan sende en uendelig
+    // prompt afsted på vores regning.
+    const path = tree && Array.isArray(raw.path) ? raw.path.slice(0, 40) : [];
 
-    const disposition = dispositionId ? getDisposition(tree, dispositionId) : undefined;
+    const disposition = tree && dispositionId ? getDisposition(tree, dispositionId) : undefined;
 
     const anamnese = rensAnamnese(raw.anamnese);
-    const pathText = path.map((s, i) => `${i + 1}. ${stepLine(tree, s, lang, true)}`).join("\n");
-    const clinicalPathText = path.map((s) => stepLine(tree, s, lang, false)).join(" ");
+    const pathText = tree
+      ? path.map((s, i) => `${i + 1}. ${stepLine(tree, s, lang, true)}`).join("\n")
+      : "";
+    const clinicalPathText = tree ? path.map((s) => stepLine(tree, s, lang, false)).join(" ") : "";
 
     /*
      * Epic-notatet: modellen udfylder hele skabelonen af HELE samtalen —
@@ -153,12 +164,12 @@ export async function POST(req: Request) {
      * kodning og skribent, så det ikke koster svartid.
      */
     /*
-     * "Skriv notatet" BETYDER det rigtige AOP-notat: for brandsårs-forløbet
-     * bygges det altid, også når klienten ikke eksplicit bad om det —
-     * `epic: false` er den eneste vej udenom. Andre træer har ingen
-     * AOP-skabelon endnu og kræver fortsat eksplicit `epic: true`.
+     * "Skriv notatet" BETYDER det rigtige AOP-notat: for brandsårs-forløbet og
+     * for træ-løse kald bygges det altid — `epic: false` er den eneste vej
+     * udenom. Kun andre træer (uden AOP-skabelon) kræver eksplicit `epic: true`.
      */
-    const vilEpic = raw.epic === true || (raw.epic !== false && tree.id === "burns-dk");
+    const vilEpic =
+      raw.epic !== false && (raw.epic === true || !tree || tree.id === "burns-dk");
     const epicAiPromise =
       vilEpic
         ? udfyldEpicNoteMedAi({
@@ -175,18 +186,23 @@ export async function POST(req: Request) {
         : null;
 
     // Kodemodellen får kilderne hver for sig, så evidensen kan spores tilbage til
-    // den rigtige kilde: beslutningsvejen, konsultationen eller lægens diktat.
+    // den rigtige kilde: beslutningsvejen (når der er en), konsultationen eller
+    // lægens diktat.
     const codingContexts: CodingContextItem[] = [
-      {
-        label: lang === "da" ? "Beslutningsvej" : "Decision path",
-        text: [
-          `${tree.name[lang]}.`,
-          clinicalPathText,
-          disposition ? `${disposition.title[lang]}. ${disposition.guidance[lang]}` : "",
-        ]
-          .filter(Boolean)
-          .join(" "),
-      },
+      ...(tree
+        ? [
+            {
+              label: lang === "da" ? "Beslutningsvej" : "Decision path",
+              text: [
+                `${tree.name[lang]}.`,
+                clinicalPathText,
+                disposition ? `${disposition.title[lang]}. ${disposition.guidance[lang]}` : "",
+              ]
+                .filter(Boolean)
+                .join(" "),
+            },
+          ]
+        : []),
       { label: lang === "da" ? "Konsultation" : "Encounter", text: transcript },
       { label: lang === "da" ? "Diktat" : "Dictation", text: dictation },
     ];
@@ -196,71 +212,79 @@ export async function POST(req: Request) {
     //    er brugbart, et notat med opfundne koder er ikke.
     const coding = await predictCodes(codingContexts, system);
 
-    const allCodes = [...coding.codes, ...coding.candidates];
-    const codeList = allCodes.map((c) => `- ${c.code} = ${c.display}`).join("\n");
-
-    // 2) Notatet — og en begrundelse pr. kode. Agenten må forklare, ikke kode.
-    const prompt = [
-      `Language: ${lang === "da" ? "Danish" : "English"}`,
-      `Decision tree: ${tree.name[lang]} (${tree.version})`,
-      "",
-      `Completed decision path:\n${pathText}`,
-      "",
-      disposition
-        ? `Tree recommendation (restate verbatim in the plan):\n${disposition.title[lang]}\n${disposition.guidance[lang]}`
-        : "No disposition reached.",
-      transcript ? `\nEncounter transcript:\n${transcript}` : "",
-      dictation ? `\nClinician's dictated addendum (include as its own section):\n${dictation}` : "",
-      "",
-      "Write the note with submit_note. Sections: Anamnese/History, Objektivt/Findings, Vurdering/Assessment, Plan.",
-      codeList
-        ? [
-            "",
-            `Medical codes assigned by the Corti coding system (${system}) for this encounter,`,
-            "given as `code = description`. Return one codeRationales entry per line, where",
-            "`code` is ONLY the code itself (the part before ' = '), copied character for character:",
-            codeList,
-          ].join("\n")
-        : "No codes were returned; return an empty codeRationales array.",
-    ]
-      .filter(Boolean)
-      .join("\n");
-
-    const agentId = await ensureAgent(SCRIBE_SPEC);
-    const { result } = await askAgent<ScribeResult>(agentId, prompt);
-
     /*
-     * Nu — efter de dyre kald — hentes AI-udfyldningen hjem. Den har haft hele
-     * kodnings- og skribent-tiden til at blive færdig i. Fejler den eller
-     * afvises den af vagterne, bygges notatet deterministisk som før; fejler
-     * selv reserven, siges det ærligt i sit eget felt.
+     * 2) ÉT notat. AI-udfyldningen har haft hele kodnings-tiden til at blive
+     * færdig i; nu hentes den hjem. Fejler den eller afvises den af vagterne,
+     * bygges notatet deterministisk; fejler selv reserven, siges det ærligt i
+     * sit eget felt. Lykkes Epic-notatet, ER det notatet — den gamle
+     * skribent-agent (14-16 s) springes helt over, og `note` spejler blot
+     * Epic-notatet for bagudkompatibilitet.
      */
     let epicNote: EpicNoteResultat | null = null;
     let epicNoteError: string | null = null;
     if (vilEpic) {
       try {
         epicNote =
-          (epicAiPromise ? await epicAiPromise : null) ??
-          byggEpicNote({ tree, path, anamnese });
+          (epicAiPromise ? await epicAiPromise : null) ?? byggEpicNote({ tree, path, anamnese });
+        epicNote.manglende = findManglende(epicNote, path, anamnese, lang);
       } catch (err) {
         epicNoteError = err instanceof Error ? err.message : "Skabelonen kunne ikke udfyldes";
       }
     }
 
-    const rationales = new Map(
-      (result.codeRationales ?? [])
-        .filter((r) => r && typeof r.code === "string" && typeof r.rationale === "string")
-        .map((r) => [codeKey(r.code), r.rationale]),
-    );
+    let noteText = epicNote?.note ?? "";
+    const rationales = new Map<string, string>();
+    if (!epicNote) {
+      // Reserve-sporet (andre træer, eller Epic-notatet fejlede helt): den
+      // hidtidige skribent-agent — og en begrundelse pr. kode. Agenten må
+      // forklare, ikke kode.
+      const allCodes = [...coding.codes, ...coding.candidates];
+      const codeList = allCodes.map((c) => `- ${c.code} = ${c.display}`).join("\n");
+      const prompt = [
+        `Language: ${lang === "da" ? "Danish" : "English"}`,
+        tree ? `Decision tree: ${tree.name[lang]} (${tree.version})` : "No decision tree was used.",
+        "",
+        pathText ? `Completed decision path:\n${pathText}` : "",
+        "",
+        disposition
+          ? `Tree recommendation (restate verbatim in the plan):\n${disposition.title[lang]}\n${disposition.guidance[lang]}`
+          : "No disposition reached.",
+        transcript ? `\nEncounter transcript:\n${transcript}` : "",
+        dictation ? `\nClinician's dictated addendum (include as its own section):\n${dictation}` : "",
+        "",
+        "Write the note with submit_note. Sections: Anamnese/History, Objektivt/Findings, Vurdering/Assessment, Plan.",
+        codeList
+          ? [
+              "",
+              `Medical codes assigned by the Corti coding system (${system}) for this encounter,`,
+              "given as `code = description`. Return one codeRationales entry per line, where",
+              "`code` is ONLY the code itself (the part before ' = '), copied character for character:",
+              codeList,
+            ].join("\n")
+          : "No codes were returned; return an empty codeRationales array.",
+      ]
+        .filter(Boolean)
+        .join("\n");
+
+      const agentId = await ensureAgent(SCRIBE_SPEC);
+      const { result } = await askAgent<ScribeResult>(agentId, prompt);
+      noteText = result.note;
+      for (const r of result.codeRationales ?? []) {
+        if (r && typeof r.code === "string" && typeof r.rationale === "string") {
+          rationales.set(codeKey(r.code), r.rationale);
+        }
+      }
+    }
 
     const ctx = coding.contexts;
 
     return NextResponse.json({
-      note: result.note,
+      /** Bagudkompatibelt spejl: når Epic-notatet findes, ER det notatet. */
+      note: noteText,
       /**
-       * Epic-klart AOP-notat, kun når `epic: true` blev bedt om. Udfyldt af
-       * modellen bag en deterministisk token-vagt (se lib/corti/epicUdtraek.ts),
-       * ellers deterministisk reserve — Epic-koder ordret bevaret, ukendt = ***.
+       * DET ene journalnotat: Epic-klar AOP, udfyldt af modellen bag en
+       * deterministisk token-vagt (se lib/corti/epicUdtraek.ts), ellers
+       * deterministisk reserve — Epic-koder ordret bevaret, ukendt = ***.
        */
       epicNote: epicNote
         ? {
@@ -271,6 +295,8 @@ export async function POST(req: Request) {
             parkland: epicNote.parkland,
             /** Additivt: "model" (token-valideret AI) eller "deterministisk". */
             kilde: epicNote.kilde,
+            /** Additivt: 2-4 klinisk vigtigste huller som spørgsmål til lægen. */
+            manglende: epicNote.manglende ?? [],
           }
         : null,
       epicNoteError,

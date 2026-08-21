@@ -28,9 +28,16 @@ import { beregnParkland, foersteTal } from "./anamnese";
  */
 
 export interface EpicNoteInput {
-  tree: DecisionTree;
+  /** Null når notatet bygges fra rå samtale alene — uden træ er stien tom. */
+  tree: DecisionTree | null;
   path: AnsweredStep[];
   anamnese: Record<string, string>;
+}
+
+/** Et klinisk vigtigt hul i notatet, formuleret som et spørgsmål lægen kan besvare. */
+export interface ManglendeFelt {
+  felt: string;
+  spoergsmaal: string;
 }
 
 export interface EpicNoteResultat {
@@ -44,6 +51,8 @@ export interface EpicNoteResultat {
   parkland: ReturnType<typeof beregnParkland>;
   /** Hvem udfyldte: modellen (token-valideret) eller den deterministiske reserve. */
   kilde: "model" | "deterministisk";
+  /** De 2-4 klinisk vigtigste huller, klar til at spørge lægen om. Additivt. */
+  manglende?: ManglendeFelt[];
 }
 
 export function laesSkabelon(): string {
@@ -51,8 +60,9 @@ export function laesSkabelon(): string {
 }
 
 /** Dansk etiket for et besvaret trin — "scald" bliver "Skoldning". */
-function label(tree: DecisionTree, s: AnsweredStep | undefined): string | null {
+function label(tree: DecisionTree | null, s: AnsweredStep | undefined): string | null {
   if (!s) return null;
+  if (!tree) return s.value;
   const node = getNode(tree, s.nodeId);
   return node?.options?.find((o) => o.value === s.value)?.label.da ?? s.value;
 }

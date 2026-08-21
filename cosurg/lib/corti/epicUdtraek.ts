@@ -1,7 +1,7 @@
 import type { AnsweredStep, Lang } from "@/lib/tree/types";
 import { MODELS, kaldModel } from "./models";
 import { beregnParkland, foersteTal, type ParklandResultat } from "./anamnese";
-import { laesSkabelon, type EpicNoteResultat } from "./epicNote";
+import { laesSkabelon, type EpicNoteResultat, type ManglendeFelt } from "./epicNote";
 
 /**
  * AI-udfyldning af Epic-notatet — modellen skriver, koden kontrollerer.
@@ -61,6 +61,75 @@ export function validerParkland(output: string, parkland: ParklandResultat | nul
   return /=\s*\d+\s*ml/.test(output)
     ? ["No weight/TBSA was provided, so the note must not contain any calculated fluid volume."]
     : [];
+}
+
+/**
+ * De klinisk vigtigste huller i et FÆRDIGT notat — som spørgsmål lægen kan
+ * besvare, hvorefter et nyt notat-kald udfylder mere. Bevidst højst 4 og i
+ * klinisk prioritetsorden (vægt og TBSA driver Parkland, tid driver
+ * 8-timers-vinduet) — ni spørgsmål på én gang er støj, fire er en plan.
+ *
+ * Kilderne er deterministiske: Parkland-input beregnes af kode, og de øvrige
+ * aflæses på om notatets egne ***-ankre stadig står åbne — dét er sandheden om
+ * hvad modellen faktisk kunne udfylde.
+ */
+export function findManglende(
+  resultat: EpicNoteResultat,
+  path: AnsweredStep[],
+  anamnese: Record<string, string>,
+  lang: Lang,
+): ManglendeFelt[] {
+  const vaegt = foersteTal(anamnese.weight);
+  const tbsa =
+    foersteTal(path.find((s) => s.nodeId === "tbsa")?.value) ?? foersteTal(anamnese.tbsaRegions);
+  const da = lang === "da";
+  const note = resultat.note;
+  const kandidater: Array<{ mangler: boolean } & ManglendeFelt> = [
+    {
+      felt: "weight",
+      mangler: !vaegt,
+      spoergsmaal: da
+        ? "Hvad vejer patienten cirka (kg)? Vægten indgår i væskeberegningen."
+        : "Approximate weight (kg)? It goes into the fluid calculation.",
+    },
+    {
+      felt: "tbsa",
+      mangler: !tbsa,
+      spoergsmaal: da
+        ? "Hvor stort er det forbrændte areal i % af kropsoverfladen (TBSA)?"
+        : "How large is the burned area in % of body surface (TBSA)?",
+    },
+    {
+      felt: "injuryTime",
+      mangler: note.includes("Ulykkestid tid og dato ***"),
+      spoergsmaal: da
+        ? "Hvornår skete skaden — klokkeslæt og dato? Det afgør 8-timers-vinduet."
+        : "When did the injury happen — time and date? It sets the 8-hour fluid window.",
+    },
+    {
+      felt: "cave",
+      mangler: !anamnese.cave && /@CAVE@\s*\n\s*\n/.test(note),
+      spoergsmaal: da ? "Har patienten CAVE — allergi over for medicin?" : "Any CAVE — drug allergies?",
+    },
+    {
+      felt: "medications",
+      mangler: !anamnese.medications && /@FMKAKTUELMEDICINHENV@\s*\n\s*\n/.test(note),
+      spoergsmaal: da
+        ? "Får patienten fast medicin — særligt antikoagulantia eller diabetesmedicin?"
+        : "Any regular medication — especially anticoagulants or diabetes drugs?",
+    },
+    {
+      felt: "forbraendingsgrad",
+      mangler: note.includes("Forbrændingsgrad ***"),
+      spoergsmaal: da
+        ? "Hvilken forbrændingsgrad vurderes skaden til?"
+        : "What burn depth/degree is the injury assessed at?",
+    },
+  ];
+  return kandidater
+    .filter((k) => k.mangler)
+    .slice(0, 4)
+    .map(({ felt, spoergsmaal }) => ({ felt, spoergsmaal }));
 }
 
 const SYSTEM = [
