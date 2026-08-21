@@ -7,11 +7,11 @@ import { beregnParkland, foersteTal } from "./anamnese";
 /**
  * Epic-klart journalnotat: Rigshospitalets AOP-skabelon, udfyldt DETERMINISTISK.
  *
- * Skabelonen (`content/templates/aop-brandsaar.txt`) er data, ikke prompt — og
- * udfyldningen er kode, ikke model. Det er et bevidst fravalg af skribent-
- * agenten her: en model der omskriver en journalskabelon kan korrumpere en
- * Epic-kode uden at nogen opdager det før den står i Sundhedsplatformen.
- * Reglerne er i stedet mekaniske:
+ * Dette er RESERVEVEJEN. Den primære udfyldning er nu modellens
+ * (`epicUdtraek.ts`): den skriver hele notatet og passerer en deterministisk
+ * token-vagt der afviser output hvor bare én Epic-kode er ændret. Fejler
+ * modellen eller vagten, bygger DENNE fil notatet præcis som før — ren kode,
+ * ingen model, ingen overraskelser. Reglerne her er mekaniske:
  *
  *   1. Epic-koder (@...@ og {...}) bevares ORDRET. Hvor udredningen kender
  *      værdien bag en kode, føjes den til i klammer — "[fra udredningen: …]" —
@@ -42,9 +42,11 @@ export interface EpicNoteResultat {
   /** Antal ***-felter der stadig venter på lægen. */
   aabneFelter: number;
   parkland: ReturnType<typeof beregnParkland>;
+  /** Hvem udfyldte: modellen (token-valideret) eller den deterministiske reserve. */
+  kilde: "model" | "deterministisk";
 }
 
-function laesSkabelon(): string {
+export function laesSkabelon(): string {
   return readFileSync(path.join(process.cwd(), "content", "templates", "aop-brandsaar.txt"), "utf8");
 }
 
@@ -245,5 +247,6 @@ export function byggEpicNote({ tree, path: sti, anamnese }: EpicNoteInput): Epic
     udeladteBlokke,
     aabneFelter: (note.match(/\*\*\*/g) ?? []).length,
     parkland,
+    kilde: "deterministisk",
   };
 }

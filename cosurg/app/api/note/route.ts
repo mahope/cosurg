@@ -11,6 +11,7 @@ import {
 } from "@/lib/corti/coding";
 import { rensAnamnese } from "@/lib/corti/anamnese";
 import { byggEpicNote, type EpicNoteResultat } from "@/lib/corti/epicNote";
+import { udfyldEpicNoteMedAi } from "@/lib/corti/epicUdtraek";
 import { treeSource } from "@/lib/tree/loader";
 import { getDisposition, getNode } from "@/lib/tree/engine";
 import type { DecisionTree } from "@/lib/tree/types";
@@ -138,23 +139,40 @@ export async function POST(req: Request) {
 
     const disposition = dispositionId ? getDisposition(tree, dispositionId) : undefined;
 
-    /*
-     * Epic-notatet bygges FØR de dyre kald: det er ren kode over skabelonen og
-     * udredningens svar. Fejler skabelonlæsningen, siges det ærligt i sit eget
-     * felt — det almindelige notat og koderne leveres stadig.
-     */
-    let epicNote: EpicNoteResultat | null = null;
-    let epicNoteError: string | null = null;
-    if (raw.epic === true) {
-      try {
-        epicNote = byggEpicNote({ tree, path, anamnese: rensAnamnese(raw.anamnese) });
-      } catch (err) {
-        epicNoteError = err instanceof Error ? err.message : "Skabelonen kunne ikke udfyldes";
-      }
-    }
-
+    const anamnese = rensAnamnese(raw.anamnese);
     const pathText = path.map((s, i) => `${i + 1}. ${stepLine(tree, s, lang, true)}`).join("\n");
     const clinicalPathText = path.map((s) => stepLine(tree, s, lang, false)).join(" ");
+
+    /*
+     * Epic-notatet: modellen udfylder hele skabelonen af HELE samtalen —
+     * ytringer, udredningens Q&A, anamnese, diktat, anbefaling. Outputtet
+     * passerer en deterministisk token-vagt (hver Epic-kode ordret, præcis
+     * så mange gange som i skabelonen) og en Parkland-vagt (tallet er kodens,
+     * aldrig modellens). Afvises begge forsøg, falder vi tilbage til den rene
+     * deterministiske udfyldning. Kaldet starter NU og løber parallelt med
+     * kodning og skribent, så det ikke koster svartid.
+     */
+    /*
+     * "Skriv notatet" BETYDER det rigtige AOP-notat: for brandsårs-forløbet
+     * bygges det altid, også når klienten ikke eksplicit bad om det —
+     * `epic: false` er den eneste vej udenom. Andre træer har ingen
+     * AOP-skabelon endnu og kræver fortsat eksplicit `epic: true`.
+     */
+    const vilEpic = raw.epic === true || (raw.epic !== false && tree.id === "burns-dk");
+    const epicAiPromise =
+      vilEpic
+        ? udfyldEpicNoteMedAi({
+            path,
+            anamnese,
+            transcript,
+            dictation,
+            pathText: clinicalPathText,
+            disposition: disposition
+              ? { title: disposition.title[lang], guidance: disposition.guidance[lang] }
+              : null,
+            lang,
+          })
+        : null;
 
     // Kodemodellen får kilderne hver for sig, så evidensen kan spores tilbage til
     // den rigtige kilde: beslutningsvejen, konsultationen eller lægens diktat.
@@ -211,6 +229,24 @@ export async function POST(req: Request) {
     const agentId = await ensureAgent(SCRIBE_SPEC);
     const { result } = await askAgent<ScribeResult>(agentId, prompt);
 
+    /*
+     * Nu — efter de dyre kald — hentes AI-udfyldningen hjem. Den har haft hele
+     * kodnings- og skribent-tiden til at blive færdig i. Fejler den eller
+     * afvises den af vagterne, bygges notatet deterministisk som før; fejler
+     * selv reserven, siges det ærligt i sit eget felt.
+     */
+    let epicNote: EpicNoteResultat | null = null;
+    let epicNoteError: string | null = null;
+    if (vilEpic) {
+      try {
+        epicNote =
+          (epicAiPromise ? await epicAiPromise : null) ??
+          byggEpicNote({ tree, path, anamnese });
+      } catch (err) {
+        epicNoteError = err instanceof Error ? err.message : "Skabelonen kunne ikke udfyldes";
+      }
+    }
+
     const rationales = new Map(
       (result.codeRationales ?? [])
         .filter((r) => r && typeof r.code === "string" && typeof r.rationale === "string")
@@ -222,8 +258,9 @@ export async function POST(req: Request) {
     return NextResponse.json({
       note: result.note,
       /**
-       * Epic-klart AOP-notat, kun når `epic: true` blev bedt om. Deterministisk
-       * udfyldt — Epic-koder ordret bevaret, ukendt = ***. Se lib/corti/epicNote.ts.
+       * Epic-klart AOP-notat, kun når `epic: true` blev bedt om. Udfyldt af
+       * modellen bag en deterministisk token-vagt (se lib/corti/epicUdtraek.ts),
+       * ellers deterministisk reserve — Epic-koder ordret bevaret, ukendt = ***.
        */
       epicNote: epicNote
         ? {
@@ -232,6 +269,8 @@ export async function POST(req: Request) {
             udeladteBlokke: epicNote.udeladteBlokke,
             aabneFelter: epicNote.aabneFelter,
             parkland: epicNote.parkland,
+            /** Additivt: "model" (token-valideret AI) eller "deterministisk". */
+            kilde: epicNote.kilde,
           }
         : null,
       epicNoteError,
