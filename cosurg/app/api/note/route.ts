@@ -16,7 +16,7 @@ import {
   traeKode,
   type EpicNoteResultat,
 } from "@/lib/corti/epicNote";
-import { findManglende, udfyldEpicNoteMedAi } from "@/lib/corti/epicUdtraek";
+import { fangNegationer, findManglende, udfyldEpicNoteMedAi } from "@/lib/corti/epicUdtraek";
 import { treeSource } from "@/lib/tree/loader";
 import { getDisposition, getNode } from "@/lib/tree/engine";
 import type { DecisionTree } from "@/lib/tree/types";
@@ -153,7 +153,16 @@ export async function POST(req: Request) {
 
     const disposition = tree && dispositionId ? getDisposition(tree, dispositionId) : undefined;
 
-    const anamnese = rensAnamnese(raw.anamnese);
+    /*
+     * Negations-udsagn i samtalen ("ingen allergier", "ellers rask") ER svar
+     * og flettes ind FØR notatet bygges — så udfylder både model-vejen og
+     * reserven felterne, og `manglende` spørger ikke om noget samtalen
+     * allerede har afkræftet. Klientens eksplicitte anamnese vinder altid.
+     */
+    const anamnese = {
+      ...fangNegationer(`${transcript}\n${dictation}`, lang),
+      ...rensAnamnese(raw.anamnese),
+    };
     const pathText = tree
       ? path.map((s, i) => `${i + 1}. ${stepLine(tree, s, lang, true)}`).join("\n")
       : "";

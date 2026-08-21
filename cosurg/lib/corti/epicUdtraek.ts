@@ -1,6 +1,6 @@
 import type { AnsweredStep, Lang } from "@/lib/tree/types";
 import { MODELS, kaldModel } from "./models";
-import { beregnParkland, foersteTal, type ParklandResultat } from "./anamnese";
+import { beregnParkland, foersteTal, negativVaerdi, type ParklandResultat } from "./anamnese";
 import { laesSkabelon, type EpicNoteResultat, type ManglendeFelt } from "./epicNote";
 
 /**
@@ -61,6 +61,41 @@ export function validerParkland(output: string, parkland: ParklandResultat | nul
   return /=\s*\d+\s*ml/.test(output)
     ? ["No weight/TBSA was provided, so the note must not contain any calculated fluid volume."]
     : [];
+}
+
+/**
+ * Negations-udsagn i samtalen ER svar: "ingen allergier" er ikke fravær af
+ * information, det er informationen "Ingen kendte allergier". Fanges
+ * deterministisk (regex, da+en) og flettes ind i anamnesen FØR notatet
+ * bygges — så udfylder både model-vejen og reserven feltet, og
+ * `manglende` spørger ikke om noget samtalen allerede har afkræftet.
+ * Eksplicitte anamnese-svar fra klienten vinder altid over scanningen.
+ *
+ * Produktionsfund 21/8: "Ingen allergier" i transskriptet lod CAVE stå
+ * åbent OG udløste spørgsmålet "Har patienten CAVE?". Dette er rettelsen.
+ */
+const NEGATIONS_MOENSTRE: Array<{ felt: string; re: RegExp }> = [
+  {
+    felt: "cave",
+    re: /\b(?:ingen|ikke)\s+(?:kendte\s+)?allergi(?:er)?\b|\bikke\s+allergisk\b|\bingen\s+cave\b|\bno\s+(?:known\s+)?allerg(?:y|ies)\b|\bnot\s+allergic\b/i,
+  },
+  {
+    felt: "medications",
+    re: /\bingen\s+(?:fast\s+)?medicin\b|\bf(?:aa|å)r\s+ikke\s+(?:nogen\s+|noget\s+)?medicin\b|\bno\s+(?:regular\s+)?medications?\b/i,
+  },
+  {
+    felt: "priorConditions",
+    re: /\bingen\s+tidligere\s+sygdomme?\b|\bellers\s+(?:sund\s+og\s+)?rask\b|\btidligere\s+rask\b|\bno\s+(?:significant\s+)?(?:medical\s+)?history\b|\botherwise\s+healthy\b/i,
+  },
+];
+
+export function fangNegationer(tekst: string, lang: Lang): Record<string, string> {
+  const ud: Record<string, string> = {};
+  if (!tekst.trim()) return ud;
+  for (const { felt, re } of NEGATIONS_MOENSTRE) {
+    if (re.test(tekst)) ud[felt] = negativVaerdi(felt, lang);
+  }
+  return ud;
 }
 
 /**
@@ -144,6 +179,10 @@ const SYSTEM = [
   "  placeholder in square brackets, e.g. '{x:1} [fra samtalen: ...]'.",
   "- '***' marks a field for the clinician. Replace a *** ONLY when the material explicitly",
   "  states that value. If the material does not state it, KEEP the *** unchanged.",
+  "- Explicit negatives ARE values: 'ingen allergier' fills CAVE as 'Ingen kendte allergier';",
+  "  'ingen tidligere sygdomme' / 'ellers rask' fills prior history as 'Ingen tidligere sygdomme",
+  "  af betydning'; 'ingen fast medicin' fills medication as 'Ingen fast medicin'. Only SILENCE",
+  "  — nothing said either way — keeps a ***.",
   "- NEVER invent clinical facts. NEVER calculate anything — no fluid volumes, no derived",
   "  numbers. Numbers only as literally stated in the material.",
   "- If a precomputed fluid plan (Parkland) is provided, insert its text verbatim under the",
