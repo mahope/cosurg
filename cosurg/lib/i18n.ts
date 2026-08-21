@@ -706,7 +706,9 @@ export const t = {
    * kan, og ingen eksempler der demonstrerer det.
    * ------------------------------------------------------------------ */
   intakeMicHint: { da: "Tryk og tal — ordene kommer med det samme", en: "Tap and talk — the words appear straight away" },
-  intakeMicListening: { da: "Jeg lytter — tryk igen for at sende", en: "Listening — tap again to send" },
+  intakeMicListening: { da: "Jeg lytter — tryk igen, eller sig “send”", en: "Listening — tap again, or say “send”" },
+  /* Kvittering for stemmekommandoen "send" — vises i det øjeblik den høres. */
+  intakeHeardSend: { da: "Hørte: send ✓", en: "Heard: send ✓" },
   intakeMicStarting: { da: "Åbner mikrofonen…", en: "Opening the microphone…" },
   /* Dikteringens stilheds-varsel. Nedtællingen står i selve knappen. */
   intakeMicCountdown: { da: "Sender om", en: "Sending in" },

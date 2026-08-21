@@ -15,6 +15,7 @@ import {
   type Attachment,
   type ChatImage,
 } from "./attachments";
+import { stripSendCommand } from "./voiceCommands";
 
 interface IntakeCardProps {
   lang: Lang;
@@ -227,7 +228,9 @@ export function IntakeCard({
     const gap = kladde && !kladde.endsWith(" ") && rest ? " " : "";
     setCountdown(null);
     toggleMicRef.current();
-    submitRef.current(kladde + gap + rest);
+    // Et "send" i halen er en kommando, ikke indhold — det må aldrig stå i
+    // den afsendte besked, heller ikke når afsendelsen kom fra klik/stilhed.
+    submitRef.current(stripSendCommand(kladde + gap + rest).rest);
   }, []);
 
   /** Stop UDEN at sende. Teksten bliver stående i feltet. */
@@ -235,6 +238,69 @@ export function IntakeCard({
     setCountdown(null);
     toggleMicRef.current();
   }, []);
+
+  /* ------------------------------------------------------------------ *
+   * 3. "SEND" SIGES. Den tredje afslutning, og den vigtigste håndfri:
+   *    lægen taler sin case ind og slutter med "send" — så sendes der I
+   *    DET ØJEBLIK kommandoen falder, med kommandoordet strippet.
+   *
+   *    To veje, samme udfald:
+   *    - INTERIM: kommandoen fanges allerede i den foreløbige tekst, med
+   *      600 ms ro som stabilitetskrav — STT'en kan vise "send" på vej mod
+   *      "sender", og et ord i bevægelse må aldrig udløse en afsendelse.
+   *      Mikrofonen stoppes FØR submit, så segmentets final aldrig når at
+   *      lægge kommandoordet tilbage i feltet.
+   *    - FINAL: nåede STT'en at stemple segmentet færdigt, står kommandoen
+   *      i kladden — så sendes der derfra. Vagten `listening` gør at et
+   *      TASTET "send" i feltet aldrig auto-sender.
+   *
+   *    Én affyring pr. lytning (sendFiredRef): interim og final om samme
+   *    "send" må ikke sende to gange.
+   * ------------------------------------------------------------------ */
+  const sendFiredRef = useRef(false);
+  useEffect(() => {
+    if (!listening) sendFiredRef.current = false;
+  }, [listening]);
+
+  // FINAL-vejen: kommandoen er landet i kladden.
+  useEffect(() => {
+    if (!listening || sendFiredRef.current) return;
+    const m = stripSendCommand(draft);
+    if (!m.hasSend) return;
+    // "Send" med tomt felt er en fejlstart, ikke en ordre — ignorér den
+    // frem for at stoppe mikrofonen på ingenting.
+    if (!m.rest.trim() && !stateRef.current.hasAttachments) return;
+    sendFiredRef.current = true;
+    setCountdown(null);
+    toggleMicRef.current();
+    submitRef.current(m.rest);
+  }, [draft, listening]);
+
+  // INTERIM-vejen: kommandoen høres FØR segmentet er stemplet færdigt.
+  useEffect(() => {
+    if (!listening || sendFiredRef.current) return;
+    const m = stripSendCommand(interim);
+    if (!m.hasSend) return;
+    const snapshot = interim;
+    const timer = window.setTimeout(() => {
+      if (sendFiredRef.current) return;
+      const { interim: nu, draft: kladde, hasAttachments } = stateRef.current;
+      // Teksten har flyttet sig — næste interim-opdatering prøver forfra.
+      if (nu !== snapshot) return;
+      const gap = kladde && !kladde.endsWith(" ") && m.rest ? " " : "";
+      const tekst = kladde + gap + m.rest;
+      if (!tekst.trim() && !hasAttachments) return;
+      sendFiredRef.current = true;
+      setCountdown(null);
+      toggleMicRef.current();
+      submitRef.current(tekst);
+    }, 600);
+    return () => window.clearTimeout(timer);
+  }, [interim, listening]);
+
+  /** Kvitteringen "Hørte: send ✓" — vist i samme sekund kommandoen høres. */
+  const hoerteSend =
+    listening && (stripSendCommand(interim).hasSend || stripSendCommand(draft).hasSend);
 
   useEffect(() => {
     if (!listening) return;
@@ -533,10 +599,20 @@ export function IntakeCard({
      ikke en klinisk alvor. */
   const errorLine = (
     <div className="mt-2 h-5">
-      {attachError && (
+      {attachError ? (
         <p role="status" className="px-1 text-[13px] leading-5 text-[var(--nude-ink)]">
           {tr(attachError, lang)}
         </p>
+      ) : (
+        /* Kvitteringen for stemme-"send" bor i komposeren HER — fuldskærmen
+           har sin egen statuslinje under mikrofonen. Pladsen er i forvejen
+           reserveret, så linjen skifter indhold, aldrig layout. */
+        compact &&
+        hoerteSend && (
+          <p role="status" className="px-1 text-[13px] font-medium leading-5 text-[var(--teal-deep)]">
+            {tr("intakeHeardSend", lang)}
+          </p>
+        )
       )}
     </div>
   );
@@ -672,6 +748,8 @@ export function IntakeCard({
                   {tr("intakeMicCancel", lang)}
                 </button>
               </>
+            ) : hoerteSend ? (
+              <span className="font-semibold text-[var(--teal-deep)]">{tr("intakeHeardSend", lang)}</span>
             ) : listening ? (
               tr("intakeMicListening", lang)
             ) : starting ? (
