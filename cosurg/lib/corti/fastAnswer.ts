@@ -44,20 +44,26 @@ function stilBlok(caseMode: boolean): string {
       "  though the clinician did not ask about them — that is the whole reason they were retrieved for you.",
       "- Say what would change the plan: a finding, a threshold, a time limit.",
       "- Be brief. A clinician is reading this between patients. Plain text, '- ' bullets, **bold** where it helps, no headings.",
+      "- Fill 'suggestions' with 2-4 short follow-up questions the clinician would plausibly ask next, in their own words.",
     ].join("\n");
   }
   return [
     "HOW TO WRITE THE ANSWER — the clinician is standing with a PATIENT, so lead:",
     "- You are the senior colleague at the bedside. Assessment before exposition — never an essay.",
     "- UNDER 200 WORDS. Short sentences. '- ' bullets and numbered steps, **bold** for the few words that matter.",
-    "- Open with one short line acknowledging the case (injury, site, what stage they are at). Never ask what they want help with.",
+    "- Open with ONE short line acknowledging the case (injury, site, key facts). Never ask what they want help with —",
+    "  guiding assessment and treatment IS your job, so lead.",
+    "- Then '**Vurdering:**' FIRST: what this most likely is — depth, extent, severity — before any treatment.",
+    "  An answer that jumps to treatment without committing to an assessment is a lookup, not a colleague.",
     "- If a can't-miss finding is relevant, add a block: '**Røde flag:**' followed by 2-5 items, ONE line each.",
     "  Only genuine can't-miss items for THIS injury. Never pad the list.",
-    "- Treatment as NUMBERED steps in the order they are done. Then, when they earn their place, one line each:",
-    "  '**Pearls:**', '**Pitfalls:**', '**Opfølgning:**'.",
+    "- '**Behandling:**' as NUMBERED steps in the order they are done, concrete (agent, dressing, dose where the",
+    "  excerpts give one). Then, when they earn their place, one line each: '**Pearls:**', '**Pitfalls:**', '**Opfølgning:**'.",
     "- Do NOT paste excerpt text into the answer. The sources are attached separately under the answer;",
     "  write the clinical point in your own words and let usedIds carry the reference.",
     "- If a decisive clinical detail is missing, END with the single most important question — one question, not a list.",
+    "- Fill 'suggestions' with the clinician's likely replies to that ending question, or the natural next step",
+    "  (e.g. 'Ja, den er cirkulær' | 'Hvordan forbinder jeg det?'). 2-6 words each, their words, never commands to yourself.",
     "- If the situation is beyond what the excerpts support, say so and recommend conferring with the on-call",
     "  senior/burn unit — never a fluent guess.",
   ].join("\n");
@@ -69,7 +75,7 @@ const SYSTEM_BASE = [
   "",
   "Reply with ONLY a JSON object, no prose and no code fence:",
   '{"answer":"...","evidence":"sourced|partial|extrapolated","reasoning":"...","limitations":"...",',
-  '"spokenSummary":"...","usedIds":["excerpt ids you actually used"]}',
+  '"spokenSummary":"...","suggestions":["..."],"usedIds":["excerpt ids you actually used"]}',
   "",
   "%STIL%",
   "",
@@ -121,6 +127,7 @@ interface RaatSvar {
   reasoning?: unknown;
   limitations?: unknown;
   spokenSummary?: unknown;
+  suggestions?: unknown;
   usedIds?: unknown;
 }
 
@@ -194,6 +201,7 @@ export async function hurtigtSvar({
     usedContext: !!patientContext,
     limitations: raw.limitations,
     spokenSummary: raw.spokenSummary,
+    suggestions: raw.suggestions,
     sources: valgte.map((u) => ({
       title: kildeEtiket(u),
       url: u.erUrl ? u.kilde : undefined,

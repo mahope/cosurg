@@ -76,6 +76,13 @@ export interface ChatAnswer {
   limitations?: string;
   /** Kort udgave til oplæsning — hele svaret læst højt er ubrugeligt hands-free. */
   spokenSummary?: string;
+  /**
+   * 2-4 korte forslag til lægens NÆSTE replik — sandsynlige svar på det
+   * spørgsmål svaret slutter med, eller det naturlige næste kliniske skridt.
+   * Vises som chips man kan trykke på; teksten sendes som lægens egen besked.
+   * Samtalen må aldrig ende blindt i et enkeltstående opslag-svar.
+   */
+  suggestions?: string[];
   sources: ChatSource[];
 }
 
@@ -179,6 +186,12 @@ const ANSWER_CONNECTOR: Connector = {
         description:
           "At most 3 sentences and 400 characters, same language, meant to be read aloud to a clinician whose hands are busy. No markdown, no citations.",
       },
+      suggestions: {
+        type: "array",
+        items: { type: "string" },
+        description:
+          "2-4 short options for what the clinician most plausibly SAYS next, phrased in their own words in the same language (2-6 words each). If your answer ends with a question, these are the likely answers to it (e.g. 'Ja, kun overfladisk' / 'Nej, den er cirkulær'). Otherwise the natural next clinical ask (e.g. 'Hvordan forbinder jeg det?' / 'Hvad med smertedækning?'). Never commands to yourself, never headlines.",
+      },
       sources: {
         type: "array",
         description:
@@ -262,7 +275,8 @@ function agentName(): string {
   // at genbruge en agent der ikke har den.
   // Versionen skal følge SKEMAET. Et agent-navn er bundet til sit skema hos
   // Corti, så et nyt felt uden et nyt navn ville genbruge den gamle kontrakt.
-  return extra ? `cosurg-clinical-chat-v2-${extra}` : "cosurg-clinical-chat-v2";
+  // v3: +suggestions (forslag til lægens næste replik, vist som chips).
+  return extra ? `cosurg-clinical-chat-v3-${extra}` : "cosurg-clinical-chat-v3";
 }
 
 let agentIdPromise: Promise<string> | null = null;
@@ -387,11 +401,23 @@ function buildPrompt({ question, lang, recap, patientContext, grounding, caseMod
       "",
       "STYLE — the clinician is standing with a PATIENT, so answer like the senior colleague at the bedside:",
       "- UNDER 200 words. Short sentences, '- ' bullets, numbered steps for treatment. Never an essay.",
-      "- Open with one line acknowledging the case, then lead. Never ask what they want help with.",
+      "- Open with ONE line acknowledging the case (injury, site, key facts). Never ask what they want help with —",
+      "  guiding assessment and treatment IS your job, so lead.",
+      "- Then '**Vurdering:**' FIRST: what this most likely is — depth, extent, severity — before any treatment.",
+      "  An answer that jumps to treatment without committing to an assessment is a lookup, not a colleague.",
       "- Add a '**Røde flag:**' block (2-5 one-line items) when can't-miss findings are relevant to this injury.",
-      "- Treatment as numbered steps, then one line each of '**Pearls:**', '**Pitfalls:**', '**Opfølgning:**' where they earn their place.",
+      "- '**Behandling:**' as numbered steps in the order they are done, concrete (agent, dressing, dose where sourced),",
+      "  then one line each of '**Pearls:**', '**Pitfalls:**', '**Opfølgning:**' where they earn their place.",
       "- Do not paste quotations into the answer text — the sources are listed separately; write the point in your own words.",
-      "- If a decisive detail is missing, end with the single most important question. If beyond the evidence, recommend conferring.",
+      "- If a decisive detail is missing, end with the SINGLE most important question — one question, never a list.",
+      "  If beyond the evidence, recommend conferring with the on-call senior/burn unit.",
+      "- Fill 'suggestions' with the clinician's likely replies to that ending question, or the next step",
+      "  (e.g. 'Ja, den er cirkulær' | 'Hvordan forbinder jeg det?').",
+    );
+  } else {
+    lines.push(
+      "",
+      "Fill 'suggestions' with 2-4 natural follow-up questions the clinician would plausibly ask next, in their words.",
     );
   }
   return lines.join("\n");
@@ -491,6 +517,22 @@ export function normalizeAnswer(raw: unknown): ChatAnswer {
     evidence = reasoning ? "extrapolated" : "unsupported";
   }
 
+  /*
+   * Forslagene er tekst der bliver til KNAPPER, så de holdes i chip-format her:
+   * højst fire, hver højst ~80 tegn, dubletter væk. En model der skriver fem
+   * lange sætninger skal ikke kunne fylde skærmen med knapper.
+   */
+  const suggestions = Array.isArray(r.suggestions)
+    ? [
+        ...new Set(
+          r.suggestions
+            .filter((v): v is string => typeof v === "string")
+            .map((v) => v.trim())
+            .filter((v) => v.length > 0 && v.length <= 80),
+        ),
+      ].slice(0, 4)
+    : [];
+
   return {
     answer: asString(r.answer) ?? "",
     evidence,
@@ -498,6 +540,7 @@ export function normalizeAnswer(raw: unknown): ChatAnswer {
     usedContext: r.usedContext === true,
     limitations: asString(r.limitations),
     spokenSummary: asString(r.spokenSummary),
+    suggestions: suggestions.length > 0 ? suggestions : undefined,
     sources,
   };
 }

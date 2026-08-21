@@ -296,6 +296,29 @@ function TurnEntry({
               </div>
             )}
 
+            {/*
+              Forslag til lægens NÆSTE replik — svaret på det spørgsmål svaret
+              slutter med, eller det naturlige næste skridt. Chips, ikke
+              knapper: teksten sendes som lægens egen besked, præcis som hvis
+              han havde skrevet den. Kun på den seneste tur — en ældre
+              samtaletur er læst og afgjort. Runde hjørner adskiller "noget
+              man SIGER" fra de kantede handlingsknapper.
+            */}
+            {interactive && turn.answer.suggestions && turn.answer.suggestions.length > 0 && (
+              <div className="mt-3 flex flex-wrap gap-2">
+                {turn.answer.suggestions.map((forslag) => (
+                  <button
+                    key={forslag}
+                    type="button"
+                    onClick={() => onQuickReply(forslag)}
+                    className="flex min-h-10 items-center rounded-full border border-[var(--line-strong)] bg-[var(--paper-raised)] px-4 py-1.5 text-sm font-medium text-[var(--ink-soft)] transition-colors hover:border-[var(--teal)] hover:bg-[var(--teal-tint)] hover:text-[var(--ink)]"
+                  >
+                    {forslag}
+                  </button>
+                ))}
+              </div>
+            )}
+
             {isLatest && (
               <button
                 type="button"
