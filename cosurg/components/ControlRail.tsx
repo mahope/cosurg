@@ -36,6 +36,14 @@ interface ControlRailProps {
   onOpenHistory: () => void;
   /** Åbner én gemt samtale direkte — historik-dropdownens hurtige vej. */
   onOpenConversation: (id: string) => void;
+  /**
+   * "Skriv notat" — altid tilgængelig når der ER samtaleindhold at skrive
+   * notat af. Diskret i baren: notatet skal kunne hentes når som helst,
+   * ikke kun når agenten selv tilbyder det.
+   */
+  canWriteNote: boolean;
+  noteBusy: boolean;
+  onWriteNote: () => void;
 }
 
 /**
@@ -73,6 +81,9 @@ export function ControlRail({
   onOpenShortcuts,
   onOpenHistory,
   onOpenConversation,
+  canWriteNote,
+  noteBusy,
+  onWriteNote,
 }: ControlRailProps) {
   const treeLine = (
     <div className="flex h-5 items-center">
@@ -189,6 +200,38 @@ export function ControlRail({
                 </span>
               </button>
             </Tooltip>
+
+            {/* "Skriv notat": står kun når der er samtaleindhold, og altid i
+                den sticky bar — notatet må aldrig kræve at man finder et
+                tilbud i tråden. Ikon alene på telefon, ikon + ord på
+                desktop; samme kald som tilbuddets knap. */}
+            {canWriteNote && (
+              <Tooltip label={tr("intakeGenerateNote", lang)} placement="bottom-end">
+                <button
+                  type="button"
+                  onClick={onWriteNote}
+                  disabled={noteBusy}
+                  aria-busy={noteBusy}
+                  className="flex min-h-11 items-center gap-2 rounded-lg border border-[var(--line-strong)] bg-[var(--paper-raised)] px-3 text-sm font-medium text-[var(--ink)] transition-colors enabled:hover:border-[var(--teal)] enabled:hover:bg-[var(--teal-tint)] disabled:opacity-50 sm:px-3.5"
+                >
+                  <svg viewBox="0 0 20 20" width={14} height={14} fill="none" aria-hidden="true">
+                    <path
+                      d="M5 3.5h7.5L15.5 6v10.5H5z"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      strokeLinejoin="round"
+                    />
+                    <path d="M7.5 9h5.5M7.5 12h5.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                  </svg>
+                  {/* Etiketten skifter IKKE mens der skrives — knappen siger
+                      travlhed med disabled + aria-busy, og bredden står
+                      stille. */}
+                  <span className="hidden sm:flex">
+                    <SizeLock variants={widestOf("noteButton")}>{tr("noteButton", lang)}</SizeLock>
+                  </span>
+                </button>
+              </Tooltip>
+            )}
 
             {/* Historik: på desktop en tydelig knap med de seneste samtaler i
                 en dropdown; på telefon et ikon der åbner det fulde panel —

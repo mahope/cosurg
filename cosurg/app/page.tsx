@@ -15,7 +15,7 @@ import { DispositionCard } from "@/components/DispositionCard";
 import { RedFlagBanner } from "@/components/RedFlagBanner";
 import { SidebarPath } from "@/components/SidebarPath";
 import { TranscriptPanel } from "@/components/TranscriptPanel";
-import { NotePanel, type NoteResult } from "@/components/NotePanel";
+import type { NoteResult } from "@/components/NotePanel";
 import { OrView } from "@/components/OrView";
 import type { TreeSummary } from "@/components/TreePicker";
 import { BrandWatermark } from "@/components/BrandMark";
@@ -961,13 +961,17 @@ export default function Home() {
        * ser ud som om appen ignorerede en ordre.
        */
       if (!images?.length && matchNoteRequest(text)) {
-        const w = currentWorkup();
-        if (w) {
+        /*
+         * Notatet kræver ikke længere en udredning — ruten kan skrive AOP'en
+         * af hele samtalen. Ordren udløses derfor når der overhovedet ER
+         * samtaleindhold; kun på en helt tom side falder den igennem til
+         * chatten, for et notat af ingenting ville bare være skabelonen.
+         */
+        if (lookupTurns.length > 0 || transcript.length > 0 || state.path.length > 0) {
           // Gennem et ref: notatfunktionen erklæres længere nede, og en
           // direkte reference ville fryse den første udgave af den fast.
-          // Anamnesen med — også midtvejs skal "skriv notatet" give det
-          // Epic-klare notat med de felter der ER fanget.
-          generateNoteRef.current({ treeId: w.treeId, path: w.path, anamnese: w.anamnese });
+          // Udredningens tilstand (sti, anamnese) samles op inde i kaldet.
+          generateNoteRef.current();
           return;
         }
       }
@@ -1220,42 +1224,41 @@ export default function Home() {
     setNoteBusy(true);
     setStatus(tr("noteWorking", lang));
     try {
+      /*
+       * ÉN kilde til sandhed om hvor langt vi er: tilbuddets egen last når
+       * den findes, ellers den løbende udrednings tilstand, ellers træ-
+       * visningens sti. Notatet skal kunne skrives NÅR SOM HELST der er
+       * samtaleindhold — også uden tilbud og uden færdig udredning — så
+       * hele samtalen sendes med som transskript, og `epic: true` sendes
+       * altid: der vises kun ét notat, og det er AOP'en.
+       */
+      const workup = currentWorkup();
+      const kildeTreeId = fraUdredning?.treeId ?? workup?.treeId ?? tree.id;
+      const kildePath = fraUdredning?.path ?? workup?.path ?? state.path;
+      const kildeAnamnese = fraUdredning?.anamnese ?? workup?.anamnese ?? {};
+
+      // Samtalen som transskript: rummets ytringer plus trådens Q&A, så
+      // notatet kan bygges af ALT det sagte — også det der aldrig blev til
+      // et træ-svar.
+      const samtaleLinjer = [...transcript];
+      for (const t of lookupTurns) {
+        samtaleLinjer.push(`Læge: ${t.question}`);
+        if (t.answer) samtaleLinjer.push(`Svar: ${t.answer.answer}`);
+      }
+
       const res = await fetch("/api/note", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        /*
-         * Notatet kan komme to steder fra, og de har hver sin sandhed om
-         * hvad der blev afklaret. Kom tilbuddet fra en udredning i chatten,
-         * er DENS sti den kanoniske — den er genafspillet på serveren og
-         * indeholder de svar agenten trak ud af lægens egen beskrivelse.
-         * `state.path` hører til den gamle trævisning og ved intet om dem.
-         *
-         * Udredningen beder også om Epic-notatet (`epic: true` + anamnesen):
-         * det er dér CAVE, medicin og vægt er blevet spurgt, så det er kun
-         * dér skabelonen kan udfyldes. Den gamle trævisning kender ingen
-         * anamnese og beder ikke om noget den ikke kan levere til.
-         */
-        body: JSON.stringify(
-          fraUdredning
-            ? {
-                treeId: fraUdredning.treeId,
-                lang,
-                path: fraUdredning.path,
-                dispositionId: fraUdredning.dispositionId,
-                transcript: transcript.join("\n"),
-                dictation,
-                epic: true,
-                anamnese: fraUdredning.anamnese ?? {},
-              }
-            : {
-                treeId: tree.id,
-                lang,
-                path: state.path,
-                dispositionId: state.dispositionId,
-                transcript: transcript.join("\n"),
-                dictation,
-              },
-        ),
+        body: JSON.stringify({
+          treeId: kildeTreeId,
+          lang,
+          path: kildePath,
+          dispositionId: fraUdredning?.dispositionId ?? state.dispositionId,
+          transcript: samtaleLinjer.join("\n"),
+          dictation,
+          epic: true,
+          anamnese: kildeAnamnese,
+        }),
         signal: AbortSignal.timeout(TIMEOUT_NOTE),
       });
       const data = (await res.json()) as NoteResult & {
@@ -1785,6 +1788,9 @@ export default function Home() {
           onOpenShortcuts={() => setShortcutsOpen(true)}
           onOpenHistory={() => setHistoryOpen(true)}
           onOpenConversation={openConversation}
+          canWriteNote={lookupTurns.length > 0 || transcript.length > 0 || state.path.length > 0}
+          noteBusy={noteBusy}
+          onWriteNote={() => void generateNote()}
         />
 
         <ShortcutsDialog lang={lang} open={shortcutsOpen} onClose={() => setShortcutsOpen(false)} />
@@ -1965,12 +1971,24 @@ export default function Home() {
           skrivning er forbi, og det er netop det øjeblik lægen kigger.
         */}
         {/*
-          Epic-notatet står FØRST: det er det lægen sætter direkte ind i
-          Sundhedsplatformen, og det er deterministisk udfyldt — det
-          modelskrevne notat med koder står under som det altid har gjort.
+          KUN ÉT NOTAT: Epic-AOP'en. Det gamle skribentnotat spejler nu blot
+          AOP-teksten på ruten og vises ikke længere — to notater på én skærm
+          var to sandheder om samme patient. De manglende felter står som
+          spørgsmåls-chips i panelet; et klik stiller skarpt på skrivefeltet,
+          og "Skriv notatet igen" henter notatet med det samtalen nu ved.
         */}
-        {note && epicNote && <EpicNotePanel lang={lang} epic={epicNote.epic} error={epicNote.error} />}
-        {note ? <NotePanel note={note} lang={lang} /> : noteBusy ? <NoteSkeleton lang={lang} /> : null}
+        {epicNote ? (
+          <EpicNotePanel
+            lang={lang}
+            epic={epicNote.epic}
+            error={epicNote.error}
+            onAnswerMissing={() => focusIntakeField()}
+            onRefresh={() => void generateNote()}
+            refreshBusy={noteBusy}
+          />
+        ) : noteBusy ? (
+          <NoteSkeleton lang={lang} />
+        ) : null}
 
         {started && (
         <div className="grid gap-6 md:grid-cols-[1fr_320px]">
