@@ -23,11 +23,6 @@ export const t = {
     da: "Redaktører, bidragydere og skabere bag Nordic Surgery Labs platforme.",
     en: "Our editors, contributors and creators building CoSurg.",
   },
-  aboutAddressCompany: { da: "Nordic Surgery Lab", en: "Nordic Surgery Lab" },
-  // Gadelinjen er den samme i begge sprog; kun etagen skrives om, så et
-  // engelsksproget brev stadig kan skrives af på en dansk konvolut.
-  aboutAddressStreet: { da: "Bredgade 58A, 4. sal", en: "Bredgade 58A, 4th floor" },
-  aboutAddressCity: { da: "1260 København K", en: "1260 Copenhagen K, Denmark" },
   listening: { da: "Lytter", en: "Listening" },
   micOff: { da: "Mikrofon slukket", en: "Microphone off" },
   orMode: { da: "Håndfri tilstand", en: "Handsfree mode" },
