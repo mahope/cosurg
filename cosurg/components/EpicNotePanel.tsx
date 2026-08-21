@@ -19,6 +19,15 @@ export interface EpicNote {
   udeladteBlokke: string[];
   /** Antal ***-felter der stadig venter på lægen. */
   aabneFelter: number;
+  /**
+   * Åbne felter som SPØRGSMÅL — additivt felt fra ruten. Hvert element er et
+   * spørgsmål lægen kan besvare i samtalen, hvorefter et nyt notatkald
+   * udfylder feltet. Mangler feltet i svaret, vises intet — panelet må
+   * aldrig vælte på en bagende der endnu ikke sender det.
+   */
+  manglende?: Array<{ felt: string; spoergsmaal: string }>;
+  /** Hvor notatteksten kom fra (fx "ai" eller "deterministisk"). Vises ikke. */
+  kilde?: string;
   parkland: {
     vaegtKg: number;
     tbsaPct: number;
@@ -33,6 +42,14 @@ interface EpicNotePanelProps {
   lang: Lang;
   epic: EpicNote | null;
   error: string | null;
+  /**
+   * Lægen tog fat i et manglende felt: spørgsmålet gives videre, så siden kan
+   * stille skarpt på skrivefeltet — svaret skrives i samtalen, ikke i panelet.
+   */
+  onAnswerMissing?: (spoergsmaal: string) => void;
+  /** Skriv notatet igen med det samtalen ved nu. */
+  onRefresh?: () => void;
+  refreshBusy?: boolean;
 }
 
 /**
@@ -49,7 +66,14 @@ interface EpicNotePanelProps {
  * Et *** er skabelonens egen måde at sige "det ved kun du" — ikke en mangel
  * ved appen.
  */
-export function EpicNotePanel({ lang, epic, error }: EpicNotePanelProps) {
+export function EpicNotePanel({
+  lang,
+  epic,
+  error,
+  onAnswerMissing,
+  onRefresh,
+  refreshBusy,
+}: EpicNotePanelProps) {
   const [copied, setCopied] = useState(false);
   const copyTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -149,6 +173,47 @@ export function EpicNotePanel({ lang, epic, error }: EpicNotePanelProps) {
           <p className="mt-1.5 font-[family-name:var(--font-mono)] text-[11px] text-[var(--ink-faint)]">
             {epic.parkland.kilde}
           </p>
+        </div>
+      )}
+
+      {/*
+        Manglende felter som SPØRGSMÅL. Chips frem for en fejlliste: hvert
+        klik stiller skarpt på skrivefeltet, lægen svarer i samtalen, og
+        "Skriv notatet igen" udfylder felterne af det samtalen nu ved.
+        Nude-tonen er bevidst: det er en driftsbesked om notatet, aldrig
+        noget klinisk.
+      */}
+      {epic.manglende && epic.manglende.length > 0 && (
+        <div className="mt-4 rounded-xl border border-[var(--line-strong)] bg-[var(--nude-tint)] p-4">
+          <p className="font-[family-name:var(--font-mono)] text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--nude-ink)]">
+            {tr("epicNoteMissingTitle", lang)}
+          </p>
+          <div className="mt-2 flex flex-wrap gap-2">
+            {epic.manglende.map((m) => (
+              <button
+                key={m.felt}
+                type="button"
+                onClick={onAnswerMissing ? () => onAnswerMissing(m.spoergsmaal) : undefined}
+                className="flex min-h-11 items-center rounded-lg border border-[var(--line-strong)] bg-[var(--paper)] px-3.5 py-2 text-left text-sm font-medium text-[var(--ink)] transition-colors hover:border-[var(--teal)] hover:bg-[var(--teal-tint)]"
+              >
+                {m.spoergsmaal}
+              </button>
+            ))}
+          </div>
+          <p className="mt-2.5 text-[13px] leading-relaxed text-[var(--ink-soft)]">
+            {tr("epicNoteMissingHint", lang)}
+          </p>
+          {onRefresh && (
+            <button
+              type="button"
+              onClick={onRefresh}
+              disabled={refreshBusy}
+              aria-busy={refreshBusy}
+              className="mt-3 rounded-lg bg-[var(--teal-deep)] px-4 py-2 text-sm font-semibold text-white transition-colors enabled:hover:bg-[var(--teal)] disabled:opacity-50"
+            >
+              {refreshBusy ? tr("noteWorking", lang) : tr("epicNoteUpdate", lang)}
+            </button>
+          )}
         </div>
       )}
 

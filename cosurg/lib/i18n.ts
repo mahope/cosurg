@@ -999,6 +999,13 @@ export const t = {
     en: "Parkland calculation — computed in code, never by a model",
   },
   epicNoteFailed: { da: "Epic-notatet kunne ikke udfyldes", en: "The Epic note could not be filled" },
+  epicNoteMissingTitle: { da: "Notatet mangler", en: "The note is missing" },
+  epicNoteMissingHint: {
+    da: "Svar i feltet nedenfor og skriv notatet igen — så udfyldes felterne.",
+    en: "Answer in the field below and write the note again — the fields will be filled in.",
+  },
+  epicNoteUpdate: { da: "Skriv notatet igen", en: "Write the note again" },
+  noteButton: { da: "Skriv notat", en: "Write note" },
 
   /* Instrumentpanelets menu og historik-adgang */
   historyButton: { da: "Historik", en: "History" },
