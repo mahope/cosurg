@@ -60,6 +60,14 @@ export interface WorkupState {
    * lægen ville med rette tro at appen ikke lyttede.
    */
   pending?: UdtrukketSvar[];
+  /**
+   * Anamnesen fanget undervejs (CAVE, medicin, vægt, skadestidspunkt …) —
+   * journalens felter, ikke træets. Samme kontrakt som `pending`: klienten
+   * bærer den, serveren validerer den, og et nyere udsagn om samme felt
+   * vinder. Den rejser også med i historikken (lib/history.ts gemmer hele
+   * WorkupState), så en genoptaget samtale ikke spørger om CAVE igen.
+   */
+  anamnese?: Record<string, string>;
 }
 
 /** Det spørgsmål udredningen mangler svar på lige nu. Rutens egen form. */
@@ -81,6 +89,8 @@ export interface WorkupStep {
   prefilled?: AnsweredStep[];
   /** Svar der er givet, men som gennemløbet endnu ikke er nået frem til. */
   pending?: UdtrukketSvar[];
+  /** Journalens felter fanget indtil nu — skal med tilbage på næste tur. */
+  anamnese?: Record<string, string>;
   clarification?: string;
 }
 
@@ -106,6 +116,14 @@ export interface DispositionEvent {
 export interface NoteOfferEvent {
   treeId: string;
   path: AnsweredStep[];
+  /** Anbefalingen stien landede på — med i notatkaldet, så journalen kender den. */
+  dispositionId?: string;
+  /**
+   * Den færdige anamnese. Tilbuddet kommer først når BÅDE træet og journalens
+   * spurgte felter er i mål — og notatkaldet sender den med sammen med
+   * `epic: true`, så AOP-skabelonen kan udfyldes deterministisk.
+   */
+  anamnese?: Record<string, string>;
 }
 
 /**
@@ -419,10 +437,15 @@ export function useClinicalChat(lang: Lang) {
                 const { kind, ...step } = event;
                 void kind;
                 // Stien er den kanoniske tilstand — den skal med tilbage næste
-                // gang, ellers begynder udredningen forfra ved roden. Og
-                // `pending` med, ellers spørges lægen igen om det han lige
-                // har fortalt.
-                workupRef.current = { treeId: event.treeId, path: event.path, pending: event.pending };
+                // gang, ellers begynder udredningen forfra ved roden. `pending`
+                // med, ellers spørges lægen igen om det han lige har fortalt —
+                // og `anamnese` med, ellers spørges der om CAVE forfra.
+                workupRef.current = {
+                  treeId: event.treeId,
+                  path: event.path,
+                  pending: event.pending,
+                  anamnese: event.anamnese,
+                };
                 patch(id, { workup: step });
               } else if (event.kind === "redflag") {
                 const { kind, ...flag } = event;
@@ -431,12 +454,26 @@ export function useClinicalChat(lang: Lang) {
               } else if (event.kind === "disposition") {
                 const { kind, ...d } = event;
                 void kind;
-                // Forløbet er kørt til ende. Næste ytring er et nyt ærinde og
-                // må ikke genoptage en afsluttet udredning.
+                /*
+                 * Anbefalingen er landet — men udredningen er IKKE nødvendigvis
+                 * slut: mangler journalens spurgte felter (CAVE, medicin …),
+                 * følger flere workup-spørgsmål EFTER dispositionen, og de
+                 * genopretter tilstanden i samme strøm. Vi rydder her, så en
+                 * strøm der slutter med dispositionen efterlader en ren tavle.
+                 */
                 workupRef.current = undefined;
                 patch(id, { disposition: d });
               } else if (event.kind === "noteOffer") {
-                patch(id, { noteOffer: { treeId: event.treeId, path: event.path } });
+                const { kind, ...offer } = event;
+                void kind;
+                /*
+                 * Notat-tilbuddet er udredningens SLUT: træ og anamnese er i
+                 * mål. Blev tilstanden stående, ville næste ytring blive læst
+                 * som endnu et anamnese-svar og blot udløse tilbuddet igen —
+                 * i stedet for at blive besvaret som det nye ærinde den er.
+                 */
+                workupRef.current = undefined;
+                patch(id, { noteOffer: offer });
               } else if (event.kind === "answer") {
                 answer = event.answer;
                 patch(id, { answer: event.answer, done: true });
