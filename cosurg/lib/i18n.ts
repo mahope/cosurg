@@ -999,6 +999,14 @@ export const t = {
     en: "Parkland calculation — computed in code, never by a model",
   },
   epicNoteFailed: { da: "Epic-notatet kunne ikke udfyldes", en: "The Epic note could not be filled" },
+
+  /* Instrumentpanelets menu og historik-adgang */
+  historyButton: { da: "Historik", en: "History" },
+  historyShowAll: { da: "Vis alle samtaler", en: "Show all conversations" },
+  menuLabel: { da: "Menu", en: "Menu" },
+  menuNewSession: { da: "Ny samtale", en: "New conversation" },
+  // Kort udgave til telefonens smalle bar — den lange åd mærkenavnet.
+  orModeShort: { da: "Håndfri", en: "Handsfree" },
 } satisfies Record<string, Record<Lang, string>>;
 
 export function tr(key: keyof typeof t, lang: Lang): string {

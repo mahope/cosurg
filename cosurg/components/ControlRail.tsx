@@ -1,15 +1,16 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import type { Lang } from "@/lib/tree/types";
 import { tr } from "@/lib/i18n";
 import { BrandMark } from "./BrandMark";
 import { LangSwitch } from "./LangSwitch";
-import { AboutTeamLink } from "./AboutTeamLink";
 import { TreePicker, type TreeSummary } from "./TreePicker";
 import { UsagePanel, type SessionUsage } from "./UsagePanel";
 import { SizeLock, widestOf } from "./ui/SizeLock";
 import { Tooltip } from "./ui/Tooltip";
+import { HistoryIcon, HistoryMenu } from "./history/HistoryMenu";
 import { combo, HELP_CHAR, SHORTCUT_KEYS } from "./shortcuts";
 
 interface ControlRailProps {
@@ -31,14 +32,27 @@ interface ControlRailProps {
   onToggleOrMode: () => void;
   /** Åbner genvejsoversigten — den samme «?» siden lytter efter. */
   onOpenShortcuts: () => void;
-  /** Åbner samtalehistorikken — tidligere samtaler, gemt lokalt i browseren. */
+  /** Åbner samtalehistorikken (det fulde panel med slet og ryd). */
   onOpenHistory: () => void;
+  /** Åbner én gemt samtale direkte — historik-dropdownens hurtige vej. */
+  onOpenConversation: (id: string) => void;
 }
 
 /**
- * Instrumentpanelet: mærke + tillidsbudskab (altid synligt, ikke kun ved
- * disposition) + de tre sessionsvalg. Ét segmenteret kontrolbånd frem for
- * spredte enkeltknapper.
+ * Instrumentpanelet, i to lag:
+ *
+ *  - En STICKY bar med det man faktisk betjener undervejs: sprog, håndfri,
+ *    historik og menuen. Den følger med ved scroll, så historikken og
+ *    sprogskiftet altid er ét klik væk — også nederst i en lang tråd.
+ *  - Under den, i almindeligt flow: forløbsvælgeren og tillidsbudskabet.
+ *    De er kontekst, ikke betjening, og skal ikke æde skærm på en telefon
+ *    hvor toppen og komposeren i bunden allerede deler pladsen.
+ *
+ * Grupperet efter brugsfrekvens: det hyppige (sprog, håndfri, historik) står
+ * synligt; det sjældne (ny samtale, genveje, Om & Team, forbrug) er samlet i
+ * én menu — burger på telefon, samme knap på desktop, så intet skal læres to
+ * gange. Flag og Håndfri er bevidst SYNLIGE på mobil, blot mindre — de er de
+ * to ting man faktisk skifter — og alle mål holder 44 px touch.
  */
 export function ControlRail({
   lang,
@@ -58,164 +72,290 @@ export function ControlRail({
   onToggleOrMode,
   onOpenShortcuts,
   onOpenHistory,
+  onOpenConversation,
 }: ControlRailProps) {
+  const treeLine = (
+    <div className="flex h-5 items-center">
+      {started ? (
+        <TreePicker
+          lang={lang}
+          trees={trees}
+          activeId={treeId}
+          activeName={treeName}
+          activeVersion={treeVersion}
+          busy={treeBusy}
+          onSelect={onSelectTree}
+        />
+      ) : (
+        <p className="font-[family-name:var(--font-mono)] text-xs text-[var(--ink-faint)]">
+          {tr("tagline", lang)}
+        </p>
+      )}
+    </div>
+  );
+
   return (
-    /*
-      På en telefon er der ikke plads til mærke og kontroller på samme linje.
-      Rækken bryder derfor — men den bryder RENT: mærket får hele den første
-      linje, kontrollerne hele den anden. `justify-between` ville ellers lade
-      kontrollerne klumpe sig i højre side af en halv linje, forskelligt fra
-      sprog til sprog, og lægen genkender knapper på deres plads.
-    */
-    <header className="mb-4 sm:mb-5">
-      <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-start sm:justify-between sm:gap-4">
-        <div className="flex min-w-0 items-center gap-3">
-          <Tooltip
-            label={tr("tipHome", lang)}
-            keys={combo(SHORTCUT_KEYS.newSession)}
-            placement="bottom-start"
-            className="shrink-0"
-          >
-            <Link href="/" onClick={onGoHome} className="shrink-0 transition-opacity hover:opacity-80">
-              <BrandMark size={50} />
-            </Link>
-          </Tooltip>
-          <div className="min-w-0">
-            <Link href="/" onClick={onGoHome} className="transition-opacity hover:opacity-80">
-              <h1 className="font-[family-name:var(--font-display)] text-[22px] font-semibold tracking-tight text-[var(--ink)]">
-                {tr("title", lang)}
-              </h1>
-            </Link>
-            {/* Før et forløb er valgt, ville trænavnet være et valg vi havde
-                truffet for lægen. Der står linjen om hvad appen er i stedet.
-                Linjen har fast højde: træ-vælgeren er en knap og taglinen et
-                afsnit, og uden en fælles højde ville hele instrumentpanelet
-                rykke fire pixel i det øjeblik forløbet starter. */}
-            <div className="flex h-5 items-center">
-              {started ? (
-                <TreePicker
-                  lang={lang}
-                  trees={trees}
-                  activeId={treeId}
-                  activeName={treeName}
-                  activeVersion={treeVersion}
-                  busy={treeBusy}
-                  onSelect={onSelectTree}
-                />
-              ) : (
-                <p className="font-[family-name:var(--font-mono)] text-xs text-[var(--ink-faint)]">
-                  {tr("tagline", lang)}
-                </p>
-              )}
+    <>
+      {/*
+        Den klæbende bar. STICKY PÅ SELVE HEADEREN, ikke på et barn af den: et
+        sticky element kan kun klæbe inden for sin forælders boks, og en
+        header der selv ruller væk ville tage baren med sig — målt til
+        top=-534 ved 600 px scroll før denne ændring. Som direkte barn af
+        sidens fulde container klæber den hele vejen ned.
+
+        `-mx-4`/`-mx-6` lader den fylde sidens indrykning ud, så indhold ikke
+        kan skimtes glide forbi i kanterne; baggrunden er tæt papir, for en
+        gennemsigtig bar oven på en rullende tråd er uro. z-30: over
+        indholdet, under dialogerne (z-50).
+      */}
+      <header className="sticky top-0 z-30 -mx-4 border-b border-[var(--line)] bg-[var(--paper)] px-4 py-2 sm:-mx-6 sm:px-6 sm:py-2.5">
+        <div className="flex min-h-11 items-center justify-between gap-2 sm:gap-4">
+          <div className="flex min-w-0 items-center gap-2.5 sm:gap-3">
+            {/* På telefon er ordmærket mærket, og logoet viger — 50 px der i
+                stedet lader "CoSurg" stå helt i stedet for som "C…". Skjules
+                i en egen wrapper: Tooltip'ens rod bærer selv `inline-flex`,
+                og to display-utilities på samme element er et terningkast. */}
+            <span className="hidden shrink-0 sm:block">
+              <Tooltip
+                label={tr("tipHome", lang)}
+                keys={combo(SHORTCUT_KEYS.newSession)}
+                placement="bottom-start"
+                className="shrink-0"
+              >
+                <Link href="/" onClick={onGoHome} className="shrink-0 transition-opacity hover:opacity-80">
+                  <BrandMark size={40} />
+                </Link>
+              </Tooltip>
+            </span>
+            <div className="min-w-0">
+              <Link href="/" onClick={onGoHome} className="transition-opacity hover:opacity-80">
+                <h1 className="truncate font-[family-name:var(--font-display)] text-[20px] font-semibold tracking-tight text-[var(--ink)] sm:text-[22px]">
+                  {tr("title", lang)}
+                </h1>
+              </Link>
+              {/* Forløbslinjen bor i baren på desktop, hvor der er plads. På
+                  telefon står den under baren (se nedenfor) — en sticky bar i
+                  to etager ville æde skærmen mellem tastatur og komposer. */}
+              <div className="hidden sm:block">{treeLine}</div>
             </div>
           </div>
-        </div>
 
-        <div className="flex flex-wrap items-center gap-2">
-          <UsagePanel lang={lang} usage={usage} />
+          <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
+            <LangSwitch lang={lang} onToggleLang={onToggleLang} />
 
-          <LangSwitch lang={lang} onToggleLang={onToggleLang} />
+            {/* Opslæsning findes kun som kontrol i håndfri tilstand — uden for
+                den er der ingen oplæsning at slå til eller fra. */}
+            {orMode && (
+              <div className="flex items-center rounded-lg border bg-[var(--paper-raised)] p-0.5">
+                <Tooltip label={tr("tipSpeech", lang)} placement="bottom-end">
+                  <button
+                    onClick={onToggleVoiceMode}
+                    disabled={orMode}
+                    aria-pressed={fullVoice}
+                    className={`flex min-h-10 items-center rounded-md px-3 py-1.5 text-sm font-medium transition-colors disabled:opacity-40 ${
+                      fullVoice ? "bg-[var(--teal-tint)] text-[var(--teal-deep)]" : "text-[var(--ink-soft)]"
+                    }`}
+                  >
+                    <SizeLock variants={widestOf("voiceFull", "voiceKey")}>
+                      {fullVoice ? tr("voiceFull", lang) : tr("voiceKey", lang)}
+                    </SizeLock>
+                  </button>
+                </Tooltip>
+              </div>
+            )}
 
-          {/* Opslæsning findes kun som kontrol i håndfri tilstand — uden for
-              den er der ingen oplæsning at slå til eller fra. */}
-          {orMode && (
-            <div className="flex items-center rounded-lg border bg-[var(--paper-raised)] p-0.5">
-              <Tooltip label={tr("tipSpeech", lang)} placement="bottom-end">
-                <button
-                  onClick={onToggleVoiceMode}
-                  disabled={orMode}
-                  aria-pressed={fullVoice}
-                  className={`flex min-h-10 items-center rounded-md px-3 py-1.5 text-sm font-medium transition-colors disabled:opacity-40 ${
-                    fullVoice ? "bg-[var(--teal-tint)] text-[var(--teal-deep)]" : "text-[var(--ink-soft)]"
-                  }`}
-                >
-                  {/* "Oplæsning fra" er bredere end "Speech off" — uden en låst
-                      bredde flytter knapperne til højre sig hver gang man skifter
-                      sprog eller slår oplæsning til. */}
-                  <SizeLock variants={widestOf("voiceFull", "voiceKey")}>
-                    {fullVoice ? tr("voiceFull", lang) : tr("voiceKey", lang)}
-                  </SizeLock>
-                </button>
-              </Tooltip>
+            {/* Håndfri: synlig overalt — det er en af de to ting man faktisk
+                skifter. Kompakt på telefon, men aldrig under 44 px høj. */}
+            <Tooltip
+              label={tr("tipHandsfree", lang)}
+              keys={combo(SHORTCUT_KEYS.handsfree)}
+              placement="bottom-end"
+            >
+              <button
+                onClick={onToggleOrMode}
+                aria-pressed={orMode}
+                className={`flex min-h-11 items-center rounded-lg border px-3 py-2 text-[13px] font-semibold transition-colors disabled:opacity-40 sm:px-4 sm:text-sm ${
+                  orMode
+                    ? "border-[var(--teal)] bg-[var(--teal)] text-white"
+                    : "border-[var(--line-strong)] bg-[var(--paper-raised)] text-[var(--ink)] enabled:hover:border-[var(--teal)] enabled:hover:bg-[var(--teal-tint)]"
+                }`}
+              >
+                {/* Kort etiket på telefon — "Håndfri tilstand" åd mærkenavnet
+                    på 390 px. Begge udgaver er breddelåste, så baren står
+                    stille ved sprogskift. */}
+                <span className="sm:hidden">
+                  <SizeLock variants={widestOf("orModeShort")}>{tr("orModeShort", lang)}</SizeLock>
+                </span>
+                <span className="hidden sm:flex">
+                  <SizeLock variants={widestOf("orMode")}>{tr("orMode", lang)}</SizeLock>
+                </span>
+              </button>
+            </Tooltip>
+
+            {/* Historik: på desktop en tydelig knap med de seneste samtaler i
+                en dropdown; på telefon et ikon der åbner det fulde panel —
+                og fordi baren er sticky, er den altid ét tryk væk. */}
+            <div className="hidden sm:inline-flex">
+              <HistoryMenu lang={lang} onOpen={onOpenConversation} onShowAll={onOpenHistory} />
             </div>
-          )}
+            <Tooltip label={tr("historyTitle", lang)} placement="bottom-end" className="sm:hidden">
+              <button
+                type="button"
+                onClick={onOpenHistory}
+                aria-label={tr("historyTitle", lang)}
+                aria-haspopup="dialog"
+                className="flex h-11 w-11 items-center justify-center rounded-lg border border-[var(--line-strong)] bg-[var(--paper-raised)] text-[var(--ink-soft)] transition-colors hover:border-[var(--teal)] hover:bg-[var(--teal-tint)] hover:text-[var(--teal-deep)]"
+              >
+                <HistoryIcon size={16} />
+              </button>
+            </Tooltip>
 
-          {/* Håndfri tilstand kan slås til før et forløb er valgt — lægen skal
-              kunne tale fra første spørgsmål, ikke først når et træ er startet.
+            <RailMenu lang={lang} usage={usage} onGoHome={onGoHome} onOpenShortcuts={onOpenShortcuts} />
+          </div>
+        </div>
+      </header>
 
-              Knappen er en KONTAKT, ikke sidens primære handling: slukket står
-              den som de øvrige kontroller i rækken, tændt fyldes den med
-              SurgeonBlue. Den bar før OR-tilstandens Turquoise mens den var
-              tændt — den mørke verdens accent lagt oven på den lyse — og var
-              dermed det stærkeste farvefelt på en ellers rolig skærm. */}
-          <Tooltip
-            label={tr("tipHandsfree", lang)}
-            keys={combo(SHORTCUT_KEYS.handsfree)}
-            placement="bottom-end"
-          >
-            <button
-              onClick={onToggleOrMode}
-              aria-pressed={orMode}
-              className={`flex min-h-11 items-center rounded-lg border px-4 py-2 text-sm font-semibold transition-colors disabled:opacity-40 ${
-                orMode
-                  ? "border-[var(--teal)] bg-[var(--teal)] text-white"
-                  : "border-[var(--line-strong)] bg-[var(--paper-raised)] text-[var(--ink)] enabled:hover:border-[var(--teal)] enabled:hover:bg-[var(--teal-tint)]"
-              }`}
-            >
-              <SizeLock variants={widestOf("orMode")}>{tr("orMode", lang)}</SizeLock>
-            </button>
-          </Tooltip>
-
-          {/* Historikken. Diskret med vilje — den må aldrig konkurrere med
-              skrivefeltet, som ER produktet. Et lille ur-ikon på linje med
-              genvejsknappen: en vej tilbage til tidligere samtaler, ikke en
-              handling i den aktuelle. */}
-          <Tooltip label={tr("historyTitle", lang)} placement="bottom-end">
-            <button
-              type="button"
-              onClick={onOpenHistory}
-              aria-label={tr("historyTitle", lang)}
-              aria-haspopup="dialog"
-              className="flex h-6 w-6 items-center justify-center rounded-full border border-[var(--line-strong)] text-[var(--ink-faint)] transition-colors hover:border-[var(--teal)] hover:bg-[var(--teal-tint)] hover:text-[var(--teal-deep)]"
-            >
-              <svg viewBox="0 0 20 20" width={13} height={13} fill="none" aria-hidden="true">
-                {/* Et ur med en pil tilbage — konventionen for historik. */}
-                <path
-                  d="M4.5 5.5A6.5 6.5 0 1 1 3.5 10"
-                  stroke="currentColor"
-                  strokeWidth="1.6"
-                  strokeLinecap="round"
-                />
-                <path d="M4.5 2.5v3h3" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-                <path d="M10 7v3.2l2.3 1.4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </button>
-          </Tooltip>
-
-          {/* Genvejsoversigten. Knappen er lille med vilje — den er en vej ind
-              for musen, mens «?» er vejen for den der allerede har hænderne på
-              tastaturet. Uden den ville genvejene kun kunne findes af den der
-              på forhånd vidste at de fandtes. */}
-          <Tooltip label={tr("tipShortcuts", lang)} keys={[HELP_CHAR]} placement="bottom-end">
-            <button
-              type="button"
-              onClick={onOpenShortcuts}
-              aria-label={tr("shortcutsTitle", lang)}
-              aria-haspopup="dialog"
-              className="flex h-6 w-6 items-center justify-center rounded-full border border-[var(--line-strong)] font-[family-name:var(--font-mono)] text-[12px] font-semibold text-[var(--ink-faint)] transition-colors hover:border-[var(--teal)] hover:bg-[var(--teal-tint)] hover:text-[var(--teal-deep)]"
-            >
-              ?
-            </button>
-          </Tooltip>
-
-          <AboutTeamLink lang={lang} />
+      {/* Under baren, i almindeligt flow: forløbet (kun telefon — desktop har
+          det i baren) og tillidsbudskabet. */}
+      <div className="mb-4 sm:mb-5">
+        <div className="mt-3 sm:hidden">{treeLine}</div>
+        <div className="mt-3 inline-flex items-center gap-2 rounded-full border border-[var(--line)] bg-[var(--nude-tint)] px-3 py-1.5 sm:mt-4">
+          <BrandMark size={14} />
+          <p className="text-xs font-medium text-[var(--ink-soft)]">{tr("sourceNote", lang)}</p>
         </div>
       </div>
+    </>
+  );
+}
 
-      <div className="mt-4 inline-flex items-center gap-2 rounded-full border border-[var(--line)] bg-[var(--nude-tint)] px-3 py-1.5">
-        <BrandMark size={14} />
-        <p className="text-xs font-medium text-[var(--ink-soft)]">{tr("sourceNote", lang)}</p>
-      </div>
-    </header>
+/**
+ * MENUEN — det sjældne, samlet ét sted.
+ *
+ * Samme knap på telefon og desktop: ny samtale, tastaturgenveje (kun hvor
+ * der ER et tastatur), Om & Team og Corti-forbruget. Rigtig knap med
+ * `aria-expanded`, Escape lukker og giver fokus tilbage, klik udenfor
+ * lukker, og fokus starter på første punkt.
+ */
+function RailMenu({
+  lang,
+  usage,
+  onGoHome,
+  onOpenShortcuts,
+}: {
+  lang: Lang;
+  usage: SessionUsage;
+  onGoHome: () => void;
+  onOpenShortcuts: () => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const rootRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const firstItemRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    firstItemRef.current?.focus();
+    const onPointerDown = (e: PointerEvent) => {
+      if (!rootRef.current?.contains(e.target as Node)) setOpen(false);
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setOpen(false);
+        buttonRef.current?.focus();
+      }
+    };
+    document.addEventListener("pointerdown", onPointerDown);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("pointerdown", onPointerDown);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [open]);
+
+  const rowClass =
+    "flex min-h-11 w-full items-center justify-between gap-3 rounded-lg px-3 py-2 text-left text-sm font-medium text-[var(--ink)] transition-colors hover:bg-[var(--teal-tint)]";
+
+  return (
+    <div ref={rootRef} className="relative inline-flex">
+      <Tooltip label={tr("menuLabel", lang)} placement="bottom-end">
+        <button
+          ref={buttonRef}
+          type="button"
+          onClick={() => setOpen((v) => !v)}
+          aria-expanded={open}
+          aria-haspopup="menu"
+          aria-label={tr("menuLabel", lang)}
+          className="flex h-11 w-11 items-center justify-center rounded-lg border border-[var(--line-strong)] bg-[var(--paper-raised)] text-[var(--ink-soft)] transition-colors hover:border-[var(--teal)] hover:bg-[var(--teal-tint)] hover:text-[var(--teal-deep)]"
+        >
+          <svg viewBox="0 0 20 20" width={16} height={16} fill="none" aria-hidden="true">
+            <path d="M3.5 5.5h13M3.5 10h13M3.5 14.5h13" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+          </svg>
+        </button>
+      </Tooltip>
+
+      {open && (
+        <div
+          role="menu"
+          className="absolute right-0 top-full z-30 mt-2 w-[min(17rem,calc(100vw-2rem))] rounded-xl border border-[var(--line)] bg-[var(--paper-raised)] p-2 shadow-[var(--shadow-lifted)]"
+        >
+          <button
+            ref={firstItemRef}
+            type="button"
+            role="menuitem"
+            onClick={() => {
+              setOpen(false);
+              onGoHome();
+            }}
+            className={rowClass}
+          >
+            <span>{tr("menuNewSession", lang)}</span>
+            <Keys keys={combo(SHORTCUT_KEYS.newSession)} />
+          </button>
+
+          {/* Genvejene findes kun hvor der er et tastatur — på telefon ville
+              punktet pege på taster der ikke findes. */}
+          <button
+            type="button"
+            role="menuitem"
+            onClick={() => {
+              setOpen(false);
+              onOpenShortcuts();
+            }}
+            className={`${rowClass} hidden sm:flex`}
+          >
+            <span>{tr("shortcutsTitle", lang)}</span>
+            <Keys keys={[HELP_CHAR]} />
+          </button>
+
+          <Link href="/aboutandteam" role="menuitem" className={rowClass} onClick={() => setOpen(false)}>
+            <span>{tr("aboutTeam", lang)}</span>
+          </Link>
+
+          {/* Forbruget: interessant for dommere, støj for klinikeren — derfor
+              her. Info-knappen er UsagePanels egen; dens panel åbner oven på
+              menuen og lukker med de samme greb. */}
+          <div className={`${rowClass} hover:bg-transparent`}>
+            <span className="text-[var(--ink-soft)]">{tr("usageTitle", lang)}</span>
+            <UsagePanel lang={lang} usage={usage} />
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/** Små tastekapsler til menupunkternes genvejshenvisninger. */
+function Keys({ keys }: { keys: string[] }) {
+  return (
+    <span className="flex shrink-0 items-center gap-1" aria-hidden="true">
+      {keys.map((k) => (
+        <kbd
+          key={k}
+          className="rounded border border-[var(--line)] bg-[var(--paper)] px-1.5 py-0.5 font-[family-name:var(--font-mono)] text-[10px] text-[var(--ink-faint)]"
+        >
+          {k}
+        </kbd>
+      ))}
+    </span>
   );
 }

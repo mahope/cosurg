@@ -1772,6 +1772,7 @@ export default function Home() {
           onToggleOrMode={toggleOrMode}
           onOpenShortcuts={() => setShortcutsOpen(true)}
           onOpenHistory={() => setHistoryOpen(true)}
+          onOpenConversation={openConversation}
         />
 
         <ShortcutsDialog lang={lang} open={shortcutsOpen} onClose={() => setShortcutsOpen(false)} />
