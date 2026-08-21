@@ -55,6 +55,101 @@ export interface EpicNoteResultat {
   manglende?: ManglendeFelt[];
 }
 
+/* ------------------------------------------------------------------ */
+/* Diagnosekoder — Cortis koder, deterministisk sat ind i notatet      */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Dansk betegnelse for ICD-10-brandsårskoderne (T20-T25 + de nære naboer).
+ * Corti coding svarer på engelsk ("Burn of second degree of wrist and hand");
+ * journalen er dansk. Regionsnavnene følger SKS' diagnosedel, som er den
+ * danske udvidelse af international ICD-10 — koderne selv er identiske.
+ * En kode uden opslag beholder Cortis egen engelske betegnelse: hellere
+ * engelsk sandhed end dansk gæt.
+ */
+const BRANDSAAR_REGION_DA: Record<string, string> = {
+  T20: "hoved og hals",
+  T21: "truncus",
+  T22: "skulder og overekstremitet, undtagen håndled og hånd",
+  T23: "håndled og hånd",
+  T24: "hofte og underekstremitet, undtagen ankel og fod",
+  T25: "ankel og fod",
+  T29: "flere legemsregioner",
+  T30: "uspecificeret legemsregion",
+};
+
+const GRAD_PRAEFIKS_DA: Record<string, string> = {
+  "1": "Førstegradsforbrænding af",
+  "2": "Andengradsforbrænding af",
+  "3": "Tredjegradsforbrænding af",
+};
+
+/**
+ * Deterministisk ICD-10-kode fra træets EGNE svar: region + grad er en fast
+ * tabel-opslag (T20-T25 er defineret ved netop de to akser), ikke et skøn.
+ * Bruges når Symphony ikke leverer en regionsspecifik T2x-kode — målt 21/8 gav
+ * samme hånd-skoldningscase skiftevis T30.2 (uspecificeret region), tomt svar
+ * og X12 på tre kald. Træets svar er stabile; koden af dem er det også.
+ */
+const LOKATION_TIL_KATEGORI: Record<string, string> = {
+  face: "T20",
+  hand: "T23",
+  foot: "T25",
+  genitals: "T21",
+};
+
+export function traeKode(path: AnsweredStep[]): { code: string; display: string } | null {
+  const lokation = path.find((s) => s.nodeId === "location")?.value;
+  const dybde = path.find((s) => s.nodeId === "depth")?.value;
+  const kategori = lokation ? LOKATION_TIL_KATEGORI[lokation] : undefined;
+  const grad = dybde ? GRAD[dybde] : undefined;
+  if (!kategori || !grad) return null;
+  const code = `${kategori}.${grad}`;
+  return { code, display: danskBrandsaarsBetegnelse(code) ?? code };
+}
+
+/** "T23.2" → "Andengradsforbrænding af håndled og hånd" — ellers null. */
+export function danskBrandsaarsBetegnelse(code: string): string | null {
+  const m = /^(T\d{2})\.?(\d)?/.exec(code.trim().toUpperCase());
+  if (!m) return null;
+  const [, kategori, ciffer] = m;
+  if (kategori === "T31" && ciffer !== undefined) {
+    const n = Number(ciffer);
+    return n === 0
+      ? "Forbrænding omfattende mindre end 10 % af legemsoverfladen"
+      : `Forbrænding omfattende ${n * 10}-${n * 10 + 9} % af legemsoverfladen`;
+  }
+  const region = BRANDSAAR_REGION_DA[kategori];
+  if (!region) return null;
+  const grad = ciffer !== undefined ? GRAD_PRAEFIKS_DA[ciffer] : undefined;
+  if (grad) return `${grad} ${region}`;
+  return `Forbrænding af ${region}, uspecificeret grad`;
+}
+
+/**
+ * Afsluttende "Diagnosekoder:"-sektion — Magnus' krav: notatet skal slutte
+ * med ICD-10-koden for skaden, fx "T23.2 — Andengradsforbrænding af håndled
+ * og hånd". Koderne kommer fra Corti coding og sættes ind af KODE, efter
+ * token-vagten: modellen ser dem aldrig og kan hverken opfinde eller
+ * omformulere dem. Findes ingen koder, tilføjes ingen sektion.
+ */
+export function medDiagnosekoder(
+  note: string,
+  koder: Array<{ code: string; display: string }>,
+): string {
+  if (koder.length === 0) return note;
+  const set = new Set<string>();
+  const linjer: string[] = [];
+  for (const k of koder) {
+    const kode = k.code.trim();
+    if (!kode || set.has(kode.toUpperCase())) continue;
+    set.add(kode.toUpperCase());
+    linjer.push(`${kode} — ${danskBrandsaarsBetegnelse(kode) ?? k.display}`);
+  }
+  if (linjer.length === 0) return note;
+  return `${note.replace(/\s+$/, "")}\n\nDiagnosekoder:\n${linjer.join("\n")}\n`;
+}
+
 export function laesSkabelon(): string {
   return readFileSync(path.join(process.cwd(), "content", "templates", "aop-brandsaar.txt"), "utf8");
 }

@@ -10,7 +10,12 @@ import {
   type PredictedCode,
 } from "@/lib/corti/coding";
 import { rensAnamnese } from "@/lib/corti/anamnese";
-import { byggEpicNote, type EpicNoteResultat } from "@/lib/corti/epicNote";
+import {
+  byggEpicNote,
+  medDiagnosekoder,
+  traeKode,
+  type EpicNoteResultat,
+} from "@/lib/corti/epicNote";
 import { findManglende, udfyldEpicNoteMedAi } from "@/lib/corti/epicUdtraek";
 import { treeSource } from "@/lib/tree/loader";
 import { getDisposition, getNode } from "@/lib/tree/engine";
@@ -196,6 +201,9 @@ export async function POST(req: Request) {
               text: [
                 `${tree.name[lang]}.`,
                 clinicalPathText,
+                // Færdig diagnose-sætning fra træets region+grad — giver
+                // kodemodellen den formulering ICD-rubrikken faktisk bruger.
+                traeKode(path) ? `Klinisk diagnose: ${traeKode(path)!.display}.` : "",
                 disposition ? `${disposition.title[lang]}. ${disposition.guidance[lang]}` : "",
               ]
                 .filter(Boolean)
@@ -227,6 +235,32 @@ export async function POST(req: Request) {
         epicNote =
           (epicAiPromise ? await epicAiPromise : null) ?? byggEpicNote({ tree, path, anamnese });
         epicNote.manglende = findManglende(epicNote, path, anamnese, lang);
+        /*
+         * Magnus' krav: notatet slutter med ICD-10-koden for skaden, fx
+         * "T23.2 — Andengradsforbrænding af håndled og hånd". Koderne er
+         * Cortis (coding-kaldet ovenfor), indsat af kode EFTER token-vagten —
+         * modellen ser dem aldrig. Er der ingen sikre koder, bruges
+         * kandidaterne; er der heller ingen af dem, tilføjes intet.
+         */
+        const symphony = coding.codes.length > 0 ? coding.codes : coding.candidates;
+        /*
+         * Symphony er målt ustabil på region (samme case gav T30.2, tomt og
+         * X12 på tre kald). Har træet selv svaret på region + grad, er
+         * T-koden et fast tabel-opslag — den sættes forrest når Symphony
+         * ikke leverer en regionsspecifik T2x-kode selv.
+         */
+        const fraTrae = traeKode(path);
+        const harSpecifikT = symphony.some((c) => /^T2\d/i.test(c.code.trim()));
+        const diagnoser = [...(fraTrae && !harSpecifikT ? [fraTrae] : []), ...symphony];
+        const foer = epicNote.note;
+        epicNote.note = medDiagnosekoder(epicNote.note, diagnoser);
+        if (epicNote.note !== foer) {
+          epicNote.udfyldte.push(
+            fraTrae && !harSpecifikT
+              ? "diagnosekoder (træets region+grad, suppleret af Corti coding)"
+              : "diagnosekoder (fra Corti coding)",
+          );
+        }
       } catch (err) {
         epicNoteError = err instanceof Error ? err.message : "Skabelonen kunne ikke udfyldes";
       }
