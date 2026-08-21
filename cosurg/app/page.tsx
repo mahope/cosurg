@@ -35,8 +35,8 @@ import {
   matchNoteRequest,
 } from "@/components/unified/intent";
 import { IntentChoiceCard, LookupCard, type LookupPayload } from "@/components/unified/LookupCard";
-import { ChatThread } from "@/components/unified/ChatThread";
-import { fetchGuide, type GuideSvar } from "@/components/unified/guide";
+import { ChatThread, type GuideEntry } from "@/components/unified/ChatThread";
+import { fetchGuide } from "@/components/unified/guide";
 import { spokenText } from "@/components/unified/spoken";
 import { PitfallRail } from "@/components/pitfalls/PitfallRail";
 import { NoteSkeleton } from "@/components/ui/Skeleton";
@@ -197,18 +197,16 @@ export default function Home() {
   const [lookupOpen, setLookupOpen] = useState(false);
   const [lookupStatus, setLookupStatus] = useState<string | null>(null);
   /*
-   * Behandlingsopslaget. Det bor for sig selv og ikke i chattens tur-liste,
+   * Behandlingsopslagene. De bor for sig selv og ikke i chattens tur-liste,
    * fordi det er en anden slags svar fra en anden kilde: vores egen vidensbase,
-   * ordret og i klinisk rækkefølge, i stedet for litteraturen. Kun ét ad gangen
-   * — et opslagsværk har ingen tråd at huske.
+   * ordret og i klinisk rækkefølge, i stedet for litteraturen.
+   *
+   * Det er en LISTE og ikke ét opslag ad gangen. Før blev opslaget ryddet så
+   * snart næste svar kom fra litteratursporet — og så forsvandt noget lægen
+   * lige havde læst, ud af en tråd der ellers er kronologisk historik.
+   * Hvert opslag bliver nu liggende ved sit eget anker.
    */
-  const [guideLookup, setGuideLookup] = useState<{
-    question: string;
-    guide: GuideSvar | null;
-    error: string | null;
-    /** Turen opslaget blev hentet ved — dets plads i trådens kronologi. */
-    afterTurnId: string | null;
-  } | null>(null);
+  const [guideLookups, setGuideLookups] = useState<GuideEntry[]>([]);
   const [speakingTurn, setSpeakingTurn] = useState<string | null>(null);
   /** Ytringen vi ikke turde afgøre — vist som et valg frem for et gæt. */
   const [ambiguity, setAmbiguity] = useState<{ text: string; reasons: string[] } | null>(null);
@@ -425,15 +423,32 @@ export default function Home() {
           // Ankeret sættes NU — ikke når svaret lander. Opslaget hører til
           // dér hvor lægen bad om det, uanset hvor længe hentningen tager.
           const anker = aktueltAnker();
-          setGuideLookup({ question, guide: null, error: null, afterTurnId: anker });
+          const id = `guide-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+          /*
+           * Bad lægen om det SAMME sted i tråden igen — typisk kildeskiftet
+           * frem og tilbage — erstattes indslaget frem for at stå to gange.
+           * Et nyt sted i tråden er derimod et nyt opslag og lægger sig som
+           * sit eget indslag.
+           */
+          const læg = (entry: GuideEntry) =>
+            setGuideLookups((prev) => {
+              const i = prev.findIndex((g) => g.id === entry.id || g.afterTurnId === anker);
+              if (i === -1) return [...prev, entry];
+              const next = [...prev];
+              next[i] = entry;
+              return next;
+            });
+
+          læg({ id, question, guide: null, error: null, afterTurnId: anker });
           try {
             const guide = await fetchGuide(question, lang);
-            setGuideLookup({ question, guide, error: null, afterTurnId: anker });
+            læg({ id, question, guide, error: null, afterTurnId: anker });
             // Guiden har intet talt resumé — otte afsnit ordret fra kilderne kan
             // ikke læses højt. Vi siger at den står der, og lader øjnene om det.
             await finish(guide.covered > 0 ? tr("guideSpokenFound", lang) : tr("guideEmpty", lang));
           } catch (err) {
-            setGuideLookup({
+            læg({
+              id,
               question,
               guide: null,
               error: failureMessage(err, "tree", lang),
@@ -443,7 +458,6 @@ export default function Home() {
           return;
         }
 
-        setGuideLookup(null);
         /*
          * Det appen allerede ved om patienten sendes med.
          *
@@ -477,10 +491,17 @@ export default function Home() {
    * spurgt om, skal det kunne gøres om uden at spørgsmålet skal stilles igen.
    */
   const switchLookup = useCallback(() => {
-    const spoergsmaal = guideLookup?.question ?? lookupTurns[lookupTurns.length - 1]?.question;
+    /*
+     * Skiftet gælder det SENESTE opslag. Med guiderne som liste er det den
+     * hvis anker er den nuværende sidste tur — står den dér, er den det
+     * nederste i tråden, og det er den man kigger på.
+     */
+    const sidsteTurId = lookupTurns[lookupTurns.length - 1]?.id ?? null;
+    const aktuelGuide = guideLookups.find((g) => (g.afterTurnId ?? null) === sidsteTurId);
+    const spoergsmaal = aktuelGuide?.question ?? lookupTurns[lookupTurns.length - 1]?.question;
     if (!spoergsmaal) return;
-    void runLookup(spoergsmaal, null, guideLookup ? "chat" : "guide");
-  }, [guideLookup, lookupTurns, runLookup]);
+    void runLookup(spoergsmaal, null, aktuelGuide ? "chat" : "guide");
+  }, [guideLookups, lookupTurns, runLookup]);
 
   const resetSession = useCallback(
     (t: DecisionTree, nextLang: Lang) => {
@@ -501,7 +522,7 @@ export default function Home() {
        * kunne henvise til en anden patients spørgsmål.
        */
       resetLookup();
-      setGuideLookup(null);
+      setGuideLookups([]);
       setProcedure(null);
       setLookupOpen(false);
       setLookupStatus(null);
@@ -541,7 +562,7 @@ export default function Home() {
       setAddendumOpen(false);
       setFlash(null);
       setStatus(null);
-      setGuideLookup(null);
+      setGuideLookups([]);
       setProcedure(null);
       setLookupOpen(false);
       setLookupStatus(null);
@@ -1484,7 +1505,7 @@ export default function Home() {
    * — også mens svaret stadig arbejder — så skiftet sker i samme sekund der
    * trykkes send, ikke først når svaret lander.
    */
-  const hasThread = !started && (lookupTurns.length > 0 || guideLookup !== null || procedure !== null);
+  const hasThread = !started && (lookupTurns.length > 0 || guideLookups.length > 0 || procedure !== null);
 
   /*
    * Forslagene til lægens næste replik — fra det SENESTE svar, vist ved
@@ -1502,10 +1523,14 @@ export default function Home() {
    * er det dets forslag der gælder.
    */
   const sidsteTurId = sidsteTur?.id ?? null;
+  /**
+   * Det guide-opslag der står NEDERST — altså det nyeste. Ankeret afgør det:
+   * er guiden hentet ved den seneste tur, kom den efter tursvaret.
+   */
+  const aktuelGuide = guideLookups.find((g) => (g.afterTurnId ?? null) === sidsteTurId) ?? null;
   const opslagNederst =
-    (guideLookup?.afterTurnId ?? null) === sidsteTurId && guideLookup !== null
-      ? true
-      : (procedure?.afterTurnId ?? null) === sidsteTurId && procedure !== null;
+    guideLookups.some((g) => (g.afterTurnId ?? null) === sidsteTurId) ||
+    (procedure !== null && (procedure.afterTurnId ?? null) === sidsteTurId);
   const forslagVedKomposer = opslagNederst ? [] : (sidsteTur?.answer?.suggestions ?? []);
 
   /**
@@ -1577,8 +1602,8 @@ export default function Home() {
     spokenWorkupRef.current = nøgle;
     void say(tekst);
   }, [lookupTurns, speakAll, say]);
-  const lookupPayload: LookupPayload | null = guideLookup
-    ? { kind: "guide", ...guideLookup }
+  const lookupPayload: LookupPayload | null = aktuelGuide
+    ? { kind: "guide", ...aktuelGuide }
     : activeTurn
       ? { kind: "chat", turn: activeTurn }
       : null;
@@ -1911,7 +1936,7 @@ export default function Home() {
                 <ChatThread
                   lang={lang}
                   turns={lookupTurns}
-                  guide={guideLookup}
+                  guides={guideLookups}
                   procedure={procedure}
                   speakingTurn={speakingTurn}
                   onSpeak={toggleSpeakAnswer}

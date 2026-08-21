@@ -36,6 +36,8 @@ import { ProcedureSteps } from "./ProcedureSteps";
  */
 
 export interface GuideEntry {
+  /** Entydigt pr. opslag — to opslag i samme samtale er to indslag i tråden. */
+  id: string;
   question: string;
   guide: GuideSvar | null;
   error: string | null;
@@ -61,8 +63,12 @@ export interface ProcedureEntry {
 interface ChatThreadProps {
   lang: Lang;
   turns: Turn[];
-  /** Behandlingsopslaget. Højst ét ad gangen; står hvor det blev hentet. */
-  guide: GuideEntry | null;
+  /**
+   * Behandlingsopslagene. Hvert står ved sit eget anker og BLIVER liggende —
+   * tråden er kronologisk historik, og et opslag der forsvandt når man
+   * spurgte videre, var præcis den slags forvirring proceduren gav.
+   */
+  guides: GuideEntry[];
   /** Proceduren vist i fuld længde — alle trin med fotos. */
   procedure: ProcedureEntry | null;
   speakingTurn: string | null;
@@ -88,7 +94,7 @@ interface ChatThreadProps {
 export function ChatThread({
   lang,
   turns,
-  guide,
+  guides,
   procedure,
   speakingTurn,
   onSpeak,
@@ -107,7 +113,7 @@ export function ChatThread({
    */
   const endRef = useRef<HTMLDivElement>(null);
   const seenRef = useRef(0);
-  const entryCount = turns.length + (guide ? 1 : 0) + (procedure ? 1 : 0);
+  const entryCount = turns.length + guides.length + (procedure ? 1 : 0);
   useEffect(() => {
     if (entryCount > seenRef.current) {
       endRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
@@ -122,34 +128,32 @@ export function ChatThread({
    * hentet frem fra historikken), regnes opslaget som hentet ved den seneste
    * tur — samme plads som før, bare uden at kunne fastlåse sig nederst.
    */
-  const guideAnker = guide ? (guide.afterTurnId !== undefined ? guide.afterTurnId : lastTurnId) : undefined;
-  const procedureAnker = procedure
-    ? procedure.afterTurnId !== undefined
-      ? procedure.afterTurnId
-      : lastTurnId
-    : undefined;
+  const ankerFor = (entry: { afterTurnId?: string | null }) =>
+    entry.afterTurnId !== undefined ? entry.afterTurnId : lastTurnId;
 
-  const guideBlok = guide ? (
-    <section key="guide">
-      <QuestionBubble text={guide.question} />
+  const procedureAnker = procedure ? ankerFor(procedure) : undefined;
+
+  const guideBlok = (entry: GuideEntry) => (
+    <section key={entry.id}>
+      <QuestionBubble text={entry.question} />
       <p className="mt-3 font-[family-name:var(--font-mono)] text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--ink-faint)]">
         {tr("lookupTitle", lang)} · <span className="text-[var(--teal)]">{tr("originKnowledgeBase", lang)}</span>
       </p>
       <div className="mt-2">
-        {guide.guide ? (
+        {entry.guide ? (
           <div className="rounded-2xl border bg-[var(--paper-raised)] p-5 shadow-[var(--shadow-raised)] sm:p-6">
-            <GuidePanel guide={guide.guide} lang={lang} topic={guide.question} onAskInstead={onSwitch} />
+            <GuidePanel guide={entry.guide} lang={lang} topic={entry.question} onAskInstead={onSwitch} />
           </div>
-        ) : guide.error ? (
+        ) : entry.error ? (
           <p className="rounded-2xl border border-dashed border-[var(--nude-deep)] bg-[var(--nude-tint)] px-4 py-3 text-sm leading-relaxed text-[var(--nude-ink)]">
-            {guide.error}
+            {entry.error}
           </p>
         ) : (
           <ProgressTrail progress={[{ expert: null, text: tr("guideFetching", lang) }]} lang={lang} />
         )}
       </div>
     </section>
-  ) : null;
+  );
 
   /*
    * Proceduren står dér hvor den blev bedt om — ikke nederst. Bad lægen om
@@ -168,7 +172,7 @@ export function ChatThread({
   /** Opslagene der hører til lige EFTER denne tur (null = før alle ture). */
   const ankret = (id: string | null) => (
     <>
-      {guideAnker === id && guideBlok}
+      {guides.filter((g) => ankerFor(g) === id).map(guideBlok)}
       {procedureAnker === id && procedureBlok}
     </>
   );
@@ -178,7 +182,8 @@ export function ChatThread({
    * nederste — og dens knapper (kildeskift, forløbstilbud) hører til et svar
    * man er gået videre fra.
    */
-  const opslagSidst = guideAnker === lastTurnId || procedureAnker === lastTurnId;
+  const opslagSidst =
+    guides.some((g) => ankerFor(g) === lastTurnId) || procedureAnker === lastTurnId;
 
   return (
     <div className="mx-auto max-w-3xl space-y-6">
