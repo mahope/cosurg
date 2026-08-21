@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { ChatAnswer, ChatEvent } from "@/lib/corti/chat";
 import type { Lang } from "@/lib/tree/types";
 import type { Triage } from "@/lib/corti/triage";
@@ -9,6 +9,12 @@ import type { LoestFaldgrube } from "@/components/pitfalls/types";
 import type { AnsweredStep } from "@/lib/tree/types";
 import type { DispositionUd, UdtrukketSvar, WorkupSpoergsmaal } from "@/lib/corti/workup";
 import { tr } from "@/lib/i18n";
+import {
+  conversationTitle,
+  newConversationId,
+  saveConversation,
+  type SavedConversation,
+} from "@/lib/history";
 import type { ChatImage } from "../attachments";
 
 /**
@@ -191,6 +197,12 @@ export function useClinicalChat(lang: Lang) {
   const lastActivityRef = useRef<number>(0);
   const turnsRef = useRef<Turn[]>([]);
   const abortRef = useRef<AbortController | null>(null);
+  /**
+   * Samtalens id i historikken. Oprettes først når der er noget at gemme —
+   * en tom samtale er ikke en samtale — og roteres af `reset`, så en ny
+   * patient aldrig skriver videre i den forriges fil.
+   */
+  const conversationIdRef = useRef<string | null>(null);
 
   const write = useCallback((next: Turn[]) => {
     turnsRef.current = next;
@@ -217,6 +229,30 @@ export function useClinicalChat(lang: Lang) {
       .join("\n\n");
   }, []);
 
+  /*
+   * AUTOMATISK GEMNING — lægen trykker aldrig "gem".
+   *
+   * Hver ændring af tråden skriver samtalen til historikken (lib/history.ts,
+   * kun lokalt i browseren), let forsinket så en strømmende tur ikke gemmes
+   * for hvert fremdrifts-tik. Udredningens tilstand og Cortis contextId
+   * gemmes med, så en genoptaget samtale fortsætter hvor den slap.
+   */
+  useEffect(() => {
+    if (turns.length === 0) return;
+    const handle = setTimeout(() => {
+      if (!conversationIdRef.current) conversationIdRef.current = newConversationId();
+      saveConversation({
+        id: conversationIdRef.current,
+        title: conversationTitle(turns[0].question),
+        lang,
+        contextId: contextIdRef.current,
+        workup: workupRef.current,
+        turns,
+      });
+    }, 400);
+    return () => clearTimeout(handle);
+  }, [turns, lang]);
+
   const stop = useCallback(() => {
     abortRef.current?.abort();
     abortRef.current = null;
@@ -230,8 +266,35 @@ export function useClinicalChat(lang: Lang) {
     // være klinisk meningsløs — og farlig, fordi den ser fuldt gyldig ud.
     workupRef.current = undefined;
     lastActivityRef.current = 0;
+    // Den gemte samtale bliver STÅENDE i historikken — reset er "ny samtale",
+    // ikke "glem den forrige". Kun id'et roteres.
+    conversationIdRef.current = null;
     write([]);
   }, [stop, write]);
+
+  /**
+   * Genoptag en gemt samtale: hele tråden vises igen, og der kan skrives
+   * videre i den. Tre ting SKAL med for at det er en genoptagelse og ikke
+   * bare en visning:
+   *
+   *  - `workup`: udredningens sti og ventende svar, ellers begynder træet
+   *    forfra ved næste svar.
+   *  - `contextId`: Cortis tråd, så opfølgende spørgsmål stadig har historik.
+   *  - `updatedAt` som sidste aktivitet: har samtalen ligget stille længere
+   *    end STALE_MS, sender næste tur automatisk et resumé med (recap) —
+   *    præcis samme mekanik som når en åben fane har stået urørt.
+   */
+  const restore = useCallback(
+    (conv: SavedConversation) => {
+      stop();
+      conversationIdRef.current = conv.id;
+      contextIdRef.current = conv.contextId;
+      workupRef.current = conv.workup;
+      lastActivityRef.current = conv.updatedAt;
+      write(conv.turns);
+    },
+    [stop, write],
+  );
 
   /**
    * Stiller spørgsmålet og streamer svaret ind. Returnerer turens id sammen med
@@ -447,5 +510,5 @@ export function useClinicalChat(lang: Lang) {
    */
   const currentWorkup = useCallback(() => workupRef.current, []);
 
-  return { turns, busy, ask, stop, reset, currentWorkup };
+  return { turns, busy, ask, stop, reset, restore, currentWorkup };
 }
