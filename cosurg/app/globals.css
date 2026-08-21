@@ -34,11 +34,11 @@
    * at se. Prøven er at man ikke kan beskrive baggrundens farve efter to
    * sekunder på skærmen.
    */
-  --paper: #fbf9f6;
+  --paper: #fcfbf9;
   --paper-raised: #ffffff;
   /* En anelse dybere end papiret — til indlejrede flader (kildeuddrag,
      transskript) der skal ligge et hak UNDER kortet uden en ramme. */
-  --paper-sunken: #f6f3ef;
+  --paper-sunken: #f6f4f1;
   --ink: #10292b; /* SurgeonBlue kørt til tekstdybde */
   /*
    * Sekundær tekst og etiketter. De bar DarkGreen i fuld kulør, og fordi de
@@ -182,17 +182,17 @@
   --font-body: var(--font-body), Roboto, ui-sans-serif, sans-serif;
   --font-mono: var(--font-mono), "Roboto Mono", ui-monospace, monospace;
 
-  /* Sidebaggrunden: et let optonet hjørne → dæmpet Turquoise → LightBlue,
-     øverst venstre til nederst højre. Samme brandtoner som
-     --turquoise/--teal-tint, her som gradient i stedet for fladt papir og
-     hvidt blandet ind hele vejen, så hele fladen — ikke kun hjørnet — er
-     lysere. Bruges KUN til den fulde sidebaggrund — kort, knapper og badges
-     beholder deres flade --paper. */
+  /* Sidebaggrunden: nær-hvidt papir med Turquoise kun som undertone, øverst
+     venstre til nederst højre. Den bar før op til 35 % Turquoise og
+     fremtonede som en farvet flade — prøven er den samme som for --paper:
+     kan man beskrive baggrundens farve efter to sekunder, er den for
+     kraftig. Bruges KUN til den fulde sidebaggrund — kort, knapper og
+     badges beholder deres flade --paper. */
   --app-gradient: linear-gradient(
     135deg,
-    color-mix(in srgb, #00bacd 10%, white) 0%,
-    color-mix(in srgb, #00bacd 35%, white) 45%,
-    #e6f5f8 100%
+    color-mix(in srgb, #00bacd 2%, white) 0%,
+    color-mix(in srgb, #00bacd 7%, white) 45%,
+    #f2f8f9 100%
   );
 }
 

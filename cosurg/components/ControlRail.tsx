@@ -141,8 +141,6 @@ export function ControlRail({
           </div>
 
           <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
-            <LangSwitch lang={lang} onToggleLang={onToggleLang} />
-
             {/* Opslæsning findes kun som kontrol i håndfri tilstand — uden for
                 den er der ingen oplæsning at slå til eller fra. */}
             {orMode && (
@@ -210,7 +208,13 @@ export function ControlRail({
               </button>
             </Tooltip>
 
-            <RailMenu lang={lang} usage={usage} onGoHome={onGoHome} onOpenShortcuts={onOpenShortcuts} />
+            <RailMenu
+              lang={lang}
+              usage={usage}
+              onGoHome={onGoHome}
+              onOpenShortcuts={onOpenShortcuts}
+              onToggleLang={onToggleLang}
+            />
           </div>
         </div>
       </header>
@@ -241,11 +245,13 @@ function RailMenu({
   usage,
   onGoHome,
   onOpenShortcuts,
+  onToggleLang,
 }: {
   lang: Lang;
   usage: SessionUsage;
   onGoHome: () => void;
   onOpenShortcuts: () => void;
+  onToggleLang: () => void;
 }) {
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
@@ -298,6 +304,15 @@ function RailMenu({
           role="menu"
           className="absolute right-0 top-full z-30 mt-2 w-[min(17rem,calc(100vw-2rem))] rounded-xl border border-[var(--line)] bg-[var(--paper-raised)] p-2 shadow-[var(--shadow-lifted)]"
         >
+          {/* Sproget øverst: det hyppigste ærinde i menuen, to tryk fra baren.
+              Flagene er LangSwitch' egne (40 px høje, 44 px brede mål), og
+              menuen bliver stående efter skiftet, så man SER sproget slå om
+              i stedet for at panelet forsvinder under fingeren. */}
+          <div className={`${rowClass} hover:bg-transparent`}>
+            <span className="text-[var(--ink-soft)]">{tr("menuLanguage", lang)}</span>
+            <LangSwitch lang={lang} onToggleLang={onToggleLang} />
+          </div>
+
           <button
             ref={firstItemRef}
             type="button"

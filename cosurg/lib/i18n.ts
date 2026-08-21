@@ -1005,6 +1005,7 @@ export const t = {
   historyShowAll: { da: "Vis alle samtaler", en: "Show all conversations" },
   menuLabel: { da: "Menu", en: "Menu" },
   menuNewSession: { da: "Ny samtale", en: "New conversation" },
+  menuLanguage: { da: "Sprog", en: "Language" },
   // Kort udgave til telefonens smalle bar — den lange åd mærkenavnet.
   orModeShort: { da: "Håndfri", en: "Handsfree" },
 } satisfies Record<string, Record<Lang, string>>;
