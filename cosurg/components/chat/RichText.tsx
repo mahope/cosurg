@@ -67,17 +67,29 @@ export function RichText({ text }: { text: string }) {
     bullets = [];
   };
 
-  // Nummererede trin er rækkefølge — de må aldrig smelte sammen til prosa.
+  /*
+   * Nummererede trin er rækkefølge — de må aldrig smelte sammen til prosa.
+   * De er næsten altid behandlingstrinnene, dvs. det lægen skal GØRE, så de
+   * får deres eget kort: afgrænset ramme, luft mellem trinnene, og nummeret
+   * i en lille rund badge. Teal er accenten; rød/gul/grøn er reserveret
+   * klinisk alvor og rører aldrig et behandlingstrin.
+   */
   const flushNummereret = () => {
     if (nummereret.length === 0) return;
     blocks.push(
-      <ol key={`ol-${key++}`} className="my-2 space-y-1.5 pl-1">
+      <ol
+        key={`ol-${key++}`}
+        className="my-3 divide-y divide-[var(--line)] rounded-xl border border-[var(--line-strong)] bg-[var(--paper)]"
+      >
         {nummereret.map((punkt, i) => (
-          <li key={i} className="flex gap-2.5">
-            <span className="min-w-[1.4em] shrink-0 text-right font-[family-name:var(--font-mono)] text-[13px] font-semibold leading-relaxed text-[var(--teal-deep)]">
-              {punkt.nr}.
+          <li key={i} className="flex items-start gap-3 px-3.5 py-2.5">
+            <span
+              aria-hidden="true"
+              className="mt-px flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[var(--teal-tint)] font-[family-name:var(--font-mono)] text-[12px] font-semibold text-[var(--teal-deep)]"
+            >
+              {punkt.nr}
             </span>
-            <span>{inline(punkt.tekst, `oli-${key}-${i}`)}</span>
+            <span className="min-w-0 pt-0.5">{inline(punkt.tekst, `oli-${key}-${i}`)}</span>
           </li>
         ))}
       </ol>,
