@@ -238,17 +238,33 @@ export function AnswerCard({ answer, lang, speaking, onSpeak }: AnswerCardProps)
         </div>
       )}
 
+      {/*
+        Kilderne er sporbarhed, ikke læsestof — sammenfoldet fylder de én
+        diskret linje, og lægen folder dem ud når svaret skal efterprøves.
+        <details> frem for state: kortet gengives tre steder (tråd, LookupCard,
+        /chat), og en browser-native fold virker ens i dem alle.
+      */}
       {answer.sources.length > 0 && (
-        <div className="mt-4 border-t border-[var(--line)] pt-3">
-          <p className="font-[family-name:var(--font-mono)] text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--ink-faint)]">
+        <details className="group mt-4 border-t border-[var(--line)] pt-3">
+          <summary className="flex cursor-pointer list-none items-center gap-1.5 font-[family-name:var(--font-mono)] text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--ink-faint)] transition-colors hover:text-[var(--teal-deep)] [&::-webkit-details-marker]:hidden">
+            <svg
+              viewBox="0 0 12 12"
+              width="10"
+              height="10"
+              fill="none"
+              aria-hidden="true"
+              className="shrink-0 transition-transform group-open:rotate-90"
+            >
+              <path d="M4 2.5 8 6l-4 3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
             {tr("sources", lang)} · {answer.sources.length}
-          </p>
+          </summary>
           <ul className="mt-1.5">
             {answer.sources.map((s, i) => (
               <SourceRow key={`${s.identifier ?? s.title}-${i}`} source={s} index={i} lang={lang} />
             ))}
           </ul>
-        </div>
+        </details>
       )}
     </div>
   );
