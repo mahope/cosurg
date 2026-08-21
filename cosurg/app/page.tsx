@@ -42,6 +42,8 @@ import { PitfallRail } from "@/components/pitfalls/PitfallRail";
 import { NoteSkeleton } from "@/components/ui/Skeleton";
 import { ShortcutsDialog } from "@/components/ShortcutsDialog";
 import { focusIntakeField, HELP_CHAR, isTypingTarget, SHORTCUT_KEYS } from "@/components/shortcuts";
+import { HistoryPanel } from "@/components/history/HistoryPanel";
+import { loadConversation } from "@/lib/history";
 
 /**
  * Brandsårstræet er bundtet med, så første skærmbillede står med det samme —
@@ -97,6 +99,8 @@ export default function Home() {
   const [orMode, setOrMode] = useState(false);
   /** Genvejsoversigten bag «?». Den fylder intet før den åbnes. */
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
+  /** Samtalehistorikken — en dialog, så layoutet står stille når den åbnes. */
+  const [historyOpen, setHistoryOpen] = useState(false);
   /*
    * Oplæsning er slået FRA indtil klinikeren selv slår den til. Netværks-TTS
    * afregnes pr. tegn, og en app der taler uopfordret koster penge hos enhver
@@ -179,6 +183,7 @@ export default function Home() {
     turns: lookupTurns,
     ask: askLookup,
     reset: resetLookup,
+    restore: restoreLookup,
     currentWorkup,
   } = useClinicalChat(lang);
   const [lookupOpen, setLookupOpen] = useState(false);
@@ -459,6 +464,46 @@ export default function Home() {
       return fresh;
     },
     [stopDictation, resetLookup],
+  );
+
+  /**
+   * Åbn en gemt samtale fra historikken.
+   *
+   * Genoptagelsen er hookens (`restore`): tråd, udredningens sti og Cortis
+   * contextId følger med, så man kan skrive VIDERE og en halv udredning
+   * fortsætter fra samme node. Det her er sidens halvdel: alt der hører til
+   * den NUVÆRENDE session ryddes først — en gammel samtale oven på et aktivt
+   * forløb ville blande to patienter på én skærm.
+   *
+   * `resetSession` bruges bevidst ikke: den kalder `resetLookup`, som ville
+   * viske den tråd ud vi er ved at hente frem.
+   */
+  const openConversation = useCallback(
+    (id: string) => {
+      const conv = loadConversation(id);
+      if (!conv) return;
+      stopSpeaking();
+      stopDictation();
+      setStarted(false);
+      setIntakeMiss(null);
+      setDraft("");
+      setState(startSession(tree, lang));
+      setTranscript([]);
+      setNote(null);
+      setDictation("");
+      setAddendumOpen(false);
+      setFlash(null);
+      setStatus(null);
+      setGuideLookup(null);
+      setProcedure(null);
+      setLookupOpen(false);
+      setLookupStatus(null);
+      setAmbiguity(null);
+      setOffer(null);
+      restoreLookup(conv);
+      setHistoryOpen(false);
+    },
+    [tree, lang, stopDictation, restoreLookup],
   );
 
   /**
@@ -1683,9 +1728,16 @@ export default function Home() {
           onToggleVoiceMode={() => setFullVoice((v) => !v)}
           onToggleOrMode={toggleOrMode}
           onOpenShortcuts={() => setShortcutsOpen(true)}
+          onOpenHistory={() => setHistoryOpen(true)}
         />
 
         <ShortcutsDialog lang={lang} open={shortcutsOpen} onClose={() => setShortcutsOpen(false)} />
+        <HistoryPanel
+          lang={lang}
+          open={historyOpen}
+          onClose={() => setHistoryOpen(false)}
+          onOpen={openConversation}
+        />
 
         {/*
           Tekniske problemer er IKKE kliniske. Rød er reserveret til rødt flag

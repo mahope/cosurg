@@ -954,6 +954,29 @@ export const t = {
   /* Tastenavne der ikke er ét tegn. Enter, Shift og Esc staves ens på begge
      sprog og har derfor ingen nøgle her. */
   keySpace: { da: "Mellemrum", en: "Space" },
+
+  /* Samtalehistorikken */
+  historyTitle: { da: "Tidligere samtaler", en: "Previous conversations" },
+  historyEmpty: {
+    da: "Ingen gemte samtaler endnu. Samtaler gemmes automatisk mens du arbejder.",
+    en: "No saved conversations yet. Conversations are saved automatically as you work.",
+  },
+  // Klinisk indhold på en delt computer er følsomt — det skal stå i UI'et
+  // hvor det gemmes, og at det KUN er lokalt.
+  historyLocalOnly: {
+    da: "Historikken gemmes kun lokalt i denne browser — aldrig på en server. Ryd den hvis computeren deles.",
+    en: "History is stored only locally in this browser — never on a server. Clear it if this computer is shared.",
+  },
+  historyResumeHint: {
+    da: "Åbn en samtale for at se den igen og skrive videre.",
+    en: "Open a conversation to review it and continue writing.",
+  },
+  historyDelete: { da: "Slet samtalen", en: "Delete conversation" },
+  historyClear: { da: "Ryd historik", en: "Clear history" },
+  historyClearConfirm: { da: "Slet alle samtaler?", en: "Delete all conversations?" },
+  historyClose: { da: "Luk historikken", en: "Close history" },
+  historyQuestionOne: { da: "spørgsmål", en: "question" },
+  historyQuestions: { da: "spørgsmål", en: "questions" },
 } satisfies Record<string, Record<Lang, string>>;
 
 export function tr(key: keyof typeof t, lang: Lang): string {

@@ -31,6 +31,8 @@ interface ControlRailProps {
   onToggleOrMode: () => void;
   /** Åbner genvejsoversigten — den samme «?» siden lytter efter. */
   onOpenShortcuts: () => void;
+  /** Åbner samtalehistorikken — tidligere samtaler, gemt lokalt i browseren. */
+  onOpenHistory: () => void;
 }
 
 /**
@@ -55,6 +57,7 @@ export function ControlRail({
   onToggleVoiceMode,
   onToggleOrMode,
   onOpenShortcuts,
+  onOpenHistory,
 }: ControlRailProps) {
   return (
     /*
@@ -160,6 +163,32 @@ export function ControlRail({
               }`}
             >
               <SizeLock variants={widestOf("orMode")}>{tr("orMode", lang)}</SizeLock>
+            </button>
+          </Tooltip>
+
+          {/* Historikken. Diskret med vilje — den må aldrig konkurrere med
+              skrivefeltet, som ER produktet. Et lille ur-ikon på linje med
+              genvejsknappen: en vej tilbage til tidligere samtaler, ikke en
+              handling i den aktuelle. */}
+          <Tooltip label={tr("historyTitle", lang)} placement="bottom-end">
+            <button
+              type="button"
+              onClick={onOpenHistory}
+              aria-label={tr("historyTitle", lang)}
+              aria-haspopup="dialog"
+              className="flex h-6 w-6 items-center justify-center rounded-full border border-[var(--line-strong)] text-[var(--ink-faint)] transition-colors hover:border-[var(--teal)] hover:bg-[var(--teal-tint)] hover:text-[var(--teal-deep)]"
+            >
+              <svg viewBox="0 0 20 20" width={13} height={13} fill="none" aria-hidden="true">
+                {/* Et ur med en pil tilbage — konventionen for historik. */}
+                <path
+                  d="M4.5 5.5A6.5 6.5 0 1 1 3.5 10"
+                  stroke="currentColor"
+                  strokeWidth="1.6"
+                  strokeLinecap="round"
+                />
+                <path d="M4.5 2.5v3h3" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M10 7v3.2l2.3 1.4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
             </button>
           </Tooltip>
 

@@ -219,6 +219,15 @@ function TurnEntry({
     <section>
       <QuestionBubble text={turn.question} />
 
+      {/* Tråden havde ligget stille (eller er genoptaget fra historikken), og
+          agenten fik et resumé med. Det skal SIGES — ellers ligner et svar
+          der kender historikken, at appen gætter. Samme linje som /chat. */}
+      {turn.restored && (
+        <p className="mt-2 text-center font-[family-name:var(--font-mono)] text-[11px] uppercase tracking-[0.14em] text-[var(--ink-faint)]">
+          {tr("chatRestored", lang)}
+        </p>
+      )}
+
       <div className="mt-3">
         {/* Billedobservationen står FØR svaret: lægen skal vide hvad modellen
             så, før han læser hvad den konkluderede. Den lander ~1 s inde og
