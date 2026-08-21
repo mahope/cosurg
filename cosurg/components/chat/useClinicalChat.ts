@@ -68,6 +68,12 @@ export interface WorkupState {
    * WorkupState), så en genoptaget samtale ikke spørger om CAVE igen.
    */
   anamnese?: Record<string, string>;
+  /**
+   * Felt-id'et for det senest stillede anamnese-spørgsmål. Ekkoet er
+   * AUTORITATIVT: kun med det kan serveren placere et kort "Nej" på det
+   * rigtige felt — uden det må den udlede feltet og kan ramme forkert.
+   */
+  asked?: string;
 }
 
 /** Det spørgsmål udredningen mangler svar på lige nu. Rutens egen form. */
@@ -91,6 +97,8 @@ export interface WorkupStep {
   pending?: UdtrukketSvar[];
   /** Journalens felter fanget indtil nu — skal med tilbage på næste tur. */
   anamnese?: Record<string, string>;
+  /** Det anamnese-felt der netop blev spurgt om — skal ekkoes tilbage. */
+  asked?: string;
   clarification?: string;
 }
 
@@ -440,11 +448,14 @@ export function useClinicalChat(lang: Lang) {
                 // gang, ellers begynder udredningen forfra ved roden. `pending`
                 // med, ellers spørges lægen igen om det han lige har fortalt —
                 // og `anamnese` med, ellers spørges der om CAVE forfra.
+                // …og `asked` med: uden ekkoet af hvilket felt der blev
+                // spurgt om, kan serveren ikke placere et kort "Nej" rigtigt.
                 workupRef.current = {
                   treeId: event.treeId,
                   path: event.path,
                   pending: event.pending,
                   anamnese: event.anamnese,
+                  asked: event.asked,
                 };
                 patch(id, { workup: step });
               } else if (event.kind === "redflag") {
