@@ -110,6 +110,40 @@ export const ANAMNESE_FELTER: AnamneseFelt[] = [
 const FELT_IDS = new Set(ANAMNESE_FELTER.map((f) => f.id));
 const MAX_VAERDI = 300;
 
+/** Antal felter der spørges aktivt — bruges til en STABIL fremdriftstæller. */
+export const ANTAL_SPURGTE_FELTER = ANAMNESE_FELTER.filter((f) => f.ask).length;
+
+/**
+ * "Nej" er det mest naturlige svar i verden på "har patienten CAVE?" — og det
+ * må ALDRIG koste en Models-rundtur eller, værre, blive afvist. Korte negative
+ * svar genkendes derfor deterministisk, før nogen model spørges.
+ */
+const NEGATION =
+  /^(nej|nope|niks|nix|no|none|ingen|intet|ikke noget|ikke nogen|nej ingen|nej intet|ingen kendte|nej tak|nul)[.!,]?$/i;
+
+export function erNegativtSvar(s: string): boolean {
+  return NEGATION.test(s.trim());
+}
+
+/**
+ * Hvad et "nej" BETYDER afhænger af feltet: på CAVE betyder det "ingen kendte
+ * allergier", på vægt betyder det bare at lægen ikke oplyste den. Værdien
+ * skrives ud i journalen, så den skal være en færdig klinisk formulering.
+ */
+export function negativVaerdi(feltId: string, lang: Lang): string {
+  const da: Record<string, string> = {
+    cave: "Ingen kendte allergier",
+    medications: "Ingen fast medicin",
+    priorConditions: "Ingen tidligere sygdomme af betydning",
+  };
+  const en: Record<string, string> = {
+    cave: "No known allergies",
+    medications: "No regular medication",
+    priorConditions: "No significant medical history",
+  };
+  return (lang === "da" ? da : en)[feltId] ?? (lang === "da" ? "Ikke oplyst" : "Not stated");
+}
+
 /** Klientens medbragte anamnese: kun kendte felter, kappede værdier. */
 export function rensAnamnese(raw: unknown): Record<string, string> {
   const ud: Record<string, string> = {};
@@ -140,12 +174,23 @@ export async function udtraekAnamnese(
   utterance: string,
   lang: Lang,
   signal?: AbortSignal,
+  /**
+   * Feltet appen LIGE har spurgt om. Uden det kan et kort svar ("Nej", "90")
+   * ikke placeres — det var præcis fejlen der lod "Nej" prelle af på
+   * CAVE-spørgsmålet: udtrækket anede ikke hvad der var blevet spurgt om.
+   */
+  spurgtFelt?: AnamneseFelt,
 ): Promise<Record<string, string>> {
   try {
     const raw = await kaldModelJson<Record<string, unknown>>({
       model: MODELS.triage,
       system: UDTRAEK_SYSTEM,
       user: [
+        spurgtFelt
+          ? `The app just asked the clinician about the field '${spurgtFelt.id}': "${spurgtFelt.question[lang]}"\n` +
+            `A short or bare answer ("nej", "ingen", a lone number) answers THAT field — record it there, ` +
+            `as a finished clinical phrase in the clinician's language (e.g. "ingen kendte allergier").`
+          : "",
         `The clinician (${lang === "da" ? "Danish" : "English"}) said:`,
         `"${utterance}"`,
         "",
@@ -153,7 +198,9 @@ export async function udtraekAnamnese(
         ...ANAMNESE_FELTER.map((f) => `- ${f.id}: ${f.hint}`),
         "",
         "Return the JSON object now.",
-      ].join("\n"),
+      ]
+        .filter(Boolean)
+        .join("\n"),
       maxTokens: 350,
       timeoutMs: 8_000,
       signal,

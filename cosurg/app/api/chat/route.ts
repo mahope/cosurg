@@ -29,7 +29,15 @@ import {
   type UdtrukketSvar,
   type WorkupSpoergsmaal,
 } from "@/lib/corti/workup";
-import { manglendeFelter, udtraekAnamnese, type AnamneseFelt } from "@/lib/corti/anamnese";
+import {
+  ANTAL_SPURGTE_FELTER,
+  erNegativtSvar,
+  findFelt,
+  manglendeFelter,
+  negativVaerdi,
+  udtraekAnamnese,
+  type AnamneseFelt,
+} from "@/lib/corti/anamnese";
 import { getDisposition, getNode, startSession } from "@/lib/tree/engine";
 import { treeSource } from "@/lib/tree/loader";
 import type { AnsweredStep, DecisionTree, SessionState } from "@/lib/tree/types";
@@ -131,6 +139,12 @@ type UdgaaendeEvent =
       pending?: UdtrukketSvar[];
       /** Anamnesen fanget indtil nu — klienten gemmer og sender den tilbage. */
       anamnese?: Record<string, string>;
+      /**
+       * Felt-id når `question` er et anamnese-spørgsmål. Klienten SKAL ekkoe
+       * det som `workup.asked` på næste tur, så et kort svar ("Nej") med
+       * sikkerhed lander på det felt lægen faktisk fik vist.
+       */
+      asked?: string;
       clarification?: string;
     }
   /** Et rødt flag fra træet — afbryder med besked, kilde og telefonnummer hvor træet har det. */
@@ -216,6 +230,7 @@ export async function POST(req: Request) {
   let workupState: SessionState | null = null;
   let workupPending: UdtrukketSvar[] = [];
   let workupAnamnese: Record<string, string> = {};
+  let workupAsked: string | undefined;
   if (body.workup !== undefined && body.workup !== null) {
     const kw = validerWorkup(body.workup);
     if (!kw) return NextResponse.json({ error: "Ugyldig udredningstilstand" }, { status: 400 });
@@ -232,6 +247,7 @@ export async function POST(req: Request) {
     workupState = state;
     workupPending = kw.pending ?? [];
     workupAnamnese = kw.anamnese ?? {};
+    workupAsked = kw.asked;
   }
 
   const encoder = new TextEncoder();
@@ -313,8 +329,11 @@ export async function POST(req: Request) {
           anamnese: Record<string, string>,
         ) => {
           const f = fremskridt(tree, state);
-          const mangler = manglendeFelter(anamnese).length;
-          return { answered: f.answered, total: f.total + mangler };
+          // Anamnese-delen af totalen er en KONSTANT (antal spurgte felter),
+          // ikke antal manglende — en total der falder mens man svarer, ligner
+          // en app der ikke kan tælle. Besvarede felter flytter tælleren op.
+          const besvarede = ANTAL_SPURGTE_FELTER - manglendeFelter(anamnese).length;
+          return { answered: f.answered + besvarede, total: f.total + ANTAL_SPURGTE_FELTER };
         };
 
         const sendFremdrift = (
@@ -361,6 +380,7 @@ export async function POST(req: Request) {
                 path: frem.state.path,
                 progress: samletFremskridt(tree, frem.state, anamnese),
                 question: anamneseSpoergsmaal(mangler[0]),
+                asked: mangler[0].id,
                 prefilled: frem.taget.length > 0 ? frem.taget : undefined,
                 anamnese,
               });
@@ -466,6 +486,16 @@ export async function POST(req: Request) {
                 if (f.svar) {
                   svar = [f.svar, ...svar.filter((s) => s.nodeId !== f.svar!.nodeId)];
                 } else {
+                  /*
+                   * Samme spørgsmål ordret igen UDEN forklaring ligner en app
+                   * der er i stykker. Er der ingen opklaring fra fortolkeren,
+                   * bygges en af nodens egne muligheder.
+                   */
+                  const muligheder = (node.options ?? []).map((o) => o.label[lang]).join(", ");
+                  const fallbackClarification =
+                    lang === "da"
+                      ? `Jeg kunne ikke afgøre svaret. Prøv fx: ${muligheder || "et tal"}.`
+                      : `I could not map that answer. Try for example: ${muligheder || "a number"}.`;
                   send({
                     kind: "workup",
                     phase: "clarify",
@@ -476,7 +506,7 @@ export async function POST(req: Request) {
                     question: somSpoergsmaal(node, lang),
                     pending: workupPending.length > 0 ? workupPending : undefined,
                     anamnese: Object.keys(anamnese).length > 0 ? anamnese : undefined,
-                    clarification: f.clarification,
+                    clarification: f.clarification ?? fallbackClarification,
                   });
                   return;
                 }
@@ -499,34 +529,55 @@ export async function POST(req: Request) {
              * spurgte felt, og er ytringen ikke et opslag, gemmes den ordret:
              * det er lægens svar på lægens journalfelt, ikke vores fortolkning.
              */
-            const anamneseNyt = await udtraekAnamnese(question, lang, req.signal);
-            const anamnese = { ...workupAnamnese, ...anamneseNyt };
-            const spurgt = manglendeFelter(workupAnamnese)[0];
+            /*
+             * Hvilket felt blev der spurgt om? Klientens `asked`-ekko er
+             * autoritativt — det er det spørgsmål lægen faktisk fik VIST.
+             * Udledningen fra anamnesen er kun reserve, for en klient der
+             * bærer ufuldstændig tilstand fik et "Nej" til at lande på det
+             * forkerte felt og CAVE-spørgsmålet til at gentage sig ordret.
+             */
+            const ekko = workupAsked ? findFelt(workupAsked) : undefined;
+            const spurgt = ekko?.ask ? ekko : manglendeFelter(workupAnamnese)[0];
 
-            if (spurgt && !anamnese[spurgt.id]) {
-              forudTriage = await triagér({
-                utterance: question,
-                lang,
-                patientContext: effektivKontekst,
-                signal: req.signal,
-              });
-              if (
-                forudTriage.routedBy === "corti-models" &&
-                (forudTriage.kind === "fact" || forudTriage.kind === "treatment")
-              ) {
-                send({
-                  kind: "workup",
-                  phase: "held",
-                  treeId: tree.id,
-                  treeName: tree.name[lang],
-                  path: state.path,
-                  progress: samletFremskridt(tree, state, anamnese),
-                  question: anamneseSpoergsmaal(spurgt),
-                  anamnese,
+            const anamnese = { ...workupAnamnese };
+
+            if (spurgt && erNegativtSvar(question)) {
+              // "Nej" er det mest naturlige svar i verden på "har patienten
+              // CAVE?" — det afgøres i kode, uden en eneste model-rundtur.
+              anamnese[spurgt.id] = negativVaerdi(spurgt.id, lang);
+            } else {
+              // Udtrækket får det stillede spørgsmål med, så også et kort
+              // eller skævt formuleret svar kan placeres rigtigt.
+              const anamneseNyt = await udtraekAnamnese(question, lang, req.signal, spurgt);
+              Object.assign(anamnese, anamneseNyt);
+
+              if (spurgt && !anamnese[spurgt.id]) {
+                forudTriage = await triagér({
+                  utterance: question,
+                  lang,
+                  patientContext: effektivKontekst,
+                  signal: req.signal,
                 });
-                // Falder igennem til svar-flowet.
-              } else {
-                anamnese[spurgt.id] = question.slice(0, 300);
+                if (
+                  forudTriage.routedBy === "corti-models" &&
+                  (forudTriage.kind === "fact" || forudTriage.kind === "treatment")
+                ) {
+                  send({
+                    kind: "workup",
+                    phase: "held",
+                    treeId: tree.id,
+                    treeName: tree.name[lang],
+                    path: state.path,
+                    progress: samletFremskridt(tree, state, anamnese),
+                    question: anamneseSpoergsmaal(spurgt),
+                    asked: spurgt.id,
+                    anamnese,
+                  });
+                  // Falder igennem til svar-flowet.
+                } else {
+                  // Frit svar på et frit journalfelt: lægens egne ord, ordret.
+                  anamnese[spurgt.id] = question.slice(0, 300);
+                }
               }
             }
 
@@ -541,6 +592,7 @@ export async function POST(req: Request) {
                   path: state.path,
                   progress: samletFremskridt(tree, state, anamnese),
                   question: anamneseSpoergsmaal(mangler[0]),
+                  asked: mangler[0].id,
                   anamnese,
                 });
               } else {

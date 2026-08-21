@@ -59,6 +59,13 @@ export interface WorkupKlientState {
    * og et nyere udsagn om samme felt vinder.
    */
   anamnese?: Record<string, string>;
+  /**
+   * Felt-id'et fra det anamnese-spørgsmål klienten VISER (workup-eventens
+   * `asked`). Uden ekkoet må serveren gætte hvilket felt et "Nej" besvarer —
+   * og et gæt ud fra en klient-tilstand der kan være ufuldstændig, var præcis
+   * det der lod et svar lande på det forkerte felt.
+   */
+  asked?: string;
 }
 
 const MAX_STI = 40;
@@ -94,7 +101,13 @@ export function validerWorkup(raw: unknown): WorkupKlientState | null {
       });
     }
   }
-  return { treeId: o.treeId.slice(0, 64), path, pending, anamnese: rensAnamnese(o.anamnese) };
+  return {
+    treeId: o.treeId.slice(0, 64),
+    path,
+    pending,
+    anamnese: rensAnamnese(o.anamnese),
+    asked: typeof o.asked === "string" ? o.asked.slice(0, 64) : undefined,
+  };
 }
 
 /**
