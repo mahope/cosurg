@@ -44,6 +44,7 @@ import { ShortcutsDialog } from "@/components/ShortcutsDialog";
 import { focusIntakeField, HELP_CHAR, isTypingTarget, SHORTCUT_KEYS } from "@/components/shortcuts";
 import { HistoryPanel } from "@/components/history/HistoryPanel";
 import { loadConversation } from "@/lib/history";
+import { EpicNotePanel, type EpicNote } from "@/components/EpicNotePanel";
 
 /**
  * Brandsårstræet er bundtet med, så første skærmbillede står med det samme —
@@ -143,6 +144,13 @@ export default function Home() {
   const [status, setStatus] = useState<string | null>(null);
   const [flash, setFlash] = useState<string | null>(null);
   const [note, setNote] = useState<NoteResult | null>(null);
+  /**
+   * Epic-notatet: AOP-skabelonen udfyldt deterministisk. Egen tilstand ved
+   * siden af `note`, fordi de to kan lykkes hver for sig — skabelonen kan
+   * fejle mens notatet og koderne stadig leveres, og det skal siges hver for
+   * sig i stedet for at det ene tavst trækker det andet med ned.
+   */
+  const [epicNote, setEpicNote] = useState<{ epic: EpicNote | null; error: string | null } | null>(null);
   const [dictation, setDictation] = useState("");
   /*
    * Tillægsfeltet er en EGEN tilstand, ikke det samme som "mikrofonen kører".
@@ -220,7 +228,14 @@ export default function Home() {
    * den i filen. Reffet holder altid den nyeste udgave, så ordren aldrig
    * kommer til at kalde en funktion der husker en forældet session.
    */
-  const generateNoteRef = useRef<(fra?: { treeId: string; path: AnsweredStep[] }) => void>(() => {});
+  const generateNoteRef = useRef<
+    (fra?: {
+      treeId: string;
+      path: AnsweredStep[];
+      dispositionId?: string;
+      anamnese?: Record<string, string>;
+    }) => void
+  >(() => {});
 
   const node = state.currentNodeId ? getNode(tree, state.currentNodeId) : undefined;
   const disposition = state.dispositionId ? getDisposition(tree, state.dispositionId) : undefined;
@@ -445,6 +460,7 @@ export default function Home() {
       setState(fresh);
       setTranscript([]);
       setNote(null);
+      setEpicNote(null);
       setDictation("");
       setAddendumOpen(false);
       setFlash(null);
@@ -490,6 +506,7 @@ export default function Home() {
       setState(startSession(tree, lang));
       setTranscript([]);
       setNote(null);
+      setEpicNote(null);
       setDictation("");
       setAddendumOpen(false);
       setFlash(null);
@@ -948,7 +965,9 @@ export default function Home() {
         if (w) {
           // Gennem et ref: notatfunktionen erklæres længere nede, og en
           // direkte reference ville fryse den første udgave af den fast.
-          generateNoteRef.current({ treeId: w.treeId, path: w.path });
+          // Anamnesen med — også midtvejs skal "skriv notatet" give det
+          // Epic-klare notat med de felter der ER fanget.
+          generateNoteRef.current({ treeId: w.treeId, path: w.path, anamnese: w.anamnese });
           return;
         }
       }
@@ -1191,7 +1210,12 @@ export default function Home() {
    * længere frist end de øvrige kald — en generøs frist er ikke det samme som
    * ingen frist — og en spærre så et utålmodigt klik ikke sender kaldet igen.
    */
-  const generateNote = async (fraUdredning?: { treeId: string; path: AnsweredStep[] }) => {
+  const generateNote = async (fraUdredning?: {
+    treeId: string;
+    path: AnsweredStep[];
+    dispositionId?: string;
+    anamnese?: Record<string, string>;
+  }) => {
     if (noteBusy) return;
     setNoteBusy(true);
     setStatus(tr("noteWorking", lang));
@@ -1205,6 +1229,11 @@ export default function Home() {
          * er DENS sti den kanoniske — den er genafspillet på serveren og
          * indeholder de svar agenten trak ud af lægens egen beskrivelse.
          * `state.path` hører til den gamle trævisning og ved intet om dem.
+         *
+         * Udredningen beder også om Epic-notatet (`epic: true` + anamnesen):
+         * det er dér CAVE, medicin og vægt er blevet spurgt, så det er kun
+         * dér skabelonen kan udfyldes. Den gamle trævisning kender ingen
+         * anamnese og beder ikke om noget den ikke kan levere til.
          */
         body: JSON.stringify(
           fraUdredning
@@ -1212,8 +1241,11 @@ export default function Home() {
                 treeId: fraUdredning.treeId,
                 lang,
                 path: fraUdredning.path,
+                dispositionId: fraUdredning.dispositionId,
                 transcript: transcript.join("\n"),
                 dictation,
+                epic: true,
+                anamnese: fraUdredning.anamnese ?? {},
               }
             : {
                 treeId: tree.id,
@@ -1226,10 +1258,21 @@ export default function Home() {
         ),
         signal: AbortSignal.timeout(TIMEOUT_NOTE),
       });
-      const data = (await res.json()) as NoteResult & { error?: string };
+      const data = (await res.json()) as NoteResult & {
+        error?: string;
+        epicNote?: EpicNote | null;
+        epicNoteError?: string | null;
+      };
       setStatus(data.error ?? null);
       if (!data.error) {
         setNote(data);
+        // Epic-notatet står for sig: fejler skabelonen, siges det i sit eget
+        // felt mens notat og koder leveres uforstyrret.
+        setEpicNote(
+          data.epicNote || data.epicNoteError
+            ? { epic: data.epicNote ?? null, error: data.epicNoteError ?? null }
+            : null,
+        );
         // Kun det Corti selv oplyser tælles med. Er credits ikke i svaret,
         // lader vi feltet stå tomt frem for at opfinde et tal.
         setUsage((u) => ({
@@ -1830,7 +1873,9 @@ export default function Home() {
                   /* Et hurtig-svar ER lægens næste besked — samme vej ind som
                      hvis han havde skrevet eller sagt ordet selv. */
                   onQuickReply={(t) => void handleUtterance(t)}
-                  onWriteNote={(treeId, path) => void generateNote({ treeId, path })}
+                  /* Hele tilbuddet videre: det bærer dispositionId og den
+                     færdige anamnese, som Epic-notatet udfyldes af. */
+                  onWriteNote={(offer) => void generateNote(offer)}
                   noteBusy={noteBusy}
                   onShowProcedure={() => void showProcedure()}
                 />
@@ -1886,6 +1931,12 @@ export default function Home() {
           eller manglede det — ville siden hoppe når de målte 14-16 sekunders
           skrivning er forbi, og det er netop det øjeblik lægen kigger.
         */}
+        {/*
+          Epic-notatet står FØRST: det er det lægen sætter direkte ind i
+          Sundhedsplatformen, og det er deterministisk udfyldt — det
+          modelskrevne notat med koder står under som det altid har gjort.
+        */}
+        {note && epicNote && <EpicNotePanel lang={lang} epic={epicNote.epic} error={epicNote.error} />}
         {note ? <NotePanel note={note} lang={lang} /> : noteBusy ? <NoteSkeleton lang={lang} /> : null}
 
         {started && (

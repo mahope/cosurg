@@ -2,9 +2,10 @@
 
 import { useEffect, useRef, useState } from "react";
 import type { ChatAnswer } from "@/lib/corti/chat";
-import type { AnsweredStep, DecisionTree, Lang } from "@/lib/tree/types";
+import type { DecisionTree, Lang } from "@/lib/tree/types";
 import type {
   DispositionEvent,
+  NoteOfferEvent,
   RedflagEvent,
   Turn,
   VisionResult,
@@ -59,8 +60,9 @@ interface ChatThreadProps {
    * anden slags handling.
    */
   onQuickReply: (text: string) => void;
-  /** Tag imod journalnotat-tilbuddet. */
-  onWriteNote: (treeId: string, path: AnsweredStep[]) => void;
+  /** Tag imod journalnotat-tilbuddet. Hele tilbuddet gives videre — det
+      bærer også dispositionId og den færdige anamnese til Epic-notatet. */
+  onWriteNote: (offer: NoteOfferEvent) => void;
   noteBusy: boolean;
   /** Tag imod tilbuddet om at få forbindingsproceduren vist. */
   onShowProcedure: () => void;
@@ -198,7 +200,7 @@ function TurnEntry({
   offer: { name: string; onAccept: () => void; onDismiss: () => void } | null;
   interactive: boolean;
   onQuickReply: (text: string) => void;
-  onWriteNote: (treeId: string, path: AnsweredStep[]) => void;
+  onWriteNote: (offer: NoteOfferEvent) => void;
   noteBusy: boolean;
   onShowProcedure: () => void;
 }) {
@@ -331,11 +333,13 @@ function TurnEntry({
           <p className="rounded-2xl border border-dashed border-[var(--nude-deep)] bg-[var(--nude-tint)] px-4 py-3 text-sm leading-relaxed text-[var(--nude-ink)]">
             {turn.error}
           </p>
-        ) : turn.workup || turn.disposition ? null : (
+        ) : turn.workup || turn.disposition || turn.noteOffer ? null : (
           /* Fremdriften vises kun mens der IKKE er noget bedre at vise.
-             Er udredningens spørgsmål eller anbefalingen landet, er de
-             svaret — og en arbejdslinje under dem ville påstå at der stadig
-             mangler noget. */
+             Er udredningens spørgsmål, anbefalingen eller notat-tilbuddet
+             landet, er de svaret — og en arbejdslinje under dem ville påstå
+             at der stadig mangler noget. Tilbuddet kan nu komme ALENE: det
+             sidste anamnese-svar udløser hverken spørgsmål eller ny
+             disposition, kun tilbuddet. */
           <ProgressTrail progress={turn.progress} lang={lang} />
         )}
 
@@ -382,7 +386,7 @@ function TurnEntry({
         {turn.noteOffer && interactive && (
           <NoteOfferBlock
             lang={lang}
-            onWrite={() => onWriteNote(turn.noteOffer!.treeId, turn.noteOffer!.path)}
+            onWrite={() => onWriteNote(turn.noteOffer!)}
             busy={noteBusy}
           />
         )}

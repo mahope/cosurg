@@ -977,6 +977,27 @@ export const t = {
   historyClose: { da: "Luk historikken", en: "Close history" },
   historyQuestionOne: { da: "spørgsmål", en: "question" },
   historyQuestions: { da: "spørgsmål", en: "questions" },
+
+  /* Epic-notatet: AOP-skabelonen, udfyldt deterministisk af kode. */
+  epicNoteTitle: { da: "Epic-klart notat", en: "Epic-ready note" },
+  epicNoteTemplate: {
+    da: "Rigshospitalets AOP-skabelon, udfyldt deterministisk af udredningens svar. Epic-koderne står ordret; *** er felter kun du kan udfylde.",
+    en: "Rigshospitalet's AOP template, filled deterministically from the work-up. Epic codes are preserved verbatim; *** marks fields only you can fill.",
+  },
+  epicNoteCopy: { da: "Kopiér til Epic", en: "Copy for Epic" },
+  epicNoteCopied: { da: "Kopieret — sæt ind i Sundhedsplatformen", en: "Copied — paste into Epic" },
+  epicNoteOpenOne: { da: "felt (***) venter på din udfyldning", en: "field (***) awaits your input" },
+  epicNoteOpenMany: { da: "felter (***) venter på din udfyldning", en: "fields (***) await your input" },
+  epicNoteAllFilled: {
+    da: "Alle skabelonens felter er udfyldt fra udredningen",
+    en: "Every template field was filled from the work-up",
+  },
+  epicNoteOmitted: { da: "Udeladt (tilstand ikke fundet)", en: "Omitted (condition not found)" },
+  epicNoteParkland: {
+    da: "Parkland-beregning — regnet i kode, aldrig af en model",
+    en: "Parkland calculation — computed in code, never by a model",
+  },
+  epicNoteFailed: { da: "Epic-notatet kunne ikke udfyldes", en: "The Epic note could not be filled" },
 } satisfies Record<string, Record<Lang, string>>;
 
 export function tr(key: keyof typeof t, lang: Lang): string {
