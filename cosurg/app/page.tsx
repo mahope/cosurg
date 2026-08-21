@@ -1453,6 +1453,18 @@ export default function Home() {
    */
   const hasThread = !started && (lookupTurns.length > 0 || guideLookup !== null || procedure !== null);
 
+  /*
+   * Forslagene til lægens næste replik — fra det SENESTE svar, vist ved
+   * komposeren og ikke under svaret: under et langt svar blev de overset,
+   * og de hører til dér hvor man svarer. De forsvinder af sig selv mens et
+   * nyt svar arbejder (turen har endnu intet answer), og vises ikke når
+   * guide eller procedure er det seneste ærinde — så er det ikke længere
+   * svarets spørgsmål der venter.
+   */
+  const sidsteTur = lookupTurns[lookupTurns.length - 1];
+  const forslagVedKomposer =
+    !guideLookup && !procedure ? (sidsteTur?.answer?.suggestions ?? []) : [];
+
   /**
    * Vis forbindingsproceduren — samme to veje som når der spørges om den.
    *
@@ -1893,6 +1905,26 @@ export default function Home() {
                 className="sticky z-20"
                 style={{ bottom: "calc(var(--kb-inset) + max(1rem, env(safe-area-inset-bottom)))" }}
               >
+                {/*
+                  Svarets forslag, lige over skrivefeltet: et tryk sender
+                  teksten som lægens egen besked. Runde chips — noget man
+                  SIGER, ikke en handlingsknap. Hver chip bærer sin egen
+                  hævede flade, da rækken svæver over tråden.
+                */}
+                {forslagVedKomposer.length > 0 && (
+                  <div className="mb-2 flex flex-wrap justify-center gap-2">
+                    {forslagVedKomposer.map((forslag) => (
+                      <button
+                        key={forslag}
+                        type="button"
+                        onClick={() => void handleUtterance(forslag)}
+                        className="flex min-h-10 items-center rounded-full border border-[var(--line-strong)] bg-[var(--paper-raised)] px-4 py-1.5 text-sm font-medium text-[var(--ink-soft)] shadow-[var(--shadow-raised)] transition-colors hover:border-[var(--teal)] hover:bg-[var(--teal-tint)] hover:text-[var(--ink)]"
+                      >
+                        {forslag}
+                      </button>
+                    ))}
+                  </div>
+                )}
                 <IntakeCard
                   lang={lang}
                   trees={trees}
