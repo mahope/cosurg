@@ -52,7 +52,7 @@ const OUR_TEAM: Member[] = [
   { name: "Cammila Christiansen, MD", role: "Certification training, MCQs", img: "/our-team/cammila-christiansen.png" },
   { name: "Caroline Kümmel Skaarup", role: "SoMe, Instagram", img: "/our-team/caroline-kummel-skaarup.png" },
   { name: "Nizar Hamrouni, MD", role: "Surgical Videos", img: "/our-team/nizar-hamrouni.jpg" },
-  { name: "Kristian Madsen", role: "", img: "/our-team/kristian-madsen.png" },
+  { name: "Kristian Madsen", role: "Funding and Business development", img: "/our-team/kristian-madsen.png" },
   { name: "Annika Gottholt Hansen, MD", role: "Database handling", img: "/our-team/annika-gottholt-hansen.jpg" },
   { name: "Christina Krogerus, MD", role: "Design, Flyers", img: "/our-team/christina-krogerus.png" },
   { name: "Tine Lorentzen", role: "Certification training, Videos", img: "/our-team/tine-lorentzen.jpeg" },
