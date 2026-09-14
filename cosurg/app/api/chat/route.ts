@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { cap, guard } from "@/lib/guard";
+import { hostnameFrom, sendEvent } from "@/lib/analytics";
 import { attachedExperts, streamChatAnswer, type ChatEvent } from "@/lib/corti/chat";
 import { behandlingsGrundlag, byggGrundlag, faldgruberTilEmne } from "@/lib/corti/grounding";
 import { hurtigtSvar } from "@/lib/corti/fastAnswer";
@@ -749,6 +750,8 @@ export async function POST(req: Request) {
           }
         }
 
+        // Kun antallet af litteraturkilder sendes videre — aldrig spørgsmålet.
+        let pubmedKaldt = false;
         for await (const event of streamChatAnswer({
           question,
           lang,
@@ -761,6 +764,11 @@ export async function POST(req: Request) {
           caseMode,
           signal: req.signal,
         })) {
+          if (event.kind === "progress" && event.expert === "pubmed-expert") pubmedKaldt = true;
+          if (event.kind === "answer" && pubmedKaldt) {
+            const results = event.answer.sources.filter((s) => s.origin === "literature").length;
+            void sendEvent("pubmed_search", { results }, { url: "/api/chat", hostname: hostnameFrom(req) });
+          }
           send(event);
         }
       } catch (err) {

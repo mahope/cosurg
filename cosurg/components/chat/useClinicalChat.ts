@@ -5,6 +5,7 @@ import type { ChatAnswer, ChatEvent } from "@/lib/corti/chat";
 import type { Lang } from "@/lib/tree/types";
 import type { Triage } from "@/lib/corti/triage";
 import type { BilledObservationer } from "@/lib/corti/vision";
+import { track } from "@/lib/analytics";
 import type { LoestFaldgrube } from "@/components/pitfalls/types";
 import type { AnsweredStep } from "@/lib/tree/types";
 import type { DispositionUd, UdtrukketSvar, WorkupSpoergsmaal } from "@/lib/corti/workup";
@@ -406,6 +407,7 @@ export function useClinicalChat(lang: Lang) {
         });
 
         if (!res.ok || !res.body) {
+          if (res.status === 429) track("rate_limited", { route: "chat" });
           const detail = res.status === 429 ? tr("chatTimedOut", lang) : tr("chatFailed", lang);
           patch(id, { error: detail, done: true });
           return { id, answer: null };

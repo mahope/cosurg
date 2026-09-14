@@ -3,6 +3,8 @@ import { Roboto, Roboto_Mono } from "next/font/google";
 import "./globals.css";
 import { SkipLink } from "@/components/ui/SkipLink";
 import { KeyboardInset } from "@/components/ui/KeyboardInset";
+import Script from "next/script";
+import { UMAMI_HOST, UMAMI_WEBSITE_ID } from "@/lib/analytics";
 
 /*
  * Roboto er PlastSurgeon-brandets skrift og bruges hele vejen igennem. Appen
@@ -146,6 +148,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <div id="indhold" tabIndex={-1} className="flex flex-1 flex-col focus:outline-none">
           {children}
         </div>
+        {/*
+          Umami: cookieløs analyse på NSL's egen server. `afterInteractive` så
+          scriptet aldrig står i vejen for det første spørgsmål. Værterne står
+          også i CSP'en (next.config.ts) — ellers blokerer browseren det stille.
+        */}
+        <Script
+          src={`${UMAMI_HOST}/script.js`}
+          data-website-id={UMAMI_WEBSITE_ID}
+          strategy="afterInteractive"
+        />
       </body>
     </html>
   );

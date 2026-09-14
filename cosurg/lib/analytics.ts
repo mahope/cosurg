@@ -1,0 +1,89 @@
+/**
+ * Umami-events. Kontrakten står i magnus/docs/ANALYTICS-EVENTS.md.
+ *
+ * Reglen der bærer alt andet: INGEN personhenførbare data. Aldrig fritekst fra
+ * lægen, aldrig transskript, aldrig et billede — kun enum-værdier, offentlige
+ * id'er (forløbs-id, kilde-id) og tal. Det er ikke en stilistisk præference:
+ * ytringerne i appen kan beskrive en patient.
+ *
+ * Værterne kommer fra env med de kendte produktionsværdier som reserve, så et
+ * deploy uden env stadig sender data (jf. spec, regel 5).
+ */
+
+export const UMAMI_HOST = (
+  process.env.NEXT_PUBLIC_UMAMI_HOST || "https://analytics.nordicsurgerylab.com"
+).replace(/\/+$/, "");
+
+export const UMAMI_WEBSITE_ID =
+  process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID || "4073d1cb-67f0-48d4-bf82-bb0db5b0d059";
+
+/** Flade properties: streng/tal/bool, max ~10 pr. event. */
+export type EventData = Record<string, string | number | boolean>;
+
+declare global {
+  interface Window {
+    umami?: {
+      track: (name: string, data?: EventData) => void;
+    };
+  }
+}
+
+/**
+ * Client-side. Kaster aldrig: scriptet kan være blokeret af en adblocker, ikke
+ * indlæst endnu, eller vi kan stå i en server-render. Et manglende event må
+ * aldrig koste lægen noget.
+ */
+export function track(name: string, data?: EventData): void {
+  if (typeof window === "undefined") return;
+  try {
+    window.umami?.track(name, data);
+  } catch {
+    /* analytics må aldrig vælte appen */
+  }
+}
+
+/**
+ * Server-side (API-ruter uden browser). POST til Umamis /api/send med en
+ * User-Agent — Umami afviser requests uden. Fire-and-forget: kald med `void`,
+ * aldrig i request-kritisk sti. No-op når env mangler.
+ *
+ * `url`/`hostname` er hvad Umami viser som "side" for eventet; giv ruten
+ * (fx "/api/chat") og værten fra request-headeren.
+ */
+export function sendEvent(
+  name: string,
+  data: EventData | undefined,
+  ctx: { url: string; hostname?: string },
+): Promise<void> {
+  if (!UMAMI_HOST || !UMAMI_WEBSITE_ID) return Promise.resolve();
+
+  const payload = {
+    type: "event",
+    payload: {
+      website: UMAMI_WEBSITE_ID,
+      hostname: ctx.hostname ?? "cosurg.com",
+      url: ctx.url,
+      name,
+      ...(data ? { data } : {}),
+    },
+  };
+
+  return fetch(`${UMAMI_HOST}/api/send`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "User-Agent": "cosurg-server/1.0",
+    },
+    body: JSON.stringify(payload),
+    cache: "no-store",
+    signal: AbortSignal.timeout(3_000),
+  })
+    .then(() => undefined)
+    .catch(() => undefined);
+}
+
+/** Værten fra request-headeren, uden port. Til `sendEvent`-kontekst. */
+export function hostnameFrom(req: Request): string | undefined {
+  const host = req.headers.get("x-forwarded-host") ?? req.headers.get("host");
+  return host ? host.split(":")[0] : undefined;
+}
