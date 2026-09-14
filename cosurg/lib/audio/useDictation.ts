@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { CortiClient } from "@corti/sdk";
 import type { Lang } from "@/lib/tree/types";
+import { track } from "@/lib/analytics";
 
 /**
  * Cortis DICTATION-produkt — ikke det samme som den ambiente lytning.
@@ -120,11 +121,13 @@ export function useDictation({ lang, onFinal, onCommand }: UseDictationOptions) 
       setTimeout(() => socket.close(), 1500);
     }
 
+    track("voice_use", { action: "stop" });
     teardown();
   }, [teardown]);
 
   const start = useCallback(async () => {
     setError(null);
+    track("voice_use", { action: "start" });
     try {
       const res = await fetch("/api/corti/token");
       if (!res.ok) throw new Error("Kunne ikke hente Corti-token");

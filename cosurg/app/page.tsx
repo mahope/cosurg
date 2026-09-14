@@ -7,6 +7,7 @@ import { advance, getDisposition, getNode, goBack, questionText, startSession } 
 import type { AnsweredStep, DecisionTree, Lang, SessionState, TreeNode } from "@/lib/tree/types";
 import { useTranscribe } from "@/lib/audio/useTranscribe";
 import { useDictation } from "@/lib/audio/useDictation";
+import { track } from "@/lib/analytics";
 import { prefetchSpeech, speak, stopSpeaking } from "@/lib/audio/speak";
 import { failureMessage, micMessage, tr } from "@/lib/i18n";
 import { ControlRail } from "@/components/ControlRail";
@@ -256,6 +257,14 @@ export default function Home() {
       anamnese?: Record<string, string>;
     }) => void
   >(() => {});
+
+  /*
+   * Kom ytringen fra mikrofonen? Sættes af `handleVoiceFinal` lige før den
+   * kalder `handleUtterance`, og nulstilles dér ved indgangen — så et
+   * tale-segment der stopper tidligt aldrig farver den næste, skrevne ytring.
+   * Bruges KUN til analytics-eventet; ordlyden sendes aldrig.
+   */
+  const voiceInputRef = useRef(false);
 
   const node = state.currentNodeId ? getNode(tree, state.currentNodeId) : undefined;
   const disposition = state.dispositionId ? getDisposition(tree, state.dispositionId) : undefined;
@@ -602,6 +611,7 @@ export default function Home() {
         setIntakeMiss(null);
         setStarted(true);
         setDraft("");
+        track("tree_open", { tree: id });
         askCurrent(resetSession(next, lang), next);
         // Lægens egen beskrivelse er den første kliniske oplysning i sagen —
         // den skal med i transskriptet og dermed i notatet, ikke kasseres som
@@ -791,6 +801,7 @@ export default function Home() {
       if (cmd === "back") {
         const prev = goBack(state);
         setState(prev);
+        track("tree_back", { tree: state.treeId });
         if (speakAll) await say(tr("ackBack", lang));
         askCurrent(prev);
         return;
@@ -984,6 +995,10 @@ export default function Home() {
    */
   const handleUtterance = useCallback(
     async (text: string, images?: ChatImage[]) => {
+      // Aflæses og nulstilles FØRST, uanset hvilken gren ytringen ender i.
+      const input = voiceInputRef.current ? "voice" : "text";
+      voiceInputRef.current = false;
+
       /*
        * Tog lægen imod tilbuddet om at blive ført gennem forløbet? Det ligger
        * FØRST, fordi tilbuddet står på indgangsskærmen, hvor enhver anden
@@ -1030,6 +1045,7 @@ export default function Home() {
       // Før et forløb er valgt, er ytringen enten en patient eller et spørgsmål.
       // Samme vej ind for tale og skrift.
       if (!started) {
+        track("query_submit", { intent: "intake", lang, input });
         void handleIntake(text, images);
         return;
       }
@@ -1112,6 +1128,7 @@ export default function Home() {
       }
 
       const verdict = classifyUtterance(text, current, lang);
+      track("query_submit", { intent: verdict.intent, lang, input });
 
       if (verdict.intent === "question") {
         void runLookup(text);
@@ -1173,6 +1190,7 @@ export default function Home() {
         setDraft((prev) => (prev ? `${prev.trimEnd()} ${text}` : text));
         return;
       }
+      voiceInputRef.current = true;
       void handleUtterance(text);
     },
     [started, orMode, handleUtterance],
@@ -1363,6 +1381,7 @@ export default function Home() {
     (value: string, rawLabel: string) => {
       const { state: next, redFlag } = advance(tree, state, value, rawLabel);
       setState(next);
+      track("tree_step", { tree: tree.id, depth: next.path.length });
       // Klikket ER vejen videre efter en fejl. Står der stadig "Fortolker…"
       // eller en netværksbesked fra forrige forsøg, er den nu usand — og en
       // usand statuslinje er præcis det der får appen til at se død ud.

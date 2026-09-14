@@ -16,13 +16,23 @@ const cortiHosts = [
   `https://auth.${cortiEnv}.corti.app`,
 ].join(" ");
 
+/*
+ * Umami (cookieløs analyse) ligger på NSL's egen vært. Den skal stå i BÅDE
+ * script-src (script.js) og connect-src (/api/send) — ellers blokerer
+ * browseren scriptet uden anden lyd end en konsollinje.
+ */
+const umamiHost = (process.env.NEXT_PUBLIC_UMAMI_HOST || "https://analytics.nordicsurgerylab.com").replace(
+  /\/+$/,
+  "",
+);
+
 const csp = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline'",
+  `script-src 'self' 'unsafe-inline' ${umamiHost}`,
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob:",
   "media-src 'self' blob:",
-  `connect-src 'self' ${cortiHosts}`,
+  `connect-src 'self' ${cortiHosts} ${umamiHost}`,
   "font-src 'self'",
   "object-src 'none'",
   "base-uri 'self'",
