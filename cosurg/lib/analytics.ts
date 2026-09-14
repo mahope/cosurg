@@ -44,7 +44,8 @@ export function track(name: string, data?: EventData): void {
 
 /**
  * Server-side (API-ruter uden browser). POST til Umamis /api/send med en
- * User-Agent — Umami afviser requests uden. Fire-and-forget: kald med `void`,
+ * User-Agent — Umami afviser requests uden, og den SKAL ligne en rigtig browser:
+ * Umamis isbot-filter dropper alt andet stille (200 "beep boop"). Fire-and-forget: kald med `void`,
  * aldrig i request-kritisk sti. No-op når env mangler.
  *
  * `url`/`hostname` er hvad Umami viser som "side" for eventet; giv ruten
@@ -64,7 +65,7 @@ export function sendEvent(
       hostname: ctx.hostname ?? "cosurg.com",
       url: ctx.url,
       name,
-      ...(data ? { data } : {}),
+      data: { source: "server", ...data },
     },
   };
 
@@ -72,7 +73,8 @@ export function sendEvent(
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "User-Agent": "cosurg-server/1.0",
+      "User-Agent":
+        "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
     },
     body: JSON.stringify(payload),
     cache: "no-store",
