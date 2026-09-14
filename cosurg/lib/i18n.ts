@@ -8,6 +8,7 @@ export const t = {
   },
   start: { da: "Start vurdering", en: "Start assessment" },
   aboutTeam: { da: "Om & Team", en: "About & Team" },
+  privacy: { da: "Privatliv", en: "Privacy" },
   aboutTeamBackLink: { da: "Beslutningsstøtte", en: "Decision Support" },
   aboutTeamIntro: {
     da: "CoSurg er et stemmestyret klinisk beslutningsværktøj til udredning og behandling af kirurgiske problemstillinger og brandsårspatienter.",
