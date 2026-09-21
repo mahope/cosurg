@@ -39,16 +39,23 @@ jobs:
           short=${SHA:0:7}
           title=$(printf '%s' "$TITLE" | head -n1 | cut -c1-80)
           body=$(jq -cn --arg id "$APP_ID" --arg t "GitHub: $title" --arg d "Commit: $SHA" '{applicationId:$id,title:$t,description:$d}')
+          # Dokploy bygger ALTID grenens nyeste version og overskriver titel/
+          # beskrivelse med sine egne fra git. Vi kan derfor ikke lede efter vores
+          # egen commit i listen. I stedet følger vi builds startet efter vores
+          # trigger: når et af dem er færdigt, indeholder det vores commit, fordi
+          # den lå på grenen før vi udløste deployet. Det gør også flere merges
+          # lige efter hinanden ufarlige — de deler samme build.
+          start_iso=$(date -u -d '-90 seconds' +%Y-%m-%dT%H:%M:%S)
           curl -fsS -X POST "$DOKPLOY_URL/api/application.deploy" -H "x-api-key: $DOKPLOY_API_KEY" -H 'content-type: application/json' -d "$body" >/dev/null
-          echo "Deploy af $short sat i kø for cosurg.com"
-          for i in $(seq 1 100); do
+          echo "Deploy af $short sat i kø for cosurg.com (følger builds efter $start_iso UTC)"
+          for i in $(seq 1 120); do
             sleep 15
             list=$(curl -fsS "$DOKPLOY_URL/api/deployment.all?applicationId=$APP_ID" -H "x-api-key: $DOKPLOY_API_KEY" || echo '[]')
-            entry=$(echo "$list" | jq -c --arg s "$short" 'map(select((.description // "") | contains($s))) | .[0] // empty')
+            entry=$(echo "$list" | jq -c --arg s "$start_iso" 'map(select((.createdAt // "")[0:19] >= $s)) | sort_by(.createdAt) | last // empty')
             if [ -z "$entry" ]; then echo "venter på at buildet starter…"; continue; fi
             status=$(echo "$entry" | jq -r .status)
             case "$status" in
-              done)  echo "✅ cosurg.com kører nu $short"; exit 0 ;;
+              done)  echo "✅ cosurg.com er udgivet ($short er med)"; exit 0 ;;
               error) echo "::error::Dokploy-build fejlede for cosurg.com ($short)"
                      did=$(echo "$entry" | jq -r .deploymentId)
                      curl -fsS "$DOKPLOY_URL/api/deployment.readLogs?deploymentId=$did" -H "x-api-key: $DOKPLOY_API_KEY" | jq -r . | grep -v -E 'remote: (Counting|Compressing)|Receiving objects|Resolving deltas' | tail -n 60
@@ -56,7 +63,7 @@ jobs:
               *)     echo "status: $status" ;;
             esac
           done
-          echo "::error::Timeout: Dokploy meldte ikke færdig inden 25 min"; exit 1
+          echo "::error::Timeout: Dokploy meldte ikke færdig inden 30 min"; exit 1
 
   deploy-mcp:
     name: Udgiv til mcp.cosurg.com
@@ -80,16 +87,23 @@ jobs:
           short=${SHA:0:7}
           title=$(printf '%s' "$TITLE" | head -n1 | cut -c1-80)
           body=$(jq -cn --arg id "$APP_ID" --arg t "GitHub: $title" --arg d "Commit: $SHA" '{applicationId:$id,title:$t,description:$d}')
+          # Dokploy bygger ALTID grenens nyeste version og overskriver titel/
+          # beskrivelse med sine egne fra git. Vi kan derfor ikke lede efter vores
+          # egen commit i listen. I stedet følger vi builds startet efter vores
+          # trigger: når et af dem er færdigt, indeholder det vores commit, fordi
+          # den lå på grenen før vi udløste deployet. Det gør også flere merges
+          # lige efter hinanden ufarlige — de deler samme build.
+          start_iso=$(date -u -d '-90 seconds' +%Y-%m-%dT%H:%M:%S)
           curl -fsS -X POST "$DOKPLOY_URL/api/application.deploy" -H "x-api-key: $DOKPLOY_API_KEY" -H 'content-type: application/json' -d "$body" >/dev/null
-          echo "Deploy af $short sat i kø for mcp.cosurg.com"
-          for i in $(seq 1 100); do
+          echo "Deploy af $short sat i kø for mcp.cosurg.com (følger builds efter $start_iso UTC)"
+          for i in $(seq 1 120); do
             sleep 15
             list=$(curl -fsS "$DOKPLOY_URL/api/deployment.all?applicationId=$APP_ID" -H "x-api-key: $DOKPLOY_API_KEY" || echo '[]')
-            entry=$(echo "$list" | jq -c --arg s "$short" 'map(select((.description // "") | contains($s))) | .[0] // empty')
+            entry=$(echo "$list" | jq -c --arg s "$start_iso" 'map(select((.createdAt // "")[0:19] >= $s)) | sort_by(.createdAt) | last // empty')
             if [ -z "$entry" ]; then echo "venter på at buildet starter…"; continue; fi
             status=$(echo "$entry" | jq -r .status)
             case "$status" in
-              done)  echo "✅ mcp.cosurg.com kører nu $short"; exit 0 ;;
+              done)  echo "✅ mcp.cosurg.com er udgivet ($short er med)"; exit 0 ;;
               error) echo "::error::Dokploy-build fejlede for mcp.cosurg.com ($short)"
                      did=$(echo "$entry" | jq -r .deploymentId)
                      curl -fsS "$DOKPLOY_URL/api/deployment.readLogs?deploymentId=$did" -H "x-api-key: $DOKPLOY_API_KEY" | jq -r . | grep -v -E 'remote: (Counting|Compressing)|Receiving objects|Resolving deltas' | tail -n 60
@@ -97,4 +111,4 @@ jobs:
               *)     echo "status: $status" ;;
             esac
           done
-          echo "::error::Timeout: Dokploy meldte ikke færdig inden 25 min"; exit 1
+          echo "::error::Timeout: Dokploy meldte ikke færdig inden 30 min"; exit 1
