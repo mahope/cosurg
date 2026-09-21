@@ -767,7 +767,7 @@ export async function POST(req: Request) {
           if (event.kind === "progress" && event.expert === "pubmed-expert") pubmedKaldt = true;
           if (event.kind === "answer" && pubmedKaldt) {
             const results = event.answer.sources.filter((s) => s.origin === "literature").length;
-            void sendEvent("pubmed_search", { results }, { url: "/api/chat", hostname: hostnameFrom(req) });
+            void sendEvent("pubmed_search", { results }, { url: "/api/chat", hostname: hostnameFrom(req), req });
           }
           send(event);
         }
