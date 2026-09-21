@@ -47,18 +47,26 @@ const FALLBACK_USER_AGENT =
   "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36";
 
 /**
- * Headers til POST /api/send. Umami hasher IP + User-Agent til visitor-id'et
- * og læser IP fra `x-forwarded-for` (første værdi) / `x-real-ip`. Med den
+ * Headers til POST /api/send. Umami hasher IP + User-Agent til visitor-id'et.
+ * UA-headeren er den bot-filteret læser; IP'en tilskrives via payloaden, fordi
+ * vores instans står bag en proxy der omskriver X-Forwarded-For. Med den
  * oprindelige request videresender vi lægens IP + UA, så server-eventet
  * lander på samme besøgende/session som browser-eventerne (funnels). Uden
  * request bruges en browser-lignende UA, så bot-filteret beholder eventet.
  */
-export function sendHeaders(req?: Request): Record<string, string> {
+export function visitorMeta(req?: Request): { ip: string | null; userAgent: string | null } {
   const h = req?.headers;
-  const ip = h?.get("x-forwarded-for")?.split(",")[0]?.trim() || h?.get("x-real-ip") || null;
+  return {
+    ip: h?.get("x-forwarded-for")?.split(",")[0]?.trim() || h?.get("x-real-ip") || null,
+    userAgent: h?.get("user-agent") || null,
+  };
+}
+
+export function sendHeaders(req?: Request): Record<string, string> {
+  const { ip, userAgent } = visitorMeta(req);
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
-    "User-Agent": h?.get("user-agent") || FALLBACK_USER_AGENT,
+    "User-Agent": userAgent || FALLBACK_USER_AGENT,
   };
   if (ip) {
     headers["X-Forwarded-For"] = ip;
@@ -84,6 +92,12 @@ export function sendEvent(
 ): Promise<void> {
   if (!UMAMI_HOST || !UMAMI_WEBSITE_ID) return Promise.resolve();
 
+  // Identiteten: målt mod vores egen Umami står instansen bag en proxy der
+  // omskriver X-Forwarded-For, så headeren ignoreres og `ip` i payloaden er
+  // det eneste felt der faktisk tilskriver IP'en. Felterne udelades når de er
+  // ukendte — "ip": null får /api/send til at svare 400 og eventet går tabt.
+  const { ip, userAgent } = visitorMeta(ctx.req);
+
   const payload = {
     type: "event",
     payload: {
@@ -92,6 +106,8 @@ export function sendEvent(
       url: ctx.url,
       name,
       data: { source: "server", ...data },
+      ...(userAgent ? { userAgent } : {}),
+      ...(ip ? { ip } : {}),
     },
   };
 
