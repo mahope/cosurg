@@ -42,6 +42,31 @@ export function track(name: string, data?: EventData): void {
   }
 }
 
+// Umamis isbot-filter dropper stille (200 "beep boop") alt der ikke ligner en rigtig browser.
+const FALLBACK_USER_AGENT =
+  "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36";
+
+/**
+ * Headers til POST /api/send. Umami hasher IP + User-Agent til visitor-id'et
+ * og læser IP fra `x-forwarded-for` (første værdi) / `x-real-ip`. Med den
+ * oprindelige request videresender vi lægens IP + UA, så server-eventet
+ * lander på samme besøgende/session som browser-eventerne (funnels). Uden
+ * request bruges en browser-lignende UA, så bot-filteret beholder eventet.
+ */
+export function sendHeaders(req?: Request): Record<string, string> {
+  const h = req?.headers;
+  const ip = h?.get("x-forwarded-for")?.split(",")[0]?.trim() || h?.get("x-real-ip") || null;
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+    "User-Agent": h?.get("user-agent") || FALLBACK_USER_AGENT,
+  };
+  if (ip) {
+    headers["X-Forwarded-For"] = ip;
+    headers["X-Real-IP"] = ip;
+  }
+  return headers;
+}
+
 /**
  * Server-side (API-ruter uden browser). POST til Umamis /api/send med en
  * User-Agent — Umami afviser requests uden, og den SKAL ligne en rigtig browser:
@@ -49,12 +74,13 @@ export function track(name: string, data?: EventData): void {
  * aldrig i request-kritisk sti. No-op når env mangler.
  *
  * `url`/`hostname` er hvad Umami viser som "side" for eventet; giv ruten
- * (fx "/api/chat") og værten fra request-headeren.
+ * (fx "/api/chat") og værten fra request-headeren. `req` er den oprindelige
+ * request: dens IP + UA videresendes, så eventet tilskrives samme besøgende.
  */
 export function sendEvent(
   name: string,
   data: EventData | undefined,
-  ctx: { url: string; hostname?: string },
+  ctx: { url: string; hostname?: string; req?: Request },
 ): Promise<void> {
   if (!UMAMI_HOST || !UMAMI_WEBSITE_ID) return Promise.resolve();
 
@@ -71,11 +97,7 @@ export function sendEvent(
 
   return fetch(`${UMAMI_HOST}/api/send`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "User-Agent":
-        "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
-    },
+    headers: sendHeaders(ctx.req),
     body: JSON.stringify(payload),
     cache: "no-store",
     signal: AbortSignal.timeout(3_000),
