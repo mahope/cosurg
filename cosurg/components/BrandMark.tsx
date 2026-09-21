@@ -1,7 +1,11 @@
 import Image from "next/image";
 
 /**
- * PlastSurgeon-mærket: klinikkens logo.
+ * SurgAI-mærket: den fælles identitet på tværs af suiten.
+ *
+ * Erstattede PlastSurgeon-mærket, så CoSurg deler visuelt ophav med surgai.io.
+ * Det er mærket alene, ikke den fulde lockup — lockup'en staver "Surg AI", og
+ * her står figuren ved siden af ordet "CoSurg", som stadig er produktets navn.
  *
  * Bærer IDENTITETEN, mens zone-ringene (ZoneMark) bærer TILSTANDEN: lytter
  * appen, hvor langt er vi. De to motiver overlapper dermed ikke, og hver

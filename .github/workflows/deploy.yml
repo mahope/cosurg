@@ -1,0 +1,100 @@
+# Automatisk udgivelse til Dokploy på nsl-server-2.
+# Dokploys egen webhook virker ikke med SSH-kilden ("Branch Not Match"), så
+# denne workflow kalder deploy-API'et og venter på build-resultatet.
+# Kræver i repoets Settings → Secrets/Variables:
+#   secret  DOKPLOY_API_KEY   (nøglen "github-actions-deploy" i Dokploy)
+#   var     DOKPLOY_URL       (https://dokploy.nordicsurgerylab.com)
+#   var     DOKPLOY_APP_ID         (app-id for cosurg.com)
+#   var     DOKPLOY_APP_ID_MCP     (app-id for mcp.cosurg.com)
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    name: Udgiv til cosurg.com
+
+    runs-on: ubuntu-latest
+    concurrency:
+      group: deploy-cosurg.com
+      cancel-in-progress: false
+    env:
+      DOKPLOY_URL: ${{ vars.DOKPLOY_URL }}
+      DOKPLOY_API_KEY: ${{ secrets.DOKPLOY_API_KEY }}
+      APP_ID: ${{ vars.DOKPLOY_APP_ID }}
+      SHA: ${{ github.sha }}
+      TITLE: "${{ github.event.head_commit.message }}"
+    steps:
+      - name: Udløs deploy i Dokploy og vent på resultatet
+        run: |
+          set -euo pipefail
+          if [ -z "$DOKPLOY_URL" ] || [ -z "$DOKPLOY_API_KEY" ] || [ -z "$APP_ID" ]; then
+            echo "::error::DOKPLOY_URL, DOKPLOY_API_KEY eller DOKPLOY_APP_ID mangler i repoets settings"; exit 1; fi
+          short=${SHA:0:7}
+          title=$(printf '%s' "$TITLE" | head -n1 | cut -c1-80)
+          body=$(jq -cn --arg id "$APP_ID" --arg t "GitHub: $title" --arg d "Commit: $SHA" '{applicationId:$id,title:$t,description:$d}')
+          curl -fsS -X POST "$DOKPLOY_URL/api/application.deploy" -H "x-api-key: $DOKPLOY_API_KEY" -H 'content-type: application/json' -d "$body" >/dev/null
+          echo "Deploy af $short sat i kø for cosurg.com"
+          for i in $(seq 1 100); do
+            sleep 15
+            list=$(curl -fsS "$DOKPLOY_URL/api/deployment.all?applicationId=$APP_ID" -H "x-api-key: $DOKPLOY_API_KEY" || echo '[]')
+            entry=$(echo "$list" | jq -c --arg s "$short" 'map(select((.description // "") | contains($s))) | .[0] // empty')
+            if [ -z "$entry" ]; then echo "venter på at buildet starter…"; continue; fi
+            status=$(echo "$entry" | jq -r .status)
+            case "$status" in
+              done)  echo "✅ cosurg.com kører nu $short"; exit 0 ;;
+              error) echo "::error::Dokploy-build fejlede for cosurg.com ($short)"
+                     did=$(echo "$entry" | jq -r .deploymentId)
+                     curl -fsS "$DOKPLOY_URL/api/deployment.readLogs?deploymentId=$did" -H "x-api-key: $DOKPLOY_API_KEY" | jq -r . | grep -v -E 'remote: (Counting|Compressing)|Receiving objects|Resolving deltas' | tail -n 60
+                     exit 1 ;;
+              *)     echo "status: $status" ;;
+            esac
+          done
+          echo "::error::Timeout: Dokploy meldte ikke færdig inden 25 min"; exit 1
+
+  deploy-mcp:
+    name: Udgiv til mcp.cosurg.com
+
+    runs-on: ubuntu-latest
+    concurrency:
+      group: deploy-mcp.cosurg.com
+      cancel-in-progress: false
+    env:
+      DOKPLOY_URL: ${{ vars.DOKPLOY_URL }}
+      DOKPLOY_API_KEY: ${{ secrets.DOKPLOY_API_KEY }}
+      APP_ID: ${{ vars.DOKPLOY_APP_ID_MCP }}
+      SHA: ${{ github.sha }}
+      TITLE: "${{ github.event.head_commit.message }}"
+    steps:
+      - name: Udløs deploy i Dokploy og vent på resultatet
+        run: |
+          set -euo pipefail
+          if [ -z "$DOKPLOY_URL" ] || [ -z "$DOKPLOY_API_KEY" ] || [ -z "$APP_ID" ]; then
+            echo "::error::DOKPLOY_URL, DOKPLOY_API_KEY eller DOKPLOY_APP_ID_MCP mangler i repoets settings"; exit 1; fi
+          short=${SHA:0:7}
+          title=$(printf '%s' "$TITLE" | head -n1 | cut -c1-80)
+          body=$(jq -cn --arg id "$APP_ID" --arg t "GitHub: $title" --arg d "Commit: $SHA" '{applicationId:$id,title:$t,description:$d}')
+          curl -fsS -X POST "$DOKPLOY_URL/api/application.deploy" -H "x-api-key: $DOKPLOY_API_KEY" -H 'content-type: application/json' -d "$body" >/dev/null
+          echo "Deploy af $short sat i kø for mcp.cosurg.com"
+          for i in $(seq 1 100); do
+            sleep 15
+            list=$(curl -fsS "$DOKPLOY_URL/api/deployment.all?applicationId=$APP_ID" -H "x-api-key: $DOKPLOY_API_KEY" || echo '[]')
+            entry=$(echo "$list" | jq -c --arg s "$short" 'map(select((.description // "") | contains($s))) | .[0] // empty')
+            if [ -z "$entry" ]; then echo "venter på at buildet starter…"; continue; fi
+            status=$(echo "$entry" | jq -r .status)
+            case "$status" in
+              done)  echo "✅ mcp.cosurg.com kører nu $short"; exit 0 ;;
+              error) echo "::error::Dokploy-build fejlede for mcp.cosurg.com ($short)"
+                     did=$(echo "$entry" | jq -r .deploymentId)
+                     curl -fsS "$DOKPLOY_URL/api/deployment.readLogs?deploymentId=$did" -H "x-api-key: $DOKPLOY_API_KEY" | jq -r . | grep -v -E 'remote: (Counting|Compressing)|Receiving objects|Resolving deltas' | tail -n 60
+                     exit 1 ;;
+              *)     echo "status: $status" ;;
+            esac
+          done
+          echo "::error::Timeout: Dokploy meldte ikke færdig inden 25 min"; exit 1

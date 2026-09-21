@@ -1,5 +1,8 @@
+"use client";
+
 import Image from "next/image";
 import type { Lang, StepImage } from "@/lib/tree/types";
+import { track } from "@/lib/analytics";
 
 interface StepImagesProps {
   images: StepImage[];
@@ -44,6 +47,7 @@ export function StepImages({ images, lang, large, priority }: StepImagesProps) {
                 sizes="(max-width: 640px) 100vw, 33vw"
                 className="object-contain"
                 priority={priority && i === 0}
+                onLoad={() => track("image_view", { source: img.src })}
               />
             </div>
             {img.caption?.[lang] && (
@@ -73,6 +77,7 @@ export function StepImages({ images, lang, large, priority }: StepImagesProps) {
               fill
               sizes="(max-width: 640px) 100vw, 240px"
               className="object-contain"
+              onLoad={() => track("image_view", { source: img.src })}
             />
           </div>
           {img.caption?.[lang] && (

@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { hostnameFrom, sendEvent } from "@/lib/analytics";
 
 /**
  * Appen er offentlig uden login under hackathonnet. Uden værn kan enhver der finder
@@ -34,6 +35,8 @@ export function rateLimit(req: Request, route: string, max: number): NextRespons
   if (!hit || hit.resetAt < now) {
     buckets.set(key, { count: 1, resetAt: now + WINDOW_MS });
   } else if (hit.count >= max) {
+    // Fire-and-forget: kvoten må aldrig vente på analytics.
+    void sendEvent("rate_limited", { route }, { url: new URL(req.url).pathname, hostname: hostnameFrom(req), req });
     return NextResponse.json(
       { error: "For mange forespørgsler — prøv igen om lidt" },
       { status: 429, headers: { "Retry-After": String(Math.ceil((hit.resetAt - now) / 1000)) } },

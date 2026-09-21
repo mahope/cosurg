@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
 import type { GuideBillede } from "@/content/dressing-images";
 import type { Lang } from "@/lib/tree/types";
+import { track } from "@/lib/analytics";
 
 /**
  * Procedurefotos i et guideafsnit: en række små thumbnails der kan åbnes stort.
@@ -55,7 +56,10 @@ export function GuideImages({ images, lang }: GuideImagesProps) {
           <button
             key={img.src}
             type="button"
-            onClick={() => setAaben(i)}
+            onClick={() => {
+              setAaben(i);
+              track("image_view", { source: img.src });
+            }}
             className="relative aspect-[3/4] w-[86px] shrink-0 overflow-hidden rounded-lg border border-[var(--line)] bg-[var(--paper)] transition-colors hover:border-[var(--teal)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--teal)]"
             aria-label={img.alt[lang]}
           >

@@ -2,6 +2,7 @@ import type { KildeUddrag } from "@/lib/corti/mcp";
 import type { Lang } from "@/lib/tree/types";
 import { tr } from "@/lib/i18n";
 import { SourceText } from "./SourceText";
+import { track } from "@/lib/analytics";
 
 /**
  * Ét ordret uddrag med sin kilde.
@@ -42,6 +43,8 @@ export function SourceCard({ uddrag, lang, tæt = false }: SourceCardProps) {
             target="_blank"
             rel="noreferrer noopener"
             title={tr("sourceOpen", lang)}
+            // Kun kildens id — aldrig uddragets tekst.
+            onClick={() => track("source_open", { kind: "retningslinje", source: uddrag.afsnitId })}
             className="font-[family-name:var(--font-mono)] text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--teal)] underline decoration-[var(--line-strong)] underline-offset-4 hover:decoration-[var(--teal)]"
           >
             {navn}

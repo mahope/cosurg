@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import type { TurnImage } from "@/components/attachments";
 import type { Lang } from "@/lib/tree/types";
+import { track } from "@/lib/analytics";
 
 /**
  * FOTOET LÆGEN SPURGTE MED — set igen bagefter.
@@ -64,7 +65,11 @@ export function TurnImages({ images, lang }: TurnImagesProps) {
         <button
           key={img.url.slice(-32) + i}
           type="button"
-          onClick={() => setAaben(i)}
+          onClick={() => {
+            setAaben(i);
+            // Lægens eget foto: hverken data-URL eller filnavn må med.
+            track("image_view", { source: "attachment" });
+          }}
           aria-label={`${lang === "da" ? "Vis stort" : "Open"}: ${etiket(img, i)}`}
           className="relative aspect-[3/4] w-[72px] shrink-0 overflow-hidden rounded-lg border border-[var(--line)] bg-[var(--paper)] transition-colors hover:border-[var(--teal)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--teal)]"
         >

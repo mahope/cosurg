@@ -143,6 +143,12 @@ export function AboutTeamView() {
 
           <TeamGrid members={EXPERT_PANEL} />
         </section>
+
+        <footer className="mt-14 border-t border-[var(--line)] pt-6 text-sm text-[var(--ink-soft)]">
+          <Link href="/privatliv" className="underline hover:text-[var(--teal)]">
+            {tr("privacy", lang)}
+          </Link>
+        </footer>
       </div>
     </main>
   );

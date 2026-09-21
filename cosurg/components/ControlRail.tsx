@@ -389,6 +389,10 @@ function RailMenu({
             <span>{tr("aboutTeam", lang)}</span>
           </Link>
 
+          <Link href="/privatliv" role="menuitem" className={rowClass} onClick={() => setOpen(false)}>
+            <span>{tr("privacy", lang)}</span>
+          </Link>
+
           {/* Forbruget: interessant for dommere, støj for klinikeren — derfor
               her. Info-knappen er UsagePanels egen; dens panel åbner oven på
               menuen og lukker med de samme greb. */}
