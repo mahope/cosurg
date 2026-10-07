@@ -1758,7 +1758,7 @@ export default function Home() {
    * efter proceduren bagefter, tilbyder vi den dér hvor anbefalingen står — som
    * ét klik. Det er et TILBUD; forløbet skifter aldrig af sig selv.
    */
-  const followUpId = followUpTreeId(tree.id, state.dispositionId);
+  const followUpId = followUpTreeId(tree.id, state.dispositionId, state.path);
   const followUp = followUpId ? (trees.find((t) => t.id === followUpId) ?? null) : null;
 
   /*

@@ -369,7 +369,27 @@ const FOLLOW_UPS: Record<string, Record<string, string>> = {
   },
 };
 
-export function followUpTreeId(treeId: string, dispositionId: string | null): string | null {
+/*
+ * Henvisning af en håndskade: indtil vurderingen skal hånden alligevel renses og
+ * forbindes, og forbindingsproceduren ER Rigshospitalets guide til fingre og
+ * hænder. Derfor følger den også her — men kun når lokalisationen er hånden,
+ * for ansigt, fødder og genitalier forbindes ikke sådan.
+ */
+const FOLLOW_UPS_BY_LOCATION: Record<string, Record<string, Record<string, string>>> = {
+  "burns-dk": {
+    "disp-refer": { hand: "dressing-hand-arm" },
+  },
+};
+
+export function followUpTreeId(
+  treeId: string,
+  dispositionId: string | null,
+  path?: { nodeId: string; value: string }[],
+): string | null {
   if (!dispositionId) return null;
-  return FOLLOW_UPS[treeId]?.[dispositionId] ?? null;
+  const direkte = FOLLOW_UPS[treeId]?.[dispositionId];
+  if (direkte) return direkte;
+  const lokalisation = path?.find((s) => s.nodeId === "location")?.value;
+  if (!lokalisation) return null;
+  return FOLLOW_UPS_BY_LOCATION[treeId]?.[dispositionId]?.[lokalisation] ?? null;
 }

@@ -422,7 +422,7 @@ function TurnEntry({
               skifter af sig selv.
             */
             onShowProcedure={
-              interactive && followUpTreeId(turn.disposition.treeId, turn.disposition.disposition.dispositionId)
+              interactive && followUpTreeId(turn.disposition.treeId, turn.disposition.disposition.dispositionId, turn.disposition.path)
                 ? onShowProcedure
                 : undefined
             }
