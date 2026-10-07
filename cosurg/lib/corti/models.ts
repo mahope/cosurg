@@ -14,9 +14,12 @@
  * hentet — den slags står i `lib/corti/fastAnswer.ts`, hvor kilderne er
  * vedhæftet før modellen ser dem.
  *
- * Nøglen er en almindelig bearer-token (CORTI_MODELS_KEY), ikke det
- * client-credentials-flow resten af Corti-API'et bruger. Derfor sin egen fil.
+ * Endpointet tager en almindelig bearer-token. Er CORTI_MODELS_KEY sat, bruges
+ * den; ellers bruges samme client-credentials-token som resten af Corti-API'et.
+ * Hackathon-nøglen blev lukket i oktober 2026, og tokenet virker også her.
  */
+
+import { getAccessToken } from "./auth";
 
 const BASE_URL = (process.env.CORTI_MODELS_URL ?? "https://ai.eu.corti.app/v1").replace(/\/+$/, "");
 
@@ -40,7 +43,10 @@ export const MODELS = {
 } as const;
 
 export function cortiModelsKonfigureret(): boolean {
-  return !!process.env.CORTI_MODELS_KEY?.trim();
+  return (
+    !!process.env.CORTI_MODELS_KEY?.trim() ||
+    (!!process.env.CORTI_CLIENT_ID && !!process.env.CORTI_CLIENT_SECRET)
+  );
 }
 
 /**
@@ -95,8 +101,7 @@ export async function kaldModel({
   timeoutMs = 8_000,
   signal,
 }: ModelKald): Promise<string> {
-  const key = process.env.CORTI_MODELS_KEY?.trim();
-  if (!key) throw new Error("CORTI_MODELS_KEY mangler i miljøet");
+  const key = process.env.CORTI_MODELS_KEY?.trim() || (await getAccessToken());
 
   const userContent: string | IndholdsDel[] =
     images && images.length > 0

@@ -295,7 +295,7 @@ npm run dev
 | `CORTI_TENANT` | `base` | Used in both the auth URL and the `Tenant-Name` header |
 | `CORTI_CLIENT_ID` / `CORTI_CLIENT_SECRET` | — | From the Corti Console |
 | `CORTI_CODING_SYSTEM` | `icd10int-outpatient` | Set to an SKS system name once access is granted |
-| `CORTI_MODELS_KEY` | — | Corti Models. Without it, `/api/triage` answers 503, `/api/route` falls back to the agent, and `/api/chat` always takes the slow agentic track |
+| `CORTI_MODELS_KEY` | — | Optional static key for Corti Models. When unset, the client-credentials token is used (it is accepted by the Models endpoint too). Without either, `/api/triage` answers 503, `/api/route` falls back to the agent, and `/api/chat` always takes the slow agentic track |
 | `CORTI_MODELS_URL` | `https://ai.eu.corti.app/v1` | OpenAI-compatible endpoint |
 | `CORTI_MODELS_TRIAGE` / `CORTI_MODELS_SYNTHESIS` | `corti-s1-instant` / `corti-s1-mini-instant` | The `-instant` variants are not cosmetic: on the same prompt `corti-s1-mini` spent 26 s reasoning and ran out of tokens without returning a byte of content, while `corti-s1-mini-instant` finished in 5 s |
 | `SYV_API_KEY` | — | Without a key, spoken output falls back to the browser's built-in voice |
