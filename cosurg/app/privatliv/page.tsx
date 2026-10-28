@@ -106,7 +106,7 @@ export default function PrivatlivPage() {
         <section className="mt-10">
           <h3 className={h2}>Kontakt</h3>
           <p className={p}>
-            CoSurg drives af Nordic Surgery Lab. Spørgsmål og indsigelser rettes til Nordic Surgery Lab
+            CoSurg drives af Nordic Surgery Lab ApS (CVR 38163833). Spørgsmål og indsigelser rettes til Nordic Surgery Lab
             via{" "}
             <a
               href="https://nordicsurgerylab.com"
